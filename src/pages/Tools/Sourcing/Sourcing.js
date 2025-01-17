@@ -2,9 +2,17 @@ import React from "react";
 
 const Sourcing = () => {
   return (
-    <div className="text-center mt-10">
-      <h1 className="text-4xl font-bold text-green-600">Sourcing Page</h1>
-      <p className="mt-4 text-gray-700">Learn more Sourcing us on this page.</p>
+    <div className="h-full w-full bg-gray-800 p-0 m-0">
+      {/* Header */}
+      <div className="flex items-center justify-between bg-gray-800 shadow-md w-full p-0 m-0">
+        {/* Screen Name */}
+        <h1 className="text-lg font-bold text-gray-800 ml-4 p-0 m-0">Sourcing</h1>
+        
+        {/* Icons */}
+       
+      </div>
+
+  
     </div>
   );
 };

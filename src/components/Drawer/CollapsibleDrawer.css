@@ -1,3 +1,12 @@
+.scroll-width-none {
+    /* Hide scrollbar for all browsers */
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* Internet Explorer 10+ */
+}
+
+.scroll-width-none::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Edge */
+}
 /* Sidebar */
 .sidebar {
     @apply bg-customBlue text-white flex flex-col transition-all duration-500 ease-in-out; /* Smooth transition */
@@ -34,7 +43,7 @@
 
 /* Menu Sections */
 .menu-section {
-    @apply flex flex-col mt-[20px]; /* Tailwind's flex and flex-col */
+    @apply flex flex-col w-full mt-[20px]; /* Tailwind's flex and flex-col */
 }
 
 .section-expanded {
@@ -54,21 +63,24 @@
 }
 
 /* Menu Items */
+.menu-ul {
+    @apply w-full
+}
 .menu-item {
-    @apply px-3 py-[11px] flex items-center transition-all duration-500 ease-linear; /* Smooth transition for menu item */
+    @apply px-3 py-[11px] w-full flex items-center transition-all duration-500 ease-in-out; /* Smooth transition for menu item */
 }
 .menu-item:hover {
-    @apply bg-customBlue rounded-[8px]
+    @apply rounded-[8px] w-full
   }
   
   .menu-item.selected {
-    @apply bg-gradient-to-r from-customGrad1 to-customGrad2 rounded-[8px]; /* Equivalent to linear-gradient(90deg, #ff0000, #000000) and border-radius: 0.5rem */
+    @apply bg-gradient-to-r from-customGrad1 to-customGrad2 flex rounded-[8px] transition-all duration-500 ease-in-out; /* Equivalent to linear-gradient(90deg, #ff0000, #000000) and border-radius: 0.5rem */
   }
   .menu-item.expanded {
-    @apply w-[220px]; /* Take full sidebar width when expanded */
+    @apply w-full; /* Take full sidebar width when expanded */
 }
   .menu-item.selected.expanded {
-    @apply w-[220px];
+    @apply w-full;
   }
 
 .menu-link {
@@ -80,7 +92,7 @@
 }
 
 .menu-text {
-    @apply text-base ml-2 text-m transition-colors duration-300 ease-linear; /* Tailwind's text-base and ml-4 */
+    @apply ml-2 text-m transition-colors duration-300 ease-linear; /* Tailwind's text-base and ml-4 */
 }
 .menu-item.selected .menu-text {
     color: #ffffff; /* Ensure text color contrasts with the gradient */
@@ -89,7 +101,7 @@
 
 /* Main Content */
 .main-content {
-    @apply flex-1 p-8 bg-gray-100; /* Tailwind's flex-1, p-8, and bg-gray-100 */
+    @apply flex-1 bg-gray-100; /* Tailwind's flex-1, p-8, and bg-gray-100 */
 }
 /* Back Button Section */
 .back-button-section {
@@ -149,7 +161,7 @@
 
 /* Main Content Adjustments */
 .main-content {
-    @apply flex-1 p-8 bg-gray-100;
+    @apply flex-1 bg-gray-100;
     transition: margin-left 0.3s ease-in-out; /* Smooth transition for content adjustment */
 }
 

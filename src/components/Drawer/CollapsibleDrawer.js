@@ -77,7 +77,7 @@ const CollapsibleDrawer = () => {
   const isSelected = (path) => selectedItem === path;
 
   return (
-    <div className="flex h-screen">
+    <div className="flex h-full w-full">
       {/* Hamburger menu for smaller screen  */}
       {/* Hamburger Menu for Smaller Screens */}
       {!isHamburgerOpen && (
@@ -107,11 +107,11 @@ const CollapsibleDrawer = () => {
           {(isOpen || isHamburgerOpen) && <text className="title">Pipe Recruiter</text>}
         </div>
 
-
-        {/* Dashboard Section */}
-        <div className={`menu-section ${isOpen || isHamburgerOpen ? "section-expanded" : "section-collapsed"}`}>
+        <div className="overflow-auto scroll-width-none">
+          {/* Dashboard Section */}
+          <div className={`menu-section ${isOpen || isHamburgerOpen ? "section-expanded" : "section-collapsed"}`}>
           <text className="menu-title">DASHBOARD</text>
-          <ul>
+          <ul className={`${isOpen ?"menu-ul":""}`}>
             <li
               className={`menu-item ${isOpen ? "expanded" : ""} ${
                 isSelected("/") ? "selected" : ""
@@ -134,7 +134,7 @@ const CollapsibleDrawer = () => {
         {/* People Section */}
         <div className={`menu-section ${isOpen || isHamburgerOpen ? "section-expanded" : "section-collapsed"}`}>
           <text className="menu-title">PEOPLE</text>
-          <ul>
+           <ul className={`${isOpen ?"menu-ul":""}`}>
             <li
               className={`menu-item ${isOpen ? "expanded" : ""} ${
                 isSelected("/user") ? "selected" : ""
@@ -172,7 +172,7 @@ const CollapsibleDrawer = () => {
         {/* Recruitment Section */}
         <div className={`menu-section ${isOpen || isHamburgerOpen ? "section-expanded" : "section-collapsed"}`}>
           <text className="menu-title">RECRUITMENT</text>
-          <ul>
+           <ul className={`${isOpen ?"menu-ul":""}`}>
             <li
               className={`menu-item ${isOpen ? "expanded" : ""} ${
                 isSelected("/client") ? "selected" : ""
@@ -242,7 +242,7 @@ const CollapsibleDrawer = () => {
         {/* Tools Section */}
         <div className={`menu-section ${isOpen || isHamburgerOpen ? "section-expanded" : "section-collapsed"}`}>
           <text className="menu-title">TOOLS</text>
-          <ul>
+           <ul className={`${isOpen ?"menu-ul":""}`}>
             <li
               className={`menu-item ${isOpen ? "expanded" : ""} ${
                 isSelected("/sourcing") ? "selected" : ""
@@ -294,6 +294,8 @@ const CollapsibleDrawer = () => {
           </ul>
         </div>
 
+</div>
+      {/* collapse menu div */}
      {isTabletView &&   <div
           className={`back-button-section ${
             isOpen ? "section-expanded" : "section-collapsed"
@@ -309,11 +311,12 @@ const CollapsibleDrawer = () => {
             </div>
           </button>
         </div>}
+
       </div>
-      {/* collapse menu div */}
 
       {/* Main Content */}
-      <div className="main-content">
+      <div className="main-content flex-1 bg-gray-100 overflow-auto">
+
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/sourcing" element={<Sourcing />} />
