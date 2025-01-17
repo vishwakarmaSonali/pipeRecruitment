@@ -1,0 +1,36 @@
+.scroll-width-none {
+    /* Hide scrollbar for all browsers */
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* Internet Explorer 10+ */
+}
+
+.scroll-width-none::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Edge */
+}
+.header-title{
+    @apply text-custom-large font-custom-bold ml-[16px]
+}
+.search-icon {
+    @apply absolute left-2 top-2 w-5 h-5 text-gray-500
+}
+.search-input{
+   @apply w-[400px]  px-10 h-[40px] text-sm text-gray-700 bg-gray-100 rounded-[8px] focus:outline-none focus:ring-1
+}
+.header-icons{
+    @apply p-[10px] bg-customGrey1 rounded-[8px] mx-1
+}
+.profile-div{
+    @apply items-center justify-center flex bg-customGrey1 w-[48px] h-[48px] rounded-[50px] mx-1
+}
+.candidate-profile-div{
+    @apply flex-col items-center justify-center flex bg-customGrey1 w-[46px] h-[46px] rounded-full mx-1
+}
+.candidate-name {
+    @apply text-xl font-extrabold text-customBlue
+}
+.candidate-designation{
+    @apply text-m font-custom-regular text-customBlue
+}
+.candidate-scroll{
+  @apply w-[40%] h-full overflow-auto bg-customGrey1 p-4 scroll-width-none
+}

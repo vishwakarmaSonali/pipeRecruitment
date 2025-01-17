@@ -10,6 +10,7 @@ module.exports = {
       'sm': '12px',
       "m":'14px',
       "l":'16px',
+      "xl":'18px',
       'custom-large': '22px', // Custom font size
     },
       fontWeight: {
@@ -26,6 +27,7 @@ module.exports = {
       customGray: '#797979', // Custom gray
       customGrad1:'#1761D800',
       customGrad2:'#1761D833',
+      customGrey1:'#F3F4F4'
     },
   },
     

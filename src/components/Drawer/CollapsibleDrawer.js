@@ -18,7 +18,7 @@ import arrow from "../../assets/icons/expandablearrow.svg";
 import "./CollapsibleDrawer.css"; // Import the CSS file
 
 const CollapsibleDrawer = () => {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(true);
   const [selectedItem, setSelectedItem] = useState("/"); // Track selected menu item
   const location = useLocation();
   const [manualOverride, setManualOverride] = useState(false); // Disable/Enable hover functionality
