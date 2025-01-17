@@ -1,0 +1,166 @@
+/* Sidebar */
+.sidebar {
+    @apply bg-customBlue text-white flex flex-col transition-all duration-500 ease-in-out; /* Smooth transition */
+}
+
+.sidebar.expanded {
+    @apply w-64 px-4; /* Tailwind's w-64 and px-4 */
+}
+
+.sidebar.collapsed {
+    @apply w-24 px-4; /* Smaller width and padding for collapse */
+}
+
+/* Logo and Title */
+.logo-container {
+    @apply flex items-center pb-[20px] pt-[26px] w-64; /* Tailwind's flex, items-center, and p-4 */
+}
+
+.logo-container-expanded {
+    @apply justify-center w-14; /* Center alignment */
+}
+
+.logo {
+    @apply h-8 w-8; /* Tailwind's h-8 and w-8 */
+}
+
+.logo-expanded {
+   
+}
+
+.title {
+    @apply text-l font-medium px-2; /* Tailwind's text-lg and font-bold */
+}
+
+/* Menu Sections */
+.menu-section {
+    @apply flex flex-col mt-[20px]; /* Tailwind's flex and flex-col */
+}
+
+.section-expanded {
+    @apply items-start mt-[20px]; /* Align to start */
+}
+
+.section-collapsed {
+    @apply items-center mt-[20px]; /* Center alignment */
+}
+
+.menu-title {
+    @apply text-xs text-gray-400 px-1 pb-[6px]; /* Tailwind's text-sm, text-gray-400, and px-2 */
+}
+
+.menu-list {
+    @apply mt-2; /* Tailwind's mt-4 */
+}
+
+/* Menu Items */
+.menu-item {
+    @apply px-3 py-[11px] flex items-center transition-all duration-500 ease-linear; /* Smooth transition for menu item */
+}
+.menu-item:hover {
+    @apply bg-customBlue rounded-[8px]
+  }
+  
+  .menu-item.selected {
+    @apply bg-gradient-to-r from-customGrad1 to-customGrad2 rounded-[8px]; /* Equivalent to linear-gradient(90deg, #ff0000, #000000) and border-radius: 0.5rem */
+  }
+  .menu-item.expanded {
+    @apply w-[220px]; /* Take full sidebar width when expanded */
+}
+  .menu-item.selected.expanded {
+    @apply w-[220px];
+  }
+
+.menu-link {
+    @apply flex items-center; /* Tailwind's flex and items-center */
+}
+
+.menu-icon {
+    @apply h-4 w-4 transition-all; /* Tailwind's h-4 and w-4 */
+}
+
+.menu-text {
+    @apply text-base ml-2 text-m transition-colors duration-300 ease-linear; /* Tailwind's text-base and ml-4 */
+}
+.menu-item.selected .menu-text {
+    color: #ffffff; /* Ensure text color contrasts with the gradient */
+   
+  }
+
+/* Main Content */
+.main-content {
+    @apply flex-1 p-8 bg-gray-100; /* Tailwind's flex-1, p-8, and bg-gray-100 */
+}
+/* Back Button Section */
+.back-button-section {
+    @apply mt-auto flex items-center justify-center p-4; /* Align at the bottom */
+  }
+  
+  .back-button {
+    @apply text-white text-lg cursor-pointer flex flex-col items-center; /* Styled as an icon */
+    transition: transform 0.2s ease-in-out; /* Add hover effect */
+  }
+  
+  .back-button:hover {
+    transform: scale(1.2); /* Slight zoom on hover */
+  }
+  .arrow-style {
+   @apply bg-customGrad2 p-2 rounded-[8px]
+  }
+  .collapse-text {
+    @apply ml-2 text-white text-sm; /* Add spacing and smaller font */
+  }
+  /* Responsive Sidebar */
+.sidebar {
+    @apply bg-customBlue text-white flex flex-col transition-all duration-300 ease-in-out;
+    @apply fixed h-full hidden md:flex; /* Hide sidebar on smaller screens, visible on md+ */
+}
+
+.sidebar.expanded {
+    @apply w-64 px-4; /* Tailwind's w-64 and px-4 */
+}
+
+.sidebar.collapsed {
+    @apply w-24 px-4; /* Smaller width for collapsed state */
+}
+
+/* Show sidebar on small screens when the hamburger is active */
+.sidebar.absolute {
+    @apply block md:hidden bg-customBlue w-64 h-full; /* Tailwind's w-64 */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Add shadow for a floating effect */
+}
+
+/* Hamburger Button */
+.hamburger {
+    @apply flex items-center justify-center text-xl fixed top-4 left-4 z-50; /* Position the hamburger button */
+    transition: transform 0.2s ease-in-out;
+}
+
+.hamburger:hover {
+    transform: scale(1.1); /* Slight zoom effect */
+}
+
+/* Hide Hamburger on Medium+ Screens */
+@media (min-width: 840px) {
+    .hamburger {
+        @apply hidden;
+    }
+}
+
+/* Main Content Adjustments */
+.main-content {
+    @apply flex-1 p-8 bg-gray-100;
+    transition: margin-left 0.3s ease-in-out; /* Smooth transition for content adjustment */
+}
+
+.sidebar.expanded ~ .main-content {
+    margin-left: 16rem; /* Adjust for expanded sidebar */
+}
+
+.sidebar.collapsed ~ .main-content {
+    margin-left: 6rem; /* Adjust for collapsed sidebar */
+}
+
+.sidebar.absolute ~ .main-content {
+    @apply ml-0; /* No margin adjustment when sidebar is absolute */
+}
