@@ -11,7 +11,7 @@ import jobIcon from "../../../assets/icons/sourcingIcons/briefcase.svg";
 import FolderAdd from "../../../assets/icons/sourcingIcons/folder-add.svg";
 import Download from "../../../assets/icons/sourcingIcons/download.svg";
 import Tick from "../../../assets/icons/sourcingIcons/tick.svg";
-import FilterIcon from "../../../assets/icons/filter.svg"
+import FilterIcon from "../../../assets/icons/filter.svg";
 const skills = [
   "UI Design",
   "Wireframing",
@@ -153,7 +153,7 @@ const SkillsList = ({ isExpanded }) => {
 };
 const BulkActionView = ({ toggleModal, isBulkAction }) => {
   const [isChecked, setIsChecked] = useState(false);
-  
+
   return (
     <div className="w-full bg-gray-100 p-4 flex items-center justify-between">
       {/* Left Section: Checkbox and Text */}
@@ -164,7 +164,11 @@ const BulkActionView = ({ toggleModal, isBulkAction }) => {
           onClick={() => setIsChecked(!isChecked)}
         >
           {isChecked && (
-            <img src={Tick} alt="Selected" className="items-center justify-center" />
+            <img
+              src={Tick}
+              alt="Selected"
+              className="items-center justify-center"
+            />
           )}
         </div>
 
@@ -185,7 +189,12 @@ const BulkActionView = ({ toggleModal, isBulkAction }) => {
   );
 };
 
-const CandidateList = ({ onSelect, selectedCandidateId, onCandidateSelect, selectedCandidates }) => {
+const CandidateList = ({
+  onSelect,
+  selectedCandidateId,
+  onCandidateSelect,
+  selectedCandidates,
+}) => {
   const [isChecked, setIsChecked] = useState(false);
 
   return (
@@ -204,15 +213,15 @@ const CandidateList = ({ onSelect, selectedCandidateId, onCandidateSelect, selec
               <div className="flex items-center space-x-2">
                 {/* Checkbox */}
                 <div
-                  className={`w-[22px] h-[22px] border  border-customBlue bg-white  rounded-md flex items-center justify-center cursor-pointer` }
+                  className={`w-[22px] h-[22px] border  border-customBlue bg-white  rounded-md flex items-center justify-center cursor-pointer`}
                   onClick={(e) => {
-                    e.stopPropagation();  // Prevent candidate card click event
+                    e.stopPropagation(); // Prevent candidate card click event
                     onCandidateSelect(candidate.id);
                   }}
                 >
-                 {selectedCandidates.includes(candidate.id) && (
-                  <img src={Tick} alt="Selected" className="w-4 h-4" />
-                )}
+                  {selectedCandidates.includes(candidate.id) && (
+                    <img src={Tick} alt="Selected" className="w-4 h-4" />
+                  )}
                 </div>
 
                 {/* Profile Image */}
@@ -351,7 +360,7 @@ const CandidateDetails = ({ selectedCandidate }) => {
   }
 
   return (
-    <div className="w-[60%] mr-4 p-[14px] pb-[20px] mb-[170px] overflow-auto scroll-width-none bg-white h-auto rounded-[14px]">
+    <>
       {/* detail header */}
       <div className="flex items-center justify-between ">
         {/* profile and name and actions */}
@@ -415,7 +424,7 @@ const CandidateDetails = ({ selectedCandidate }) => {
         </div>
       </div>
       <ExperienceEducation />
-    </div>
+    </>
   );
 };
 
@@ -495,28 +504,30 @@ const PaginationFooter = () => {
 const Sourcing = () => {
   const [selectedCandidate, setSelectedCandidate] = useState(null);
   const [selectedCandidates, setSelectedCandidates] = useState([]); // Store selected candidates
-const [isCountHeaderSelected,setIsCountHeaderSelected] = useState(false)
-const [isModalOpen, setIsModalOpen] = useState(false);  // Manage filter modal state
+  const [isCountHeaderSelected, setIsCountHeaderSelected] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false); // Manage filter modal state
 
-// Function to toggle modal visibility
-const toggleModal = () => {
-  setIsModalOpen(!isModalOpen);
-};
+  // Function to toggle modal visibility
+  const toggleModal = () => {
+    setIsModalOpen(!isModalOpen);
+  };
   // Handle candidate selection
   const handleCandidateSelect = (candidateId) => {
-    setSelectedCandidates((prevSelected) =>
-      prevSelected.includes(candidateId)
-        ? prevSelected.filter((id) => id !== candidateId) // Remove if already selected
-        : [...prevSelected, candidateId] // Add if not selected
+    setSelectedCandidates(
+      (prevSelected) =>
+        prevSelected.includes(candidateId)
+          ? prevSelected.filter((id) => id !== candidateId) // Remove if already selected
+          : [...prevSelected, candidateId] // Add if not selected
     );
   };
   return (
     <div className="w-full h-screen bg-gray-100 overflow-hidden">
- <div className="flex flex-col lg:flex-row items-center justify-between bg-white shadow-sm w-full h-auto lg:h-16 px-4 py-2">
- <h1 className="header-title">Sourcing Hub</h1>
- <div className="flex items-center justify-between w-full lg:w-auto">
- {/* Search Input */}
-          <div className="relative flex-1 mx-2">
+      <div className="flex flex-col lg:flex-row items-center justify-between bg-white shadow-sm w-full h-auto lg:h-16  px-2 py-2 header-container">
+        <h1 className="header-title">Sourcing Hub</h1>
+        {/* Icons Section */}
+        <div className="flex items-center header-icons-container space-x-2">
+          {/* Search Input */}
+          <div className="relative hidden md:flex lg:flex">
             <img src={SearchIcon} alt="Search" className="search-icon" />
             <input
               type="text"
@@ -524,6 +535,9 @@ const toggleModal = () => {
               className="search-input"
             />
           </div>
+          <button className="header-icons search xl:hidden">
+            <img src={SearchIcon} alt="Search" />
+          </button>
           <div className="header-icons">
             <img src={MessagesIcon} alt="MessagesIcon" />
           </div>
@@ -536,26 +550,30 @@ const toggleModal = () => {
         </div>
       </div>
       {/* Count and Filter Section */}
-    
-       {/* Count and Filter Section */}
-       <BulkActionView
+
+      {/* Count and Filter Section */}
+      <BulkActionView
         toggleModal={toggleModal}
         isBulkAction={selectedCandidates.length > 1}
       />
-        {/* Add filters or actions here if needed */}
-    
+      {/* Add filters or actions here if needed */}
+
       {/* ScrollView */}
       <div className="w-full h-screen overflow-hidden flex">
         {/* Candidate List Section */}
-        <CandidateList
-          onSelect={setSelectedCandidate}
-          selectedCandidateId={selectedCandidate?.id}
-          onCandidateSelect={handleCandidateSelect}
-          selectedCandidates={selectedCandidates}
-        />
+        <div className="candidate-list w-full lg:w-[40%] px-4">
+    <CandidateList
+      onSelect={setSelectedCandidate}
+      selectedCandidateId={selectedCandidate?.id}
+      onCandidateSelect={handleCandidateSelect}
+      selectedCandidates={selectedCandidates}
+    />
+  </div>
 
-        {/* Candidate Details Section */}
-        <CandidateDetails selectedCandidate={selectedCandidate} />
+  {/* Candidate Details Section */}
+  <div className="candidate-details hidden lg:block">
+    <CandidateDetails selectedCandidate={selectedCandidate} />
+  </div>
       </div>
       <PaginationFooter />
       {/* Filter Modal */}

@@ -1,4 +1,4 @@
-import React, { useState,useRef,useEffect} from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Link, Routes, Route, useLocation } from "react-router-dom";
 import Home from "../../pages/Home/Home";
 import Client from "../../pages/Recruitment/Client";
@@ -15,6 +15,7 @@ import SourcingIcon from "../../assets/icons/sourcing.svg";
 import Reports from "../../assets/icons/reports.svg";
 import Calendar from "../../assets/icons/calendar.svg";
 import arrow from "../../assets/icons/expandablearrow.svg";
+import MenuIcon from "../../assets/icons/hamburgerIcon.svg";
 import "./CollapsibleDrawer.css"; // Import the CSS file
 
 const CollapsibleDrawer = () => {
@@ -23,35 +24,52 @@ const CollapsibleDrawer = () => {
   const location = useLocation();
   const [manualOverride, setManualOverride] = useState(false); // Disable/Enable hover functionality
   const [isHamburgerOpen, setIsHamburgerOpen] = useState(false); // Hamburger menu toggle\
-  const sidebarRef = useRef(null); // Reference for sidebar
-  const [isTabletView, setIsTabletView] = useState(false); // Track if in tablet view
+  const [isMobileView, setIsMobileView] = useState(window.innerWidth < 768);
+  const [isTabletView, setIsTabletView] = useState(window.innerWidth >= 768 && window.innerWidth <= 1024);
+  const sidebarRef = useRef(null);
 
-  // Check screen size to disable collapse in tablet view
+  // Handle screen resizing for responsiveness
   useEffect(() => {
     const handleResize = () => {
-      setIsTabletView(window.innerWidth >= 768); // Tailwind's `md` breakpoint
+      const width = window.innerWidth;
+      if (width < 768) {
+        setIsMobileView(true);
+        setIsTabletView(false);
+        setIsOpen(false); // Ensure sidebar is closed by default on mobile
+      } else if (width >= 768 && width <= 1024) {
+        setIsMobileView(false);
+        setIsTabletView(true);
+        setIsOpen(false); // Ensure sidebar is closed by default on tablets
+      } else {
+        setIsMobileView(false);
+        setIsTabletView(false);
+        setIsOpen(true); // Sidebar should be open on desktops
+      }
+    };
+  
+    window.addEventListener("resize", handleResize);
+    handleResize();
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+  
+
+  // Close sidebar when clicking outside (for mobile & tablet views)
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (sidebarRef.current && !sidebarRef.current.contains(event.target)) {
+        if (isMobileView || isTabletView) {
+          setIsOpen(false);
+        }
+      }
     };
 
-    // Add resize event listener
-    window.addEventListener("resize", handleResize);
-    handleResize(); // Initial check
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [isMobileView, isTabletView]);
 
-    return () => window.removeEventListener("resize", handleResize); // Cleanup
-  }, []);
-    // Close sidebar when clicking outside
-    useEffect(() => {
-      const handleClickOutside = (event) => {
-        if (sidebarRef.current && !sidebarRef.current.contains(event.target)) {
-          setIsHamburgerOpen(false); // Close the sidebar
-        }
-      };
-  
-      document.addEventListener("mousedown", handleClickOutside);
-      return () => document.removeEventListener("mousedown", handleClickOutside);
-    }, []);
-
-  const toggleHamburger = () => setIsHamburgerOpen(!isHamburgerOpen);
-
+  const toggleDrawer = () => {
+    setIsOpen(true);
+  };
   const toggleSidebar = () => {
     setManualOverride(!manualOverride); // Toggle manual override
     if (manualOverride) {
@@ -62,14 +80,14 @@ const CollapsibleDrawer = () => {
   };
 
   const handleMouseEnter = () => {
-    if (!manualOverride) setIsOpen(true);
+    if (!manualOverride) setIsOpen(!isOpen);
   };
 
   const handleMouseLeave = () => {
-    if (!manualOverride) setIsOpen(false);
+    if (!manualOverride) setIsOpen(!isOpen);
   };
   // Update selectedItem when the route changes
-  React.useEffect(() => {
+  useEffect(() => {
     setSelectedItem(location.pathname);
   }, [location]);
 
@@ -80,243 +98,262 @@ const CollapsibleDrawer = () => {
     <div className="flex h-full w-full">
       {/* Hamburger menu for smaller screen  */}
       {/* Hamburger Menu for Smaller Screens */}
-      {!isHamburgerOpen && (
-        <button
-          className="hamburger bg-white text-white p-2 rounded-md md:hidden fixed top-4 left-4 z-50"
-          onClick={toggleHamburger}
-        >
-          ☰ {/* Hamburger icon */}
-        </button>
-      )}
+      {(isMobileView || isTabletView) && !isOpen && (
+  <button className="hamburger-button fixed top-4 left-4 z-50" onClick={toggleDrawer}>
+    <img src={MenuIcon} alt="Menu" className="w-8 h-8" />
+  </button>
+)}
       {/* Sidebar */}
       <div
-        ref={sidebarRef} // Attach ref to the sidebar
-        className={`sidebar ${
-          isHamburgerOpen ? "expanded absolute z-50 top-0 left-0" : isOpen ? "expanded" : "collapsed"
-        }`} // Ensure it shows fully expanded when isHamburgerOpen is true
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
+       ref={sidebarRef}
+       className={`sidebar 
+        ${isMobileView || isTabletView ? (isOpen ? "mobile-expanded" : "hidden") :isOpen? "expanded":"collapsed"}
+      `}
+        {...(!isMobileView &&
+          !isTabletView && {
+            onMouseEnter: () => handleMouseEnter(),
+            onMouseLeave: () => handleMouseLeave(),
+          })}
       >
-     {/* Logo and Dashboard Title */}
-     <div className={`logo-container ${!isOpen && !isHamburgerOpen ? "logo-container-expanded" : ""}`}>
+        {/* Logo and Dashboard Title */}
+        <div className="logo-container p-4 flex items-center">
           <img
             src={Logo}
             alt="Logo"
-            className={`logo ${isHamburgerOpen ? "visible" : "hidden md:block"}`} // Show logo when hamburger is open
+            className={`logo`} // Show logo when hamburger is open
           />
-          {(isOpen || isHamburgerOpen) && <text className="title">Pipe Recruiter</text>}
+          {isOpen && <text className="title">Pipe Recruiter</text>}
         </div>
 
         <div className="overflow-auto scroll-width-none">
           {/* Dashboard Section */}
-          <div className={`menu-section ${isOpen || isHamburgerOpen ? "section-expanded" : "section-collapsed"}`}>
-          <text className="menu-title">DASHBOARD</text>
-          <ul className={`${isOpen ?"menu-ul":""}`}>
-            <li
-              className={`menu-item ${isOpen ? "expanded" : ""} ${
-                isSelected("/") ? "selected" : ""
-              }`} /* Apply selected styles */
-            >
-              <Link to="/" className="menu-link">
-                <img
-                  src={HomeIcon}
-                  alt="HomeIcon"
-                  className={`menu-icon ${
-                    isSelected("/") ? "icon-selected" : ""
-                  }`}
-                />
-                {(isOpen || isHamburgerOpen) && <span className="menu-text">Home</span>}
-              </Link>
-            </li>
-          </ul>
-        </div>
-
-        {/* People Section */}
-        <div className={`menu-section ${isOpen || isHamburgerOpen ? "section-expanded" : "section-collapsed"}`}>
-          <text className="menu-title">PEOPLE</text>
-           <ul className={`${isOpen ?"menu-ul":""}`}>
-            <li
-              className={`menu-item ${isOpen ? "expanded" : ""} ${
-                isSelected("/user") ? "selected" : ""
-              }`}
-            >
-              <Link to="/user" className="menu-link">
-                <img
-                  src={User}
-                  alt="UserIcon"
-                  className={`menu-icon ${
-                    isSelected("/user") ? "icon-selected" : ""
-                  }`}
-                />
-                {(isOpen || isHamburgerOpen) && <span className="menu-text">User</span>}
-              </Link>
-            </li>
-            <li
-              className={`menu-item ${isOpen ? "expanded" : ""} ${
-                isSelected("/teams") ? "selected" : ""
-              }`}
-            >
-              <Link to="/teams" className="menu-link">
-                <img
-                  src={Teams}
-                  alt="TeamsIcon"
-                  className={`menu-icon ${
-                    isSelected("/teams") ? "icon-selected" : ""
-                  }`}
-                />
-                {(isOpen || isHamburgerOpen) && <span className="menu-text">Teams</span>}
-              </Link>
-            </li>
-          </ul>
-        </div>
-        {/* Recruitment Section */}
-        <div className={`menu-section ${isOpen || isHamburgerOpen ? "section-expanded" : "section-collapsed"}`}>
-          <text className="menu-title">RECRUITMENT</text>
-           <ul className={`${isOpen ?"menu-ul":""}`}>
-            <li
-              className={`menu-item ${isOpen ? "expanded" : ""} ${
-                isSelected("/client") ? "selected" : ""
-              }`}
-            >
-              <Link to="/client" className="menu-link">
-                <img
-                  src={ClientIcon}
-                  alt="UserIcon"
-                  className={`menu-icon ${
-                    isSelected("/client") ? "icon-selected" : ""
-                  }`}
-                />
-                {(isOpen || isHamburgerOpen) && <span className="menu-text">Client</span>}
-              </Link>
-            </li>
-            <li
-              className={`menu-item ${isOpen ? "expanded" : ""} ${
-                isSelected("/jobs") ? "selected" : ""
-              }`}
-            >
-              <Link to="/jobs" className="menu-link">
-                <img
-                  src={Jobs}
-                  alt="TeamsIcon"
-                  className={`menu-icon ${
-                    isSelected("/jobs") ? "icon-selected" : ""
-                  }`}
-                />
-                {(isOpen || isHamburgerOpen) && <span className="menu-text">Jobs</span>}
-              </Link>
-            </li>
-            <li
-              className={`menu-item ${isOpen ? "expanded" : ""} ${
-                isSelected("/candidates") ? "selected" : ""
-              }`}
-            >
-              <Link to="/candidates" className="menu-link">
-                <img
-                  src={Candidates}
-                  alt="TeamsIcon"
-                  className={`menu-icon ${
-                    isSelected("/candidates") ? "icon-selected" : ""
-                  }`}
-                />
-                {(isOpen || isHamburgerOpen) && <span className="menu-text">Candidates</span>}
-              </Link>
-            </li>
-            <li
-              className={`menu-item ${isOpen ? "expanded" : ""} ${
-                isSelected("/placements") ? "selected" : ""
-              }`}
-            >
-              <Link to="/placements" className="menu-link">
-                <img
-                  src={Placements}
-                  alt="TeamsIcon"
-                  className={`menu-icon ${
-                    isSelected("/placements") ? "icon-selected" : ""
-                  }`}
-                />
-                {(isOpen || isHamburgerOpen) && <span className="menu-text">Placements</span>}
-              </Link>
-            </li>
-          </ul>
-        </div>
-        {/* Tools Section */}
-        <div className={`menu-section ${isOpen || isHamburgerOpen ? "section-expanded" : "section-collapsed"}`}>
-          <text className="menu-title">TOOLS</text>
-           <ul className={`${isOpen ?"menu-ul":""}`}>
-            <li
-              className={`menu-item ${isOpen ? "expanded" : ""} ${
-                isSelected("/sourcing") ? "selected" : ""
-              }`}
-            >
-              <Link to="/sourcing" className="menu-link">
-                <img
-                  src={SourcingIcon}
-                  alt="SourcingIcon"
-                  className={`menu-icon ${
-                    isSelected("/sourcing") ? "icon-selected" : ""
-                  }`}
-                />
-                {(isOpen || isHamburgerOpen) && <span className="menu-text">Sourcing</span>}
-              </Link>
-            </li>
-            <li
-              className={`menu-item ${isOpen ? "expanded" : ""} ${
-                isSelected("/reports") ? "selected" : ""
-              }`}
-            >
-              <Link to="/reports" className="menu-link">
-                <img
-                  src={Reports}
-                  alt="ReportsIcon"
-                  className={`menu-icon ${
-                    isSelected("/reports") ? "icon-selected" : ""
-                  }`}
-                />
-                {(isOpen || isHamburgerOpen) && <span className="menu-text">Reports</span>}
-              </Link>
-            </li>
-            <li
-              className={`menu-item ${isOpen ? "expanded" : ""} ${
-                isSelected("/calendar") ? "selected" : ""
-              }`}
-            >
-              <Link to="/calendar" className="menu-link">
-                <img
-                  src={Calendar}
-                  alt="CalendarIcon"
-                  className={`menu-icon ${
-                    isSelected("/calendar") ? "icon-selected" : ""
-                  }`}
-                />
-                {(isOpen || isHamburgerOpen) && <span className="menu-text">Calendar</span>}
-              </Link>
-            </li>
-          </ul>
-        </div>
-
-</div>
-      {/* collapse menu div */}
-     {isTabletView &&   <div
-          className={`back-button-section ${
-            isOpen ? "section-expanded" : "section-collapsed"
-          }`}
-        >
-          <button
-            className="back-button"
-            onClick={toggleSidebar} // Collapse the menu
+          <div
+            className={`menu-section ${
+              isOpen ? "section-expanded" : "section-collapsed"
+            }`}
           >
-            <div className="flex items-center">
-              <img src={arrow} alt="arrow" className={"arrow-style"} />
-              {(isOpen || isHamburgerOpen) && <span className="collapse-text">Collapse Menu</span>}
-            </div>
-          </button>
-        </div>}
+            <text className="menu-title">DASHBOARD</text>
+            <ul className={`${isOpen ? "menu-ul" : ""}`}>
+              <li
+                className={`menu-item ${isOpen ? "expanded" : ""} ${
+                  isSelected("/") ? "selected" : ""
+                }`} /* Apply selected styles */
+              >
+                <Link to="/" className="menu-link">
+                  <img
+                    src={HomeIcon}
+                    alt="HomeIcon"
+                    className={`menu-icon ${
+                      isSelected("/") ? "icon-selected" : ""
+                    }`}
+                  />
+                  {isOpen && <span className="menu-text">Home</span>}
+                </Link>
+              </li>
+            </ul>
+          </div>
 
+          {/* People Section */}
+          <div
+            className={`menu-section ${
+              isOpen ? "section-expanded" : "section-collapsed"
+            }`}
+          >
+            <text className="menu-title">PEOPLE</text>
+            <ul className={`${isOpen ? "menu-ul" : ""}`}>
+              <li
+                className={`menu-item ${isOpen ? "expanded" : ""} ${
+                  isSelected("/user") ? "selected" : ""
+                }`}
+              >
+                <Link to="/user" className="menu-link">
+                  <img
+                    src={User}
+                    alt="UserIcon"
+                    className={`menu-icon ${
+                      isSelected("/user") ? "icon-selected" : ""
+                    }`}
+                  />
+                  {isOpen && <span className="menu-text">User</span>}
+                </Link>
+              </li>
+              <li
+                className={`menu-item ${isOpen ? "expanded" : ""} ${
+                  isSelected("/teams") ? "selected" : ""
+                }`}
+              >
+                <Link to="/teams" className="menu-link">
+                  <img
+                    src={Teams}
+                    alt="TeamsIcon"
+                    className={`menu-icon ${
+                      isSelected("/teams") ? "icon-selected" : ""
+                    }`}
+                  />
+                  {isOpen && <span className="menu-text">Teams</span>}
+                </Link>
+              </li>
+            </ul>
+          </div>
+          {/* Recruitment Section */}
+          <div
+            className={`menu-section ${
+              isOpen ? "section-expanded" : "section-collapsed"
+            }`}
+          >
+            <text className="menu-title">RECRUITMENT</text>
+            <ul className={`${isOpen ? "menu-ul" : ""}`}>
+              <li
+                className={`menu-item ${isOpen ? "expanded" : ""} ${
+                  isSelected("/client") ? "selected" : ""
+                }`}
+              >
+                <Link to="/client" className="menu-link">
+                  <img
+                    src={ClientIcon}
+                    alt="UserIcon"
+                    className={`menu-icon ${
+                      isSelected("/client") ? "icon-selected" : ""
+                    }`}
+                  />
+                  {isOpen && <span className="menu-text">Client</span>}
+                </Link>
+              </li>
+              <li
+                className={`menu-item ${isOpen ? "expanded" : ""} ${
+                  isSelected("/jobs") ? "selected" : ""
+                }`}
+              >
+                <Link to="/jobs" className="menu-link">
+                  <img
+                    src={Jobs}
+                    alt="TeamsIcon"
+                    className={`menu-icon ${
+                      isSelected("/jobs") ? "icon-selected" : ""
+                    }`}
+                  />
+                  {isOpen && <span className="menu-text">Jobs</span>}
+                </Link>
+              </li>
+              <li
+                className={`menu-item ${isOpen ? "expanded" : ""} ${
+                  isSelected("/candidates") ? "selected" : ""
+                }`}
+              >
+                <Link to="/candidates" className="menu-link">
+                  <img
+                    src={Candidates}
+                    alt="TeamsIcon"
+                    className={`menu-icon ${
+                      isSelected("/candidates") ? "icon-selected" : ""
+                    }`}
+                  />
+                  {isOpen && <span className="menu-text">Candidates</span>}
+                </Link>
+              </li>
+              <li
+                className={`menu-item ${isOpen ? "expanded" : ""} ${
+                  isSelected("/placements") ? "selected" : ""
+                }`}
+              >
+                <Link to="/placements" className="menu-link">
+                  <img
+                    src={Placements}
+                    alt="TeamsIcon"
+                    className={`menu-icon ${
+                      isSelected("/placements") ? "icon-selected" : ""
+                    }`}
+                  />
+                  {isOpen && <span className="menu-text">Placements</span>}
+                </Link>
+              </li>
+            </ul>
+          </div>
+          {/* Tools Section */}
+          <div
+            className={`menu-section ${
+              isOpen ? "section-expanded" : "section-collapsed"
+            }`}
+          >
+            <text className="menu-title">TOOLS</text>
+            <ul className={`${isOpen ? "menu-ul" : ""}`}>
+              <li
+                className={`menu-item ${isOpen ? "expanded" : ""} ${
+                  isSelected("/sourcing") ? "selected" : ""
+                }`}
+              >
+                <Link to="/sourcing" className="menu-link">
+                  <img
+                    src={SourcingIcon}
+                    alt="SourcingIcon"
+                    className={`menu-icon ${
+                      isSelected("/sourcing") ? "icon-selected" : ""
+                    }`}
+                  />
+                  {isOpen && <span className="menu-text">Sourcing</span>}
+                </Link>
+              </li>
+              <li
+                className={`menu-item ${isOpen ? "expanded" : ""} ${
+                  isSelected("/reports") ? "selected" : ""
+                }`}
+              >
+                <Link to="/reports" className="menu-link">
+                  <img
+                    src={Reports}
+                    alt="ReportsIcon"
+                    className={`menu-icon ${
+                      isSelected("/reports") ? "icon-selected" : ""
+                    }`}
+                  />
+                  {isOpen && <span className="menu-text">Reports</span>}
+                </Link>
+              </li>
+              <li
+                className={`menu-item ${isOpen ? "expanded" : ""} ${
+                  isSelected("/calendar") ? "selected" : ""
+                }`}
+              >
+                <Link to="/calendar" className="menu-link">
+                  <img
+                    src={Calendar}
+                    alt="CalendarIcon"
+                    className={`menu-icon ${
+                      isSelected("/calendar") ? "icon-selected" : ""
+                    }`}
+                  />
+                  {isOpen && <span className="menu-text">Calendar</span>}
+                </Link>
+              </li>
+            </ul>
+          </div>
+        </div>
+        {/* collapse menu div */}
+        {!isTabletView && (
+          <div
+            className={`back-button-section ${
+              isOpen ? "section-expanded" : "section-collapsed"
+            }`}
+          >
+            <button
+              className="back-button"
+              onClick={toggleSidebar} // Collapse the menu
+            >
+              <div className="flex items-center">
+                <img src={arrow} alt="arrow" className={"arrow-style"} />
+                {isOpen && <span className="collapse-text">Collapse Menu</span>}
+              </div>
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Main Content */}
-      <div className="main-content flex-1 bg-gray-100 overflow-auto">
-
+      <div
+        className={`main-content flex-1 ${
+        isTabletView && isOpen ? "blurred" : ""
+        }`}
+      >
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/sourcing" element={<Sourcing />} />

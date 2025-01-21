@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 .scroll-width-none {
     /* Hide scrollbar for all browsers */
     scrollbar-width: none; /* Firefox */
@@ -9,17 +13,31 @@
 }
 /* Sidebar */
 .sidebar {
-    @apply bg-customBlue text-white flex flex-col transition-all duration-500 ease-in-out; /* Smooth transition */
-}
+    @apply bg-customBlue text-white flex flex-col transition-all duration-300 ease-in-out fixed h-full hidden md:flex;
+  }
 
 .sidebar.expanded {
     @apply w-64 px-4; /* Tailwind's w-64 and px-4 */
 }
 
 .sidebar.collapsed {
-    @apply w-24 px-4; /* Smaller width and padding for collapse */
+    @apply w-24 transition-all duration-300 ease-in-out;
 }
 
+.sidebar.expanded {
+    @apply w-64 transition-all duration-300 ease-in-out;
+}
+/* Absolute sidebar for mobile & tablet views */
+.sidebar.absolute {
+    @apply block md:hidden bg-customBlue w-64 h-full;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  }
+  /* Adjust height & width for small screens */
+.sidebar.absolute {
+   
+   @apply bg-customBlue px-4
+  }
+  
 /* Logo and Title */
 .logo-container {
     @apply flex items-center pb-[20px] pt-[26px] w-64; /* Tailwind's flex, items-center, and p-4 */
@@ -36,11 +54,29 @@
 .logo-expanded {
    
 }
+/* Hamburger button */
+.hamburger-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    z-index: 100;
+  }
+  
+  /* Blurred effect when sidebar is open */
+  .blurred {
+    filter: blur(4px);
+   pointer-events: none;
+   @apply bg-opacity-10
+  }
 
 .title {
     @apply text-l font-medium  px-2 font-poppins; /* Tailwind's text-lg and font-bold */
 }
-
+/* Hamburger button styles */
+.hamburger {
+    @apply flex items-center justify-center text-xl fixed top-4 left-4 z-50;
+    transition: transform 0.2s ease-in-out;
+  }
 /* Menu Sections */
 .menu-section {
     @apply flex flex-col w-full mt-[20px]; /* Tailwind's flex and flex-col */
@@ -67,7 +103,8 @@
     @apply w-full
 }
 .menu-item {
-    @apply px-3 py-[11px] w-full flex items-center transition-all duration-500 ease-in-out; /* Smooth transition for menu item */
+    transition: all 0.2s ease-in-out;
+    @apply px-3 py-[11px] w-full flex items-center ; /* Smooth transition for menu item */
 }
 .menu-item:hover {
     @apply rounded-[8px] w-full
@@ -123,24 +160,6 @@
     @apply ml-2 text-white text-sm font-ubuntu font-normal; /* Add spacing and smaller font */
   }
   /* Responsive Sidebar */
-.sidebar {
-    @apply bg-customBlue text-white flex flex-col transition-all duration-300 ease-in-out;
-    @apply fixed h-full hidden md:flex; /* Hide sidebar on smaller screens, visible on md+ */
-}
-
-.sidebar.expanded {
-    @apply w-64 px-4; /* Tailwind's w-64 and px-4 */
-}
-
-.sidebar.collapsed {
-    @apply w-24 px-4; /* Smaller width for collapsed state */
-}
-
-/* Show sidebar on small screens when the hamburger is active */
-.sidebar.absolute {
-    @apply block md:hidden bg-customBlue w-64 h-full; /* Tailwind's w-64 */
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Add shadow for a floating effect */
-}
 
 /* Hamburger Button */
 .hamburger {
@@ -153,9 +172,10 @@
 }
 
 /* Hide Hamburger on Medium+ Screens */
-@media (min-width: 840px) {
+@media (min-width: 1024px) {
     .hamburger {
-        @apply hidden;
+        display: none;
+
     }
 }
 
@@ -176,3 +196,35 @@
 .sidebar.absolute ~ .main-content {
     @apply ml-0; /* No margin adjustment when sidebar is absolute */
 }
+/* Logo */
+.logo-container {
+    display: flex;
+    align-items: center;
+    justify-content: start;
+  }
+
+  /* Mobile and Tablet View */
+@media (max-width: 1024px) {
+    .sidebar {
+      @apply hidden; /* Tailwind's hidden utility */
+    }
+  
+    .sidebar.mobile-expanded {
+      @apply fixed top-0 left-0 px-4 h-screen bg-customBlue z-50 block;
+    }
+  
+    .hamburger-button {
+      @apply block; /* Show menu icon on smaller screens */
+    }
+  }
+  
+  /* Desktop View */
+  @media (min-width: 1025px) {
+    .sidebar {
+      @apply bg-customBlue text-white flex flex-col fixed h-full w-64 transition-all duration-300 ease-in-out;
+    }
+  
+    .hamburger-button {
+      @apply hidden; /* Hide menu icon on larger screens */
+    }
+  }
