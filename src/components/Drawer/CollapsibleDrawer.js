@@ -82,7 +82,7 @@ const CollapsibleDrawer = () => {
       {/* Hamburger Menu for Smaller Screens */}
       {!isHamburgerOpen && (
         <button
-          className="hamburger bg-customBlue text-white p-2 rounded-md md:hidden fixed top-4 left-4 z-50"
+          className="hamburger bg-white text-white p-2 rounded-md md:hidden fixed top-4 left-4 z-50"
           onClick={toggleHamburger}
         >
           ☰ {/* Hamburger icon */}

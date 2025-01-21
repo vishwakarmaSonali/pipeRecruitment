@@ -30,7 +30,7 @@
 }
 
 .logo {
-    @apply h-8 w-8; /* Tailwind's h-8 and w-8 */
+    @apply h-[24px] w-[24px]; /* Tailwind's h-8 and w-8 */
 }
 
 .logo-expanded {
@@ -38,7 +38,7 @@
 }
 
 .title {
-    @apply text-l font-medium px-2; /* Tailwind's text-lg and font-bold */
+    @apply text-l font-medium  px-2 font-poppins; /* Tailwind's text-lg and font-bold */
 }
 
 /* Menu Sections */
@@ -55,7 +55,7 @@
 }
 
 .menu-title {
-    @apply text-xs text-gray-400 px-1 pb-[6px]; /* Tailwind's text-sm, text-gray-400, and px-2 */
+    @apply text-xs text-customGray px-1 pb-[6px] font-ubuntu font-normal; /* Tailwind's text-sm, text-gray-400, and px-2 */
 }
 
 .menu-list {
@@ -92,7 +92,7 @@
 }
 
 .menu-text {
-    @apply ml-2 text-m transition-colors duration-300 ease-linear; /* Tailwind's text-base and ml-4 */
+    @apply ml-2 text-m transition-colors duration-300 ease-linear font-ubuntu font-normal; /* Tailwind's text-base and ml-4 */
 }
 .menu-item.selected .menu-text {
     color: #ffffff; /* Ensure text color contrasts with the gradient */
@@ -120,7 +120,7 @@
    @apply bg-customGrad2 p-2 rounded-[8px]
   }
   .collapse-text {
-    @apply ml-2 text-white text-sm; /* Add spacing and smaller font */
+    @apply ml-2 text-white text-sm font-ubuntu font-normal; /* Add spacing and smaller font */
   }
   /* Responsive Sidebar */
 .sidebar {

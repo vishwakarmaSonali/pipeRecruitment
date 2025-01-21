@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 .scroll-width-none {
     /* Hide scrollbar for all browsers */
     scrollbar-width: none; /* Firefox */
@@ -8,29 +12,73 @@
     display: none; /* Chrome, Safari, Edge */
 }
 .header-title{
-    @apply text-custom-large font-custom-bold ml-[16px]
+    @apply text-custom-large ml-[8px] font-ubuntu font-medium
 }
 .search-icon {
     @apply absolute left-2 top-2 w-5 h-5 text-gray-500
 }
 .search-input{
-   @apply w-[400px]  px-10 h-[40px] text-sm text-gray-700 bg-gray-100 rounded-[8px] focus:outline-none focus:ring-1
+   @apply w-[400px] font-ubuntu font-normal  px-10 h-[40px] text-sm text-gray-700 bg-gray-100 rounded-[8px] focus:outline-none focus:ring-1
 }
 .header-icons{
     @apply p-[10px] bg-customGrey1 rounded-[8px] mx-1
 }
 .profile-div{
-    @apply items-center justify-center flex bg-customGrey1 w-[48px] h-[48px] rounded-[50px] mx-1
+    @apply items-center justify-center  w-[46px] h-[46px] rounded-[100px] mx-1 overflow-hidden
 }
 .candidate-profile-div{
-    @apply flex-col items-center justify-center flex bg-customGrey1 w-[46px] h-[46px] rounded-full mx-1
+    @apply flex-col items-center justify-center w-[46px] h-[46px] rounded-[100px] overflow-hidden space-x-4
 }
 .candidate-name {
-    @apply text-xl font-extrabold text-customBlue
+    @apply text-xl text-customBlue font-ubuntu font-bold
 }
 .candidate-designation{
-    @apply text-m font-custom-regular text-customBlue
+    @apply text-m text-customBlue font-ubuntu font-normal
 }
 .candidate-scroll{
-  @apply w-[40%] h-full overflow-auto bg-customGrey1 p-4 scroll-width-none
+  @apply w-[40%] h-full overflow-auto bg-customGrey1 px-4 scroll-width-none 
 }
+.candidate-location-designation-text {
+    @apply font-ubuntu font-normal text-l text-customBlue
+}
+.candidate-skill {
+    @apply bg-blueBg text-gray-800 px-3 py-2 rounded-md text-m font-normal font-ubuntu shadow-sm cursor-pointer
+}
+.detail-profile-name{
+    @apply text-customBlue font-ubuntu font-medium text-xxl
+}
+.proifle-action-icon{
+    @apply h-[20px] w-[20px]
+}
+.details-title{
+    @apply font-ubuntu font-medium text-l text-customBlue
+}
+.details-specific-div{
+    @apply border border-solid border-borderGrey p-[12px] my-[12px] rounded-[12px] 
+}
+.language {
+    @apply bg-blueBg text-gray-800 px-[3px] py-[2px] rounded-md text-m font-normal font-ubuntu shadow-sm cursor-pointer leading-5
+}
+.divider-border{
+    @apply border-b border-solid border-borderGrey my-[12px]
+}
+.details-griddiv{
+   @apply border border-solid border-borderGrey p-[12px]  rounded-[12px] 
+}
+.main-title{
+    @apply font-ubuntu font-medium text-m text-customBlue
+}
+.location-university-text-weight{
+    @apply font-normal
+}
+.location-university-text-color{
+    @apply text-customGray font-normal
+}
+
+
+  @media (max-width: 1024px) {
+    .candidate-scroll {
+      width: 100% !important;
+    }
+  }
+  
