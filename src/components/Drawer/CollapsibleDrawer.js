@@ -23,7 +23,6 @@ const CollapsibleDrawer = () => {
   const [selectedItem, setSelectedItem] = useState("/"); // Track selected menu item
   const location = useLocation();
   const [manualOverride, setManualOverride] = useState(false); // Disable/Enable hover functionality
-  const [isHamburgerOpen, setIsHamburgerOpen] = useState(false); // Hamburger menu toggle\
   const [isMobileView, setIsMobileView] = useState(window.innerWidth < 768);
   const [isTabletView, setIsTabletView] = useState(window.innerWidth >= 768 && window.innerWidth <= 1024);
   const sidebarRef = useRef(null);
@@ -116,11 +115,10 @@ const CollapsibleDrawer = () => {
           })}
       >
         {/* Logo and Dashboard Title */}
-        <div className="logo-container p-4 flex items-center">
-          <img
+        <div className={`logo-container ${!isOpen  ? "logo-container-expanded" : ""}`}>          <img
             src={Logo}
             alt="Logo"
-            className={`logo`} // Show logo when hamburger is open
+            className={`logo ${isOpen ?"visible" : "hidden md:block"}`} // Show logo when hamburger is open
           />
           {isOpen && <text className="title">Pipe Recruiter</text>}
         </div>

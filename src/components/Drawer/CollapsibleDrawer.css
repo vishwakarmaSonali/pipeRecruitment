@@ -52,7 +52,7 @@
 }
 
 .logo-expanded {
-   
+  @apply flex items-center
 }
 /* Hamburger button */
 .hamburger-button {
