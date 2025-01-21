@@ -40,20 +40,19 @@
   
 /* Logo and Title */
 .logo-container {
-    @apply flex items-center pb-[20px] pt-[26px] w-64; /* Tailwind's flex, items-center, and p-4 */
+    @apply flex items-center justify-center pb-[20px] pt-[26px] w-64; /* Tailwind's flex, items-center, and p-4 */
 }
+
 
 .logo-container-expanded {
     @apply justify-center w-14; /* Center alignment */
 }
 
 .logo {
-    @apply h-[24px] w-[24px]; /* Tailwind's h-8 and w-8 */
+    @apply h-[24px] w-[24px] justify-center items-center; /* Tailwind's h-8 and w-8 */
 }
 
-.logo-expanded {
-  @apply flex items-center
-}
+
 /* Hamburger button */
 .hamburger-button {
     background: none;

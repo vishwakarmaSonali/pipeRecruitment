@@ -115,11 +115,12 @@ const CollapsibleDrawer = () => {
           })}
       >
         {/* Logo and Dashboard Title */}
-        <div className={`logo-container ${!isOpen  ? "logo-container-expanded" : ""}`}>          <img
+        <div className={`logo-container ${!isOpen ? "justify-center" : "justify-start"} flex items-center`}>
+        <img
             src={Logo}
             alt="Logo"
-            className={`logo ${isOpen ?"visible" : "hidden md:block"}`} // Show logo when hamburger is open
-          />
+            className={`logo ${isOpen ? "visible" : "hidden md:block"}`}
+            />
           {isOpen && <text className="title">Pipe Recruiter</text>}
         </div>
 

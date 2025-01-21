@@ -195,7 +195,7 @@ const CandidateList = ({
   onCandidateSelect,
   selectedCandidates,
 }) => {
-  const [isChecked, setIsChecked] = useState(false);
+  // const [isChecked, setIsChecked] = useState(false);
 
   return (
     <div className="candidate-scroll">
@@ -504,7 +504,6 @@ const PaginationFooter = () => {
 const Sourcing = () => {
   const [selectedCandidate, setSelectedCandidate] = useState(null);
   const [selectedCandidates, setSelectedCandidates] = useState([]); // Store selected candidates
-  const [isCountHeaderSelected, setIsCountHeaderSelected] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false); // Manage filter modal state
 
   // Function to toggle modal visibility
