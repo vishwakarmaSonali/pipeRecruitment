@@ -160,7 +160,7 @@ const BulkActionView = ({ toggleModal, isBulkAction }) => {
       <div className="flex items-center space-x-2">
         {/* Custom Checkbox */}
         <div
-          className={`w-[22px] h-[22px] border border-customBlue rounded-md flex items-center justify-center cursor-pointer`}
+          className={`w-[20px] h-[20px] border border-customBlue rounded-[6px] flex items-center justify-center cursor-pointer`}
           onClick={() => setIsChecked(!isChecked)}
         >
           {isChecked && (
@@ -172,8 +172,8 @@ const BulkActionView = ({ toggleModal, isBulkAction }) => {
           )}
         </div>
 
-        <p className="text-gray-700 text-m">
-          <span className="cursor-pointer">1-100</span> of 23162
+        <p className="text-gray-700 text-sm font-ubuntu">
+          <span className="cursor-pointer text-sm font-ubuntu">1-100</span> of 23162
         </p>
       </div>
 
@@ -182,7 +182,7 @@ const BulkActionView = ({ toggleModal, isBulkAction }) => {
         className={` text-white bg-buttonBLue px-[14px] py-[10px] rounded-[8px] flex items-center space-x-1 shadow-md hover:bg-opacity-80`}
         onClick={toggleModal}
       >
-        <span>{isBulkAction ? "Bulk Action" : "Filter"}</span>
+        <span className="font-ubuntu text-m">{isBulkAction ? "Bulk Action" : "Filter"}</span>
         <img src={FilterIcon} alt="filter" />
       </button>
     </div>
@@ -213,14 +213,14 @@ const CandidateList = ({
               <div className="flex items-center space-x-2">
                 {/* Checkbox */}
                 <div
-                  className={`w-[22px] h-[22px] border  border-customBlue bg-white  rounded-md flex items-center justify-center cursor-pointer`}
+                  className={`w-[20px] h-[20px] border  border-customBlue bg-white  rounded-[6px]  flex items-center justify-center cursor-pointer`}
                   onClick={(e) => {
                     e.stopPropagation(); // Prevent candidate card click event
                     onCandidateSelect(candidate.id);
                   }}
                 >
                   {selectedCandidates.includes(candidate.id) && (
-                    <img src={Tick} alt="Selected" className="w-4 h-4" />
+                    <img src={Tick} alt="Selected" />
                   )}
                 </div>
 
@@ -260,7 +260,7 @@ const CandidateList = ({
                   alt="University Icon"
                   className="w-5 h-5"
                 />
-                <p className="candidate-location-designation-text">
+                <p className="candidate-location-designation-text font-ubuntu">
                   Rhode Island School of Design
                 </p>
               </div>
@@ -403,18 +403,18 @@ const CandidateDetails = ({ selectedCandidate }) => {
         {/* personal details grid */}
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-[8px]">
-            <p className="font-semibold text-gray-700">Location:</p>
-            <p className="font-semibold text-gray-700">Email:</p>
-            <p className="font-semibold text-gray-700">Phone Number:</p>
-            <p className="font-semibold text-gray-700">Linked In:</p>
-            <p className="font-semibold text-gray-700">Languages:</p>
+            <p className="grid-title">Location:</p>
+            <p className="grid-title">Email:</p>
+            <p className="grid-title">Phone Number:</p>
+            <p className="grid-title">Linked In:</p>
+            <p className="grid-title">Languages:</p>
           </div>
 
           <div className="space-y-2">
-            <p className="text-gray-800">San Francisco, CA</p>
-            <p className="text-gray-800">joanna.chou@example.com</p>
-            <p className="text-gray-800">+1-415-123-4567</p>
-            <p className="text-gray-800">linkedin.com/in/joannachou</p>
+            <p className="grid-desc">San Francisco, CA</p>
+            <p className="grid-desc">joanna.chou@example.com</p>
+            <p className="grid-desc">+1-415-123-4567</p>
+            <p className="grid-desc">linkedin.com/in/joannachou</p>
             <div className="flex space-x-2">
               <span className="language">English</span>
               <span className="language">Mandarin</span>
@@ -459,8 +459,8 @@ const PaginationFooter = () => {
               key={page}
               className={`px-3 py-1 rounded-md ${
                 currentPage === page
-                  ? "text-blue-600 font-bold"
-                  : "text-gray-700"
+                  ? "text-blue-600 font-ubuntu font-medium text-sm"
+                  : "text-gray-700 font-ubuntu font-medium text-sm"
               }`}
               onClick={() => handlePageClick(page)}
             >
@@ -475,8 +475,8 @@ const PaginationFooter = () => {
           <button
             className={`px-3 py-1 rounded-md ${
               currentPage === totalPages
-                ? "text-blue-600 font-bold"
-                : "text-gray-700"
+                ? "text-blue-600 font-ubuntu font-medium text-sm"
+                : "text-gray-700 font-ubuntu font-medium text-sm"
             }`}
             onClick={() => handlePageClick(totalPages)}
           >

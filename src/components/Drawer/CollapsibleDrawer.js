@@ -16,6 +16,7 @@ import Reports from "../../assets/icons/reports.svg";
 import Calendar from "../../assets/icons/calendar.svg";
 import arrow from "../../assets/icons/expandablearrow.svg";
 import MenuIcon from "../../assets/icons/hamburgerIcon.svg";
+// import {ReactComponent as UserIcon} from "./../assets/icons/user.svg"
 import "./CollapsibleDrawer.css"; // Import the CSS file
 
 const CollapsibleDrawer = () => {
@@ -79,7 +80,7 @@ const CollapsibleDrawer = () => {
   };
 
   const handleMouseEnter = () => {
-    if (!manualOverride) setIsOpen(!isOpen);
+    if (!manualOverride) setIsOpen(true);
   };
 
   const handleMouseLeave = () => {
@@ -115,7 +116,7 @@ const CollapsibleDrawer = () => {
           })}
       >
         {/* Logo and Dashboard Title */}
-        <div className={`logo-container ${!isOpen ? "justify-center" : "justify-start"} flex items-center`}>
+        <div className={`logo-container ${!isOpen ? "justify-center" : ""} items-center`}>
         <img
             src={Logo}
             alt="Logo"
@@ -166,13 +167,13 @@ const CollapsibleDrawer = () => {
                 }`}
               >
                 <Link to="/user" className="menu-link">
-                  <img
+              <img
                     src={User}
                     alt="UserIcon"
                     className={`menu-icon ${
                       isSelected("/user") ? "icon-selected" : ""
                     }`}
-                  />
+/>
                   {isOpen && <span className="menu-text">User</span>}
                 </Link>
               </li>
@@ -328,7 +329,7 @@ const CollapsibleDrawer = () => {
           </div>
         </div>
         {/* collapse menu div */}
-        {!isTabletView && (
+        {!isTabletView  && (
           <div
             className={`back-button-section ${
               isOpen ? "section-expanded" : "section-collapsed"

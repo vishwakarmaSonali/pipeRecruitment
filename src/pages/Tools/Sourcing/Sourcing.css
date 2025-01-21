@@ -134,7 +134,7 @@
     @apply border border-solid border-borderGrey p-[12px] my-[12px] rounded-[12px] 
 }
 .language {
-    @apply bg-blueBg text-gray-800 px-[3px] py-[2px] rounded-md text-m font-normal font-ubuntu shadow-sm cursor-pointer leading-5
+    @apply bg-blueBg text-gray-800 px-[6px] py-[4px] rounded-md text-m font-normal font-ubuntu shadow-sm cursor-pointer leading-5
 }
 .divider-border{
     @apply border-b border-solid border-borderGrey my-[12px]
@@ -151,4 +151,9 @@
 .location-university-text-color{
     @apply text-customGray font-normal
 }
-
+.grid-title{
+    @apply font-ubuntu  font-medium text-m text-gray-700
+}
+.grid-desc{
+    @apply  text-gray-800 font-normal text-m font-ubuntu
+}
