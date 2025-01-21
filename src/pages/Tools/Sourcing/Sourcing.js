@@ -127,7 +127,7 @@ const SkillsList = ({ isExpanded }) => {
     calculateSkills();
     window.addEventListener("resize", calculateSkills);
     return () => window.removeEventListener("resize", calculateSkills);
-  }, []);
+  }, [isExpanded]);
 
   return (
     <div ref={containerRef} className="py-[12px] bg-white">
