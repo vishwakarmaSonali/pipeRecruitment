@@ -12,6 +12,9 @@ import FolderAdd from "../../../assets/icons/sourcingIcons/folder-add.svg";
 import Download from "../../../assets/icons/sourcingIcons/download.svg";
 import Tick from "../../../assets/icons/sourcingIcons/tick.svg";
 import FilterIcon from "../../../assets/icons/filter.svg";
+import DropArrow from "../../../assets/icons/droparrow.svg";
+import LeftArrow from "../../../assets/icons/leftArrow.svg"
+import RightArrow from "../../../assets/icons/rightArrow.svg"
 const skills = [
   "UI Design",
   "Wireframing",
@@ -151,43 +154,39 @@ const SkillsList = ({ isExpanded }) => {
     </div>
   );
 };
-const BulkActionView = ({ toggleModal, isBulkAction }) => {
-  const [isChecked, setIsChecked] = useState(false);
-
+const BulkActionView = ({ toggleModal, isBulkAction, onSelectAll, isAllSelected }) => {
   return (
     <div className="w-full bg-gray-100 p-4 flex items-center justify-between">
-      {/* Left Section: Checkbox and Text */}
       <div className="flex items-center space-x-2">
-        {/* Custom Checkbox */}
         <div
           className={`w-[20px] h-[20px] border border-customBlue rounded-[6px] flex items-center justify-center cursor-pointer`}
-          onClick={() => setIsChecked(!isChecked)}
+          onClick={onSelectAll}
         >
-          {isChecked && (
+          {isAllSelected && (
             <img
               src={Tick}
               alt="Selected"
-              className="items-center justify-center"
+             
             />
           )}
         </div>
 
         <p className="text-gray-700 text-sm font-ubuntu">
-          <span className="cursor-pointer text-sm font-ubuntu">1-100</span> of 23162
+          <span className="cursor-pointer text-sm font-ubuntu">1-100</span> of {candidates.length}
         </p>
       </div>
 
-      {/* Dynamic Button - Changes from "Filter" to "Bulk Action" */}
       <button
-        className={` text-white bg-buttonBLue px-[14px] py-[10px] rounded-[8px] flex items-center space-x-1 shadow-md hover:bg-opacity-80`}
+        className="text-white bg-buttonBLue px-[14px] py-[10px] rounded-[8px] flex items-center space-x-1 shadow-md hover:bg-opacity-80"
         onClick={toggleModal}
       >
         <span className="font-ubuntu text-m">{isBulkAction ? "Bulk Action" : "Filter"}</span>
-        <img src={FilterIcon} alt="filter" />
+        <img src={isBulkAction?DropArrow:FilterIcon} alt="filter" />
       </button>
     </div>
   );
 };
+
 
 const CandidateList = ({
   onSelect,
@@ -199,15 +198,17 @@ const CandidateList = ({
 
   return (
     <div className="candidate-scroll">
-      <div className="space-y-4 mb-[170px]">
+      <div className="space-y-4 mb-[190px]">
         {/* Candidate Cards */}
         {candidates.map((candidate) => {
-          console.log("cadidate selectssss", candidate);
+          console.log("cadidate selectssss", selectedCandidateId ,candidate.id);
           return (
             <div
               key={candidate.id}
-              className={`p-4 rounded-[14px] shadow-md bg-white hover:shadow-lg flex flex-col  cursor-pointer `}
-              onClick={() => onSelect(candidate)}
+              className={`p-4 rounded-[14px]  bg-white flex flex-col cursor-pointer ${
+                selectedCandidateId === candidate.id ? "border-2 border-blue-500" : ""
+              }`}            
+              onClick={() => {onSelect(candidate) }}
             >
               {/* Candidate Details */}
               <div className="flex items-center space-x-2">
@@ -215,13 +216,14 @@ const CandidateList = ({
                 <div
                   className={`w-[20px] h-[20px] border  border-customBlue bg-white  rounded-[6px]  flex items-center justify-center cursor-pointer`}
                   onClick={(e) => {
+                    
                     e.stopPropagation(); // Prevent candidate card click event
                     onCandidateSelect(candidate.id);
                   }}
                 >
                   {selectedCandidates.includes(candidate.id) && (
-                    <img src={Tick} alt="Selected" />
-                  )}
+                  <img src={Tick} alt="Selected" />
+                )}
                 </div>
 
                 {/* Profile Image */}
@@ -276,17 +278,17 @@ const CandidateList = ({
 
 const ExperienceEducation = () => {
   return (
-    <div className="grid md:grid-cols-2 gap-3 bg-white">
+    <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2 gap-3 bg-white items-start">
       {/* Experience Section */}
       <div className="details-griddiv">
-        <text className="details-title">EXPERIENCE</text>
+        <p className="details-title">EXPERIENCE</p>
         <div className="divider-border"></div>
         <div className="space-y-4">
           <div>
             <p className="main-title">
               Senior UI/UX Designer at TechNova Solutions
             </p>
-            <p className=" main-title location-university-text-weight">
+            <p className="main-title location-university-text-weight">
               San Francisco, CA
             </p>
             <p className="main-title location-university-text-color">
@@ -296,7 +298,7 @@ const ExperienceEducation = () => {
 
           <div>
             <p className="main-title">UI/UX Designer at PixelBright Studios</p>
-            <p className=" main-title location-university-text-weight">
+            <p className="main-title location-university-text-weight">
               Los Angeles, CA
             </p>
             <p className="main-title location-university-text-color">
@@ -320,7 +322,7 @@ const ExperienceEducation = () => {
 
       {/* Education Section */}
       <div className="details-griddiv">
-        <text className="details-title">EDUCATION</text>
+        <p className="details-title">EDUCATION</p>
         <div className="divider-border"></div>
         <div className="space-y-4">
           <div>
@@ -349,6 +351,7 @@ const ExperienceEducation = () => {
     </div>
   );
 };
+
 
 const CandidateDetails = ({ selectedCandidate }) => {
   if (!selectedCandidate) {
@@ -449,7 +452,7 @@ const PaginationFooter = () => {
           onClick={() => handlePageClick(currentPage - 1)}
           disabled={currentPage === 1}
         >
-          ◄
+          <img src={LeftArrow} alt="leftArrow" />
         </button>
 
         {/* Page Numbers */}
@@ -494,7 +497,7 @@ const PaginationFooter = () => {
           onClick={() => handlePageClick(currentPage + 1)}
           disabled={currentPage === totalPages}
         >
-          ►
+           <img src={RightArrow} alt="leftArrow" />
         </button>
       </div>
     </div>
@@ -502,23 +505,46 @@ const PaginationFooter = () => {
 };
 
 const Sourcing = () => {
-  const [selectedCandidate, setSelectedCandidate] = useState(null);
+  const [selectedCandidate, setSelectedCandidate] = useState(candidates[0]);
+
   const [selectedCandidates, setSelectedCandidates] = useState([]); // Store selected candidates
   const [isModalOpen, setIsModalOpen] = useState(false); // Manage filter modal state
-
+  const [isCandidateModalVisible,setIsCandidateModalVisible] = useState(false)
   // Function to toggle modal visibility
   const toggleModal = () => {
     setIsModalOpen(!isModalOpen);
   };
-  // Handle candidate selection
-  const handleCandidateSelect = (candidateId) => {
-    setSelectedCandidates(
-      (prevSelected) =>
-        prevSelected.includes(candidateId)
-          ? prevSelected.filter((id) => id !== candidateId) // Remove if already selected
-          : [...prevSelected, candidateId] // Add if not selected
-    );
+  const toggleCandidateModal = () => {
+    setIsCandidateModalVisible(!isCandidateModalVisible);
   };
+
+    // Function to select/deselect all candidates
+    const handleSelectAll = () => {
+      if (selectedCandidates.length === candidates.length) {
+        setSelectedCandidates([]);  // Deselect all
+      } else {
+        setSelectedCandidates(candidates.map((candidate) => candidate.id));  // Select all
+      }
+    };
+      // Handle individual candidate selection
+  const handleCandidateSelect = (candidateId) => {
+    setSelectedCandidates((prevSelected) =>
+      prevSelected.includes(candidateId)
+        ? prevSelected.filter((id) => id !== candidateId)
+        : [...prevSelected, candidateId]
+    );
+    
+  };
+  const handleCandidateSelectContainer = (candidateId) => {
+    setSelectedCandidate(candidateId)
+    if (window.innerWidth >= 768 && window.innerWidth <= 1024) {
+      console.log("called");
+      
+      setIsCandidateModalVisible(true);
+    
+  };
+}
+
   return (
     <div className="w-full h-screen bg-gray-100 overflow-hidden">
       <div className="flex flex-col lg:flex-row items-center justify-between bg-white shadow-sm w-full h-auto lg:h-16  px-2 py-2 header-container">
@@ -554,6 +580,8 @@ const Sourcing = () => {
       <BulkActionView
         toggleModal={toggleModal}
         isBulkAction={selectedCandidates.length > 1}
+        onSelectAll={handleSelectAll}
+        isAllSelected={selectedCandidates.length === candidates.length}
       />
       {/* Add filters or actions here if needed */}
 
@@ -561,21 +589,49 @@ const Sourcing = () => {
       <div className="w-full h-screen overflow-hidden flex">
         {/* Candidate List Section */}
         <div className="candidate-list w-full lg:w-[40%] px-4">
-    <CandidateList
-      onSelect={setSelectedCandidate}
-      selectedCandidateId={selectedCandidate?.id}
-      onCandidateSelect={handleCandidateSelect}
-      selectedCandidates={selectedCandidates}
-    />
+        <CandidateList
+            onSelect={handleCandidateSelectContainer}
+            selectedCandidateId={selectedCandidate?.id}
+            onCandidateSelect={handleCandidateSelect}
+            selectedCandidates={selectedCandidates}
+          />
   </div>
 
   {/* Candidate Details Section */}
-  <div className="candidate-details hidden lg:block">
+  <div className="candidate-details hidden lg:block p-4 h-auto">
     <CandidateDetails selectedCandidate={selectedCandidate} />
   </div>
       </div>
       <PaginationFooter />
       {/* Filter Modal */}
+      {isCandidateModalVisible && (
+        <div>
+          <div
+            className="fixed top-0 right-0 h-full w-full bg-black bg-opacity-50 z-40"
+            onClick={toggleCandidateModal}
+          ></div>
+
+          <div
+            className="fixed top-0 right-0 h-full w-[80%] bg-white shadow-lg transform transition-transform duration-300 z-50"
+          >
+            <div className="p-6 flex flex-col h-full">
+              <div className="flex justify-between items-center border-b pb-4">
+                <h2 className="text-xl font-bold text-gray-800">Candidate Details</h2>
+                <button
+                  onClick={toggleCandidateModal}
+                  className="text-gray-600 hover:text-gray-900"
+                >
+                  ✕
+                </button>
+              </div>
+              <div className="flex-1 overflow-auto mt-4">
+                <CandidateDetails selectedCandidate={selectedCandidate} 
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
       {isModalOpen && (
         <div>
           {/* Modal Overlay */}

@@ -16,16 +16,18 @@ import Reports from "../../assets/icons/reports.svg";
 import Calendar from "../../assets/icons/calendar.svg";
 import arrow from "../../assets/icons/expandablearrow.svg";
 import MenuIcon from "../../assets/icons/hamburgerIcon.svg";
-// import {ReactComponent as UserIcon} from "./../assets/icons/user.svg"
+// import { ReactComponent as UserIcon } from "../../assets/icons/user.svg";
 import "./CollapsibleDrawer.css"; // Import the CSS file
 
 const CollapsibleDrawer = () => {
   const [isOpen, setIsOpen] = useState(true);
   const [selectedItem, setSelectedItem] = useState("/"); // Track selected menu item
   const location = useLocation();
-  const [manualOverride, setManualOverride] = useState(false); // Disable/Enable hover functionality
+  const [manualOverride, setManualOverride] = useState(true); // Disable/Enable hover functionality
   const [isMobileView, setIsMobileView] = useState(window.innerWidth < 768);
-  const [isTabletView, setIsTabletView] = useState(window.innerWidth >= 768 && window.innerWidth <= 1024);
+  const [isTabletView, setIsTabletView] = useState(
+    window.innerWidth >= 768 && window.innerWidth <= 1024
+  );
   const sidebarRef = useRef(null);
 
   // Handle screen resizing for responsiveness
@@ -46,12 +48,11 @@ const CollapsibleDrawer = () => {
         setIsOpen(true); // Sidebar should be open on desktops
       }
     };
-  
+
     window.addEventListener("resize", handleResize);
     handleResize();
     return () => window.removeEventListener("resize", handleResize);
   }, []);
-  
 
   // Close sidebar when clicking outside (for mobile & tablet views)
   useEffect(() => {
@@ -99,15 +100,26 @@ const CollapsibleDrawer = () => {
       {/* Hamburger menu for smaller screen  */}
       {/* Hamburger Menu for Smaller Screens */}
       {(isMobileView || isTabletView) && !isOpen && (
-  <button className="hamburger-button fixed top-4 left-4 z-50" onClick={toggleDrawer}>
-    <img src={MenuIcon} alt="Menu" className="w-8 h-8" />
-  </button>
-)}
+        <button
+          className="hamburger-button fixed top-4 left-4 z-50"
+          onClick={toggleDrawer}
+        >
+          <img src={MenuIcon} alt="Menu" className="w-8 h-8" />
+        </button>
+      )}
       {/* Sidebar */}
       <div
-       ref={sidebarRef}
-       className={`sidebar 
-        ${isMobileView || isTabletView ? (isOpen ? "mobile-expanded" : "hidden") :isOpen? "expanded":"collapsed"}
+        ref={sidebarRef}
+        className={`sidebar 
+        ${
+          isMobileView || isTabletView
+            ? isOpen
+              ? "mobile-expanded"
+              : "hidden"
+            : isOpen
+            ? "expanded"
+            : "collapsed"
+        }
       `}
         {...(!isMobileView &&
           !isTabletView && {
@@ -116,12 +128,16 @@ const CollapsibleDrawer = () => {
           })}
       >
         {/* Logo and Dashboard Title */}
-        <div className={`logo-container ${!isOpen ? "justify-center" : ""} items-center`}>
-        <img
+        <div
+          className={`logo-container ${
+            !isOpen ? "justify-center" : ""
+          } items-center`}
+        >
+          <img
             src={Logo}
             alt="Logo"
             className={`logo ${isOpen ? "visible" : "hidden md:block"}`}
-            />
+          />
           {isOpen && <text className="title">Pipe Recruiter</text>}
         </div>
 
@@ -139,7 +155,15 @@ const CollapsibleDrawer = () => {
                   isSelected("/") ? "selected" : ""
                 }`} /* Apply selected styles */
               >
-                <Link to="/" className="menu-link">
+                <Link
+                  to="/"
+                  className="menu-link"
+                  onClick={() => {
+                    if (isTabletView) {
+                      setIsOpen(false);
+                    }
+                  }}
+                >
                   <img
                     src={HomeIcon}
                     alt="HomeIcon"
@@ -166,14 +190,23 @@ const CollapsibleDrawer = () => {
                   isSelected("/user") ? "selected" : ""
                 }`}
               >
-                <Link to="/user" className="menu-link">
-              <img
+                <Link
+                  to="/user"
+                  className="menu-link"
+                  onClick={() => {
+                    if (isTabletView) {
+                      setIsOpen(false);
+                    }
+                  }}
+                >
+                  <img
                     src={User}
                     alt="UserIcon"
                     className={`menu-icon ${
                       isSelected("/user") ? "icon-selected" : ""
                     }`}
-/>
+                  />
+
                   {isOpen && <span className="menu-text">User</span>}
                 </Link>
               </li>
@@ -182,7 +215,15 @@ const CollapsibleDrawer = () => {
                   isSelected("/teams") ? "selected" : ""
                 }`}
               >
-                <Link to="/teams" className="menu-link">
+                <Link
+                  to="/teams"
+                  className="menu-link"
+                  onClick={() => {
+                    if (isTabletView) {
+                      setIsOpen(false);
+                    }
+                  }}
+                >
                   <img
                     src={Teams}
                     alt="TeamsIcon"
@@ -208,7 +249,15 @@ const CollapsibleDrawer = () => {
                   isSelected("/client") ? "selected" : ""
                 }`}
               >
-                <Link to="/client" className="menu-link">
+                <Link
+                  to="/client"
+                  className="menu-link"
+                  onClick={() => {
+                    if (isTabletView) {
+                      setIsOpen(false);
+                    }
+                  }}
+                >
                   <img
                     src={ClientIcon}
                     alt="UserIcon"
@@ -224,7 +273,15 @@ const CollapsibleDrawer = () => {
                   isSelected("/jobs") ? "selected" : ""
                 }`}
               >
-                <Link to="/jobs" className="menu-link">
+                <Link
+                  to="/jobs"
+                  className="menu-link"
+                  onClick={() => {
+                    if (isTabletView) {
+                      setIsOpen(false);
+                    }
+                  }}
+                >
                   <img
                     src={Jobs}
                     alt="TeamsIcon"
@@ -240,7 +297,15 @@ const CollapsibleDrawer = () => {
                   isSelected("/candidates") ? "selected" : ""
                 }`}
               >
-                <Link to="/candidates" className="menu-link">
+                <Link
+                  to="/candidates"
+                  className="menu-link"
+                  onClick={() => {
+                    if (isTabletView) {
+                      setIsOpen(false);
+                    }
+                  }}
+                >
                   <img
                     src={Candidates}
                     alt="TeamsIcon"
@@ -256,7 +321,15 @@ const CollapsibleDrawer = () => {
                   isSelected("/placements") ? "selected" : ""
                 }`}
               >
-                <Link to="/placements" className="menu-link">
+                <Link
+                  to="/placements"
+                  className="menu-link"
+                  onClick={() => {
+                    if (isTabletView) {
+                      setIsOpen(false);
+                    }
+                  }}
+                >
                   <img
                     src={Placements}
                     alt="TeamsIcon"
@@ -282,7 +355,15 @@ const CollapsibleDrawer = () => {
                   isSelected("/sourcing") ? "selected" : ""
                 }`}
               >
-                <Link to="/sourcing" className="menu-link">
+                <Link
+                  to="/sourcing"
+                  className="menu-link"
+                  onClick={() => {
+                    if (isTabletView) {
+                      setIsOpen(false);
+                    }
+                  }}
+                >
                   <img
                     src={SourcingIcon}
                     alt="SourcingIcon"
@@ -298,7 +379,15 @@ const CollapsibleDrawer = () => {
                   isSelected("/reports") ? "selected" : ""
                 }`}
               >
-                <Link to="/reports" className="menu-link">
+                <Link
+                  to="/reports"
+                  className="menu-link"
+                  onClick={() => {
+                    if (isTabletView) {
+                      setIsOpen(false);
+                    }
+                  }}
+                >
                   <img
                     src={Reports}
                     alt="ReportsIcon"
@@ -314,7 +403,15 @@ const CollapsibleDrawer = () => {
                   isSelected("/calendar") ? "selected" : ""
                 }`}
               >
-                <Link to="/calendar" className="menu-link">
+                <Link
+                  to="/calendar"
+                  className="menu-link"
+                  onClick={() => {
+                    if (isTabletView) {
+                      setIsOpen(false);
+                    }
+                  }}
+                >
                   <img
                     src={Calendar}
                     alt="CalendarIcon"
@@ -329,7 +426,7 @@ const CollapsibleDrawer = () => {
           </div>
         </div>
         {/* collapse menu div */}
-        {!isTabletView  && (
+        {!isTabletView && (
           <div
             className={`back-button-section ${
               isOpen ? "section-expanded" : "section-collapsed"
@@ -340,8 +437,8 @@ const CollapsibleDrawer = () => {
               onClick={toggleSidebar} // Collapse the menu
             >
               <div className="flex items-center">
+                {isOpen && <span className="collapse-text">Expand Menu</span>}
                 <img src={arrow} alt="arrow" className={"arrow-style"} />
-                {isOpen && <span className="collapse-text">Collapse Menu</span>}
               </div>
             </button>
           </div>
@@ -351,7 +448,7 @@ const CollapsibleDrawer = () => {
       {/* Main Content */}
       <div
         className={`main-content flex-1 ${
-        isTabletView && isOpen ? "blurred" : ""
+          isTabletView && isOpen ? "blurred" : ""
         }`}
       >
         <Routes>

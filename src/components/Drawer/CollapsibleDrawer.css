@@ -156,7 +156,7 @@
    @apply bg-customGrad2 p-2 rounded-[8px]
   }
   .collapse-text {
-    @apply ml-2 text-white text-sm font-ubuntu font-normal; /* Add spacing and smaller font */
+    @apply mr-2 text-white text-sm font-ubuntu font-normal; /* Add spacing and smaller font */
   }
   /* Responsive Sidebar */
 

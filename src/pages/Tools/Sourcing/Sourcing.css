@@ -37,11 +37,9 @@
     @apply items-center justify-center  w-[46px] h-[46px] rounded-[100px] mx-1 overflow-hidden
 }
 .candidate-details{
-    @apply w-[60%] mr-4 p-[14px] pb-[20px] mb-[170px] overflow-auto scroll-width-none bg-white h-auto rounded-[14px]
+    @apply w-[60%] mr-4 p-[14px] pb-[20px] mb-[190px] overflow-auto scroll-width-none bg-white h-auto rounded-[14px]
 }
 /* Responsive Design */
-
-
 
 /* Mobile View */
 @media (min-width: 240px) and (max-width: 1024px) {
@@ -100,7 +98,7 @@
       }
     
       .candidate-details {
-        @apply w-[60%] block; /* Ensure it's visible */
+        @apply w-[60%] h-auto block; /* Ensure it's visible */
       }
 }
 .candidate-profile-div{
@@ -113,7 +111,7 @@
     @apply text-m text-customBlue font-ubuntu font-normal
 }
 .candidate-scroll{
-  @apply overflow-auto
+  @apply overflow-auto h-auto
 }
 .candidate-location-designation-text {
     @apply font-ubuntu font-normal text-l text-customBlue
@@ -140,7 +138,7 @@
     @apply border-b border-solid border-borderGrey my-[12px]
 }
 .details-griddiv{
-   @apply border border-solid border-borderGrey p-[12px]  rounded-[12px] 
+   @apply border border-solid border-borderGrey p-[12px]  rounded-[12px] min-h-0
 }
 .main-title{
     @apply font-ubuntu font-medium text-m text-customBlue
