@@ -376,7 +376,7 @@ const CandidateDetails = ({ selectedCandidate }) => {
           <text className="detail-profile-name">{selectedCandidate.name}</text>
         </div>
         {/* profile actions */}
-        <div className="flex items-center justify-between space-x-[6px]">
+        <div className="flex items-center justify-between space-x-[12px]">
           <img
             src={ProfileAdd}
             alt="Profile Add"
@@ -537,9 +537,8 @@ const Sourcing = () => {
   };
   const handleCandidateSelectContainer = (candidateId) => {
     setSelectedCandidate(candidateId)
-    if (window.innerWidth >= 768 && window.innerWidth <= 1024) {
+    if (window.innerWidth >= 768 && window.innerWidth < 1024) {
       console.log("called");
-      
       setIsCandidateModalVisible(true);
     
   };
@@ -614,9 +613,9 @@ const Sourcing = () => {
           <div
             className="fixed top-0 right-0 h-full w-[80%] bg-white shadow-lg transform transition-transform duration-300 z-50"
           >
-            <div className="p-6 flex flex-col h-full">
-              <div className="flex justify-between items-center border-b pb-4">
-                <h2 className="text-xl font-bold text-gray-800">Candidate Details</h2>
+            <div className="p-[20px] flex flex-col h-full">
+              <div className="flex justify-between items-center pb-[32px]">
+                <h2 className="text-xxl font-ubuntu font-medium text-gray-800">Candidate Details</h2>
                 <button
                   onClick={toggleCandidateModal}
                   className="text-gray-600 hover:text-gray-900"
@@ -624,7 +623,7 @@ const Sourcing = () => {
                   ✕
                 </button>
               </div>
-              <div className="flex-1 overflow-auto mt-4">
+              <div className="flex-1 overflow-autoscroll-width-none">
                 <CandidateDetails selectedCandidate={selectedCandidate} 
                 />
               </div>
