@@ -677,7 +677,7 @@ const Sourcing = () => {
       {/* Add filters or actions here if needed */}
       <div className="overflow-auto h-screen mb-[90px]">
      {!filtersApplied ? (
-      <div className=" items-center justify-center min-h-screen overflow-auto mb-[60px]">
+      <div className=" items-center justify-center min-h-screen overflow-auto mb-[40px]">
         <NoFiltersScreen onStartSearching={toggleModal} />
       </div>
       ) : (

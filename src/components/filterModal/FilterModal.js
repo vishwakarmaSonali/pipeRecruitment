@@ -6,7 +6,7 @@ const FilterModal = ({ isOpen, onClose, onApply, onReset, filters }) => {
 
   // State for each input field
     // const [jobTitleInput, setJobTitleInput] = useState('');
-    const [jobTitles, setJobTitles] = useState([]);
+    // const [jobTitles, setJobTitles] = useState([]);
   
     const [locationInput, setLocationInput] = useState('');
     const [locations, setLocations] = useState([]);
@@ -106,7 +106,7 @@ const FilterModal = ({ isOpen, onClose, onApply, onReset, filters }) => {
               {localFilters.jobTitles.map((title, index) => (
                 <div key={index} className="inputed-item">
                   {title}
-                  <button className="ml-2 text-customBlue" onClick={() => removeItem(index, jobTitles, localFilters.jobTitles, setLocalFilters)}>✕</button>
+                  <button className="ml-2 text-customBlue" onClick={() => removeItem(index, localFilters.jobTitles, setLocalFilters)}>✕</button>
                 </div>
               ))}
             </div>}
