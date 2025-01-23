@@ -13,11 +13,14 @@ import Download from "../../../assets/icons/sourcingIcons/download.svg";
 import Tick from "../../../assets/icons/sourcingIcons/tick.svg";
 import FilterIcon from "../../../assets/icons/filter.svg";
 import DropArrow from "../../../assets/icons/droparrow.svg";
-import LeftArrow from "../../../assets/icons/leftArrow.svg"
-import RightArrow from "../../../assets/icons/rightArrow.svg"
-import LinkedIn from "../../../assets/icons/sourcingIcons/linkedin.svg"
+import LeftArrow from "../../../assets/icons/leftArrow.svg";
+import RightArrow from "../../../assets/icons/rightArrow.svg";
+import LinkedIn from "../../../assets/icons/sourcingIcons/linkedin.svg";
 import FilterModal from "../../../components/filterModal/FilterModal";
 import FolderModal from "../../../components/AddToFolderModals/AddModal";
+import talentSearch from "../../../assets/images/talentSearchImg.svg";
+import tickCircle from "../../../assets/icons/tickCircle.svg"
+import info from "../../../assets/icons/info-circle.svg"
 const skills = [
   "UI Design",
   "Wireframing",
@@ -157,7 +160,12 @@ const SkillsList = ({ isExpanded }) => {
     </div>
   );
 };
-const BulkActionView = ({ toggleModal, isBulkAction, onSelectAll, isAllSelected }) => {
+const BulkActionView = ({
+  toggleModal,
+  isBulkAction,
+  onSelectAll,
+  isAllSelected,
+}) => {
   return (
     <div className="w-full bg-gray-100 p-4 flex items-center justify-between">
       <div className="flex items-center space-x-2">
@@ -165,17 +173,12 @@ const BulkActionView = ({ toggleModal, isBulkAction, onSelectAll, isAllSelected 
           className={`w-[20px] h-[20px] border border-customBlue rounded-[6px] flex items-center justify-center cursor-pointer`}
           onClick={onSelectAll}
         >
-          {isAllSelected && (
-            <img
-              src={Tick}
-              alt="Selected"
-             
-            />
-          )}
+          {isAllSelected && <img src={Tick} alt="Selected" />}
         </div>
 
         <p className="text-gray-700 text-sm font-ubuntu">
-          <span className="cursor-pointer text-sm font-ubuntu">1-100</span> of {candidates.length}
+          <span className="cursor-pointer text-sm font-ubuntu">1-100</span> of{" "}
+          {candidates.length}
         </p>
       </div>
 
@@ -183,8 +186,10 @@ const BulkActionView = ({ toggleModal, isBulkAction, onSelectAll, isAllSelected 
         className="text-white bg-buttonBLue px-[14px] py-[10px] rounded-[8px] flex items-center space-x-1 shadow-md hover:bg-opacity-80"
         onClick={toggleModal}
       >
-        <span className="font-ubuntu text-m">{isBulkAction ? "Bulk Action" : "Filter"}</span>
-        <img src={isBulkAction?DropArrow:FilterIcon} alt="filter" />
+        <span className="font-ubuntu text-m">
+          {isBulkAction ? "Bulk Action" : "Filter"}
+        </span>
+        <img src={isBulkAction ? DropArrow : FilterIcon} alt="filter" />
       </button>
     </div>
   );
@@ -203,14 +208,18 @@ const CandidateList = ({
       <div className="space-y-4 mb-[190px]">
         {/* Candidate Cards */}
         {candidates.map((candidate) => {
-          console.log("cadidate selectssss", selectedCandidateId ,candidate.id);
+          console.log("cadidate selectssss", selectedCandidateId, candidate.id);
           return (
             <div
               key={candidate.id}
               className={`p-4 rounded-[14px]  bg-white flex flex-col cursor-pointer ${
-                selectedCandidateId === candidate.id && window.innerWidth > 1024 ? "border-2 border-blue-500" : ""
-              }`}            
-              onClick={() => {onSelect(candidate) }}
+                selectedCandidateId === candidate.id && window.innerWidth > 1024
+                  ? "border-2 border-blue-500"
+                  : ""
+              }`}
+              onClick={() => {
+                onSelect(candidate);
+              }}
             >
               {/* Candidate Details */}
               <div className="flex items-center space-x-2">
@@ -218,14 +227,13 @@ const CandidateList = ({
                 <div
                   className={`w-[20px] h-[20px] border  border-customBlue bg-white  rounded-[6px]  flex items-center justify-center cursor-pointer`}
                   onClick={(e) => {
-                    
                     e.stopPropagation(); // Prevent candidate card click event
                     onCandidateSelect(candidate.id);
                   }}
                 >
                   {selectedCandidates.includes(candidate.id) && (
-                  <img src={Tick} alt="Selected" />
-                )}
+                    <img src={Tick} alt="Selected" />
+                  )}
                 </div>
 
                 {/* Profile Image */}
@@ -271,9 +279,11 @@ const CandidateList = ({
               {/* Skills Grid */}
               <SkillsList isExpanded={false} />
               <div className="flex items-center justify-between">
-                <text className="font-ubuntu text-sm text-customGray">Contact information:</text>
+                <text className="font-ubuntu text-sm text-customGray">
+                  Contact information:
+                </text>
                 <img src={LinkedIn} alt="linkedin" />
-                </div>
+              </div>
             </div>
           );
         })}
@@ -358,7 +368,6 @@ const ExperienceEducation = () => {
   );
 };
 
-
 const CandidateDetails = ({ selectedCandidate }) => {
   const [modalOpen, setModalOpen] = useState(false);
 
@@ -386,31 +395,39 @@ const CandidateDetails = ({ selectedCandidate }) => {
         {/* profile actions */}
         <div className="flex items-center justify-between space-x-[12px]">
           <div className="relative group">
-            <img src={ProfileAdd} alt="Profile Add" className="proifle-action-icon" />
-            <span className="dilogbox">
-              Add to candidate
-            </span>
+            <img
+              src={ProfileAdd}
+              alt="Profile Add"
+              className="proifle-action-icon"
+            />
+            <span className="dilogbox">Add to candidate</span>
           </div>
 
           <div className="relative group">
-            <img src={jobIcon} alt="jobIcon Add" className="proifle-action-icon" />
-            <span className="dilogbox">
-              Add to Job
-            </span>
+            <img
+              src={jobIcon}
+              alt="jobIcon Add"
+              className="proifle-action-icon"
+            />
+            <span className="dilogbox">Add to Job</span>
           </div>
 
           <div className="relative group" onClick={() => setModalOpen(true)}>
-            <img src={FolderAdd} alt="Folder Add" className="proifle-action-icon" />
-            <span className="dilogbox">
-              Add to Folder
-            </span>
+            <img
+              src={FolderAdd}
+              alt="Folder Add"
+              className="proifle-action-icon"
+            />
+            <span className="dilogbox">Add to Folder</span>
           </div>
 
           <div className="relative group">
-            <img src={Download} alt="Download" className="proifle-action-icon" />
-            <span className="dilogbox">
-              Download resume
-            </span>
+            <img
+              src={Download}
+              alt="Download"
+              className="proifle-action-icon"
+            />
+            <span className="dilogbox">Download resume</span>
           </div>
         </div>
       </div>
@@ -447,7 +464,9 @@ const CandidateDetails = ({ selectedCandidate }) => {
         </div>
       </div>
       <ExperienceEducation />
-      {modalOpen && <FolderModal isOpen={modalOpen} onClose={() => setModalOpen(false)} />}
+      {modalOpen && (
+        <FolderModal isOpen={modalOpen} onClose={() => setModalOpen(false)} />
+      )}
     </>
   );
 };
@@ -518,55 +537,113 @@ const PaginationFooter = () => {
           onClick={() => handlePageClick(currentPage + 1)}
           disabled={currentPage === totalPages}
         >
-           <img src={RightArrow} alt="leftArrow" />
+          <img src={RightArrow} alt="leftArrow" />
         </button>
       </div>
     </div>
   );
 };
-
+const NoFiltersScreen = ({ onStartSearching }) => {
+  return (
+    <div className="flex flex-col  bg-white items-center justify-center h-full text-center p-6">
+      <div className="">
+        <img src={talentSearch} alt="Talent Search" />
+      </div>
+   <div className="relative max-w-[680px]">
+   <h2 className="font-ubuntu text-xl text-customBlue font-medium mt-[-20px] z-50">
+        Expand Your Talent Search with Our Sourcing Hub
+      </h2>
+      <p className="text-customGray mt-[20px] font-ubuntu text-l text-left">
+      Looking for the perfect candidate? Tap into a vast network of talent with our powerful sourcing tool. Access millions of potential candidates and streamline your recruitment process.</p>
+      <ul className="text-left  text-m text-customBlue mt-4 space-y-1">
+        <li><div className="flex items-center gap-[6px]"><img alt="tick" src={tickCircle} /><text >Find Hidden Talent</text> </div><text className="text-customGray ml-[20px]">Discover qualified professionals who may not be actively job hunting</text></li>
+        <li><div className="flex items-center gap-[6px]"><img alt="tick" src={tickCircle} /><text> Refine Your Search</text></div><text className="text-customGray ml-[20px]">Use advanced filters like skills, location, experience, industry, and more to pinpoint the ideal candidates</text></li>
+        <li><div className="flex items-center gap-[6px]"><img alt="tick" src={tickCircle} /><text>Create Robust Talent Pipelines</text></div><text className="text-customGray ml-[20px]">Organize and track candidates efficiently, ensuring a steady flow of qualified talent for current and future roles.</text></li>
+      </ul>
+      <div className="mt-6 px-[16px] bg-buttonBlueOpacity py-[16px] flex items-start gap-[8px] text-left rounded-md">
+        <img src={info} alt="info"/>
+      <span className="text-sm text-customBlue text-left font-ubuntu leading-[13.79px]">
+      Our platform leverages publicly available data from trusted third-party sources to provide access to a comprehensive external candidate database. This is entirely separate from your internal database, ensuring your organization's data remains secure and private. Learn more about data usage.
+        </span>
+      </div>
+      <button
+        className="text-white text-ubuntu text-m bg-buttonBLue px-[14px] py-[10px] rounded-[8px] mt-[20px] space-x-1 shadow-md hover:bg-opacity-80"
+        onClick={onStartSearching}
+      >
+       {" Start Searching +"}
+      </button>
+   </div>
+    </div>
+  );
+};
 const Sourcing = () => {
   const [selectedCandidate, setSelectedCandidate] = useState(candidates[0]);
   const [selectedCandidates, setSelectedCandidates] = useState([]); // Store selected candidates
+  const [filtersApplied, setFiltersApplied] = useState(false);
+  const [filters, setFilters] = useState({
+    jobTitle: "",
+    location: "",
+    company: "",
+    yearsOfExperience: { from: "", to: "" },
+    industry: "",
+    education: { major: "", school: "", degree: "" },
+  });
   const [isModalOpen, setIsModalOpen] = useState(false); // Manage filter modal state
-  const [isCandidateModalVisible,setIsCandidateModalVisible] = useState(false)
-  const [addToFolderModalVisible,setAddToFolderModalVisible] = useState(false)
+  const [isCandidateModalVisible, setIsCandidateModalVisible] = useState(false);
+  const [addToFolderModalVisible, setAddToFolderModalVisible] = useState(false);
   // Function to toggle modal visibility
   const toggleModal = () => {
     setIsModalOpen(!isModalOpen);
   };
+  // Function to toggle the filter modal
   const toggleCandidateModal = () => {
     setIsCandidateModalVisible(!isCandidateModalVisible);
   };
+  // Function to handle applying filters
+  const applyFilters = (newFilters) => {
+    setFilters(newFilters);
+    setFiltersApplied(true);
+    setIsModalOpen(false);
+  };
 
-    // Function to select/deselect all candidates
-    const handleSelectAll = () => {
-      if (selectedCandidates.length === candidates.length) {
-        setSelectedCandidates([]);  // Deselect all
-      } else {
-        setSelectedCandidates(candidates.map((candidate) => candidate.id));  // Select all
-      }
-    };
-      // Handle individual candidate selection
+  // Function to reset filters
+  const resetFilters = () => {
+    setFilters({
+      jobTitle: "",
+      location: "",
+      company: "",
+      yearsOfExperience: { from: "", to: "" },
+      industry: "",
+      education: { major: "", school: "", degree: "" },
+    });
+    setFiltersApplied(false);
+  };
+  // Function to select/deselect all candidates
+  const handleSelectAll = () => {
+    if (selectedCandidates.length === candidates.length) {
+      setSelectedCandidates([]); // Deselect all
+    } else {
+      setSelectedCandidates(candidates.map((candidate) => candidate.id)); // Select all
+    }
+  };
+  // Handle individual candidate selection
   const handleCandidateSelect = (candidateId) => {
     setSelectedCandidates((prevSelected) =>
       prevSelected.includes(candidateId)
         ? prevSelected.filter((id) => id !== candidateId)
         : [...prevSelected, candidateId]
     );
-    
   };
   const handleCandidateSelectContainer = (candidateId) => {
-    setSelectedCandidate(candidateId)
+    setSelectedCandidate(candidateId);
     if (window.innerWidth >= 768 && window.innerWidth < 1024) {
       console.log("called");
       setIsCandidateModalVisible(true);
-    
+    }
   };
-}
 
   return (
-    <div className="w-full h-screen bg-gray-100 overflow-hidden">
+    <div className="w-full h-screen bg-gray-100 ">
       <div className="flex flex-col lg:flex-row items-center justify-between bg-white shadow-sm w-full h-auto lg:h-16  px-2 py-2 header-container">
         <h1 className="header-title">Sourcing Hub</h1>
         {/* Icons Section */}
@@ -597,32 +674,39 @@ const Sourcing = () => {
       {/* Count and Filter Section */}
 
       {/* Count and Filter Section */}
-      <BulkActionView
-        toggleModal={toggleModal}
-        isBulkAction={selectedCandidates.length > 1}
-        onSelectAll={handleSelectAll}
-        isAllSelected={selectedCandidates.length === candidates.length}
-      />
       {/* Add filters or actions here if needed */}
-
+     <div className="overflow-y-auto">
+     {!filtersApplied ? (
+        <NoFiltersScreen onStartSearching={toggleModal} />
+      ) : (
+        <div className="overflow-hidden">
       {/* ScrollView */}
+        <BulkActionView
+          toggleModal={toggleModal}
+          isBulkAction={selectedCandidates.length > 1}
+          onSelectAll={handleSelectAll}
+          isAllSelected={selectedCandidates.length === candidates.length}
+        />
       <div className="w-full h-screen overflow-hidden flex">
         {/* Candidate List Section */}
         <div className="candidate-list w-full lg:w-[40%] px-4">
-        <CandidateList
+          <CandidateList
             onSelect={handleCandidateSelectContainer}
             selectedCandidateId={selectedCandidate?.id}
             onCandidateSelect={handleCandidateSelect}
             selectedCandidates={selectedCandidates}
           />
-  </div>
+        </div>
 
-  {/* Candidate Details Section */}
-  <div className="candidate-details hidden lg:block p-4 h-auto">
-    <CandidateDetails selectedCandidate={selectedCandidate} />
-  </div>
+        {/* Candidate Details Section */}
+        <div className="candidate-details hidden lg:block p-4 h-auto">
+          <CandidateDetails selectedCandidate={selectedCandidate} />
+        </div>
       </div>
       <PaginationFooter />
+      </div>
+      )}
+     </div>
       {/* Filter Modal */}
       {isCandidateModalVisible && (
         <div>
@@ -631,29 +715,33 @@ const Sourcing = () => {
             onClick={toggleCandidateModal}
           ></div>
 
-          <div
-            className="fixed top-0 right-0 h-full w-[80%] bg-white shadow-lg transform transition-transform duration-300 z-50"
-          >
+          <div className="fixed top-0 right-0 h-full w-[80%] bg-white shadow-lg transform transition-transform duration-300 z-50">
             <div className="p-[20px] flex flex-col h-full">
               <div className="flex justify-between items-center pb-[32px]">
-                <h2 className="text-xxl font-ubuntu font-medium text-gray-800">Candidate Details</h2>
+                <h2 className="text-xxl font-ubuntu font-medium text-gray-800">
+                  Candidate Details
+                </h2>
                 <button
                   onClick={toggleCandidateModal}
                   className="text-customBlue hover:text-gray-900"
                 >
-                ✕
+                  ✕
                 </button>
               </div>
               <div className="flex-1 overflow-autoscroll-width-none">
-                <CandidateDetails selectedCandidate={selectedCandidate} 
-                />
+                <CandidateDetails selectedCandidate={selectedCandidate} />
               </div>
             </div>
           </div>
         </div>
       )}
-         <FilterModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
-        
+      <FilterModal
+        isOpen={isModalOpen}
+        onClose={toggleModal}
+        onApply={applyFilters}
+        onReset={resetFilters}
+        filters={filters}
+      />
     </div>
   );
 };

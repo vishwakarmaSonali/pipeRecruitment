@@ -1,9 +1,10 @@
-import React,{useState} from "react";
+import React,{useState,useEffect} from "react";
 import "./FilterModal.css"
-import DropArrow from "../../assets/icons/droparrow.svg"
 import CustomDropdown from "../CustomDropdown/CustomDropdown";
-const FilterModal = ({ isOpen, onClose }) => {
-    // State for each input field
+const FilterModal = ({ isOpen, onClose, onApply, onReset, filters }) => {
+  const [localFilters, setLocalFilters] = useState(filters);
+
+  // State for each input field
     const [jobTitleInput, setJobTitleInput] = useState('');
     const [jobTitles, setJobTitles] = useState([]);
   
@@ -31,18 +32,39 @@ const FilterModal = ({ isOpen, onClose }) => {
     const radiusOptions = ["Kilometer", "Mile"];
     const industryOptions = ["IT", "Finance", "Healthcare", "Retail","IT", "Finance", "Healthcare", "Retail","IT", "Finance", "Healthcare", "Retail"];
   
-    // Handler function for input key down
-    const handleKeyDown = (e, inputValue, setInputValue, dataArray, setDataArray) => {
-      if (e.key === 'Enter' && inputValue.trim()) {
-        setDataArray([...dataArray, inputValue.trim()]);
-        setInputValue('');
-      }
-    };
-  
-    // Remove an item from the array
-    const removeItem = (index, dataArray, setDataArray) => {
-      setDataArray(dataArray.filter((_, i) => i !== index));
-    };
+
+  useEffect(() => {
+    setLocalFilters(filters); // Sync local state with parent filters
+  }, [filters]);
+
+  const handleInputChange = (e, field) => {
+    setLocalFilters({
+      ...localFilters,
+      [field]: e.target.value,
+    });
+  };
+
+  // Handler function for input key down
+  const handleKeyDown = (e, inputValue, field, dataArray, setDataArray) => {
+    if (e.key === 'Enter' && inputValue.trim()) {
+      setDataArray([...dataArray, inputValue.trim()]);
+      setLocalFilters({
+        ...localFilters,
+        [field]: [...dataArray, inputValue.trim()]
+      });
+    }
+  };
+
+  // Remove an item from the array
+  const removeItem = (index, field, dataArray, setDataArray) => {
+    const updatedArray = dataArray.filter((_, i) => i !== index);
+    setDataArray(updatedArray);
+    setLocalFilters({
+      ...localFilters,
+      [field]: updatedArray
+    });
+  };
+
 
   return (
     <div
@@ -74,15 +96,17 @@ const FilterModal = ({ isOpen, onClose }) => {
               type="text"
               placeholder="Enter title"
               className="filter-input"
-              value={jobTitleInput}
-              onChange={(e) => setJobTitleInput(e.target.value)}
-              onKeyDown={(e) => handleKeyDown(e, jobTitleInput, setJobTitleInput, jobTitles, setJobTitles)}
+              value={localFilters.jobTitle}
+              onChange={(e) => handleInputChange(e, "jobTitle")}
+              onKeyDown={(e) =>
+                handleKeyDown(e, localFilters.jobTitle, "jobTitle", localFilters.jobTitles, setLocalFilters)
+              }
             />
-         {jobTitles.length>0 && <div className="inputItemsDiv">
-              {jobTitles.map((title, index) => (
+         {localFilters.jobTitles?.length>0 && <div className="inputItemsDiv">
+              {localFilters.jobTitles.map((title, index) => (
                 <div key={index} className="inputed-item">
                   {title}
-                  <button className="ml-2 text-customBlue" onClick={() => removeItem(index, jobTitles, setJobTitles)}>✕</button>
+                  <button className="ml-2 text-customBlue" onClick={() => removeItem(index, jobTitles, localFilters.jobTitles, setLocalFilters)}>✕</button>
                 </div>
               ))}
             </div>}
@@ -96,7 +120,7 @@ const FilterModal = ({ isOpen, onClose }) => {
               placeholder="Enter location"
               className="filter-input"
               value={locationInput}
-              onChange={(e) => setLocationInput(e.target.value)}
+              onChange={(e) => handleInputChange(e, "location")}
               onKeyDown={(e) => handleKeyDown(e, locationInput, setLocationInput, locations, setLocations)}
             />
             {locations.length>0 &&   <div className="inputItemsDiv">
@@ -134,7 +158,7 @@ const FilterModal = ({ isOpen, onClose }) => {
               placeholder="Enter company"
               className="filter-input"
               value={companyInput}
-              onChange={(e) => setCompanyInput(e.target.value)}
+              onChange={(e) => handleInputChange(e, "company")}
               onKeyDown={(e) => handleKeyDown(e, companyInput, setCompanyInput, company, setCompany)}
             />
              {company.length>0 && <div className="inputItemsDiv">
@@ -230,10 +254,10 @@ const FilterModal = ({ isOpen, onClose }) => {
 
         {/* Footer Buttons */}
         <div className="mt-6 flex justify-between space-x-4">
-          <button className="w-1/2 border border-buttonBLue text-buttonBLue  flex justify-center items-center py-[12px] max-h-[40px] rounded-[8px] btn-text">
+          <button className="w-1/2 border border-buttonBLue text-buttonBLue  flex justify-center items-center py-[12px] max-h-[40px] rounded-[8px] btn-text" onClick={onReset}>
             Reset
           </button>
-          <button className="w-1/2 bg-buttonBLue text-white flex justify-center items-center py-[12px] max-h-[40px] rounded-[8px] hover:bg-blue-700 btn-text">
+          <button className="w-1/2 bg-buttonBLue text-white flex justify-center items-center py-[12px] max-h-[40px] rounded-[8px] hover:bg-blue-700 btn-text"  onClick={() => onApply(localFilters)}>
             Filter Search
           </button>
         </div>
