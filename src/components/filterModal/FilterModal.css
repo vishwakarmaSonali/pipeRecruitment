@@ -1,0 +1,81 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.scroll-width-none {
+    /* Hide scrollbar for all browsers */
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* Internet Explorer 10+ */
+}
+
+.scroll-width-none::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Edge */
+}
+.filter-heading{
+    @apply font-ubuntu text-xxl font-medium text-customBlue 
+}
+.filter-title{
+    @apply font-ubuntu text-sm font-normal text-customBlue
+}
+.filter-input{
+    @apply bg-white w-full mt-1 px-[12px] py-[12px] border max-h-[38px] leading-[14px] border-customGrey1 rounded-[8px] text-sm font-ubuntu text-customBlue placeholder:text-customGray focus:outline-none focus:ring-0
+}
+.inputItemsDiv {
+    @apply mt-[6px] flex flex-wrap gap-[6px]
+}
+.inputed-item{
+    @apply bg-white border text-gray-700 text-sm max-h-[30px] p-[8px] rounded-[8px] flex items-center
+}
+.btn-text{
+    @apply font-ubuntu text-m
+}
+.custom-dropdown {
+    cursor: pointer;
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #fff;
+    color: #333;
+    font-size: 14px;
+    outline: none;
+    transition: all 0.3s ease;
+    appearance: none;
+    position: relative;
+  }
+  
+  /* Hover effect on dropdown */
+  .custom-dropdown:hover {
+    border-color: #3182ce;
+  }
+  
+  .custom-dropdown:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.3);
+  }
+  
+  /* Dropdown option styles */
+  .custom-dropdown option {
+    padding: 12px 16px;
+    background-color: #fff;
+    color: #333;
+    font-size: 14px;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  /* Hover effect for dropdown options */
+  .custom-dropdown option:hover {
+    background-color: #f3f4f6;
+    color: #2563eb;
+  }
+  
+  /* Styling for the dropdown when open */
+  .custom-dropdown:focus-visible {
+    outline: none;
+  }
+  
+  /* Ensure the dropdown has smooth rounded corners when expanded */
+  .custom-dropdown option:last-child {
+    border-bottom: none;
+  }
+  

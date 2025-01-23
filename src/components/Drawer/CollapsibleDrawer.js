@@ -71,11 +71,14 @@ const CollapsibleDrawer = () => {
   const toggleDrawer = () => {
     setIsOpen(true);
   };
-  const toggleSidebar = () => {
+  const toggleSidebar = (e) => {
     setManualOverride(!manualOverride); // Toggle manual override
+    
     if (manualOverride) {
+      
       setIsOpen(false); // Allow hover functionality and reset to collapsed
     } else {
+      
       setIsOpen(true); // Keep sidebar open when manually overridden
     }
   };
@@ -434,12 +437,15 @@ const CollapsibleDrawer = () => {
           >
             <button
               className="back-button"
-              onClick={toggleSidebar} // Collapse the menu
+              onClick={  toggleSidebar}// Collapse the menu
             >
-              <div className="flex items-center">
-                {isOpen && <span className="collapse-text">Expand Menu</span>}
+             { manualOverride?<div className="flex items-center" >
+                <img src={arrow} alt="arrow" className={"arrow-style rotate-180 mr-2"} />
+                {isOpen && <span className="collapse-text">Collapse menu</span>}
+              </div> : <div className="flex items-center">
+                {isOpen && <span className="collapse-text">Expand menu</span>}
                 <img src={arrow} alt="arrow" className={"arrow-style"} />
-              </div>
+              </div>}
             </button>
           </div>
         )}

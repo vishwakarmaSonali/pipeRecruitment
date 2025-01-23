@@ -37,7 +37,8 @@ module.exports = {
       customGrey1:'#F3F4F4',
       blueBg:'#1761D81A',
       borderGrey:'#ebebeb',
-      buttonBLue:"#1761D8"
+      buttonBLue:"#1761D8",
+      buttonBlueOpacity:"#1761D80F"
     },
   },
   screens: {

@@ -15,6 +15,9 @@ import FilterIcon from "../../../assets/icons/filter.svg";
 import DropArrow from "../../../assets/icons/droparrow.svg";
 import LeftArrow from "../../../assets/icons/leftArrow.svg"
 import RightArrow from "../../../assets/icons/rightArrow.svg"
+import LinkedIn from "../../../assets/icons/sourcingIcons/linkedin.svg"
+import FilterModal from "../../../components/filterModal/FilterModal";
+import FolderModal from "../../../components/AddToFolderModals/AddModal";
 const skills = [
   "UI Design",
   "Wireframing",
@@ -187,7 +190,6 @@ const BulkActionView = ({ toggleModal, isBulkAction, onSelectAll, isAllSelected 
   );
 };
 
-
 const CandidateList = ({
   onSelect,
   selectedCandidateId,
@@ -206,7 +208,7 @@ const CandidateList = ({
             <div
               key={candidate.id}
               className={`p-4 rounded-[14px]  bg-white flex flex-col cursor-pointer ${
-                selectedCandidateId === candidate.id ? "border-2 border-blue-500" : ""
+                selectedCandidateId === candidate.id && window.innerWidth > 1024 ? "border-2 border-blue-500" : ""
               }`}            
               onClick={() => {onSelect(candidate) }}
             >
@@ -268,6 +270,10 @@ const CandidateList = ({
               </div>
               {/* Skills Grid */}
               <SkillsList isExpanded={false} />
+              <div className="flex items-center justify-between">
+                <text className="font-ubuntu text-sm text-customGray">Contact information:</text>
+                <img src={LinkedIn} alt="linkedin" />
+                </div>
             </div>
           );
         })}
@@ -354,6 +360,8 @@ const ExperienceEducation = () => {
 
 
 const CandidateDetails = ({ selectedCandidate }) => {
+  const [modalOpen, setModalOpen] = useState(false);
+
   if (!selectedCandidate) {
     return (
       <div className="w-3/5 flex items-center justify-center text-gray-500 text-lg">
@@ -377,24 +385,36 @@ const CandidateDetails = ({ selectedCandidate }) => {
         </div>
         {/* profile actions */}
         <div className="flex items-center justify-between space-x-[12px]">
-          <img
-            src={ProfileAdd}
-            alt="Profile Add"
-            className="proifle-action-icon"
-          />
-          <img
-            src={jobIcon}
-            alt="jobIcon Add"
-            className="proifle-action-icon"
-          />
-          <img
-            src={FolderAdd}
-            alt="Folder Add"
-            className="proifle-action-icon"
-          />
-          <img src={Download} alt="Download" className="proifle-action-icon" />
+          <div className="relative group">
+            <img src={ProfileAdd} alt="Profile Add" className="proifle-action-icon" />
+            <span className="dilogbox">
+              Add to candidate
+            </span>
+          </div>
+
+          <div className="relative group">
+            <img src={jobIcon} alt="jobIcon Add" className="proifle-action-icon" />
+            <span className="dilogbox">
+              Add to Job
+            </span>
+          </div>
+
+          <div className="relative group" onClick={() => setModalOpen(true)}>
+            <img src={FolderAdd} alt="Folder Add" className="proifle-action-icon" />
+            <span className="dilogbox">
+              Add to Folder
+            </span>
+          </div>
+
+          <div className="relative group">
+            <img src={Download} alt="Download" className="proifle-action-icon" />
+            <span className="dilogbox">
+              Download resume
+            </span>
+          </div>
         </div>
       </div>
+
       {/* skills div */}
       <div className="details-specific-div">
         <text className="details-title">SKILLS</text>
@@ -427,6 +447,7 @@ const CandidateDetails = ({ selectedCandidate }) => {
         </div>
       </div>
       <ExperienceEducation />
+      {modalOpen && <FolderModal isOpen={modalOpen} onClose={() => setModalOpen(false)} />}
     </>
   );
 };
@@ -506,10 +527,10 @@ const PaginationFooter = () => {
 
 const Sourcing = () => {
   const [selectedCandidate, setSelectedCandidate] = useState(candidates[0]);
-
   const [selectedCandidates, setSelectedCandidates] = useState([]); // Store selected candidates
   const [isModalOpen, setIsModalOpen] = useState(false); // Manage filter modal state
   const [isCandidateModalVisible,setIsCandidateModalVisible] = useState(false)
+  const [addToFolderModalVisible,setAddToFolderModalVisible] = useState(false)
   // Function to toggle modal visibility
   const toggleModal = () => {
     setIsModalOpen(!isModalOpen);
@@ -618,9 +639,9 @@ const Sourcing = () => {
                 <h2 className="text-xxl font-ubuntu font-medium text-gray-800">Candidate Details</h2>
                 <button
                   onClick={toggleCandidateModal}
-                  className="text-gray-600 hover:text-gray-900"
+                  className="text-customBlue hover:text-gray-900"
                 >
-                  ✕
+                ✕
                 </button>
               </div>
               <div className="flex-1 overflow-autoscroll-width-none">
@@ -631,46 +652,8 @@ const Sourcing = () => {
           </div>
         </div>
       )}
-      {isModalOpen && (
-        <div>
-          {/* Modal Overlay */}
-          <div
-            className="fixed top-0 right-0 h-full w-full bg-black bg-opacity-50"
-            onClick={toggleModal}
-          ></div>
-
-          {/* Modal Content */}
-          <div className="fixed top-0 right-0 h-full w-[30%] bg-white shadow-lg transform transition-transform duration-300 translate-x-0">
-            <div className="p-6 flex flex-col h-full">
-              {/* Modal Header */}
-              <div className="flex justify-between items-center border-b pb-4">
-                <h2 className="text-xl font-bold text-gray-800">Filters</h2>
-                <button
-                  onClick={toggleModal}
-                  className="text-gray-600 hover:text-gray-900"
-                >
-                  ✕
-                </button>
-              </div>
-
-              {/* Modal Content */}
-              <div className="flex-1 overflow-auto mt-4">
-                <p className="text-gray-600">Add filter options here...</p>
-              </div>
-
-              {/* Modal Footer */}
-              <div className="border-t pt-4 mt-4">
-                <button
-                  onClick={toggleModal}
-                  className="w-full bg-blue-600 text-white py-2 rounded-md shadow-md hover:bg-blue-700"
-                >
-                  Apply Filters
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+         <FilterModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+        
     </div>
   );
 };
