@@ -205,7 +205,7 @@ const CandidateList = ({
 
   return (
     <div className="candidate-scroll">
-      <div className="space-y-4 mb-[190px]">
+      <div className="space-y-4 mb-[110px]">
         {/* Candidate Cards */}
         {candidates.map((candidate) => {
           console.log("cadidate selectssss", selectedCandidateId, candidate.id);
@@ -545,7 +545,7 @@ const PaginationFooter = () => {
 };
 const NoFiltersScreen = ({ onStartSearching }) => {
   return (
-    <div className="flex flex-col  bg-white items-center justify-center h-full text-center p-6">
+    <div className="flex flex-col overfloy-auto bg-white items-center justify-center h-full text-center p-6">
       <div className="">
         <img src={talentSearch} alt="Talent Search" />
       </div>
@@ -590,7 +590,7 @@ const Sourcing = () => {
   });
   const [isModalOpen, setIsModalOpen] = useState(false); // Manage filter modal state
   const [isCandidateModalVisible, setIsCandidateModalVisible] = useState(false);
-  const [addToFolderModalVisible, setAddToFolderModalVisible] = useState(false);
+  // const [addToFolderModalVisible, setAddToFolderModalVisible] = useState(false);
   // Function to toggle modal visibility
   const toggleModal = () => {
     setIsModalOpen(!isModalOpen);
@@ -643,7 +643,7 @@ const Sourcing = () => {
   };
 
   return (
-    <div className="w-full h-screen bg-gray-100 ">
+    <div className="w-full h-screen bg-gray-100 overflow-hidden">
       <div className="flex flex-col lg:flex-row items-center justify-between bg-white shadow-sm w-full h-auto lg:h-16  px-2 py-2 header-container">
         <h1 className="header-title">Sourcing Hub</h1>
         {/* Icons Section */}
@@ -675,9 +675,11 @@ const Sourcing = () => {
 
       {/* Count and Filter Section */}
       {/* Add filters or actions here if needed */}
-     <div className="overflow-y-auto">
+      <div className="overflow-auto h-screen mb-[90px]">
      {!filtersApplied ? (
+      <div className=" items-center justify-center min-h-screen overflow-auto mb-[60px]">
         <NoFiltersScreen onStartSearching={toggleModal} />
+      </div>
       ) : (
         <div className="overflow-hidden">
       {/* ScrollView */}

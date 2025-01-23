@@ -5,7 +5,7 @@ const FilterModal = ({ isOpen, onClose, onApply, onReset, filters }) => {
   const [localFilters, setLocalFilters] = useState(filters);
 
   // State for each input field
-    const [jobTitleInput, setJobTitleInput] = useState('');
+    // const [jobTitleInput, setJobTitleInput] = useState('');
     const [jobTitles, setJobTitles] = useState([]);
   
     const [locationInput, setLocationInput] = useState('');

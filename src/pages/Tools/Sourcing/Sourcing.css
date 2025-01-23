@@ -37,7 +37,7 @@
     @apply items-center justify-center  w-[46px] h-[46px] rounded-[100px] mx-1 overflow-hidden
 }
 .candidate-details{
-    @apply w-[60%] mr-4 p-[14px] pb-[20px] mb-[190px] overflow-auto scroll-width-none bg-white h-auto rounded-[14px]
+    @apply w-[60%] mr-4 p-[14px] pb-[20px] mb-[110px] overflow-auto scroll-width-none bg-white h-auto rounded-[14px]
 }
 /* Responsive Design */
 
