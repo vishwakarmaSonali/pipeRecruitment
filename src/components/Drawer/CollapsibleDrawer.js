@@ -16,10 +16,14 @@ import Reports from "../../assets/icons/reports.svg";
 import Calendar from "../../assets/icons/calendar.svg";
 import arrow from "../../assets/icons/expandablearrow.svg";
 import MenuIcon from "../../assets/icons/hamburgerIcon.svg";
+import { ThemeProvider, createTheme } from '@mui/material/styles';
+
 // import { ReactComponent as UserIcon } from "../../assets/icons/user.svg";
 import "./CollapsibleDrawer.css"; // Import the CSS file
 
 const CollapsibleDrawer = () => {
+  const theme = createTheme();
+
   const [isOpen, setIsOpen] = useState(true);
   const [selectedItem, setSelectedItem] = useState("/"); // Track selected menu item
   const location = useLocation();
@@ -457,11 +461,15 @@ const CollapsibleDrawer = () => {
           isTabletView && isOpen ? "blurred" : ""
         }`}
       >
+            <ThemeProvider theme={theme}>
+
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/sourcing" element={<Sourcing />} />
           <Route path="/client" element={<Client />} />
         </Routes>
+        </ThemeProvider>
+
       </div>
     </div>
   );

@@ -1,4 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
+import { Menu, MenuItem, ListItemIcon, Typography } from "@mui/material";
+import { css } from "@emotion/react";
 import "./Sourcing.css";
 import SearchIcon from "../../../assets/icons/sourcingIcons/search-normal.svg";
 import MessagesIcon from "../../../assets/icons/sourcingIcons/messages.svg";
@@ -19,8 +21,9 @@ import LinkedIn from "../../../assets/icons/sourcingIcons/linkedin.svg";
 import FilterModal from "../../../components/filterModal/FilterModal";
 import FolderModal from "../../../components/AddToFolderModals/AddModal";
 import talentSearch from "../../../assets/images/talentSearchImg.svg";
-import tickCircle from "../../../assets/icons/tickCircle.svg"
-import info from "../../../assets/icons/info-circle.svg"
+import tickCircle from "../../../assets/icons/tickCircle.svg";
+import info from "../../../assets/icons/info-circle.svg";
+
 const skills = [
   "UI Design",
   "Wireframing",
@@ -160,12 +163,62 @@ const SkillsList = ({ isExpanded }) => {
     </div>
   );
 };
+
 const BulkActionView = ({
   toggleModal,
   isBulkAction,
   onSelectAll,
   isAllSelected,
+  filters,  // Receive filters prop
+
 }) => {
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [modalOpen, setModalOpen] = useState(false);
+
+  const open = Boolean(anchorEl);
+
+  // Function to calculate the number of applied filters
+  const countAppliedFilters = () => {
+    let count = 0;
+    Object.values(filters).forEach((filter) => {
+      if (typeof filter === "object") {
+        // Count nested filters for years of experience and education
+        Object.values(filter).forEach((nestedFilter) => {
+          if (nestedFilter && nestedFilter.trim() !== "") count++;
+        });
+      } else if (filter && filter.trim() !== "") {
+        count++;
+      }
+    });
+    return count;
+  };
+
+  const filterCount = countAppliedFilters();
+
+  const menuItemStyle = css`
+  font-size: 14px;
+  font-weight: 500;
+ text:'ubuntu'
+fontFamily: "'Ubuntu', sans-serif",  // Apply Ubuntu font
+ color: #333;
+  &:hover {
+    background-color: #f0f0f0;
+
+  }
+`;
+  // Function to handle opening the dropdown menu
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  // Function to handle closing the dropdown menu
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+  const handleAddToFolderMenu = () => {
+    handleClose();
+    setModalOpen(true);
+  };
   return (
     <div className="w-full bg-gray-100 p-4 flex items-center justify-between">
       <div className="flex items-center space-x-2">
@@ -184,13 +237,66 @@ const BulkActionView = ({
 
       <button
         className="text-white bg-buttonBLue px-[14px] py-[10px] rounded-[8px] flex items-center space-x-1 shadow-md hover:bg-opacity-80"
-        onClick={toggleModal}
+        onClick={isBulkAction ? handleClick : toggleModal}
       >
         <span className="font-ubuntu text-m">
-          {isBulkAction ? "Bulk Action" : "Filter"}
+          {isBulkAction ? "Bulk Action" : `Filter ${filterCount > 0 ? `(${filterCount})` : ""}`}
         </span>
         <img src={isBulkAction ? DropArrow : FilterIcon} alt="filter" />
       </button>
+
+      {/* Menu for Bulk Actions */}
+      <Menu
+        anchorEl={anchorEl}
+        open={open}
+        onClose={handleClose}
+        PaperProps={{
+          sx: {
+            borderRadius: "12px",
+            boxShadow: "0px 4px 10px rgba(0,0,0,0.1)",
+            width: "180px",
+            padding: "5px 0",
+            marginTop: "5px",
+            fontFamily: "'Ubuntu', sans-serif", // Apply Ubuntu font
+            fontSize: "14px",
+            color: "#151B23",
+          },
+        }}
+      >
+        <MenuItem onClick={handleClose} css={menuItemStyle}>
+          <ListItemIcon>
+            <img src={ProfileAdd} alt="Add to candidate" />
+          </ListItemIcon>
+          <Typography
+            sx={{ fontSize: "14px", fontFamily: "'Ubuntu', sans-serif" }}
+          >
+            Add to candidate
+          </Typography>
+        </MenuItem>
+        <MenuItem onClick={handleClose}>
+          <ListItemIcon>
+            <img src={jobIcon} alt="Add to jobs" />
+          </ListItemIcon>
+          <Typography
+            sx={{ fontSize: "14px", fontFamily: "'Ubuntu', sans-serif" }}
+          >
+            Add to jobs
+          </Typography>
+        </MenuItem>
+        <MenuItem onClick={handleAddToFolderMenu}>
+          <ListItemIcon>
+            <img src={FolderAdd} alt="Add to folder" />
+          </ListItemIcon>
+          <Typography
+            sx={{ fontSize: "14px", fontFamily: "'Ubuntu', sans-serif" }}
+          >
+            Add to folder
+          </Typography>
+        </MenuItem>
+      </Menu>
+      {modalOpen && (
+        <FolderModal isOpen={modalOpen} onClose={() => setModalOpen(false)} />
+      )}
     </div>
   );
 };
@@ -549,30 +655,64 @@ const NoFiltersScreen = ({ onStartSearching }) => {
       <div className="">
         <img src={talentSearch} alt="Talent Search" />
       </div>
-   <div className="relative max-w-[680px]">
-   <h2 className="font-ubuntu text-xl text-customBlue font-medium mt-[-20px] z-50">
-        Expand Your Talent Search with Our Sourcing Hub
-      </h2>
-      <p className="text-customGray mt-[20px] font-ubuntu text-l text-left">
-      Looking for the perfect candidate? Tap into a vast network of talent with our powerful sourcing tool. Access millions of potential candidates and streamline your recruitment process.</p>
-      <ul className="text-left  text-m text-customBlue mt-4 space-y-1">
-        <li><div className="flex items-center gap-[6px]"><img alt="tick" src={tickCircle} /><text >Find Hidden Talent</text> </div><text className="text-customGray ml-[20px]">Discover qualified professionals who may not be actively job hunting</text></li>
-        <li><div className="flex items-center gap-[6px]"><img alt="tick" src={tickCircle} /><text> Refine Your Search</text></div><text className="text-customGray ml-[20px]">Use advanced filters like skills, location, experience, industry, and more to pinpoint the ideal candidates</text></li>
-        <li><div className="flex items-center gap-[6px]"><img alt="tick" src={tickCircle} /><text>Create Robust Talent Pipelines</text></div><text className="text-customGray ml-[20px]">Organize and track candidates efficiently, ensuring a steady flow of qualified talent for current and future roles.</text></li>
-      </ul>
-      <div className="mt-6 px-[16px] bg-buttonBlueOpacity py-[16px] flex items-start gap-[8px] text-left rounded-md">
-        <img src={info} alt="info"/>
-      <span className="text-sm text-customBlue text-left font-ubuntu leading-[13.79px]">
-      Our platform leverages publicly available data from trusted third-party sources to provide access to a comprehensive external candidate database. This is entirely separate from your internal database, ensuring your organization's data remains secure and private. Learn more about data usage.
-        </span>
+      <div className="relative max-w-[680px]">
+        <h2 className="font-ubuntu text-xl text-customBlue font-medium mt-[-20px] z-50">
+          Expand Your Talent Search with Our Sourcing Hub
+        </h2>
+        <p className="text-customGray mt-[20px] font-ubuntu text-l text-left">
+          Looking for the perfect candidate? Tap into a vast network of talent
+          with our powerful sourcing tool. Access millions of potential
+          candidates and streamline your recruitment process.
+        </p>
+        <ul className="text-left  text-m text-customBlue mt-4 space-y-1">
+          <li>
+            <div className="flex items-center gap-[6px]">
+              <img alt="tick" src={tickCircle} />
+              <text>Find Hidden Talent</text>{" "}
+            </div>
+            <text className="text-customGray ml-[20px]">
+              Discover qualified professionals who may not be actively job
+              hunting
+            </text>
+          </li>
+          <li>
+            <div className="flex items-center gap-[6px]">
+              <img alt="tick" src={tickCircle} />
+              <text> Refine Your Search</text>
+            </div>
+            <text className="text-customGray ml-[20px]">
+              Use advanced filters like skills, location, experience, industry,
+              and more to pinpoint the ideal candidates
+            </text>
+          </li>
+          <li>
+            <div className="flex items-center gap-[6px]">
+              <img alt="tick" src={tickCircle} />
+              <text>Create Robust Talent Pipelines</text>
+            </div>
+            <text className="text-customGray ml-[20px]">
+              Organize and track candidates efficiently, ensuring a steady flow
+              of qualified talent for current and future roles.
+            </text>
+          </li>
+        </ul>
+        <div className="mt-6 px-[16px] bg-buttonBlueOpacity py-[16px] flex items-start gap-[8px] text-left rounded-md">
+          <img src={info} alt="info" />
+          <span className="text-sm text-customBlue text-left font-ubuntu leading-[13.79px]">
+            Our platform leverages publicly available data from trusted
+            third-party sources to provide access to a comprehensive external
+            candidate database. This is entirely separate from your internal
+            database, ensuring your organization's data remains secure and
+            private. Learn more about data usage.
+          </span>
+        </div>
+        <button
+          className="text-white text-ubuntu text-m bg-buttonBLue px-[14px] py-[10px] rounded-[8px] mt-[20px] space-x-1 shadow-md hover:bg-opacity-80"
+          onClick={onStartSearching}
+        >
+          {" Start Searching +"}
+        </button>
       </div>
-      <button
-        className="text-white text-ubuntu text-m bg-buttonBLue px-[14px] py-[10px] rounded-[8px] mt-[20px] space-x-1 shadow-md hover:bg-opacity-80"
-        onClick={onStartSearching}
-      >
-       {" Start Searching +"}
-      </button>
-   </div>
     </div>
   );
 };
@@ -676,39 +816,40 @@ const Sourcing = () => {
       {/* Count and Filter Section */}
       {/* Add filters or actions here if needed */}
       <div className="overflow-auto h-screen mb-[90px]">
-     {!filtersApplied ? (
-      <div className=" items-center justify-center min-h-screen overflow-auto mb-[40px]">
-        <NoFiltersScreen onStartSearching={toggleModal} />
-      </div>
-      ) : (
-        <div className="overflow-hidden">
-      {/* ScrollView */}
-        <BulkActionView
-          toggleModal={toggleModal}
-          isBulkAction={selectedCandidates.length > 1}
-          onSelectAll={handleSelectAll}
-          isAllSelected={selectedCandidates.length === candidates.length}
-        />
-      <div className="w-full h-screen overflow-hidden flex">
-        {/* Candidate List Section */}
-        <div className="candidate-list w-full lg:w-[40%] px-4">
-          <CandidateList
-            onSelect={handleCandidateSelectContainer}
-            selectedCandidateId={selectedCandidate?.id}
-            onCandidateSelect={handleCandidateSelect}
-            selectedCandidates={selectedCandidates}
-          />
-        </div>
+        {!filtersApplied ? (
+          <div className=" items-center justify-center min-h-screen overflow-auto mb-[40px]">
+            <NoFiltersScreen onStartSearching={toggleModal} />
+          </div>
+        ) : (
+          <div className="overflow-hidden">
+            {/* ScrollView */}
+            <BulkActionView
+              toggleModal={toggleModal}
+              isBulkAction={selectedCandidates.length > 1}
+              onSelectAll={handleSelectAll}
+              isAllSelected={selectedCandidates.length === candidates.length}
+              filters={filters}  // Pass filters as a prop
+            />
+            <div className="w-full h-screen overflow-hidden flex">
+              {/* Candidate List Section */}
+              <div className="candidate-list w-full lg:w-[40%] px-4">
+                <CandidateList
+                  onSelect={handleCandidateSelectContainer}
+                  selectedCandidateId={selectedCandidate?.id}
+                  onCandidateSelect={handleCandidateSelect}
+                  selectedCandidates={selectedCandidates}
+                />
+              </div>
 
-        {/* Candidate Details Section */}
-        <div className="candidate-details hidden lg:block p-4 h-auto">
-          <CandidateDetails selectedCandidate={selectedCandidate} />
-        </div>
+              {/* Candidate Details Section */}
+              <div className="candidate-details hidden lg:block p-4 h-auto">
+                <CandidateDetails selectedCandidate={selectedCandidate} />
+              </div>
+            </div>
+            <PaginationFooter />
+          </div>
+        )}
       </div>
-      <PaginationFooter />
-      </div>
-      )}
-     </div>
       {/* Filter Modal */}
       {isCandidateModalVisible && (
         <div>
