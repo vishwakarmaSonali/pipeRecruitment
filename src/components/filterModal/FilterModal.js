@@ -1,4 +1,4 @@
-import React,{useState,useEffect,useRef} from "react";
+import React,{useState,useEffect,useRef,useCallback} from "react";
 import "./FilterModal.css"
 import CustomDropdown from "../CustomDropdown/CustomDropdown";
 const FilterModal = ({ isOpen, onClose, onApply, onReset, filters }) => {
@@ -97,14 +97,14 @@ const FilterModal = ({ isOpen, onClose, onApply, onReset, filters }) => {
     return () => {
       document.removeEventListener("mousedown", handleOutsideClick);
     };
-  }, [isOpen]);
+  }, [isOpen,closeWithAnimation]);
 
-  const closeWithAnimation = () => {
+  const closeWithAnimation = useCallback(() => {
     setIsVisible(false);
     setTimeout(() => {
       onClose();
     }, 1000);
-  };
+  }, [onClose]);
   // Handle input change for single radius value
   const handleRadiusChange = (e) => {
     setRadius(e.target.value);
