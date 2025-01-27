@@ -139,7 +139,7 @@ const FilterModal = ({ isOpen, onClose, onApply, onReset, filters }) => {
         {/* Modal Header */}
         <div className="flex justify-between items-center">
           <h2 className="filter-heading">Filters</h2>
-          <button onClick={onClose()} className="text-customBlue hover:text-gray-900">
+          <button onClick={onClose} className="text-customBlue hover:text-gray-900">
             ✕
           </button>
         </div>

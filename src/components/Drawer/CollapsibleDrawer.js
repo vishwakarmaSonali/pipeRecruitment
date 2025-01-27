@@ -4,6 +4,7 @@ import Home from "../../pages/Home/Home";
 import Client from "../../pages/Recruitment/Client";
 import Sourcing from "../../pages/Tools/Sourcing/Sourcing";
 import Logo from "../../assets/images/Logo.svg";
+import LogoExpanded from "../../assets/images/LogoExpanded.svg";
 import HomeIcon from "../../assets/icons/homeIcon.svg";
 import User from "../../assets/icons/user.svg";
 import Teams from "../../assets/icons/teams.svg";
@@ -140,12 +141,17 @@ const CollapsibleDrawer = () => {
             !isOpen ? "justify-center" : ""
           } items-center`}
         >
+        { isOpen? <img
+            src={LogoExpanded}
+            alt="Logo"
+            className={`logo ${isOpen ? "visible" : "hidden md:block"}`}
+          />:
           <img
             src={Logo}
             alt="Logo"
             className={`logo ${isOpen ? "visible" : "hidden md:block"}`}
-          />
-          {isOpen && <text className="title">Pipe Recruiter</text>}
+          />}
+         
         </div>
 
         <div className="overflow-auto scroll-width-none">

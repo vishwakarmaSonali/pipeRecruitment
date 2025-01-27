@@ -22,7 +22,7 @@
     @apply text-custom-large ml-[8px] font-ubuntu font-medium 
 }
 .search-input{
-   @apply w-[400px] font-ubuntu font-normal  px-10 h-[40px] text-sm text-gray-700 bg-gray-100 rounded-[8px] focus:outline-none focus:ring-1  transition-all duration-300 ease-in-out flex items-center 
+   @apply w-[400px] font-ubuntu font-normal  px-10 h-[40px] text-sm text-gray-700 bg-gray-100 rounded-[8px] focus:outline-none focus:ring-0  transition-all duration-300 ease-in-out flex items-center 
 }
 .search-icon {
     @apply absolute left-2 top-2 w-5 h-5 text-gray-500
@@ -65,12 +65,14 @@
         @apply block;
     }
     .search-input {
-        @apply hidden; /* Hide search input on mobile */
+        @apply hidden focus:outline-none focus:ring-0; /* Hide search input on mobile */
     }
     .candidate-list {
         @apply w-full h-screen overflow-y-auto scroll-width-none; /* Enable scrolling */
     }
-    
+    .candidate-scroll{
+        @apply scroll-width-none
+    }
       .candidate-details {
         @apply hidden; /* Hide the candidate details on tablets */
       }
@@ -91,7 +93,7 @@
         @apply  hidden
     }
     .search-input {
-        @apply w-[400px]; /* Full size for desktop */
+        @apply w-[400px] focus:outline-none focus:ring-0; /* Full size for desktop */
     }
     .candidate-list {
         @apply w-[40%] h-full overflow-auto bg-customGrey1 overflow-y-auto px-4 scroll-width-none;

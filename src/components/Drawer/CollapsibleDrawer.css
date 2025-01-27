@@ -51,7 +51,9 @@
 .logo {
     @apply h-[24px] w-[24px]; /* Tailwind's h-8 and w-8 */
 }
-
+.logo {
+  @apply h-[24px] w-[220px]; /* Tailwind's h-8 and w-8 */
+}
 
 /* Hamburger button */
 .hamburger-button {

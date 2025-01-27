@@ -23,7 +23,7 @@ import FolderModal from "../../../components/AddToFolderModals/AddModal";
 import hiddenTalent from "../../../assets/images/SourcingImages/1.png"
 import refineSearch from "../../../assets/images/SourcingImages/2.png"
 import talentpipelines from "../../../assets/images/SourcingImages/3.png"
-
+import Add from "../../../assets/icons/add.svg"
 const skills = [
   "UI Design",
   "Wireframing",
@@ -708,6 +708,8 @@ const Sourcing = () => {
   });
   const [isModalOpen, setIsModalOpen] = useState(false); // Manage filter modal state
   const [isCandidateModalVisible, setIsCandidateModalVisible] = useState(false);
+  const [isSearchExpanded, setIsSearchExpanded] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
   // const [addToFolderModalVisible, setAddToFolderModalVisible] = useState(false);
   // Function to toggle modal visibility
   const toggleModal = () => {
@@ -760,25 +762,60 @@ const Sourcing = () => {
       setIsCandidateModalVisible(true);
     }
   };
+  // Handle search expansion
+  const handleSearchExpand = () => {
+    setIsSearchExpanded(true);
+  };
 
+  // Handle search cancel
+  const handleSearchCancel = () => {
+    setIsSearchExpanded(false);
+    setSearchQuery("");
+  };
   return (
     <div className="w-full h-screen bg-gray-100 overflow-hidden">
       <div className="flex flex-col lg:flex-row items-center justify-between bg-white shadow-sm w-full h-auto lg:h-16  px-2 py-2 header-container">
-        <h1 className="header-title">Sourcing Hub</h1>
-        {/* Icons Section */}
-        <div className="flex items-center header-icons-container space-x-2">
-          {/* Search Input */}
-          <div className="relative hidden md:flex lg:flex">
-            <img src={SearchIcon} alt="Search" className="search-icon" />
+       
+      {isSearchExpanded ? (
+          <div className="flex items-center justify-between w-full px-4">
+            <div className="relative w-full md:flex  font-ubuntu font-normal  px-10 h-[40px] text-sm text-gray-700 bg-gray-100 rounded-[8px] focus:outline-none focus:ring-1  transition-all duration-300 ease-in-out flex items-center">
+            <img src={SearchIcon} alt="Search" className="search-icon" onClick={handleSearchExpand} />
             <input
               type="text"
               placeholder="Search..."
-              className="search-input"
+              className="w-full bg-gray-100 focus:outline-none"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+            </div>
+            <button
+              onClick={handleSearchCancel}
+              className="ml-4 text-buttonBLue font-ubuntu font-medium cursor-pointer MD:FLEX"
+            >
+              Cancel
+            </button>
+          </div>
+        ) :(<>
+       <h1 className="header-title">Sourcing Hub</h1>
+        {/* Icons Section */}
+        <div className="flex items-center header-icons-container space-x-2">
+          {/* Search Input */}
+          <div className="relative hidden md:hidden lg:flex ">
+            <img src={SearchIcon} alt="Search" className="search-icon" onClick={handleSearchExpand} />
+            <input
+              type="text"
+              placeholder=""
+              className="search-input focus:outline-none focus:ring-0"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
             />
           </div>
-          <button className="header-icons search xl:hidden">
+          <button className="header-icons search xl:hidden" onClick={handleSearchExpand}>
             <img src={SearchIcon} alt="Search" />
           </button>
+          <div className="header-icons">
+            <img src={Add} alt="MessagesIcon" />
+          </div>
           <div className="header-icons">
             <img src={MessagesIcon} alt="MessagesIcon" />
           </div>
@@ -788,19 +825,19 @@ const Sourcing = () => {
           <div className="profile-div">
             <img src={ProfileImage} alt="MessagesIcon" />
           </div>
-        </div>
+        </div></>)}
       </div>
       {/* Count and Filter Section */}
 
       {/* Count and Filter Section */}
       {/* Add filters or actions here if needed */}
-      <div className="overflow-auto h-screen mb-[90px]">
+      <div className="overflow-auto h-screen mb-[90px] scroll-width-none">
         {!filtersApplied ? (
-          <div className=" items-center justify-center min-h-screen overflow-auto">
+          <div className=" items-center justify-center min-h-screen overflow-auto scroll-width-none">
             <NoFiltersScreen onStartSearching={toggleModal} />
           </div>
         ) : (
-          <div className="overflow-hidden">
+          <div className="overflow-hidden scroll-width-none">
             {/* ScrollView */}
             <BulkActionView
               toggleModal={toggleModal}
@@ -809,7 +846,7 @@ const Sourcing = () => {
               isAllSelected={selectedCandidates.length === candidates.length}
               filters={filters}  // Pass filters as a prop
             />
-            <div className="w-full h-screen overflow-hidden flex">
+            <div className="w-full scroll-width-none h-screen overflow-hidden flex">
               {/* Candidate List Section */}
               <div className="candidate-list w-full lg:w-[40%] px-4">
                 <CandidateList
