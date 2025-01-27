@@ -18,9 +18,9 @@ import RightArrow from "../../../assets/icons/rightArrow.svg";
 import LinkedIn from "../../../assets/icons/sourcingIcons/linkedin.svg";
 import FilterModal from "../../../components/filterModal/FilterModal";
 import FolderModal from "../../../components/AddToFolderModals/AddModal";
-import hiddenTalent from "../../../assets/images/SourcingImages/1.png"
-import refineSearch from "../../../assets/images/SourcingImages/2.png"
-import talentpipelines from "../../../assets/images/SourcingImages/3.png"
+import hiddenTalent from "../../../assets/images/SourcingImages/1.png";
+import refineSearch from "../../../assets/images/SourcingImages/2.png";
+import talentpipelines from "../../../assets/images/SourcingImages/3.png";
 const skills = [
   "UI Design",
   "Wireframing",
@@ -166,8 +166,7 @@ const BulkActionView = ({
   isBulkAction,
   onSelectAll,
   isAllSelected,
-  filters,  // Receive filters prop
-
+  filters, // Receive filters prop
 }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
@@ -237,7 +236,9 @@ fontFamily: "'Ubuntu', sans-serif",  // Apply Ubuntu font
         onClick={isBulkAction ? handleClick : toggleModal}
       >
         <span className="font-ubuntu text-m">
-          {isBulkAction ? "Bulk Action" : `Filter ${filterCount > 0 ? `(${filterCount})` : ""}`}
+          {isBulkAction
+            ? "Bulk Action"
+            : `Filter ${filterCount > 0 ? `(${filterCount})` : ""}`}
         </span>
         <img src={isBulkAction ? DropArrow : FilterIcon} alt="filter" />
       </button>
@@ -649,32 +650,57 @@ const PaginationFooter = () => {
 const NoFiltersScreen = ({ onStartSearching }) => {
   return (
     <div className="flex flex-col overfloy-hidden bg-white items-center justify-center h-screen text-center ">
-     
-      <div className=" max-w-[680px] text-center " >
+      <div className=" max-w-[680px] text-center ">
         <h2 className="font-ubuntu text-3xl text-customBlue  text-center font-medium z-50 w-25">
           Expand Your Talent Search with Our Sourcing Hub
         </h2>
-        <ul className="flex justify-between items-center gap-6  p-0 mt-6" >
+        <ul className="flex justify-between items-center gap-6  p-0 mt-6">
           <li>
-            <img className="w-40 h-40 mx-auto" src={hiddenTalent} alt="find hidden talent" />
+            <img
+              className="w-40 h-40 mx-auto"
+              src={hiddenTalent}
+              alt="find hidden talent"
+            />
             <div className="flex flex-col  mt-2 space-y-1">
-          <span className="font-ubuntu font-medium text-m text-customBlue ">Find Hidden Talent</span>
-          <span className="font-ubuntu font-normal text-m text-customGray ">Discover qualified professionals who may not be actively job hunting</span>
-        </div>
+              <span className="font-ubuntu font-medium text-m text-customBlue ">
+                Find Hidden Talent
+              </span>
+              <span className="font-ubuntu font-normal text-m text-customGray ">
+                Discover qualified professionals who may not be actively job
+                hunting
+              </span>
+            </div>
           </li>
           <li>
-            <img className="w-40 h-40 mx-auto" src={refineSearch} alt="refien your search" />
-         <div className="flex flex-col  mt-2 space-y-1">
-         <span className="font-ubuntu font-medium text-m text-customBlue">Refine Your Search</span>
-         <span className="font-ubuntu font-normal text-m text-customGray ">Use advance filters to find the perfect candidates.</span>
-         </div>
+            <img
+              className="w-40 h-40 mx-auto"
+              src={refineSearch}
+              alt="refien your search"
+            />
+            <div className="flex flex-col  mt-2 space-y-1">
+              <span className="font-ubuntu font-medium text-m text-customBlue">
+                Refine Your Search
+              </span>
+              <span className="font-ubuntu font-normal text-m text-customGray ">
+                Use advance filters to find the perfect candidates.
+              </span>
+            </div>
           </li>
           <li>
-            <img className="w-40 h-40 mx-auto" src={talentpipelines} alt="talent pipelines" />
-         <div className="flex flex-col  mt-2 space-y-1">
-         <span className="font-ubuntu font-medium text-m text-customBlue">Create Robust Talent Pipelines</span>
-         <span className="font-ubuntu font-normal text-m text-customGray ">Track and organize candidates to maintain a steady flow of top talent.</span>
-         </div>
+            <img
+              className="w-40 h-40 mx-auto"
+              src={talentpipelines}
+              alt="talent pipelines"
+            />
+            <div className="flex flex-col  mt-2 space-y-1">
+              <span className="font-ubuntu font-medium text-m text-customBlue">
+                Create Robust Talent Pipelines
+              </span>
+              <span className="font-ubuntu font-normal text-m text-customGray ">
+                Track and organize candidates to maintain a steady flow of top
+                talent.
+              </span>
+            </div>
           </li>
         </ul>
         <button
@@ -684,8 +710,14 @@ const NoFiltersScreen = ({ onStartSearching }) => {
           {" Start Searching +"}
         </button>
         <div className="flex place-items-center  max-h-sm mt-[90px]">
-          <span className="font-ubuntu text-xs text-customBlue ">Our platform uses trusted third-party data to offer a separate external candidate database, keeping your internal data secure and private.  <span className="buttonBLue  cursor-pointer">Learn more about data usage.</span></span>
-         
+          <span className="font-ubuntu text-xs text-customBlue ">
+            Our platform uses trusted third-party data to offer a separate
+            external candidate database, keeping your internal data secure and
+            private.{" "}
+            <span className="buttonBLue  cursor-pointer">
+              Learn more about data usage.
+            </span>
+          </span>
         </div>
       </div>
     </div>
@@ -770,8 +802,10 @@ const Sourcing = () => {
     setSearchQuery("");
   };
   return (
-    <div className="w-full h-screen bg-gray-100 overflow-hidden">
-   
+    <div
+      className="w-full h-screen bg-gray-100 overflow-hidden"
+      style={{ width: "100%", boxSizing: "border-box", paddingLeft: "96px" }}
+    >
       {/* Count and Filter Section */}
 
       {/* Count and Filter Section */}
@@ -789,7 +823,7 @@ const Sourcing = () => {
               isBulkAction={selectedCandidates.length > 1}
               onSelectAll={handleSelectAll}
               isAllSelected={selectedCandidates.length === candidates.length}
-              filters={filters}  // Pass filters as a prop
+              filters={filters} // Pass filters as a prop
             />
             <div className="w-full scroll-width-none h-screen overflow-hidden flex">
               {/* Candidate List Section */}

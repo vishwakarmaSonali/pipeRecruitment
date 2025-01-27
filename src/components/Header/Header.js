@@ -45,7 +45,7 @@ const Header = ({ title }) => {
   };
 
   return (
-    <div className="w-full h-full bg-gray-100 overflow-hidden">
+    <div className="w-full  bg-gray-100 overflow-hidden ">
       <div
         className={`fixed top-0 left-0 right-0 h-[68px]  bg-white flex items-center transition-all duration-300 z-50 `}
       >
@@ -87,7 +87,10 @@ const Header = ({ title }) => {
             </button>
           </div>
         ) : (
-          <div className="flex justify-between  bg-white w-full">
+          <div
+            className="flex justify-between  bg-white w-full"
+            style={{ padding: "10px 16px 10px 112px" }}
+          >
             <h1 className="header-title">{title}</h1>
             <div className="flex items-center header-icons-container space-x-2">
               <div className="relative hidden md:hidden lg:flex ">
