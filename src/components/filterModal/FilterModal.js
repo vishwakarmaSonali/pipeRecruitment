@@ -1,4 +1,4 @@
-import React,{useState,useEffect,useRef,useCallback} from "react";
+import React,{useState,useEffect,useRef} from "react";
 import "./FilterModal.css"
 import CustomDropdown from "../CustomDropdown/CustomDropdown";
 const FilterModal = ({ isOpen, onClose, onApply, onReset, filters }) => {
@@ -70,12 +70,15 @@ const FilterModal = ({ isOpen, onClose, onApply, onReset, filters }) => {
     });
     onApply({ ...localFilters, radius, industry, experience });
   };
+
+
+
   // Effect to handle the modal visibility state and animation
   useEffect(() => {
     if (isOpen) {
       setIsVisible(true);
     } else {
-      setTimeout(() => setIsVisible(false), 800); // Delay close to allow slide-out animation
+      setTimeout(() => setIsVisible(false), 300); // Reduce delay
     }
   }, [isOpen]);
 
@@ -87,7 +90,7 @@ const FilterModal = ({ isOpen, onClose, onApply, onReset, filters }) => {
   useEffect(() => {
     const handleOutsideClick = (event) => {
       if (modalRef.current && !modalRef.current.contains(event.target)) {
-        closeWithAnimation();
+  
       }
     };
 
@@ -97,14 +100,9 @@ const FilterModal = ({ isOpen, onClose, onApply, onReset, filters }) => {
     return () => {
       document.removeEventListener("mousedown", handleOutsideClick);
     };
-  }, [isOpen,closeWithAnimation]);
+  }, [isOpen]);
 
-  const closeWithAnimation = useCallback(() => {
-    setIsVisible(false);
-    setTimeout(() => {
-      onClose();
-    }, 1000);
-  }, [onClose]);
+  
   // Handle input change for single radius value
   const handleRadiusChange = (e) => {
     setRadius(e.target.value);
@@ -141,7 +139,7 @@ const FilterModal = ({ isOpen, onClose, onApply, onReset, filters }) => {
         {/* Modal Header */}
         <div className="flex justify-between items-center">
           <h2 className="filter-heading">Filters</h2>
-          <button onClick={closeWithAnimation} className="text-customBlue hover:text-gray-900">
+          <button onClick={onClose()} className="text-customBlue hover:text-gray-900">
             ✕
           </button>
         </div>

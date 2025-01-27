@@ -30,7 +30,8 @@ module.exports = {
       "l":'16px',
       "xl":'18px',
       'custom-large': '22px', // Custom font size
-      "xxl":"24px"
+      "xxl":"24px",
+      "3xl":'26px'
     },
     fontWeight: {
       thin: '100',

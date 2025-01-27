@@ -20,9 +20,9 @@ import RightArrow from "../../../assets/icons/rightArrow.svg";
 import LinkedIn from "../../../assets/icons/sourcingIcons/linkedin.svg";
 import FilterModal from "../../../components/filterModal/FilterModal";
 import FolderModal from "../../../components/AddToFolderModals/AddModal";
-import talentSearch from "../../../assets/images/talentSearchImg.svg";
-import tickCircle from "../../../assets/icons/tickCircle.svg";
-import info from "../../../assets/icons/info-circle.svg";
+import hiddenTalent from "../../../assets/images/SourcingImages/1.png"
+import refineSearch from "../../../assets/images/SourcingImages/2.png"
+import talentpipelines from "../../../assets/images/SourcingImages/3.png"
 
 const skills = [
   "UI Design",
@@ -651,67 +651,45 @@ const PaginationFooter = () => {
 };
 const NoFiltersScreen = ({ onStartSearching }) => {
   return (
-    <div className="flex flex-col overfloy-auto bg-white items-center justify-center h-full text-center p-6">
-      <div className="">
-        <img src={talentSearch} alt="Talent Search" />
-      </div>
-      <div className="relative max-w-[680px]">
-        <h2 className="font-ubuntu text-xl text-customBlue font-medium mt-[-20px] z-50">
+    <div className="flex flex-col overfloy-hidden bg-white items-center justify-center h-screen text-center ">
+     
+      <div className=" max-w-[680px] text-center " >
+        <h2 className="font-ubuntu text-3xl text-customBlue  text-center font-medium z-50 w-25">
           Expand Your Talent Search with Our Sourcing Hub
         </h2>
-        <p className="text-customGray mt-[20px] font-ubuntu text-l text-left">
-          Looking for the perfect candidate? Tap into a vast network of talent
-          with our powerful sourcing tool. Access millions of potential
-          candidates and streamline your recruitment process.
-        </p>
-        <ul className="text-left  text-m text-customBlue mt-4 space-y-1">
+        <ul className="flex justify-between items-center gap-6  p-0 mt-6" >
           <li>
-            <div className="flex items-center gap-[6px]">
-              <img alt="tick" src={tickCircle} />
-              <text>Find Hidden Talent</text>{" "}
-            </div>
-            <text className="text-customGray ml-[20px]">
-              Discover qualified professionals who may not be actively job
-              hunting
-            </text>
+            <img className="w-40 h-40 mx-auto" src={hiddenTalent} alt="find hidden talent" />
+            <div className="flex flex-col  mt-2 space-y-1">
+          <span className="font-ubuntu font-medium text-m text-customBlue ">Find Hidden Talent</span>
+          <span className="font-ubuntu font-normal text-m text-customGray ">Discover qualified professionals who may not be actively job hunting</span>
+        </div>
           </li>
           <li>
-            <div className="flex items-center gap-[6px]">
-              <img alt="tick" src={tickCircle} />
-              <text> Refine Your Search</text>
-            </div>
-            <text className="text-customGray ml-[20px]">
-              Use advanced filters like skills, location, experience, industry,
-              and more to pinpoint the ideal candidates
-            </text>
+            <img className="w-40 h-40 mx-auto" src={refineSearch} alt="refien your search" />
+         <div className="flex flex-col  mt-2 space-y-1">
+         <span className="font-ubuntu font-medium text-m text-customBlue">Refine Your Search</span>
+         <span className="font-ubuntu font-normal text-m text-customGray ">Use advance filters to find the perfect candidates.</span>
+         </div>
           </li>
           <li>
-            <div className="flex items-center gap-[6px]">
-              <img alt="tick" src={tickCircle} />
-              <text>Create Robust Talent Pipelines</text>
-            </div>
-            <text className="text-customGray ml-[20px]">
-              Organize and track candidates efficiently, ensuring a steady flow
-              of qualified talent for current and future roles.
-            </text>
+            <img className="w-40 h-40 mx-auto" src={talentpipelines} alt="talent pipelines" />
+         <div className="flex flex-col  mt-2 space-y-1">
+         <span className="font-ubuntu font-medium text-m text-customBlue">Create Robust Talent Pipelines</span>
+         <span className="font-ubuntu font-normal text-m text-customGray ">Track and organize candidates to maintain a steady flow of top talent.</span>
+         </div>
           </li>
         </ul>
-        <div className="mt-6 px-[16px] bg-buttonBlueOpacity py-[16px] flex items-start gap-[8px] text-left rounded-md">
-          <img src={info} alt="info" />
-          <span className="text-sm text-customBlue text-left font-ubuntu leading-[13.79px]">
-            Our platform leverages publicly available data from trusted
-            third-party sources to provide access to a comprehensive external
-            candidate database. This is entirely separate from your internal
-            database, ensuring your organization's data remains secure and
-            private. Learn more about data usage.
-          </span>
-        </div>
         <button
-          className="text-white text-ubuntu text-m bg-buttonBLue px-[14px] py-[10px] rounded-[8px] mt-[20px] space-x-1 shadow-md hover:bg-opacity-80"
+          className="text-white text-ubuntu text-m bg-buttonBLue px-[14px] py-[10px] rounded-[8px] mt-[60px] space-x-1 shadow-md hover:bg-opacity-80"
           onClick={onStartSearching}
         >
           {" Start Searching +"}
         </button>
+        <div className="flex place-items-center  max-h-sm mt-[90px]">
+          <span className="font-ubuntu text-xs text-customBlue ">Our platform uses trusted third-party data to offer a separate external candidate database, keeping your internal data secure and private.  <span className="buttonBLue  cursor-pointer">Learn more about data usage.</span></span>
+         
+        </div>
       </div>
     </div>
   );
@@ -733,7 +711,8 @@ const Sourcing = () => {
   // const [addToFolderModalVisible, setAddToFolderModalVisible] = useState(false);
   // Function to toggle modal visibility
   const toggleModal = () => {
-    setIsModalOpen(!isModalOpen);
+    console.log("Modal toggle triggered");
+    setIsModalOpen((prev) => !prev);
   };
   // Function to toggle the filter modal
   const toggleCandidateModal = () => {
@@ -817,7 +796,7 @@ const Sourcing = () => {
       {/* Add filters or actions here if needed */}
       <div className="overflow-auto h-screen mb-[90px]">
         {!filtersApplied ? (
-          <div className=" items-center justify-center min-h-screen overflow-auto mb-[40px]">
+          <div className=" items-center justify-center min-h-screen overflow-auto">
             <NoFiltersScreen onStartSearching={toggleModal} />
           </div>
         ) : (
