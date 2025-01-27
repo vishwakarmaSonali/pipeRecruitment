@@ -22,7 +22,7 @@ import { ThemeProvider, createTheme } from '@mui/material/styles';
 // import { ReactComponent as UserIcon } from "../../assets/icons/user.svg";
 import "./CollapsibleDrawer.css"; // Import the CSS file
 
-const CollapsibleDrawer = () => {
+const CollapsibleDrawer = ({isSearchExpanded}) => {
   const theme = createTheme();
 
   const [isOpen, setIsOpen] = useState(true);
@@ -104,10 +104,11 @@ const CollapsibleDrawer = () => {
   const isSelected = (path) => selectedItem === path;
 
   return (
-    <div className="flex h-full w-full">
+    <div className="flex h-full">
       {/* Hamburger menu for smaller screen  */}
       {/* Hamburger Menu for Smaller Screens */}
-      {(isMobileView || isTabletView) && !isOpen && (
+          { (isMobileView || isTabletView) && !isOpen && !isSearchExpanded && (
+
         <button
           className="hamburger-button fixed top-4 left-4 z-50"
           onClick={toggleDrawer}
@@ -461,22 +462,7 @@ const CollapsibleDrawer = () => {
         )}
       </div>
 
-      {/* Main Content */}
-      <div
-        className={`main-content flex-1 ${
-          isTabletView && isOpen ? "blurred" : ""
-        }`}
-      >
-            <ThemeProvider theme={theme}>
 
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/sourcing" element={<Sourcing />} />
-          <Route path="/client" element={<Client />} />
-        </Routes>
-        </ThemeProvider>
-
-      </div>
     </div>
   );
 };

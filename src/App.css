@@ -29,3 +29,6 @@
     width: 100%;
     height: 100%;
   }
+  .hide_hamemenu{
+    display: none;
+  }

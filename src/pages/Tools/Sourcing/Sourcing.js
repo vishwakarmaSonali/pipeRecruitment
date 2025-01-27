@@ -2,9 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { Menu, MenuItem, ListItemIcon, Typography } from "@mui/material";
 import { css } from "@emotion/react";
 import "./Sourcing.css";
-import SearchIcon from "../../../assets/icons/sourcingIcons/search-normal.svg";
-import MessagesIcon from "../../../assets/icons/sourcingIcons/messages.svg";
-import NotificationIcon from "../../../assets/icons/sourcingIcons/notification.svg";
+
 import LocationPin from "../../../assets/icons/sourcingIcons/locationpin.svg";
 import University from "../../../assets/icons/sourcingIcons/teacher.svg";
 import ProfileImage from "../../../assets/images/profileImage.svg";
@@ -23,7 +21,6 @@ import FolderModal from "../../../components/AddToFolderModals/AddModal";
 import hiddenTalent from "../../../assets/images/SourcingImages/1.png"
 import refineSearch from "../../../assets/images/SourcingImages/2.png"
 import talentpipelines from "../../../assets/images/SourcingImages/3.png"
-import Add from "../../../assets/icons/add.svg"
 const skills = [
   "UI Design",
   "Wireframing",
@@ -774,59 +771,7 @@ const Sourcing = () => {
   };
   return (
     <div className="w-full h-screen bg-gray-100 overflow-hidden">
-      <div className="flex flex-col lg:flex-row items-center justify-between bg-white shadow-sm w-full h-auto lg:h-16  px-2 py-2 header-container">
-       
-      {isSearchExpanded ? (
-          <div className="flex items-center justify-between w-full px-4">
-            <div className="relative w-full md:flex  font-ubuntu font-normal  px-10 h-[40px] text-sm text-gray-700 bg-gray-100 rounded-[8px] focus:outline-none focus:ring-1  transition-all duration-300 ease-in-out flex items-center">
-            <img src={SearchIcon} alt="Search" className="search-icon" onClick={handleSearchExpand} />
-            <input
-              type="text"
-              placeholder="Search..."
-              className="w-full bg-gray-100 focus:outline-none"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-            </div>
-            <button
-              onClick={handleSearchCancel}
-              className="ml-4 text-buttonBLue font-ubuntu font-medium cursor-pointer MD:FLEX"
-            >
-              Cancel
-            </button>
-          </div>
-        ) :(<>
-       <h1 className="header-title">Sourcing Hub</h1>
-        {/* Icons Section */}
-        <div className="flex items-center header-icons-container space-x-2">
-          {/* Search Input */}
-          <div className="relative hidden md:hidden lg:flex ">
-            <img src={SearchIcon} alt="Search" className="search-icon" onClick={handleSearchExpand} />
-            <input
-              type="text"
-              placeholder=""
-              className="search-input focus:outline-none focus:ring-0"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-          </div>
-          <button className="header-icons search xl:hidden" onClick={handleSearchExpand}>
-            <img src={SearchIcon} alt="Search" />
-          </button>
-          <div className="header-icons">
-            <img src={Add} alt="MessagesIcon" />
-          </div>
-          <div className="header-icons">
-            <img src={MessagesIcon} alt="MessagesIcon" />
-          </div>
-          <div className="header-icons">
-            <img src={NotificationIcon} alt="MessagesIcon" />
-          </div>
-          <div className="profile-div">
-            <img src={ProfileImage} alt="MessagesIcon" />
-          </div>
-        </div></>)}
-      </div>
+   
       {/* Count and Filter Section */}
 
       {/* Count and Filter Section */}
