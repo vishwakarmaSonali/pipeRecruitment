@@ -14,13 +14,17 @@ import { ReactComponent as Placements } from "../../assets/icons/placements.svg"
 import { ReactComponent as SourcingIcon } from "../../assets/icons/sourcing.svg";
 import { ReactComponent as Reports } from "../../assets/icons/reports.svg";
 import { ReactComponent as Calendar } from "../../assets/icons/calendar.svg";
+import { usePersistentState } from "../../helpers/config";
 
 const Sidebar = () => {
   const location = useLocation();
-  const [isExpanded, setIsExpanded] = useState(true); // Sidebar starts expanded
-  const [hoverEffectEnabled, setHoverEffectEnabled] = useState(false); // Disable hover initially
   const [activeLink, setActiveLink] = useState("/");
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  const [isExpanded, setIsExpanded] = usePersistentState("isExpanded", true);
+  const [hoverEffectEnabled, setHoverEffectEnabled] = usePersistentState(
+    "hoverEffectEnabled",
+    false
+  );
 
   useEffect(() => {
     setActiveLink(location.pathname);
@@ -34,15 +38,20 @@ const Sidebar = () => {
   }, [windowWidth]);
 
   const handleCollapseClick = () => {
-    if (!hoverEffectEnabled) {
+    if (!hoverEffectEnabled || !isExpanded) {
       setHoverEffectEnabled(true);
+      setIsExpanded(false);
+    } else {
+      setIsExpanded(true);
+      setHoverEffectEnabled(false);
     }
-    setIsExpanded((prev) => !prev);
   };
 
   return (
     <div
-      className={`sidebar-main ${isExpanded ? "sidebar-expanded" : ""}`}
+      className={`sidebar-main ${isExpanded ? "sidebar-expanded" : ""} ${
+        hoverEffectEnabled && "position-fixed"
+      }`}
       onMouseEnter={() => hoverEffectEnabled && setIsExpanded(true)}
       onMouseLeave={() => hoverEffectEnabled && setIsExpanded(false)}
     >

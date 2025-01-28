@@ -15,6 +15,9 @@
   overflow-x: hidden;
   z-index: 99;
 }
+/* .position-fixed {
+  position: fixed;
+} */
 
 .sidebar-expanded {
   width: 240px;
