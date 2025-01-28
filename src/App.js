@@ -1,13 +1,9 @@
 import React, { useState } from "react";
-import {
-  BrowserRouter as Router,
-  Route,
-  Routes,
-  useLocation,
-} from "react-router-dom";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Header from "./components/Header/Header";
 import Sourcing from "./pages/Tools/Sourcing/Sourcing";
 import Client from "./pages/Recruitment/Client";
+import "./App.css";
 
 const getTitle = (pathname) => {
   switch (pathname) {
@@ -20,28 +16,23 @@ const getTitle = (pathname) => {
   }
 };
 
+const router = createBrowserRouter([
+  {
+    path: "/client",
+    element: <Client />,
+  },
+  {
+    path: "/sourcing",
+    element: <Sourcing />,
+  },
+]);
 const App = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(true);
 
   return (
-    <Router>
-      <Header
-        title={getTitle(window.location.pathname)}
-        setDrawerState={setIsDrawerOpen}
-      />
-      <div className="flex" style={{ width: "100%" }}>
-        <Routes>
-          <Route
-            path="/client"
-            element={<Client isDrawerOpen={isDrawerOpen} />}
-          />
-          <Route
-            path="/sourcing"
-            element={<Sourcing isDrawerOpen={isDrawerOpen} />}
-          />
-        </Routes>
-      </div>
-    </Router>
+    <div className={`main-content`}>
+      <RouterProvider router={router} />
+    </div>
   );
 };
 

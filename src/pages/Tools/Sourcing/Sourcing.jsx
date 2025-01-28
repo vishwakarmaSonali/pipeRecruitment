@@ -21,6 +21,8 @@ import FolderModal from "../../../components/AddToFolderModals/AddModal";
 import hiddenTalent from "../../../assets/images/SourcingImages/1.png";
 import refineSearch from "../../../assets/images/SourcingImages/2.png";
 import talentpipelines from "../../../assets/images/SourcingImages/3.png";
+import Sidebar from "../../../components/sidebar/Sidebar";
+
 const skills = [
   "UI Design",
   "Wireframing",
@@ -806,6 +808,7 @@ const Sourcing = () => {
       className="w-full h-screen bg-gray-100 overflow-hidden"
       style={{ width: "100%", boxSizing: "border-box", paddingLeft: "96px" }}
     >
+      <Sidebar />
       {/* Count and Filter Section */}
 
       {/* Count and Filter Section */}
