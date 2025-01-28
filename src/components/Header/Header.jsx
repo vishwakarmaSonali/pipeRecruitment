@@ -146,7 +146,7 @@ const Header = ({ title }) => {
               <div className={`common-sidebar-menu `}>
                 <p className="sidebar-menu-label">Dashboard</p>
                 <Link
-                  to={"/"}
+                  to={"#"}
                   className={`common-link-text ${
                     activeLink === "/" && "active-link"
                   }`}
@@ -159,7 +159,7 @@ const Header = ({ title }) => {
               <div className={`common-sidebar-menu `}>
                 <p className="sidebar-menu-label">People</p>
                 <Link
-                  to={"/user"}
+                  to={"#"}
                   className={`common-link-text ${
                     activeLink === "/user" && "active-link"
                   }`}
@@ -168,7 +168,7 @@ const Header = ({ title }) => {
                   {"User"}
                 </Link>
                 <Link
-                  to={"/teams"}
+                  to={"#"}
                   className={`common-link-text ${
                     activeLink === "/temas" && "active-link"
                   } `}
@@ -190,7 +190,7 @@ const Header = ({ title }) => {
                   {"Client"}
                 </Link>
                 <Link
-                  to={"/jobs"}
+                  to={"#"}
                   className={`common-link-text ${
                     activeLink === "/jobs" && "active-link"
                   } `}
@@ -199,7 +199,7 @@ const Header = ({ title }) => {
                   {"Jobs"}
                 </Link>
                 <Link
-                  to={"/candidates"}
+                  to={"#"}
                   className={`common-link-text ${
                     activeLink === "/candidates" && "active-link"
                   } }`}
@@ -208,7 +208,7 @@ const Header = ({ title }) => {
                   {"Candidates"}
                 </Link>
                 <Link
-                  to={"/placements"}
+                  to={"#"}
                   className={`common-link-text ${
                     activeLink === "/placements" && "active-link"
                   } `}
@@ -230,7 +230,7 @@ const Header = ({ title }) => {
                   {"Sourcing"}
                 </Link>
                 <Link
-                  to={"/reports"}
+                  to={"#"}
                   className={`common-link-text ${
                     activeLink === "/reports" && "active-link"
                   } `}
@@ -239,7 +239,7 @@ const Header = ({ title }) => {
                   {"Reports"}
                 </Link>
                 <Link
-                  to={"/calender"}
+                  to={"#"}
                   className={`common-link-text ${
                     activeLink === "/calender" && "active-link"
                   } `}

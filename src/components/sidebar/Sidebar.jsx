@@ -54,7 +54,7 @@ const Sidebar = () => {
           >
             <p className="sidebar-menu-label">Dashboard</p>
             <Link
-              to={"/"}
+              to={"#"}
               className={`common-link-text ${
                 activeLink === "/" && "active-link"
               } ${!isExpanded && "justify-center"}`}
@@ -69,7 +69,7 @@ const Sidebar = () => {
           >
             <p className="sidebar-menu-label">People</p>
             <Link
-              to={"/user"}
+              to={"/#"}
               className={`common-link-text ${
                 activeLink === "/user" && "active-link"
               } ${!isExpanded && "justify-center"}`}
@@ -78,7 +78,7 @@ const Sidebar = () => {
               {isExpanded && "User"}
             </Link>
             <Link
-              to={"/teams"}
+              to={"/#"}
               className={`common-link-text ${
                 activeLink === "/temas" && "active-link"
               } ${!isExpanded && "justify-center"}`}
@@ -102,7 +102,7 @@ const Sidebar = () => {
               {isExpanded && "Client"}
             </Link>
             <Link
-              to={"/jobs"}
+              to={"#"}
               className={`common-link-text ${
                 activeLink === "/jobs" && "active-link"
               } ${!isExpanded && "justify-center"}`}
@@ -111,7 +111,7 @@ const Sidebar = () => {
               {isExpanded && "Jobs"}
             </Link>
             <Link
-              to={"/candidates"}
+              to={"#"}
               className={`common-link-text ${
                 activeLink === "/candidates" && "active-link"
               } ${!isExpanded && "justify-center"}`}
@@ -120,7 +120,7 @@ const Sidebar = () => {
               {isExpanded && "Candidates"}
             </Link>
             <Link
-              to={"/placements"}
+              to={"#"}
               className={`common-link-text ${
                 activeLink === "/placements" && "active-link"
               } ${!isExpanded && "justify-center"}`}
@@ -144,7 +144,7 @@ const Sidebar = () => {
               {isExpanded && "Sourcing"}
             </Link>
             <Link
-              to={"/reports"}
+              to={"#"}
               className={`common-link-text ${
                 activeLink === "/reports" && "active-link"
               } ${!isExpanded && "justify-center"}`}
@@ -153,7 +153,7 @@ const Sidebar = () => {
               {isExpanded && "Reports"}
             </Link>
             <Link
-              to={"/calender"}
+              to={"#"}
               className={`common-link-text ${
                 activeLink === "/calender" && "active-link"
               } ${!isExpanded && "justify-center"}`}
