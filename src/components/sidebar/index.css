@@ -4,7 +4,7 @@
   padding: 20px 16px;
   box-sizing: border-box;
   background-color: #151b23;
-  position: fixed;
+  position: relative;
   left: 0px;
   top: 0px;
   display: flex;
@@ -12,7 +12,8 @@
   justify-content: space-between;
   align-items: center;
   transition: width 0.3s ease;
-  overflow: hidden;
+  overflow-x: hidden;
+  z-index: 99;
 }
 
 .sidebar-expanded {
@@ -142,4 +143,10 @@
 
 .justify-center {
   justify-content: center;
+}
+
+@media screen and (max-width: 1024px) {
+  .sidebar-main {
+    display: none;
+  }
 }

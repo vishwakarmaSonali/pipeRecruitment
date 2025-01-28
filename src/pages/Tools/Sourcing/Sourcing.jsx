@@ -22,6 +22,7 @@ import hiddenTalent from "../../../assets/images/SourcingImages/1.png";
 import refineSearch from "../../../assets/images/SourcingImages/2.png";
 import talentpipelines from "../../../assets/images/SourcingImages/3.png";
 import Sidebar from "../../../components/sidebar/Sidebar";
+import Header from "../../../components/Header/Header";
 
 const skills = [
   "UI Design",
@@ -651,7 +652,7 @@ const PaginationFooter = () => {
 };
 const NoFiltersScreen = ({ onStartSearching }) => {
   return (
-    <div className="flex flex-col overfloy-hidden bg-white items-center justify-center h-screen text-center ">
+    <div className="flex flex-col items-center justify-center text-center ">
       <div className=" max-w-[680px] text-center ">
         <h2 className="font-ubuntu text-3xl text-customBlue  text-center font-medium z-50 w-25">
           Expand Your Talent Search with Our Sourcing Hub
@@ -806,16 +807,25 @@ const Sourcing = () => {
   return (
     <div
       className="w-full h-screen bg-gray-100 overflow-hidden"
-      style={{ width: "100%", boxSizing: "border-box", paddingLeft: "96px" }}
+      style={{ boxSizing: "border-box", display: "flex" }}
     >
       <Sidebar />
-      {/* Count and Filter Section */}
 
-      {/* Count and Filter Section */}
-      {/* Add filters or actions here if needed */}
-      <div className="overflow-auto h-screen mb-[90px] scroll-width-none">
+      <div
+        className="overflow-auto  scroll-width-none"
+        style={{ flex: 1, display: "flex", flexDirection: "column" }}
+      >
+        <Header title={"Sourcing Hub"} />
         {!filtersApplied ? (
-          <div className=" items-center justify-center min-h-screen overflow-auto scroll-width-none">
+          <div
+            className="scroll-width-none"
+            style={{
+              flex: 1,
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
             <NoFiltersScreen onStartSearching={toggleModal} />
           </div>
         ) : (
