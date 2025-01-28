@@ -8,7 +8,7 @@ import ProfileImage from "../../assets/images/profileImage.svg";
 import CollapsibleDrawer from "../Drawer/CollapsibleDrawer";
 import { ReactComponent as Menubar } from "../../assets/icons/menuBar.svg";
 import { Drawer } from "@mui/material";
-import { ReactComponent as Logo } from "../../assets/images/Logo.svg";
+import { ReactComponent as Logo } from "../../assets/images/LogoExpanded.svg";
 import { ReactComponent as HomeIcon } from "../../assets/icons/homeIcon.svg";
 import { ReactComponent as User } from "../../assets/icons/user.svg";
 import { ReactComponent as Teams } from "../../assets/icons/teams.svg";
