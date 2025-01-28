@@ -12,7 +12,7 @@ import FolderAdd from "../../../assets/icons/sourcingIcons/folder-add.svg";
 import Download from "../../../assets/icons/sourcingIcons/download.svg";
 import Tick from "../../../assets/icons/sourcingIcons/tick.svg";
 import FilterIcon from "../../../assets/icons/filter.svg";
-import DropArrow from "../../../assets/icons/droparrow.svg";
+import { ReactComponent as DropArrow } from "../../../assets/icons/droparrow.svg";
 import LeftArrow from "../../../assets/icons/leftArrow.svg";
 import RightArrow from "../../../assets/icons/rightArrow.svg";
 import LinkedIn from "../../../assets/icons/sourcingIcons/linkedin.svg";
@@ -21,6 +21,8 @@ import FolderModal from "../../../components/AddToFolderModals/AddModal";
 import hiddenTalent from "../../../assets/images/SourcingImages/1.png";
 import refineSearch from "../../../assets/images/SourcingImages/2.png";
 import talentpipelines from "../../../assets/images/SourcingImages/3.png";
+import AddToFolderModal from "../../../components/AddToJobsModals/AddToJobs";
+import AddToJobsModal from "../../../components/AddToJobsModals/AddToJobs";
 const skills = [
   "UI Design",
   "Wireframing",
@@ -166,11 +168,12 @@ const BulkActionView = ({
   isBulkAction,
   onSelectAll,
   isAllSelected,
+  toggleJobModal,
   filters, // Receive filters prop
 }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
-
+  const [jobModalOpen,setJobModalOpen] = useState(false)
   const open = Boolean(anchorEl);
 
   // Function to calculate the number of applied filters
@@ -215,6 +218,10 @@ fontFamily: "'Ubuntu', sans-serif",  // Apply Ubuntu font
     handleClose();
     setModalOpen(true);
   };
+  const handleAddToJobMenu = () => {
+    handleClose();
+    setJobModalOpen(true)
+  };
   return (
     <div className="w-full bg-gray-100 p-4 flex items-center justify-between">
       <div className="flex items-center space-x-2">
@@ -240,7 +247,7 @@ fontFamily: "'Ubuntu', sans-serif",  // Apply Ubuntu font
             ? "Bulk Action"
             : `Filter ${filterCount > 0 ? `(${filterCount})` : ""}`}
         </span>
-        <img src={isBulkAction ? DropArrow : FilterIcon} alt="filter" />
+       {isBulkAction ? <DropArrow fill="white" />: <img src={  FilterIcon} alt="filter" />}
       </button>
 
       {/* Menu for Bulk Actions */}
@@ -271,7 +278,7 @@ fontFamily: "'Ubuntu', sans-serif",  // Apply Ubuntu font
             Add to candidate
           </Typography>
         </MenuItem>
-        <MenuItem onClick={handleClose}>
+        <MenuItem onClick={handleAddToJobMenu}>
           <ListItemIcon>
             <img src={jobIcon} alt="Add to jobs" />
           </ListItemIcon>
@@ -294,6 +301,9 @@ fontFamily: "'Ubuntu', sans-serif",  // Apply Ubuntu font
       </Menu>
       {modalOpen && (
         <FolderModal isOpen={modalOpen} onClose={() => setModalOpen(false)} />
+      )}
+      {jobModalOpen && (
+        <AddToJobsModal isOpen={jobModalOpen} onClose={() => setJobModalOpen(false)} />
       )}
     </div>
   );
@@ -474,6 +484,7 @@ const ExperienceEducation = () => {
 
 const CandidateDetails = ({ selectedCandidate }) => {
   const [modalOpen, setModalOpen] = useState(false);
+  const [jobModalOpen, setJobModalOpen] = useState(false);
 
   if (!selectedCandidate) {
     return (
@@ -507,7 +518,7 @@ const CandidateDetails = ({ selectedCandidate }) => {
             <span className="dilogbox">Add to candidate</span>
           </div>
 
-          <div className="relative group">
+          <div className="relative group" onClick={()=>setJobModalOpen(true)}>
             <img
               src={jobIcon}
               alt="jobIcon Add"
@@ -570,6 +581,9 @@ const CandidateDetails = ({ selectedCandidate }) => {
       <ExperienceEducation />
       {modalOpen && (
         <FolderModal isOpen={modalOpen} onClose={() => setModalOpen(false)} />
+      )}
+       {jobModalOpen && (
+        <AddToJobsModal isOpen={jobModalOpen} onClose={() => setJobModalOpen(false)} />
       )}
     </>
   );
@@ -727,6 +741,8 @@ const Sourcing = () => {
   const [selectedCandidate, setSelectedCandidate] = useState(candidates[0]);
   const [selectedCandidates, setSelectedCandidates] = useState([]); // Store selected candidates
   const [filtersApplied, setFiltersApplied] = useState(false);
+  const [isJobModalOpen,setIsJobModalOpen] = useState(false)
+
   const [filters, setFilters] = useState({
     jobTitle: "",
     location: "",
@@ -744,6 +760,10 @@ const Sourcing = () => {
   const toggleModal = () => {
     console.log("Modal toggle triggered");
     setIsModalOpen((prev) => !prev);
+  };
+  const toggleJobModal = () => {
+    console.log("Modal job modal toggle triggered");
+    setIsJobModalOpen((prev) => !prev);
   };
   // Function to toggle the filter modal
   const toggleCandidateModal = () => {
@@ -803,8 +823,8 @@ const Sourcing = () => {
   };
   return (
     <div
-      className="w-full h-screen bg-gray-100 overflow-hidden"
-      style={{ width: "100%", boxSizing: "border-box", paddingLeft: "96px" }}
+      className="w-full h-screen bg-gray-100 overflow-hidden mt-[68px]"
+      style={{ width: "100%", boxSizing: "border-box", paddingLeft: window.innerWidth>=1024 && "96px" }}
     >
       {/* Count and Filter Section */}
 
@@ -823,6 +843,7 @@ const Sourcing = () => {
               isBulkAction={selectedCandidates.length > 1}
               onSelectAll={handleSelectAll}
               isAllSelected={selectedCandidates.length === candidates.length}
+              jobModalOpen={toggleJobModal}
               filters={filters} // Pass filters as a prop
             />
             <div className="w-full scroll-width-none h-screen overflow-hidden flex">
@@ -880,6 +901,7 @@ const Sourcing = () => {
         onReset={resetFilters}
         filters={filters}
       />
+      <AddToJobsModal isOpen={isJobModalOpen} onClose={() => setIsJobModalOpen(false)} />
     </div>
   );
 };

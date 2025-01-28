@@ -8,6 +8,7 @@ import {
 import Header from "./components/Header/Header";
 import Sourcing from "./pages/Tools/Sourcing/Sourcing";
 import Client from "./pages/Recruitment/Client";
+import Candidates from "./pages/Recruitment/Candidates/Candidates";
 
 const getTitle = (pathname) => {
   switch (pathname) {
@@ -15,6 +16,8 @@ const getTitle = (pathname) => {
       return "Client Management";
     case "/sourcing":
       return "Sourcing Hub";
+    case "/candidates":
+      return "Candidates";
     default:
       return "Recruitment Portal";
   }
@@ -38,6 +41,10 @@ const App = () => {
           <Route
             path="/sourcing"
             element={<Sourcing isDrawerOpen={isDrawerOpen} />}
+          />
+          <Route
+            path="/candidates"
+            element={<Candidates isDrawerOpen={isDrawerOpen} />}
           />
         </Routes>
       </div>

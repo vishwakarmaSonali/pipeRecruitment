@@ -9,8 +9,8 @@ const FilterModal = ({ isOpen, onClose, onApply, onReset, filters }) => {
     const [radius, setRadius] = useState("");
     const [industry, setIndustry] = useState([]);
   
-    const radiusOptions = ["Kilometer", "Mile"];
-    const industryOptions = ["IT", "Finance", "Healthcare", "Retail","IT", "Finance", "Healthcare", "Retail","IT", "Finance", "Healthcare", "Retail"];
+    const radiusOptions = [{id:1,type:"Kilometer"}, {id:2,type:"Mile"}];
+    const industryOptions = [{id:1,industryType:"IT"}, {id:2,industryType:"Finance"}, {id:3,industryType:"Healthcare"}, {id:4,industryType:"Retail"},];
     const [experience, setExperience] = useState({ from: "", to: "" });
 
 
@@ -195,20 +195,21 @@ const FilterModal = ({ isOpen, onClose, onApply, onReset, filters }) => {
               type="text"
               placeholder="Enter distance"
               className="filter-input"
-              value={radius}
+              value={radius?.type}
               onChange={handleRadiusChange}
             />
-        <CustomDropdown
-              options={radiusOptions}
-              placeholder="Select Radius"
-              selectedValue={radius}
-              onChange={setRadius}
-            />
+        <CustomDropdown 
+  options={radiusOptions}
+  placeholder="Select Radius"
+  selectedValue={radius}
+  onChange={setRadius}
+  optionKey="type"
+/>
              {radius && (
                 <div className="inputItemsDiv">
                   <div className="inputed-item">
-                    {radius}
-                    <button className="ml-2 text-red-500" onClick={removeRadius}>
+                    {radius?.type}
+                    <button className="ml-2 text-customBlue" onClick={removeRadius}>
                       ✕
                     </button>
                   </div>
@@ -277,17 +278,18 @@ const FilterModal = ({ isOpen, onClose, onApply, onReset, filters }) => {
           {/* Industry Dropdown */}
           <div>
               <label className="filter-title">Industry</label>
-              <CustomDropdown
-                options={industryOptions}
-                placeholder="Select Industry"
-                selectedValue=""
-                onChange={handleIndustryChange}
-              />
+              <CustomDropdown 
+  options={industryOptions}
+  placeholder="Select Industry"
+  selectedValue={industry}
+  onChange={setIndustry}
+  optionKey="industryType"
+/>
               {industry.length > 0 && (
                 <div className="inputItemsDiv">
                   {industry.map((item, index) => (
                    <div key={index} className="inputed-item">
-                   {item}
+                   {item?.industryType}
                    <button className="ml-2 text-customBlue" onClick={() => removeIndustry(index)}>✕</button>
                  </div>
                   ))}

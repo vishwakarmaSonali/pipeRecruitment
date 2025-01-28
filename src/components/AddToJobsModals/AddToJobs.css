@@ -1,0 +1,16 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.scroll-width-none {
+    /* Hide scrollbar for all browsers */
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* Internet Explorer 10+ */
+}
+
+.scroll-width-none::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Edge */
+}
+.search-input {
+    @apply flex focus:outline-none focus:ring-0; /* Hide search input on mobile */
+}

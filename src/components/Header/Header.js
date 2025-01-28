@@ -48,6 +48,7 @@ const Header = ({ title }) => {
     <div className="w-full  bg-gray-100 overflow-hidden ">
       <div
         className={`fixed top-0 left-0 right-0 h-[68px]  bg-white flex items-center transition-all duration-300 z-50 `}
+        style={{marginLeft:isDrawerOpen ? "64px" : "24px" }}
       >
         {" "}
         {isMobileView || isTabletView ? (
@@ -56,12 +57,13 @@ const Header = ({ title }) => {
             onClick={toggleDrawer}
           ></button>
         ) : null}
-        <CollapsibleDrawer
+        {/* <CollapsibleDrawer
           isSearchExpanded={isSearchExpanded}
           isOpen={isDrawerOpen}
           setIsOpen={setIsDrawerOpen}
           sidebarRef={sidebarRef}
-        />
+        /> */}
+        
         {isSearchExpanded ? (
           <div className="flex items-center justify-between w-full px-6">
             <div className="relative w-full md:flex font-ubuntu font-normal px-10 h-[40px] text-sm text-gray-700 bg-gray-100 rounded-[8px] focus:outline-none focus:ring-1 transition-all duration-300 ease-in-out flex items-center">
@@ -88,8 +90,8 @@ const Header = ({ title }) => {
           </div>
         ) : (
           <div
-            className="flex justify-between  bg-white w-full"
-            style={{ padding: "10px 16px 10px 112px" }}
+            className={`flex justify-between  bg-white w-full `}
+            style={{ padding: "10px 16px 10px 112px", paddingLeft:isDrawerOpen ? "64" : "24" }}
           >
             <h1 className="header-title">{title}</h1>
             <div className="flex items-center header-icons-container space-x-2">

@@ -22,13 +22,15 @@ import { ThemeProvider, createTheme } from '@mui/material/styles';
 // import { ReactComponent as UserIcon } from "../../assets/icons/user.svg";
 import "./CollapsibleDrawer.css"; // Import the CSS file
 
-const CollapsibleDrawer = ({isSearchExpanded}) => {
+const CollapsibleDrawer = ({ isOpen, setIsOpen ,isSearchExpanded}) => {
   const theme = createTheme();
 
-  const [isOpen, setIsOpen] = useState(true);
+  // const [isOpen, setIsOpen] = useState(true);
   const [selectedItem, setSelectedItem] = useState("/"); // Track selected menu item
   const location = useLocation();
   const [manualOverride, setManualOverride] = useState(true); // Disable/Enable hover functionality
+  let mouseLeaveTimer = useRef(null);
+
   const [isMobileView, setIsMobileView] = useState(window.innerWidth < 768);
   const [isTabletView, setIsTabletView] = useState(
     window.innerWidth >= 768 && window.innerWidth <= 1024
@@ -89,17 +91,36 @@ const CollapsibleDrawer = ({isSearchExpanded}) => {
   };
 
   const handleMouseEnter = () => {
-    if (!manualOverride) setIsOpen(true);
+    if (!manualOverride) {
+      clearTimeout(mouseLeaveTimer.current); // Prevent unwanted collapsing\
+      setIsOpen(true);}
   };
 
   const handleMouseLeave = () => {
-    if (!manualOverride) setIsOpen(!isOpen);
+    if (!manualOverride) {
+      mouseLeaveTimer.current = setTimeout(() => {
+        setIsOpen(!isOpen);
+      }, 300); // Delay to prevent jitter
+    }
   };
   // Update selectedItem when the route changes
   useEffect(() => {
     setSelectedItem(location.pathname);
   }, [location]);
 
+  useEffect(() => {
+    const sidebar = sidebarRef.current;
+    if (sidebar) {
+      sidebar.addEventListener("mouseenter", handleMouseEnter);
+      sidebar.addEventListener("mouseleave", handleMouseLeave);
+    }
+    return () => {
+      sidebar.removeEventListener("mouseenter", handleMouseEnter);
+      sidebar.removeEventListener("mouseleave", handleMouseLeave);
+      clearTimeout(mouseLeaveTimer.current);
+    };
+  }, []);
+  
   // Helper function to determine if a menu item is selected
   const isSelected = (path) => selectedItem === path;
 
