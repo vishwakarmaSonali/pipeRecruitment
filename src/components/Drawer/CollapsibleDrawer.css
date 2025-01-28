@@ -3,53 +3,51 @@
 @tailwind utilities;
 
 .scroll-width-none {
-    /* Hide scrollbar for all browsers */
-    scrollbar-width: none; /* Firefox */
-    -ms-overflow-style: none; /* Internet Explorer 10+ */
+  /* Hide scrollbar for all browsers */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* Internet Explorer 10+ */
 }
 
 .scroll-width-none::-webkit-scrollbar {
-    display: none; /* Chrome, Safari, Edge */
+  display: none; /* Chrome, Safari, Edge */
 }
 /* Sidebar */
 .sidebar {
-    @apply bg-customBlue text-white flex flex-col transition-all duration-300 ease-in-out fixed h-full hidden md:flex;
-  }
+  @apply bg-customBlue text-white flex flex-col transition-all duration-300 ease-in-out fixed h-full hidden md:flex;
+}
 
 .sidebar.expanded {
-    @apply w-64 px-4; /* Tailwind's w-64 and px-4 */
+  @apply w-64 px-4; /* Tailwind's w-64 and px-4 */
 }
 
 .sidebar.collapsed {
-    @apply w-24 transition-all duration-300 ease-in-out;
+  @apply w-24 transition-all duration-300 ease-in-out;
 }
 
 .sidebar.expanded {
-    @apply w-64 transition-all duration-300 ease-in-out;
+  @apply w-64 transition-all duration-300 ease-in-out;
 }
 /* Absolute sidebar for mobile & tablet views */
 .sidebar.absolute {
-    @apply block md:hidden bg-customBlue w-64 h-full;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-  }
-  /* Adjust height & width for small screens */
+  @apply block md:hidden bg-customBlue w-64 h-full;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+/* Adjust height & width for small screens */
 .sidebar.absolute {
-   
-   @apply bg-customBlue px-4
-  }
-  
-/* Logo and Title */
-.logo-container {
-    @apply flex items-center pb-[20px] pt-[26px] w-auto; /* Tailwind's flex, items-center, and p-4 */
+  @apply bg-customBlue px-4;
 }
 
+/* Logo and Title */
+.logo-container {
+  @apply flex items-center pb-[20px] pt-[26px] w-auto; /* Tailwind's flex, items-center, and p-4 */
+}
 
 .logo-container-expanded {
-    @apply w-14; /* Center alignment */
+  @apply w-14; /* Center alignment */
 }
 
 .logo {
-    @apply h-[24px] w-[24px]; /* Tailwind's h-8 and w-8 */
+  @apply h-[24px] w-[24px]; /* Tailwind's h-8 and w-8 */
 }
 .logo {
   @apply h-[24px] w-[220px]; /* Tailwind's h-8 and w-8 */
@@ -57,175 +55,172 @@
 
 /* Hamburger button */
 .hamburger-button {
-    background: none;
-    border: none;
-    cursor: pointer;
-    z-index: 100;
-  }
-  
-  /* Blurred effect when sidebar is open */
-  .blurred {
-    filter: blur(4px);
-   pointer-events: none;
-   @apply bg-opacity-10
-  }
+  background: none;
+  border: none;
+  cursor: pointer;
+  z-index: 100;
+}
+
+/* Blurred effect when sidebar is open */
+.blurred {
+  filter: blur(4px);
+  pointer-events: none;
+  @apply bg-opacity-10;
+}
 
 .title {
-    @apply text-l font-medium  px-2 font-poppins; /* Tailwind's text-lg and font-bold */
+  @apply text-l font-medium  px-2 font-poppins; /* Tailwind's text-lg and font-bold */
 }
 /* Hamburger button styles */
 .hamburger {
-    @apply flex items-center justify-center text-xl fixed top-4 left-4 z-50;
-    transition: transform 0.2s ease-in-out;
-  }
+  @apply flex items-center justify-center text-xl fixed top-4 left-4 z-50;
+  transition: transform 0.2s ease-in-out;
+}
 /* Menu Sections */
 .menu-section {
-    @apply flex flex-col w-full mt-[20px]; /* Tailwind's flex and flex-col */
+  @apply flex flex-col w-full mt-[20px]; /* Tailwind's flex and flex-col */
 }
 
 .section-expanded {
-    @apply items-start mt-[20px]; /* Align to start */
+  @apply items-start mt-[20px]; /* Align to start */
 }
 
 .section-collapsed {
-    @apply items-center mt-[20px]; /* Center alignment */
+  @apply items-center mt-[20px]; /* Center alignment */
 }
 
 .menu-title {
-    @apply text-xs text-customGray px-1 pb-[6px] font-ubuntu font-normal; /* Tailwind's text-sm, text-gray-400, and px-2 */
+  @apply text-xs text-customGray px-1 pb-[6px] font-ubuntu font-normal; /* Tailwind's text-sm, text-gray-400, and px-2 */
 }
 
 .menu-list {
-    @apply mt-2; /* Tailwind's mt-4 */
+  @apply mt-2; /* Tailwind's mt-4 */
 }
 
 /* Menu Items */
 .menu-ul {
-    @apply w-full
+  @apply w-full;
 }
 .menu-item {
-    transition: all 0.2s ease-in-out;
-    @apply px-3 py-[11px] w-full flex items-center ; /* Smooth transition for menu item */
+  transition: all 0.2s ease-in-out;
+  @apply px-3 py-[11px] w-full flex items-center; /* Smooth transition for menu item */
 }
 .menu-item:hover {
-    @apply rounded-[8px] w-full
-  }
-  
-  .menu-item.selected {
-    @apply bg-gradient-to-r from-customGrad1 to-customGrad2 flex rounded-[8px] transition-all duration-500 ease-in-out; /* Equivalent to linear-gradient(90deg, #ff0000, #000000) and border-radius: 0.5rem */
-  }
-  .menu-item.expanded {
-    @apply w-full; /* Take full sidebar width when expanded */
+  @apply rounded-[8px] w-full;
 }
-  .menu-item.selected.expanded {
-    @apply w-full;
-  }
+
+.menu-item.selected {
+  @apply bg-gradient-to-r from-customGrad1 to-customGrad2 flex rounded-[8px] transition-all duration-500 ease-in-out; /* Equivalent to linear-gradient(90deg, #ff0000, #000000) and border-radius: 0.5rem */
+}
+.menu-item.expanded {
+  @apply w-full; /* Take full sidebar width when expanded */
+}
+.menu-item.selected.expanded {
+  @apply w-full;
+}
 
 .menu-link {
-    @apply flex items-center; /* Tailwind's flex and items-center */
+  @apply flex items-center; /* Tailwind's flex and items-center */
 }
 
 .menu-icon {
-    @apply h-4 w-4 transition-all; /* Tailwind's h-4 and w-4 */
+  @apply h-4 w-4 transition-all; /* Tailwind's h-4 and w-4 */
 }
 
 .menu-text {
-    @apply ml-2 text-m transition-colors duration-300 ease-linear font-ubuntu font-normal; /* Tailwind's text-base and ml-4 */
+  @apply ml-2 text-m transition-colors duration-300 ease-linear font-ubuntu font-normal; /* Tailwind's text-base and ml-4 */
 }
 .menu-item.selected .menu-text {
-    color: #ffffff; /* Ensure text color contrasts with the gradient */
-   
-  }
+  color: #ffffff; /* Ensure text color contrasts with the gradient */
+}
 
 /* Main Content */
 .main-content {
-    @apply flex-1 bg-gray-100; /* Tailwind's flex-1, p-8, and bg-gray-100 */
+  @apply flex-1 bg-gray-100; /* Tailwind's flex-1, p-8, and bg-gray-100 */
 }
 /* Back Button Section */
 .back-button-section {
-    @apply mt-auto flex items-center justify-center p-4; /* Align at the bottom */
-  }
-  
-  .back-button {
-    @apply text-white text-lg cursor-pointer flex flex-col items-center; /* Styled as an icon */
-    transition: transform 0.2s ease-in-out; /* Add hover effect */
-  }
-  
-  .back-button:hover {
-    transform: scale(1.2); /* Slight zoom on hover */
-  }
-  .arrow-style {
-   @apply bg-customGrad2 p-2 rounded-[8px]
-  }
-  .collapse-text {
-    @apply mr-2 text-white text-sm font-ubuntu font-normal; /* Add spacing and smaller font */
-  }
-  /* Responsive Sidebar */
+  @apply mt-auto flex items-center justify-center p-4; /* Align at the bottom */
+}
+
+.back-button {
+  @apply text-white text-lg cursor-pointer flex flex-col items-center; /* Styled as an icon */
+  transition: transform 0.2s ease-in-out; /* Add hover effect */
+}
+
+.back-button:hover {
+  transform: scale(1.2); /* Slight zoom on hover */
+}
+.arrow-style {
+  @apply bg-customGrad2 p-2 rounded-[8px];
+}
+.collapse-text {
+  @apply mr-2 text-white text-sm font-ubuntu font-normal; /* Add spacing and smaller font */
+}
+/* Responsive Sidebar */
 
 /* Hamburger Button */
 .hamburger {
-    @apply flex items-center justify-center text-xl fixed top-4 left-4 z-50; /* Position the hamburger button */
-    transition: transform 0.2s ease-in-out;
+  @apply flex items-center justify-center text-xl fixed top-4 left-4 z-50; /* Position the hamburger button */
+  transition: transform 0.2s ease-in-out;
 }
 
 .hamburger:hover {
-    transform: scale(1.1); /* Slight zoom effect */
+  transform: scale(1.1); /* Slight zoom effect */
 }
 
 /* Hide Hamburger on Medium+ Screens */
 @media (min-width: 1024px) {
-    .hamburger {
-        display: none;
-
-    }
+  .hamburger {
+    display: none;
+  }
 }
 
 /* Main Content Adjustments */
 .main-content {
-    @apply flex-1 bg-gray-100;
-    transition: margin-left 0.3s ease-in-out; /* Smooth transition for content adjustment */
+  @apply flex-1 bg-gray-100;
+  transition: margin-left 0.3s ease-in-out; /* Smooth transition for content adjustment */
 }
 
 .sidebar.expanded ~ .main-content {
-    margin-left: 16rem; /* Adjust for expanded sidebar */
+  margin-left: 16rem; /* Adjust for expanded sidebar */
 }
 
 .sidebar.collapsed ~ .main-content {
-    margin-left: 6rem; /* Adjust for collapsed sidebar */
+  margin-left: 6rem; /* Adjust for collapsed sidebar */
 }
 
 .sidebar.absolute ~ .main-content {
-    @apply ml-0; /* No margin adjustment when sidebar is absolute */
+  @apply ml-0; /* No margin adjustment when sidebar is absolute */
 }
 /* Logo */
 .logo-container {
-    display: flex;
-    align-items: center;
-    
+  display: flex;
+  align-items: center;
+}
+
+/* Mobile and Tablet View */
+@media (max-width: 1024px) {
+  .sidebar {
+    @apply hidden; /* Tailwind's hidden utility */
   }
 
-  /* Mobile and Tablet View */
-@media (max-width: 1024px) {
-    .sidebar {
-      @apply hidden; /* Tailwind's hidden utility */
-    }
-  
-    .sidebar.mobile-expanded {
-      @apply fixed top-0 left-0 px-4 h-screen bg-customBlue z-50 block;
-    }
-  
-    .hamburger-button {
-      @apply block; /* Show menu icon on smaller screens */
-    }
+  .sidebar.mobile-expanded {
+    @apply fixed top-0 left-0 px-4 h-screen bg-customBlue z-50 block;
   }
-  
-  /* Desktop View */
-  @media (min-width: 1025px) {
-    .sidebar {
-      @apply bg-customBlue text-white flex flex-col fixed h-full w-64 transition-all duration-300 ease-in-out;
-    }
-  
-    .hamburger-button {
-      @apply hidden; /* Hide menu icon on larger screens */
-    }
+
+  .hamburger-button {
+    @apply block; /* Show menu icon on smaller screens */
   }
+}
+
+/* Desktop View */
+@media (min-width: 1025px) {
+  .sidebar {
+    @apply bg-customBlue text-white flex flex-col fixed h-full w-64 transition-all duration-300 ease-in-out;
+  }
+
+  .hamburger-button {
+    @apply hidden; /* Hide menu icon on larger screens */
+  }
+}

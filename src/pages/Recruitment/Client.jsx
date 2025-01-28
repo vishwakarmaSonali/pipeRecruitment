@@ -1,9 +1,11 @@
 import React from "react";
+import Sidebar from "../../components/sidebar/Sidebar";
+import Header from "../../components/Header/Header";
 
-const Client = ({ isDrawerOpen }) => {
+const Client = () => {
   const NoFiltersScreen = () => {
     return (
-      <div className="flex flex-col overflow-hidden bg-white items-center justify-center min-h-screen text-center">
+      <div className="flex flex-col overflow-hidden bg-white items-center justify-center  text-center">
         <div className="max-w-[680px] text-center">
           <h2 className="font-ubuntu text-3xl text-customBlue text-center font-medium">
             Expand Your Talent Search with Our Sourcing Hub
@@ -15,7 +17,8 @@ const Client = ({ isDrawerOpen }) => {
                   Find Hidden Talent
                 </span>
                 <span className="font-ubuntu font-normal text-m text-customGray">
-                  Discover qualified professionals who may not be actively job hunting
+                  Discover qualified professionals who may not be actively job
+                  hunting
                 </span>
               </div>
             </li>
@@ -35,7 +38,8 @@ const Client = ({ isDrawerOpen }) => {
                   Create Robust Talent Pipelines
                 </span>
                 <span className="font-ubuntu font-normal text-m text-customGray">
-                  Track and organize candidates to maintain a steady flow of top talent.
+                  Track and organize candidates to maintain a steady flow of top
+                  talent.
                 </span>
               </div>
             </li>
@@ -45,24 +49,47 @@ const Client = ({ isDrawerOpen }) => {
           </button>
           <div className="flex place-items-center max-h-sm mt-[90px]">
             <span className="font-ubuntu text-xs text-customBlue">
-              Our platform uses trusted third-party data to offer a separate external
-              candidate database, keeping your internal data secure and private.{" "}
-              <span className="buttonBLue cursor-pointer">Learn more about data usage.</span>
+              Our platform uses trusted third-party data to offer a separate
+              external candidate database, keeping your internal data secure and
+              private.{" "}
+              <span className="buttonBLue cursor-pointer">
+                Learn more about data usage.
+              </span>
             </span>
           </div>
         </div>
       </div>
     );
   };
-console.log("isDraawerOPennn>>>",isDrawerOpen);
 
   return (
     <div
-      className={`w-full overflow-auto transition-all duration-300 pt-[68px] ${
-        isDrawerOpen ? "ml-56" : "ml-16"
-      }`}
+      className="w-full h-screen bg-gray-100 overflow-hidden"
+      style={{ boxSizing: "border-box", display: "flex" }}
     >
-      <NoFiltersScreen />
+      <Sidebar />
+      <div
+        className="overflow-auto scroll-width-none"
+        style={{
+          flex: 1,
+          display: "flex",
+          flexDirection: "column",
+        }}
+      >
+        <Header title={"Client Management"} />
+        <div
+          className="scroll-width-none"
+          style={{
+            flex: 1,
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            backgroundColor: "#fff",
+          }}
+        >
+          <NoFiltersScreen />
+        </div>
+      </div>
     </div>
   );
 };

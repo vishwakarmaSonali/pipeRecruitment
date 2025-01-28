@@ -2,104 +2,118 @@
 @tailwind components;
 @tailwind utilities;
 
+.sticky-header {
+  position: sticky;
+  top: 0px;
+}
+
+.main-drawer-div {
+  width: 260px;
+  height: 100%;
+  padding: 26px 20px;
+  box-shadow: 0px 0px 30px -12px #00000042;
+  background-color: #151b23;
+  overflow: auto;
+}
+
 .scroll-width-none {
-    /* Hide scrollbar for all browsers */
-    scrollbar-width: none; /* Firefox */
-    -ms-overflow-style: none; /* Internet Explorer 10+ */
+  /* Hide scrollbar for all browsers */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* Internet Explorer 10+ */
 }
 
 .scroll-width-none::-webkit-scrollbar {
-    display: none; /* Chrome, Safari, Edge */
+  display: none; /* Chrome, Safari, Edge */
 }
 /* Base Header Styles */
 .header-container {
-    @apply flex  w-full px-4 py-2;
+  @apply flex  w-full px-4 py-2;
 }
 .header-icons-container {
-    @apply flex items-center justify-end space-x-2;
+  @apply flex items-center justify-end space-x-2;
 }
-.header-title{
-    @apply text-custom-large ml-[10px] font-ubuntu font-medium 
+.header-title {
+  @apply text-custom-large ml-[10px] font-ubuntu font-medium;
 }
-.search-input{
-   @apply w-[400px] font-ubuntu font-normal  px-10 h-[40px] text-sm text-gray-700 bg-gray-100 rounded-[8px] focus:outline-none focus:ring-0  transition-all duration-300 ease-in-out flex items-center 
+.search-input {
+  @apply w-[400px] font-ubuntu font-normal  px-10 h-[40px] text-sm text-gray-700 bg-gray-100 rounded-[8px] focus:outline-none focus:ring-0  transition-all duration-300 ease-in-out flex items-center;
 }
 .search-icon {
-    @apply absolute left-2 top-2 w-5 h-5 text-gray-500
+  @apply absolute left-2 top-2 w-5 h-5 text-gray-500;
 }
-.header-icons{
-    @apply p-[10px] bg-customGrey1 rounded-[8px] mx-1 flex items-center 
+.header-icons {
+  @apply p-[10px] bg-customGrey1 rounded-[8px] mx-1 flex items-center;
 }
-.header-icons.search{
-    @apply hidden
+.header-icons.search {
+  @apply hidden;
 }
-.profile-div{
-    @apply items-center justify-center  w-[46px] h-[46px] rounded-[100px] mx-1 overflow-hidden
+.profile-div {
+  @apply items-center justify-center  w-[46px] h-[46px] rounded-[100px] mx-1 overflow-hidden;
 }
-.candidate-details{
-    @apply w-[60%] mr-4 p-[14px] pb-[20px] mb-[110px] overflow-auto scroll-width-none bg-white h-auto rounded-[14px]
+.candidate-details {
+  @apply w-[60%] mr-4 p-[14px] pb-[20px] mb-[110px] overflow-auto scroll-width-none bg-white h-auto rounded-[14px];
 }
 /* Responsive design
 
 /* Mobile View */
 @media (min-width: 240px) and (max-width: 1024px) {
-    .header-container {
-        @apply px-2; /* Adjust padding for smaller screens */
-    }
-    .header-title{
-        @apply hidden
-    }
-    .header-icons-container {
-        @apply ml-auto; /* Align icons to the end */
-    }
-    .header-icons {
-        @apply p-[6px];
-    }
-    .header-icons.search{
-        @apply block
-    }
-    .profile-div {
-        @apply w-[36px] h-[36px];
-    }
-    .hamburger-menu {
-        @apply block;
-    }
-    .search-input {
-        @apply hidden focus:outline-none focus:ring-0; /* Hide search input on mobile */
-    }
-    .candidate-list {
-        @apply w-full h-screen overflow-y-auto scroll-width-none; /* Enable scrolling */
-    }
-    .candidate-scroll{
-        @apply scroll-width-none
-    }
-      .candidate-details {
-        @apply hidden; /* Hide the candidate details on tablets */
-      }
+  .header-container {
+    @apply px-2; /* Adjust padding for smaller screens */
+  }
+  .header-title {
+    @apply hidden;
+  }
+  .header-icons-container {
+    @apply ml-auto; /* Align icons to the end */
+  }
+  .header-icons {
+    @apply p-[6px];
+  }
+  .header-icons.search {
+    @apply block;
+  }
+  .profile-div {
+    @apply w-[36px] h-[36px];
+  }
+  .hamburger-menu {
+    @apply block;
+  }
+  .search-input {
+    @apply hidden focus:outline-none focus:ring-0; /* Hide search input on mobile */
+  }
+  .candidate-list {
+    @apply w-full h-screen overflow-y-auto scroll-width-none; /* Enable scrolling */
+  }
+  .candidate-scroll {
+    @apply scroll-width-none;
+  }
+  .candidate-details {
+    @apply hidden; /* Hide the candidate details on tablets */
+  }
 }
 
 /* Desktop View */
 @media (min-width: 1025px) {
-    .hamburger-menu {
-        @apply hidden; /* Hide menu button on large screens */
-    }
-    .header-container {
-        @apply flex-row justify-between ;
-    }
-    .header-title {
-        @apply block; /* Ensure title is shown */
-    }
-    .header-icons.search{
-        @apply  hidden
-    }
-    .search-input {
-        @apply w-[400px] focus:outline-none focus:ring-0; /* Full size for desktop */
-    }
-    .candidate-list {
-        @apply w-[40%] h-full overflow-auto bg-customGrey1 overflow-y-auto px-4 scroll-width-none;
-      }
-    
-      .candidate-details {
-        @apply w-[60%] h-auto block; /* Ensure it's visible */
-      }
+  .hamburger-menu {
+    @apply hidden; /* Hide menu button on large screens */
+  }
+  .header-container {
+    @apply flex-row justify-between;
+  }
+  .header-title {
+    @apply block; /* Ensure title is shown */
+  }
+  .header-icons.search {
+    @apply hidden;
+  }
+  .search-input {
+    @apply w-[400px] focus:outline-none focus:ring-0; /* Full size for desktop */
+  }
+  .candidate-list {
+    @apply w-[40%] h-full overflow-auto bg-customGrey1 overflow-y-auto px-4 scroll-width-none;
+  }
+
+  .candidate-details {
+    @apply w-[60%] h-auto block; /* Ensure it's visible */
+  }
 }
