@@ -176,7 +176,7 @@ const BulkActionView = ({
 }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
-  const [jobModalOpen,setJobModalOpen] = useState(false)
+  const [jobModalOpen, setJobModalOpen] = useState(false);
   const open = Boolean(anchorEl);
 
   // Function to calculate the number of applied filters
@@ -223,7 +223,7 @@ fontFamily: "'Ubuntu', sans-serif",  // Apply Ubuntu font
   };
   const handleAddToJobMenu = () => {
     handleClose();
-    setJobModalOpen(true)
+    setJobModalOpen(true);
   };
   return (
     <div className="w-full bg-gray-100 p-4 flex items-center justify-between">
@@ -250,7 +250,11 @@ fontFamily: "'Ubuntu', sans-serif",  // Apply Ubuntu font
             ? "Bulk Action"
             : `Filter ${filterCount > 0 ? `(${filterCount})` : ""}`}
         </span>
-       {isBulkAction ? <DropArrow fill="white" />: <img src={  FilterIcon} alt="filter" />}
+        {isBulkAction ? (
+          <DropArrow fill="white" />
+        ) : (
+          <img src={FilterIcon} alt="filter" />
+        )}
       </button>
 
       {/* Menu for Bulk Actions */}
@@ -306,7 +310,10 @@ fontFamily: "'Ubuntu', sans-serif",  // Apply Ubuntu font
         <FolderModal isOpen={modalOpen} onClose={() => setModalOpen(false)} />
       )}
       {jobModalOpen && (
-        <AddToJobsModal isOpen={jobModalOpen} onClose={() => setJobModalOpen(false)} />
+        <AddToJobsModal
+          isOpen={jobModalOpen}
+          onClose={() => setJobModalOpen(false)}
+        />
       )}
     </div>
   );
@@ -521,7 +528,7 @@ const CandidateDetails = ({ selectedCandidate }) => {
             <span className="dilogbox">Add to candidate</span>
           </div>
 
-          <div className="relative group" onClick={()=>setJobModalOpen(true)}>
+          <div className="relative group" onClick={() => setJobModalOpen(true)}>
             <img
               src={jobIcon}
               alt="jobIcon Add"
@@ -585,8 +592,11 @@ const CandidateDetails = ({ selectedCandidate }) => {
       {modalOpen && (
         <FolderModal isOpen={modalOpen} onClose={() => setModalOpen(false)} />
       )}
-       {jobModalOpen && (
-        <AddToJobsModal isOpen={jobModalOpen} onClose={() => setJobModalOpen(false)} />
+      {jobModalOpen && (
+        <AddToJobsModal
+          isOpen={jobModalOpen}
+          onClose={() => setJobModalOpen(false)}
+        />
       )}
     </>
   );
@@ -744,7 +754,7 @@ const Sourcing = () => {
   const [selectedCandidate, setSelectedCandidate] = useState(candidates[0]);
   const [selectedCandidates, setSelectedCandidates] = useState([]); // Store selected candidates
   const [filtersApplied, setFiltersApplied] = useState(false);
-  const [isJobModalOpen,setIsJobModalOpen] = useState(false)
+  const [isJobModalOpen, setIsJobModalOpen] = useState(false);
 
   const [filters, setFilters] = useState({
     jobTitle: "",
@@ -905,7 +915,10 @@ const Sourcing = () => {
         onReset={resetFilters}
         filters={filters}
       />
-      <AddToJobsModal isOpen={isJobModalOpen} onClose={() => setIsJobModalOpen(false)} />
+      <AddToJobsModal
+        isOpen={isJobModalOpen}
+        onClose={() => setIsJobModalOpen(false)}
+      />
     </div>
   );
 };

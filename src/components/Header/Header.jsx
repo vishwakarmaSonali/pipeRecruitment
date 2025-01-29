@@ -59,13 +59,39 @@ const Header = ({ title }) => {
   };
 
   return (
-    <div className="w-full  bg-gray-100 overflow-hidden sticky-header ">
-      <div
-        className={`h-[68px]  bg-white flex items-center transition-all duration-300 z-50  `}
-      >
-        {isSearchExpanded ? (
-          <div className="flex items-center justify-between w-full px-6">
-            <div className="relative w-full md:flex font-ubuntu font-normal px-10 h-[40px] text-sm text-gray-700 bg-gray-100 rounded-[8px] focus:outline-none focus:ring-1 transition-all duration-300 ease-in-out flex items-center">
+    <div className="w-full  overflow-hidden sticky-header ">
+      {isSearchExpanded ? (
+        <div className="flex items-center justify-between w-full ">
+          <div className="relative w-full md:flex font-ubuntu font-normal px-10 h-[40px] text-sm text-gray-700 bg-gray-100 rounded-[8px] focus:outline-none focus:ring-1 transition-all duration-300 ease-in-out flex items-center">
+            <img
+              src={SearchIcon}
+              alt="Search"
+              className="search-icon"
+              onClick={handleSearchExpand}
+            />
+            <input
+              type="text"
+              placeholder="Search..."
+              className="w-full bg-gray-100 focus:outline-none"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </div>
+          <button
+            onClick={handleSearchCancel}
+            className="ml-4 text-buttonBLue font-ubuntu font-medium cursor-pointer md:flex"
+          >
+            Cancel
+          </button>
+        </div>
+      ) : (
+        <div className="flex justify-between align-center w-full">
+          <button className="hamburger-button" onClick={toggleDrawer(true)}>
+            <Menubar />
+          </button>
+          <h1 className="header-title">{title}</h1>
+          <div className="flex items-center header-icons-container space-x-2">
+            <div className="relative hidden md:hidden lg:flex ">
               <img
                 src={SearchIcon}
                 alt="Search"
@@ -74,66 +100,33 @@ const Header = ({ title }) => {
               />
               <input
                 type="text"
-                placeholder="Search..."
-                className="w-full bg-gray-100 focus:outline-none"
+                placeholder="Search"
+                className="search-input focus:outline-none focus:ring-0"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
             </div>
             <button
-              onClick={handleSearchCancel}
-              className="ml-4 text-buttonBLue font-ubuntu font-medium cursor-pointer md:flex"
+              className="header-icons search xl:hidden"
+              onClick={handleSearchExpand}
             >
-              Cancel
+              <img src={SearchIcon} alt="Search" />
             </button>
-          </div>
-        ) : (
-          <div
-            className="flex justify-between align-center  bg-white w-full"
-            style={{ padding: "10px 16px" }}
-          >
-            <button className="hamburger-button" onClick={toggleDrawer(true)}>
-              <Menubar />
-            </button>
-            <h1 className="header-title">{title}</h1>
-            <div className="flex items-center header-icons-container space-x-2">
-              <div className="relative hidden md:hidden lg:flex ">
-                <img
-                  src={SearchIcon}
-                  alt="Search"
-                  className="search-icon"
-                  onClick={handleSearchExpand}
-                />
-                <input
-                  type="text"
-                  placeholder="Search"
-                  className="search-input focus:outline-none focus:ring-0"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                />
-              </div>
-              <button
-                className="header-icons search xl:hidden"
-                onClick={handleSearchExpand}
-              >
-                <img src={SearchIcon} alt="Search" />
-              </button>
-              <div className="header-icons">
-                <img src={Add} alt="AddIcon" />
-              </div>
-              <div className="header-icons">
-                <img src={MessagesIcon} alt="MessagesIcon" />
-              </div>
-              <div className="header-icons">
-                <img src={NotificationIcon} alt="NotificationIcon" />
-              </div>
-              <div className="profile-div">
-                <img src={ProfileImage} alt="ProfileImage" />
-              </div>
+            <div className="header-icons">
+              <img src={Add} alt="AddIcon" />
+            </div>
+            <div className="header-icons">
+              <img src={MessagesIcon} alt="MessagesIcon" />
+            </div>
+            <div className="header-icons">
+              <img src={NotificationIcon} alt="NotificationIcon" />
+            </div>
+            <div className="profile-div">
+              <img src={ProfileImage} alt="ProfileImage" />
             </div>
           </div>
-        )}
-      </div>
+        </div>
+      )}
       <Drawer anchor="left" open={drawerOpen} onClose={toggleDrawer(false)}>
         <div
           role="presentation"
