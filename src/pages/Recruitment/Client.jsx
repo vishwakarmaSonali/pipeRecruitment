@@ -5,7 +5,7 @@ import Header from "../../components/Header/Header";
 const Client = () => {
   const NoFiltersScreen = () => {
     return (
-      <div className="flex flex-col overflow-hidden bg-white items-center justify-center  text-center">
+      <div className="flex flex-col overflow-hidden overscroll-none bg-white items-center justify-center  text-center">
         <div className="max-w-[680px] text-center">
           <h2 className="font-ubuntu text-3xl text-customBlue text-center font-medium">
             Expand Your Talent Search with Our Sourcing Hub

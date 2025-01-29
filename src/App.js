@@ -6,6 +6,7 @@ import {
 } from "react-router-dom";
 import Sourcing from "./pages/Tools/Sourcing/Sourcing";
 import Client from "./pages/Recruitment/Client";
+import Candidates from "./pages/Recruitment/Candidates/Candidates"
 import "./App.css";
 
 const router = createBrowserRouter([
@@ -20,6 +21,10 @@ const router = createBrowserRouter([
   {
     path: "/sourcing",
     element: <Sourcing />,
+  },
+  {
+    path: "/candidates",
+    element: <Candidates />,
   },
 ]);
 const App = () => {

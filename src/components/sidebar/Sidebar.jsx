@@ -55,7 +55,7 @@ const Sidebar = () => {
       onMouseEnter={() => hoverEffectEnabled && setIsExpanded(true)}
       onMouseLeave={() => hoverEffectEnabled && setIsExpanded(false)}
     >
-      <div className="sidebar-section-1">
+      <div className={`sidebar-section-1  ${isExpanded?"pl-[20px]":""}`}>
         {isExpanded ? <LogoExpanded /> : <Logo />}
         <div className="sidebar-menu-container">
           <div
@@ -120,7 +120,7 @@ const Sidebar = () => {
               {isExpanded && "Jobs"}
             </Link>
             <Link
-              to={"#"}
+              to={"/candidates"}
               className={`common-link-text ${
                 activeLink === "/candidates" && "active-link"
               } ${!isExpanded && "justify-center"}`}
