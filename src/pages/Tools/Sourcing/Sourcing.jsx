@@ -817,7 +817,7 @@ const Sourcing = () => {
 
   return (
     <div
-      className="w-full h-screen bg-gray-100 overflow-hidden"
+      className="w-full h-screen bg-white overflow-hidden overscroll-none"
       style={{ boxSizing: "border-box", display: "flex" }}
     >
       <Sidebar />
@@ -840,7 +840,7 @@ const Sourcing = () => {
             <NoFiltersScreen onStartSearching={toggleModal} />
           </div>
         ) : (
-          <div className="overflow-hidden scroll-width-none">
+          <div className="overflow-hidden  scroll-width-none">
             {/* ScrollView */}
             <BulkActionView
               toggleModal={toggleModal}
@@ -850,7 +850,7 @@ const Sourcing = () => {
               jobModalOpen={toggleJobModal}
               filters={filters} // Pass filters as a prop
             />
-            <div className="w-full scroll-width-none h-screen overflow-hidden flex">
+            <div className="w-full scroll-width-none h-screen overflow-hidden overscroll-none flex">
               {/* Candidate List Section */}
               <div className="candidate-list w-full lg:w-[40%] px-4">
                 <CandidateList
