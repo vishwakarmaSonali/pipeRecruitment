@@ -25,6 +25,7 @@ import AddToFolderModal from "../../../components/AddToJobsModals/AddToJobs";
 import AddToJobsModal from "../../../components/AddToJobsModals/AddToJobs";
 import Sidebar from "../../../components/sidebar/Sidebar";
 import Header from "../../../components/Header/Header";
+import { sourcingHubInfo } from "./config";
 
 const skills = [
   "UI Design",
@@ -176,7 +177,7 @@ const BulkActionView = ({
 }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
-  const [jobModalOpen,setJobModalOpen] = useState(false)
+  const [jobModalOpen, setJobModalOpen] = useState(false);
   const open = Boolean(anchorEl);
 
   // Function to calculate the number of applied filters
@@ -223,7 +224,7 @@ fontFamily: "'Ubuntu', sans-serif",  // Apply Ubuntu font
   };
   const handleAddToJobMenu = () => {
     handleClose();
-    setJobModalOpen(true)
+    setJobModalOpen(true);
   };
   return (
     <div className="w-full bg-gray-100 p-4 flex items-center justify-between">
@@ -250,7 +251,11 @@ fontFamily: "'Ubuntu', sans-serif",  // Apply Ubuntu font
             ? "Bulk Action"
             : `Filter ${filterCount > 0 ? `(${filterCount})` : ""}`}
         </span>
-       {isBulkAction ? <DropArrow fill="white" />: <img src={  FilterIcon} alt="filter" />}
+        {isBulkAction ? (
+          <DropArrow fill="white" />
+        ) : (
+          <img src={FilterIcon} alt="filter" />
+        )}
       </button>
 
       {/* Menu for Bulk Actions */}
@@ -306,7 +311,10 @@ fontFamily: "'Ubuntu', sans-serif",  // Apply Ubuntu font
         <FolderModal isOpen={modalOpen} onClose={() => setModalOpen(false)} />
       )}
       {jobModalOpen && (
-        <AddToJobsModal isOpen={jobModalOpen} onClose={() => setJobModalOpen(false)} />
+        <AddToJobsModal
+          isOpen={jobModalOpen}
+          onClose={() => setJobModalOpen(false)}
+        />
       )}
     </div>
   );
@@ -521,7 +529,7 @@ const CandidateDetails = ({ selectedCandidate }) => {
             <span className="dilogbox">Add to candidate</span>
           </div>
 
-          <div className="relative group" onClick={()=>setJobModalOpen(true)}>
+          <div className="relative group" onClick={() => setJobModalOpen(true)}>
             <img
               src={jobIcon}
               alt="jobIcon Add"
@@ -585,8 +593,11 @@ const CandidateDetails = ({ selectedCandidate }) => {
       {modalOpen && (
         <FolderModal isOpen={modalOpen} onClose={() => setModalOpen(false)} />
       )}
-       {jobModalOpen && (
-        <AddToJobsModal isOpen={jobModalOpen} onClose={() => setJobModalOpen(false)} />
+      {jobModalOpen && (
+        <AddToJobsModal
+          isOpen={jobModalOpen}
+          onClose={() => setJobModalOpen(false)}
+        />
       )}
     </>
   );
@@ -666,77 +677,29 @@ const PaginationFooter = () => {
 };
 const NoFiltersScreen = ({ onStartSearching }) => {
   return (
-    <div className="flex flex-col items-center justify-center text-center ">
-      <div className=" max-w-[680px] text-center ">
-        <h2 className="font-ubuntu text-3xl text-customBlue  text-center font-medium z-50 w-25">
-          Expand Your Talent Search with Our Sourcing Hub
-        </h2>
-        <ul className="flex justify-between items-center gap-6  p-0 mt-6">
-          <li>
-            <img
-              className="w-40 h-40 mx-auto"
-              src={hiddenTalent}
-              alt="find hidden talent"
-            />
-            <div className="flex flex-col  mt-2 space-y-1">
-              <span className="font-ubuntu font-medium text-m text-customBlue ">
-                Find Hidden Talent
-              </span>
-              <span className="font-ubuntu font-normal text-m text-customGray ">
-                Discover qualified professionals who may not be actively job
-                hunting
-              </span>
+    <div className="sourcing-inner-div">
+      <h2 className="font-ubuntu text-3xl text-customBlue  text-center font-medium z-50 max-w-[420px]">
+        Expand Your Talent Search with Our Sourcing Hub
+      </h2>
+      <div className="display-flex-20">
+        {sourcingHubInfo?.map((item) => {
+          return (
+            <div key={item?.id} className="sourcing-info-div">
+              <img src={item?.image} className="sourcing-info-img" />
+              <div className="display-column-8">
+                <p className="sourcing-info-title-text">{item?.name}</p>
+                <p className="sourcing-info-decription-text">{item?.desc}</p>
+              </div>
             </div>
-          </li>
-          <li>
-            <img
-              className="w-40 h-40 mx-auto"
-              src={refineSearch}
-              alt="refien your search"
-            />
-            <div className="flex flex-col  mt-2 space-y-1">
-              <span className="font-ubuntu font-medium text-m text-customBlue">
-                Refine Your Search
-              </span>
-              <span className="font-ubuntu font-normal text-m text-customGray ">
-                Use advance filters to find the perfect candidates.
-              </span>
-            </div>
-          </li>
-          <li>
-            <img
-              className="w-40 h-40 mx-auto"
-              src={talentpipelines}
-              alt="talent pipelines"
-            />
-            <div className="flex flex-col  mt-2 space-y-1">
-              <span className="font-ubuntu font-medium text-m text-customBlue">
-                Create Robust Talent Pipelines
-              </span>
-              <span className="font-ubuntu font-normal text-m text-customGray ">
-                Track and organize candidates to maintain a steady flow of top
-                talent.
-              </span>
-            </div>
-          </li>
-        </ul>
-        <button
-          className="text-white text-ubuntu text-m bg-buttonBLue px-[14px] py-[10px] rounded-[8px] mt-[60px] space-x-1 shadow-md hover:bg-opacity-80"
-          onClick={onStartSearching}
-        >
-          {" Start Searching +"}
-        </button>
-        <div className="flex place-items-center  max-h-sm mt-[90px]">
-          <span className="font-ubuntu text-xs text-customBlue ">
-            Our platform uses trusted third-party data to offer a separate
-            external candidate database, keeping your internal data secure and
-            private.{" "}
-            <span className="buttonBLue  cursor-pointer">
-              Learn more about data usage.
-            </span>
-          </span>
-        </div>
+          );
+        })}
       </div>
+      <button
+        className="text-white text-ubuntu text-m bg-buttonBLue px-[14px] py-[10px] rounded-[8px] space-x-1 shadow-md hover:bg-opacity-80"
+        onClick={onStartSearching}
+      >
+        {" Start Searching +"}
+      </button>
     </div>
   );
 };
@@ -744,7 +707,7 @@ const Sourcing = () => {
   const [selectedCandidate, setSelectedCandidate] = useState(candidates[0]);
   const [selectedCandidates, setSelectedCandidates] = useState([]); // Store selected candidates
   const [filtersApplied, setFiltersApplied] = useState(false);
-  const [isJobModalOpen,setIsJobModalOpen] = useState(false)
+  const [isJobModalOpen, setIsJobModalOpen] = useState(false);
 
   const [filters, setFilters] = useState({
     jobTitle: "",
@@ -833,11 +796,29 @@ const Sourcing = () => {
             style={{
               flex: 1,
               display: "flex",
-              justifyContent: "center",
+              flexDirection: "column",
               alignItems: "center",
+              justifyContent: "center",
             }}
           >
-            <NoFiltersScreen onStartSearching={toggleModal} />
+            <div
+              style={{
+                flex: 1,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <NoFiltersScreen onStartSearching={toggleModal} />
+            </div>
+            <p className="sourcing-info-div-auto font-ubuntu">
+              Our platform uses trusted third-party data to offer a separate
+              external candidate database, keeping your internal data secure and
+              private.{" "}
+              <span style={{ color: "#1761D8", cursor: "pointer" }}>
+                Learn more about data usage.
+              </span>
+            </p>
           </div>
         ) : (
           <div className="overflow-hidden  scroll-width-none">
@@ -905,7 +886,10 @@ const Sourcing = () => {
         onReset={resetFilters}
         filters={filters}
       />
-      <AddToJobsModal isOpen={isJobModalOpen} onClose={() => setIsJobModalOpen(false)} />
+      <AddToJobsModal
+        isOpen={isJobModalOpen}
+        onClose={() => setIsJobModalOpen(false)}
+      />
     </div>
   );
 };

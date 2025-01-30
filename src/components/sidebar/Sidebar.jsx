@@ -49,13 +49,11 @@ const Sidebar = () => {
 
   return (
     <div
-      className={`sidebar-main ${isExpanded ? "sidebar-expanded" : ""} ${
-        hoverEffectEnabled && "position-fixed"
-      }`}
+      className={`sidebar-main ${isExpanded ? "sidebar-expanded" : ""} `}
       onMouseEnter={() => hoverEffectEnabled && setIsExpanded(true)}
       onMouseLeave={() => hoverEffectEnabled && setIsExpanded(false)}
     >
-      <div className={`sidebar-section-1  ${isExpanded?"pl-[20px]":""}`}>
+      <div className={`sidebar-section-1  ${isExpanded ? "pl-[20px]" : ""}`}>
         {isExpanded ? <LogoExpanded /> : <Logo />}
         <div className="sidebar-menu-container">
           <div
