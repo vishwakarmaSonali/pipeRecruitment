@@ -157,7 +157,7 @@
   border: none;
   display: flex;
   gap: 6px;
-  padding: 12px;
+  padding: 12px 12px 12px 0px;
   background-color: transparent;
   border: 1px solid #f3f4f4;
   border-radius: 8px;
@@ -166,28 +166,64 @@
   gap: 6px;
   height: 38px;
   box-sizing: border-box;
-}
-
-.phone-input-style input {
-  border: none;
-  flex: 1;
-  padding: 10px 0px;
-  outline: none;
   font-size: 12px;
   line-height: 13.79px;
   font-family: "Ubuntu";
   font-weight: 400;
   color: var(--dark-black);
-  height: 100%;
 }
 
-.phone-input-style input::placeholder {
-  color: var(--grey);
-}
-
-.phone-input-style input:focus {
-  border: none;
+.react-tel-input .form-control {
+  position: relative;
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+  padding-left: 48px !important;
+  margin-left: 0;
+  border: none !important;
+  flex: 1;
   outline: none;
+  font-size: 12px !important;
+  line-height: 13.79px !important;
+  font-family: "Ubuntu" !important;
+  font-weight: 400 !important;
+  color: var(--dark-black) !important;
+  height: 100%;
+  width: 100% !important;
+  background-color: transparent !important;
+}
+
+.form-control:focus {
+  outline: 0;
+  box-shadow: none !important;
+}
+
+.react-tel-input .flag-dropdown {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  padding: 0;
+  border-radius: 3px 0 0 3px;
+  background-color: transparent !important;
+}
+
+.react-tel-input .country-list .search-emoji {
+  display: none;
+}
+
+.react-tel-input .country-list {
+  outline: none;
+  list-style: none;
+  position: absolute;
+  padding: 0;
+  margin: 10px 0 10px -1px;
+  box-shadow: 1px 2px 10px rgba(0, 0, 0, 0.35);
+  background-color: #fff;
+  min-width: 370px;
+  max-height: 155px !important;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  border-radius: 0 0 3px 3px;
+  z-index: 99999 !important;
 }
 
 .dropdown-container {

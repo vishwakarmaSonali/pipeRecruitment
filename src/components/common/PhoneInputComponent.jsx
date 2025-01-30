@@ -1,39 +1,37 @@
 import React, { useState } from "react";
-import {
-  parsePhoneNumber,
-  getCountryCallingCode,
-  getCountries,
-} from "libphonenumber-js";
-import "react-phone-number-input/style.css";
-import PhoneInput, {
-  formatPhoneNumber,
-  formatPhoneNumberIntl,
-  isPossiblePhoneNumber,
-  isValidPhoneNumber,
-} from "react-phone-number-input";
-import flags from "react-phone-number-input/flags";
+import PhoneInput from "react-phone-input-2";
+import "react-phone-input-2/lib/style.css";
 
 const PhoneInputComponent = () => {
-  const [phoneNumberValue, setPhoneNumberValue] = useState("");
+  const [phoneNumber, setphoneNumber] = useState("");
 
   return (
-    <PhoneInput
-      id="phone-number"
-      placeholder="Phone Number"
-      value={phoneNumberValue}
-      onChange={setPhoneNumberValue}
-      defaultCountry="IN"
-      flags={flags}
-      limitMaxLength
-      error={
-        phoneNumberValue
-          ? isValidPhoneNumber(phoneNumberValue)
-            ? undefined
-            : "Invalid phone number"
-          : "Phone number required"
-      }
-      className={"phone-input-style"}
-    />
+    <div className="phone-input-style">
+      <PhoneInput
+        country={"us"}
+        value={phoneNumber}
+        onChange={(text) => {
+          setphoneNumber(text);
+        }}
+        enableSearch
+        containerStyle={{
+          outline: "none",
+          border: "none",
+        }}
+        searchStyle={{
+          outline: "none",
+          border: "none",
+        }}
+        dropdownStyle={{
+          outline: "none",
+          border: "none",
+        }}
+        buttonStyle={{
+          border: "none",
+          outline: "none",
+        }}
+      />
+    </div>
   );
 };
 

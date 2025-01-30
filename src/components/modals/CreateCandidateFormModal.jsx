@@ -5,8 +5,6 @@ import { ReactComponent as CloseIcon } from "../../assets/icons/closeModal.svg";
 import { ReactComponent as GallaryEdit } from "../../assets/icons/gallery-edit.svg";
 import { useModal } from "../common/ModalProvider";
 import { useForm } from "react-hook-form";
-import PhoneInput from "react-phone-input-2";
-import "react-phone-input-2/lib/style.css";
 import "react-quill/dist/quill.snow.css";
 import HtmlViewComponent from "../common/HtmlViewComponent";
 import CommonTextInput from "../common/CommonTextInput";
