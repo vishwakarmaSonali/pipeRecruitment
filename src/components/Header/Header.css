@@ -23,9 +23,9 @@
 }
 
 .scroll-width-none {
-  /* Hide scrollbar for all browsers */
-  scrollbar-width: none; /* Firefox */
-  -ms-overflow-style: none; /* Internet Explorer 10+ */
+  /* / Hide scrollbar for all browsers / */
+  scrollbar-width: none; /* Firefox 8/
+  -ms-overflow-style: none; /*Internet Explorer 10+ */
 }
 
 .scroll-width-none::-webkit-scrollbar {
@@ -59,7 +59,7 @@
 .candidate-details {
   @apply w-[60%] mr-4 p-[14px] pb-[20px] mb-[110px] overflow-auto scroll-width-none bg-white h-auto rounded-[14px];
 }
-/* Responsive design
+
 
 /* Mobile View */
 @media (min-width: 240px) and (max-width: 1024px) {
@@ -85,10 +85,10 @@
     @apply block;
   }
   .search-input {
-    @apply hidden focus:outline-none focus:ring-0; /* Hide search input on mobile */
+    @apply hidden focus:outline-none focus:ring-0; /*Hide search input on mobile */
   }
   .candidate-list {
-    @apply w-full h-screen overflow-y-auto scroll-width-none; /* Enable scrolling */
+    @apply w-full h-screen overflow-y-auto scroll-width-none; /*Enable scrolling */
   }
   .candidate-scroll {
     @apply scroll-width-none;
