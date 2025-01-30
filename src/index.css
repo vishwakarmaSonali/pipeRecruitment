@@ -25,6 +25,11 @@ code {
 :root {
   --black: #000000;
   --white: #ffffff;
+  --dark-black: #151b23;
+  --grey: #797979;
+  --light-grey: #d7d7d7;
+  --off-white: #f3f4f4;
+  --blue: #1761d8;
 }
 
 html,

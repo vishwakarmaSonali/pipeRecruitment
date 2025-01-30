@@ -4,7 +4,9 @@ const ModalContext = createContext();
 
 export const ModalProvider = ({ children }) => {
   const [modals, setModals] = useState({
-    modalVisible: false,
+    animatedModal: false,
+    createCandidateModalVisible: false,
+    createCandidateFormModalVisible: false,
   });
 
   const isAnyModalOpen = useMemo(
