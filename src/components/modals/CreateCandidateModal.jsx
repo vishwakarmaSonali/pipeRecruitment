@@ -19,47 +19,49 @@ const CreateCandidateModal = ({ visible, onClose }) => {
     <Modal
       show={visible}
       onHide={handleBackdropClick}
-      dialogClassName={`common-modal ${
-        modals?.animatedModal ? "zoom-out" : "zoom-in"
-      }`}
+      dialogClassName={`common-modal `}
       contentClassName="modal-content"
       backdropClassName="custom-backdrop"
     >
-      <div className="display-column-24">
-        <div className="display-column-8">
-          <div className="display-flex-justify align-center">
-            <p className="modal-title-text">Create Candidate</p>
-            <button onClick={onClose}>
-              <CloseIcon />
+      <div
+        className={`common-modal-container ${modals?.animatedModal && "shake"}`}
+      >
+        <div className="display-column-24">
+          <div className="display-column-8">
+            <div className="display-flex-justify align-center">
+              <p className="modal-title-text">Create Candidate</p>
+              <button onClick={onClose}>
+                <CloseIcon />
+              </button>
+            </div>
+            <p className="modal-description-text">
+              Adding candidates enables you to input their details, attach
+              resumes to their profiles, assign them to jobs, and manage various
+              other actions effortlessly.
+            </p>
+          </div>
+          <div className="display-flex" style={{ gap: 10 }}>
+            <button
+              className="fill-form-btn"
+              onClick={() => {
+                onClose();
+                setModalVisibility("createCandidateFormModalVisible", true);
+              }}
+            >
+              <FormIcon />
+              <span className="modal-description-text">Fill Form</span>
+            </button>
+            <button
+              className="fill-form-btn"
+              onClick={() => {
+                onClose();
+                setModalVisibility("smartGenerateModalVisible", true);
+              }}
+            >
+              <PenIcon />
+              <span className="modal-description-text">Smart Generate</span>
             </button>
           </div>
-          <p className="modal-description-text">
-            Adding candidates enables you to input their details, attach resumes
-            to their profiles, assign them to jobs, and manage various other
-            actions effortlessly.
-          </p>
-        </div>
-        <div className="display-flex" style={{ gap: 10 }}>
-          <button
-            className="fill-form-btn"
-            onClick={() => {
-              onClose();
-              setModalVisibility("createCandidateFormModalVisible", true);
-            }}
-          >
-            <FormIcon />
-            <span className="modal-description-text">Fill Form</span>
-          </button>
-          <button
-            className="fill-form-btn"
-            onClick={() => {
-              onClose();
-              setModalVisibility("smartGenerateModalVisible", true);
-            }}
-          >
-            <PenIcon />
-            <span className="modal-description-text">Smart Generate</span>
-          </button>
         </div>
       </div>
     </Modal>

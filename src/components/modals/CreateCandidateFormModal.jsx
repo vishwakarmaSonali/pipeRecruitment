@@ -58,87 +58,92 @@ const CreateCandidateFormModal = ({ visible, onClose }) => {
     <Modal
       show={visible}
       onHide={handleBackdropClick}
-      dialogClassName={`common-modal ${
-        modals?.animatedModal ? "zoom-out" : "zoom-in"
-      }`}
+      dialogClassName={`common-modal `}
       contentClassName="modal-content"
       backdropClassName="custom-backdrop"
     >
-      <div className="display-column-24">
-        <div className="display-column-8">
-          <div className="display-flex-justify align-center">
-            <p className="modal-title-text">Fill Form</p>
-            <button onClick={onClose}>
-              <CloseIcon />
-            </button>
+      <div
+        className={`common-modal-container ${modals?.animatedModal && "shake"}`}
+      >
+        <div className={`display-column-24 `}>
+          <div className="display-column-8">
+            <div className="display-flex-justify align-center">
+              <p className="modal-title-text">Fill Form</p>
+              <button onClick={onClose}>
+                <CloseIcon />
+              </button>
+            </div>
+            <p className="modal-description-text">
+              Enter candidate details step by step.
+            </p>
           </div>
-          <p className="modal-description-text">
-            Enter candidate details step by step.
-          </p>
-        </div>
-        <div>
-          <form
-            className="display-column"
-            onSubmit={handleSubmit(onSubmit)}
-            style={{ gap: 10 }}
-          >
-            <div className="display-flex align-center" style={{ gap: 6 }}>
-              <div
-                className="candidate-upload-img-div"
-                onClick={() => document.getElementById("file-input").click()}
-              >
-                {!!imagePreview ? (
-                  <img src={imagePreview} className={`common-img `} />
-                ) : (
-                  <GallaryEdit />
-                )}
-                <input
-                  type="file"
-                  id="file-input"
-                  style={{
-                    display: "none",
-                  }}
-                  accept="image/*"
-                  onChange={handleImageChange}
+          <div>
+            <form
+              className="display-column"
+              onSubmit={handleSubmit(onSubmit)}
+              style={{ gap: 10 }}
+            >
+              <div className="display-flex align-center" style={{ gap: 6 }}>
+                <div
+                  className="candidate-upload-img-div"
+                  onClick={() => document.getElementById("file-input").click()}
+                >
+                  {!!imagePreview ? (
+                    <img src={imagePreview} className={`common-img `} />
+                  ) : (
+                    <GallaryEdit />
+                  )}
+                  <input
+                    type="file"
+                    id="file-input"
+                    style={{
+                      display: "none",
+                    }}
+                    accept="image/*"
+                    onChange={handleImageChange}
+                  />
+                </div>
+                <CommonTextInput
+                  type={"text"}
+                  value={name}
+                  onChange={(e) => setValue("name", e.target.value)}
+                  placeholder={"Candidate Name"}
                 />
               </div>
+              <PhoneInputComponent />
+              <CommonTextInput
+                type={"email"}
+                value={email}
+                onChange={(e) => setValue("email", e.target.value)}
+                placeholder={"Email Id"}
+              />
               <CommonTextInput
                 type={"text"}
-                value={name}
-                onChange={(e) => setValue("name", e.target.value)}
-                placeholder={"Candidate Name"}
+                value={location}
+                onChange={(e) => setLocation(e.target.value)}
+                placeholder={"Location"}
               />
-            </div>
-            <PhoneInputComponent />
-            <CommonTextInput
-              type={"email"}
-              value={email}
-              onChange={(e) => setValue("email", e.target.value)}
-              placeholder={"Email Id"}
-            />
-            <CommonTextInput
-              type={"text"}
-              value={location}
-              onChange={(e) => setLocation(e.target.value)}
-              placeholder={"Location"}
-            />
-            <CommonDropdown
-              options={jobOptions}
-              placeholder="Select Job (optional)"
-              selectedValue={jobValue}
-              onChange={setJobValue}
-              optionKey="value"
-            />
+              <CommonDropdown
+                options={jobOptions}
+                placeholder="Select Job (optional)"
+                selectedValue={jobValue}
+                onChange={setJobValue}
+                optionKey="value"
+              />
 
-            <HtmlViewComponent value={description} onChange={setDescription} />
+              <HtmlViewComponent
+                value={description}
+                onChange={setDescription}
+              />
 
-            {/* <button type="submit" className="submit-btn">
+              {/* <button type="submit" className="submit-btn">
               Create Candidate
             </button> */}
-          </form>
-        </div>
-        <div className="display-flex justify-center">
-          <CommonButton title={"Create Candidate"} disabled={true} />
+            </form>
+          </div>
+          <div className="display-flex justify-center">
+            <CommonButton title={"Create Candidate"} disabled={true} />
+          </div>
         </div>
       </div>
     </Modal>

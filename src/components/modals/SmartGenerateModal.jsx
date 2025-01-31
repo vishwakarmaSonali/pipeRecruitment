@@ -19,52 +19,54 @@ const SmartGenerateModal = ({ visible, onClose }) => {
     <Modal
       show={visible}
       onHide={handleBackdropClick}
-      dialogClassName={`common-modal ${
-        modals?.animatedModal ? "zoom-out" : "zoom-in"
-      }`}
+      dialogClassName={`common-modal`}
       contentClassName="modal-content"
       backdropClassName="custom-backdrop"
     >
-      <div className="display-column-24">
-        <div className="display-column-8">
-          <div className="display-flex-justify align-center">
-            <p className="modal-title-text">Smart Generate</p>
-            <button onClick={onClose}>
-              <CloseIcon />
+      <div
+        className={`common-modal-container ${modals?.animatedModal && "shake"}`}
+      >
+        <div className="display-column-24">
+          <div className="display-column-8">
+            <div className="display-flex-justify align-center">
+              <p className="modal-title-text">Smart Generate</p>
+              <button onClick={onClose}>
+                <CloseIcon />
+              </button>
+            </div>
+            <p className="modal-description-text">
+              Upload a document, let AI handle the details.
+            </p>
+          </div>
+          <div className="display-column" style={{ gap: 10, width: "100%" }}>
+            <button
+              className="smart-generate-btn"
+              onClick={() => {
+                onClose();
+                setModalVisibility("uploadResumeCandidateModalVisible", true);
+              }}
+            >
+              Upload a Resume
+            </button>
+            <button
+              className="smart-generate-btn"
+              onClick={() => {
+                onClose();
+                navigate("/candidate/upload-resume");
+              }}
+            >
+              Upload Multiple Resume
+            </button>
+            <button
+              className="smart-generate-btn"
+              onClick={() => {
+                onClose();
+                navigate("/candidate/upload-resume-csv-json");
+              }}
+            >
+              Upload a Json or CSV file
             </button>
           </div>
-          <p className="modal-description-text">
-            Upload a document, let AI handle the details.
-          </p>
-        </div>
-        <div className="display-column" style={{ gap: 10, width: "100%" }}>
-          <button
-            className="smart-generate-btn"
-            onClick={() => {
-              onClose();
-              setModalVisibility("uploadResumeCandidateModalVisible", true);
-            }}
-          >
-            Upload a Resume
-          </button>
-          <button
-            className="smart-generate-btn"
-            onClick={() => {
-              onClose();
-              navigate("/candidate/upload-resume");
-            }}
-          >
-            Upload Multiple Resume
-          </button>
-          <button
-            className="smart-generate-btn"
-            onClick={() => {
-              onClose();
-              navigate("/candidate/upload-resume-csv-json");
-            }}
-          >
-            Upload a Json or CSV file
-          </button>
         </div>
       </div>
     </Modal>

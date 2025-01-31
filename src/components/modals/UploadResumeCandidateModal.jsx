@@ -83,95 +83,101 @@ const UploadResumeCandidateModal = ({ visible, onClose }) => {
     <Modal
       show={visible}
       onHide={handleBackdropClick}
-      dialogClassName={`common-modal overflow-visible ${
-        modals?.animatedModal ? "zoom-out" : "zoom-in"
-      }`}
+      dialogClassName={`common-modal`}
       contentClassName="modal-content"
       backdropClassName="custom-backdrop"
     >
-      <div className="display-column-24">
-        <div className="display-column-8">
-          <div className="display-flex-justify align-center">
-            <p className="modal-title-text">Create Candidate</p>
-            <button onClick={onClose}>
-              <CloseIcon />
-            </button>
+      <div
+        className={`common-modal-container overflow-visible ${
+          modals?.animatedModal && "shake"
+        }`}
+      >
+        <div className="display-column-24">
+          <div className="display-column-8">
+            <div className="display-flex-justify align-center">
+              <p className="modal-title-text">Create Candidate</p>
+              <button onClick={onClose}>
+                <CloseIcon />
+              </button>
+            </div>
+            <p className="modal-description-text">
+              Select job and/or folder to automatically add the candidate there.
+            </p>
           </div>
-          <p className="modal-description-text">
-            Select job and/or folder to automatically add the candidate there.
-          </p>
-        </div>
-        <div className="display-column" style={{ gap: 10, width: "100%" }}>
-          <CommonDropdown
-            options={jobOptions}
-            placeholder="Select Job (optional)"
-            selectedValue={jobValue}
-            onChange={setJobValue}
-            optionKey="value"
-          />
-          <CommonDropdown
-            options={jobOptions}
-            placeholder="Select Folder (optional)"
-            selectedValue={folderValue}
-            onChange={setFolderValue}
-            optionKey="value"
-          />
-          <div
-            onDragOver={handleDragOver}
-            onDragLeave={handleDragLeave}
-            onDrop={handleDrop}
-          >
-            {!fileDetails?.name && (
-              <label className="upload-label">
-                <input
-                  type="file"
-                  id="file-input"
-                  accept=".pdf, .doc, .docs, .rtf"
-                  onChange={handleFileChange}
-                  hidden
-                />
-                <div
-                  className={`upload-container ${isDragging && "drag-upload"}`}
-                >
-                  <UploadIcon />
-                  <p className="font-12-ubuntu color-dark-black">
-                    Select a file to upload or drag and drop it here
-                  </p>
-                  <p className="font-12-ubuntu color-grey">
-                    Supported file types .pdf, .doc, .docx, .rtf (max 20MB)
-                  </p>
-                </div>
-              </label>
-            )}
-
-            {!!fileDetails?.name && (
-              <div className="uploaded-file-div">
-                <div className="display-column" style={{ gap: 2 }}>
-                  {fileDetails?.name && (
-                    <p className="modal-description-text color-dark-black">
-                      {" "}
-                      {fileDetails?.name}
-                    </p>
-                  )}
-                  {!!fileDetails?.size && (
+          <div className="display-column" style={{ gap: 10, width: "100%" }}>
+            <CommonDropdown
+              options={jobOptions}
+              placeholder="Select Job (optional)"
+              selectedValue={jobValue}
+              onChange={setJobValue}
+              optionKey="value"
+            />
+            <CommonDropdown
+              options={jobOptions}
+              placeholder="Select Folder (optional)"
+              selectedValue={folderValue}
+              onChange={setFolderValue}
+              optionKey="value"
+            />
+            <div
+              onDragOver={handleDragOver}
+              onDragLeave={handleDragLeave}
+              onDrop={handleDrop}
+            >
+              {!fileDetails?.name && (
+                <label className="upload-label">
+                  <input
+                    type="file"
+                    id="file-input"
+                    accept=".pdf, .doc, .docs, .rtf"
+                    onChange={handleFileChange}
+                    hidden
+                  />
+                  <div
+                    className={`upload-container ${
+                      isDragging && "drag-upload"
+                    }`}
+                  >
+                    <UploadIcon />
                     <p className="font-12-ubuntu color-dark-black">
-                      {" "}
-                      {(fileDetails?.size / 1024).toFixed(2)} KB
+                      Select a file to upload or drag and drop it here
                     </p>
-                  )}
+                    <p className="font-12-ubuntu color-grey">
+                      Supported file types .pdf, .doc, .docx, .rtf (max 20MB)
+                    </p>
+                  </div>
+                </label>
+              )}
+
+              {!!fileDetails?.name && (
+                <div className="uploaded-file-div">
+                  <div className="display-column" style={{ gap: 2 }}>
+                    {fileDetails?.name && (
+                      <p className="modal-description-text color-dark-black">
+                        {" "}
+                        {fileDetails?.name}
+                      </p>
+                    )}
+                    {!!fileDetails?.size && (
+                      <p className="font-12-ubuntu color-dark-black">
+                        {" "}
+                        {(fileDetails?.size / 1024).toFixed(2)} KB
+                      </p>
+                    )}
+                  </div>
+                  <button onClick={handleDeleteFile}>
+                    <DeleteIcon />
+                  </button>
                 </div>
-                <button onClick={handleDeleteFile}>
-                  <DeleteIcon />
-                </button>
-              </div>
-            )}
+              )}
+            </div>
           </div>
-        </div>
-        <div className="display-flex justify-center">
-          <CommonButton
-            title={"Create Candidate"}
-            disabled={!fileDetails?.name}
-          />
+          <div className="display-flex justify-center">
+            <CommonButton
+              title={"Create Candidate"}
+              disabled={!fileDetails?.name}
+            />
+          </div>
         </div>
       </div>
     </Modal>

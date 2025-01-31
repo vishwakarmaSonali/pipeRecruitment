@@ -14,6 +14,7 @@ import {
 import { VisibilityOutlined } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import { getRandomColor } from "../../helpers/utils";
+import { ReactComponent as EyeIcon } from "../../assets/icons/eye.svg";
 
 const ResumeUploadInfoTable = ({ data }) => {
   const navigate = useNavigate();
@@ -91,7 +92,7 @@ const ResumeUploadInfoTable = ({ data }) => {
                 </TableCell>
                 <TableCell align="right">
                   <IconButton className="eye-icon">
-                    <VisibilityOutlined />
+                    <EyeIcon />
                   </IconButton>
                 </TableCell>
               </TableRow>
