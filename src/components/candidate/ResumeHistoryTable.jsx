@@ -11,8 +11,11 @@ import {
   Avatar,
   Chip,
 } from "@mui/material";
+import { useNavigate } from "react-router-dom";
+import { getRandomColor } from "../../helpers/utils";
 
 const ResumeHistoryTable = ({ data }) => {
+  const navigate = useNavigate();
   return (
     <TableContainer style={{ flex: 1, overflow: "auto" }}>
       <Table
@@ -49,42 +52,52 @@ const ResumeHistoryTable = ({ data }) => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {data.map((row, index) => (
-            <>
-              <TableRow key={index}>
-                <TableCell>{row.importName}</TableCell>
-                <TableCell>{row.fileCount}</TableCell>
-                <TableCell>
-                  <Chip
-                    label={row.status}
-                    style={{
-                      backgroundColor: "#46A13C1A",
-                      color: "#46A13C",
-                      padding: "6px 12px",
-                      fontSize: "12px",
-                      fontFamily: "Ubuntu",
-                      fontWeight: 400,
-                      borderRadius: "100px",
-                    }}
-                  />
-                </TableCell>
-                <TableCell>
-                  <div style={{ display: "flex", alignItems: "center" }}>
-                    <Avatar
-                      src={row.importedBy.image}
-                      alt={row.importedBy.name}
-                      style={{ width: 32, height: 32 }}
+          {data.map((row, index) => {
+            const randomColor = getRandomColor();
+            return (
+              <>
+                <TableRow
+                  key={index}
+                  onClick={() => navigate("/candidate/resume-history-info")}
+                >
+                  <TableCell>{row.importName}</TableCell>
+                  <TableCell>{row.fileCount}</TableCell>
+                  <TableCell>
+                    <Chip
+                      label={row.status}
+                      style={{
+                        backgroundColor: "#46A13C1A",
+                        color: "#46A13C",
+                        padding: "6px 12px",
+                        fontSize: "12px",
+                        fontFamily: "Ubuntu",
+                        fontWeight: 400,
+                        borderRadius: "100px",
+                      }}
                     />
-                    <span style={{ marginLeft: "6px" }}>
-                      {row.importedBy.name}
-                    </span>
-                  </div>
-                </TableCell>
-                <TableCell>{row.createdOn}</TableCell>
-                <TableCell>{row.completedOn}</TableCell>
-              </TableRow>
-            </>
-          ))}
+                  </TableCell>
+                  <TableCell>
+                    <div style={{ display: "flex", alignItems: "center" }}>
+                      <Avatar
+                        src={row.importedBy.image}
+                        alt={row.importedBy.name}
+                        style={{
+                          width: 32,
+                          height: 32,
+                          backgroundColor: randomColor,
+                        }}
+                      />
+                      <span style={{ marginLeft: "6px" }}>
+                        {row.importedBy.name}
+                      </span>
+                    </div>
+                  </TableCell>
+                  <TableCell>{row.createdOn}</TableCell>
+                  <TableCell>{row.completedOn}</TableCell>
+                </TableRow>
+              </>
+            );
+          })}
         </TableBody>
       </Table>
     </TableContainer>

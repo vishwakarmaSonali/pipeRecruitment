@@ -165,3 +165,27 @@ export const historyResumeData = [
     completedOn: "December 20, 2024",
   },
 ];
+
+export const resumeUploadedData = [
+  {
+    status: "Completed",
+    importedBy: {
+      name: "Priya Sharma",
+      image: "https://example.com/avatar2.png",
+    },
+  },
+  {
+    status: "Completed",
+    importedBy: {
+      name: "Michael Bennett",
+      image: "https://example.com/avatar2.png",
+    },
+  },
+  {
+    status: "Completed",
+    importedBy: {
+      name: "Maria Gonzalez",
+      image: "https://example.com/avatar2.png",
+    },
+  },
+];

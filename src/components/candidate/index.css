@@ -24,6 +24,15 @@ tr:last-child td {
 
 th {
   padding: 14px 12px !important;
-  background-color: #1761d81a !important;
+  background-color: #e8effb !important;
   font-weight: 500 !important;
+}
+
+.eye-icon {
+  opacity: 0;
+  transition: opacity 0.2s ease-in-out;
+}
+
+.hover-row:hover .eye-icon {
+  opacity: 1;
 }

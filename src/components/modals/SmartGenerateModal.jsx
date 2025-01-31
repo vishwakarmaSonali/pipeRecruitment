@@ -51,7 +51,7 @@ const SmartGenerateModal = ({ visible, onClose }) => {
             className="smart-generate-btn"
             onClick={() => {
               onClose();
-              navigate("/candidate-upload-resume");
+              navigate("/candidate/upload-resume");
             }}
           >
             Upload Multiple Resume

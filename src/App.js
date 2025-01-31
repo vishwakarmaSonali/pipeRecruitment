@@ -13,6 +13,7 @@ import "react-toastify/dist/ReactToastify.css";
 import "react-loading-skeleton/dist/skeleton.css";
 import { ToastContainer, Bounce } from "react-toastify";
 import UploadResumePage from "./pages/Recruitment/Candidates/UploadResumePage";
+import SingleResumeHistoryPage from "./pages/Recruitment/Candidates/SingleResumeHistoryPage";
 
 const router = createBrowserRouter([
   {
@@ -32,8 +33,12 @@ const router = createBrowserRouter([
     element: <Candidates />,
   },
   {
-    path: "/candidate-upload-resume",
+    path: "/candidate/upload-resume",
     element: <UploadResumePage />,
+  },
+  {
+    path: "/candidate/resume-history-info",
+    element: <SingleResumeHistoryPage />,
   },
 ]);
 

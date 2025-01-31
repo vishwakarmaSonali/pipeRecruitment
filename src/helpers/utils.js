@@ -23,3 +23,8 @@ export const notifyInfo = (error) => {
     autoClose: 2000,
   });
 };
+
+export const getRandomColor = () => {
+  const colors = ["#FF5733", "#33FF57", "#5733FF", "#FFC300", "#FF33A8"];
+  return colors[Math.floor(Math.random() * colors.length)];
+};
