@@ -56,7 +56,13 @@ const SmartGenerateModal = ({ visible, onClose }) => {
           >
             Upload Multiple Resume
           </button>
-          <button className="smart-generate-btn">
+          <button
+            className="smart-generate-btn"
+            onClick={() => {
+              onClose();
+              navigate("/candidate/upload-resume-csv-json");
+            }}
+          >
             Upload a Json or CSV file
           </button>
         </div>

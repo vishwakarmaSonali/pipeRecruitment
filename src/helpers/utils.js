@@ -25,6 +25,14 @@ export const notifyInfo = (error) => {
 };
 
 export const getRandomColor = () => {
-  const colors = ["#FF5733", "#33FF57", "#5733FF", "#FFC300", "#FF33A8"];
+  const colors = [
+    "#D34B72",
+    "#D4C158",
+    "#38658E",
+    "#9BCD6A",
+    "#6D58D4",
+    "#CDA26A",
+    "#6AAFCD",
+  ];
   return colors[Math.floor(Math.random() * colors.length)];
 };
