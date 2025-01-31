@@ -44,6 +44,10 @@
   overflow: auto;
 }
 
+.overflow-visible {
+  overflow: visible;
+}
+
 .custom-backdrop {
   background-color: #00000080;
   transition: opacity 0.3s ease-in-out;
@@ -168,4 +172,69 @@ textarea,
 
 .country-button {
   background-color: transparent;
+}
+
+.smart-generate-btn {
+  padding: 14px;
+  background-color: transparent;
+  font-size: 14px;
+  line-height: 16.09px;
+  color: var(--black);
+  font-family: "Ubuntu";
+  font-weight: 400;
+  text-align: left;
+  transition: background-color 300ms ease;
+}
+
+.smart-generate-btn:hover {
+  background-color: #1761d80f;
+}
+
+.font-12-ubuntu {
+  font-size: 12px;
+  line-height: 13.79px;
+  font-family: "Ubuntu";
+  font-weight: 400;
+  margin: 0px;
+}
+
+.color-dark-black {
+  color: var(--dark-black);
+}
+
+.color-grey {
+  color: var(--grey);
+}
+
+.upload-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: 1px dashed #797979;
+  padding: 14px;
+  border-radius: 12px;
+  gap: 12px;
+  background-color: transparent;
+  cursor: pointer;
+  transition: border 300ms ease, background-color 300ms ease;
+}
+
+.drag-upload {
+  background-color: #1761d80f;
+  border: 1px dashed #1761d80f;
+}
+
+.upload-label {
+  width: 100%;
+}
+
+.uploaded-file-div {
+  border: 1px solid #d7d7d7;
+  background-color: transparent;
+  padding: 14px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
 }

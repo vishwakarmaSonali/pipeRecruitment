@@ -3,24 +3,111 @@
 @tailwind utilities;
 
 .scroll-width-none {
-    /* Hide scrollbar for all browsers */
-    scrollbar-width: none; /* Firefox */
-    -ms-overflow-style: none; /* Internet Explorer 10+ */
+  /* Hide scrollbar for all browsers */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* Internet Explorer 10+ */
 }
 
 .scroll-width-none::-webkit-scrollbar {
-    display: none; /* Chrome, Safari, Edge */
+  display: none; /* Chrome, Safari, Edge */
 }
 
-.tab-title-text{
-    @apply font-ubuntu text-m
+.tab-title-text {
+  @apply font-ubuntu text-m;
 }
-.buttons{
-    @apply px-[14px] py-[10px] max-h-[36px] text-m font-ubuntu rounded-[8px] flex items-center gap-1
+.buttons {
+  @apply px-[14px] py-[10px] max-h-[36px] text-m font-ubuntu rounded-[8px] flex items-center gap-1;
 }
-.th-title{
-    @apply px-2 py-3 font-ubuntu font-medium text-m text-customBlue justify-center text-left ml-10 max-w-full 
+.th-title {
+  @apply px-2 py-3 font-ubuntu font-medium text-m text-customBlue justify-center text-left ml-10 max-w-full;
 }
-.td-text{
-    @apply px-2 py-3 font-ubuntu font-normal text-m text-customBlue max-w-full text-left 
+.td-text {
+  @apply px-2 py-3 font-ubuntu font-normal text-m text-customBlue max-w-full text-left;
+}
+
+.upload-resume-header {
+  padding: 16px;
+  background-color: var(--white);
+  position: sticky;
+  top: 0px;
+}
+
+.upload-resume-header-btn-div {
+  display: flex;
+  gap: 6px;
+  border-bottom: 1px solid var(--grey);
+  width: fit-content;
+}
+
+.tab-resume-upload {
+  padding: 8px 10px;
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  justify-content: center;
+  min-height: 34px;
+  font-family: "Ubuntu";
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 16.09px;
+  box-sizing: border-box;
+  transition: border-bottom 300ms ease, color 300ms ease;
+}
+
+.active-tab-resume-upload {
+  color: var(--dark-black);
+  border-bottom: 1px solid var(--dark-black);
+}
+
+.disable-tab-resume-upload {
+  border-bottom: none;
+  color: var(--grey);
+}
+
+.upload-resume-main-container {
+  display: flex;
+  justify-content: center;
+  padding: 16px;
+  overflow: auto;
+  flex: 1;
+}
+
+.upload-resume-inner-container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  max-width: 600px;
+}
+
+.font-16-medium {
+  font-family: "Ubuntu";
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 18.38px;
+  margin: 0px;
+}
+
+.font-14-regular {
+  font-family: "Ubuntu";
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 16.09px;
+  margin: 0px;
+}
+
+.resume-indo-list {
+  list-style-type: disc;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-left: 20px;
+}
+
+.learn-more-link {
+  font-family: "Ubuntu";
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 16.09px;
+  color: #1761d8;
+  cursor: pointer;
 }

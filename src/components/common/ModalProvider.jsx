@@ -7,6 +7,8 @@ export const ModalProvider = ({ children }) => {
     animatedModal: false,
     createCandidateModalVisible: false,
     createCandidateFormModalVisible: false,
+    smartGenerateModalVisible: false,
+    uploadResumeCandidateModalVisible: false,
   });
 
   const isAnyModalOpen = useMemo(

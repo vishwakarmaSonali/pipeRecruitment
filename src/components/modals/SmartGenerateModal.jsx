@@ -2,11 +2,11 @@ import React from "react";
 import "./modal.css";
 import Modal from "react-bootstrap/Modal";
 import { ReactComponent as CloseIcon } from "../../assets/icons/closeModal.svg";
-import { ReactComponent as FormIcon } from "../../assets/icons/form.svg";
-import { ReactComponent as PenIcon } from "../../assets/icons/magicpen.svg";
 import { useModal } from "../common/ModalProvider";
+import { useNavigate } from "react-router-dom";
 
-const CreateCandidateModal = ({ visible, onClose }) => {
+const SmartGenerateModal = ({ visible, onClose }) => {
+  const navigate = useNavigate();
   const { modals, setModalVisibility } = useModal();
 
   const handleBackdropClick = () => {
@@ -28,37 +28,36 @@ const CreateCandidateModal = ({ visible, onClose }) => {
       <div className="display-column-24">
         <div className="display-column-8">
           <div className="display-flex-justify align-center">
-            <p className="modal-title-text">Create Candidate</p>
+            <p className="modal-title-text">Smart Generate</p>
             <button onClick={onClose}>
               <CloseIcon />
             </button>
           </div>
           <p className="modal-description-text">
-            Adding candidates enables you to input their details, attach resumes
-            to their profiles, assign them to jobs, and manage various other
-            actions effortlessly.
+            Upload a document, let AI handle the details.
           </p>
         </div>
-        <div className="display-flex" style={{ gap: 10 }}>
+        <div className="display-column" style={{ gap: 10, width: "100%" }}>
           <button
-            className="fill-form-btn"
+            className="smart-generate-btn"
             onClick={() => {
               onClose();
-              setModalVisibility("createCandidateFormModalVisible", true);
+              setModalVisibility("uploadResumeCandidateModalVisible", true);
             }}
           >
-            <FormIcon />
-            <span className="modal-description-text">Fill Form</span>
+            Upload a Resume
           </button>
           <button
-            className="fill-form-btn"
+            className="smart-generate-btn"
             onClick={() => {
               onClose();
-              setModalVisibility("smartGenerateModalVisible", true);
+              navigate("/candidate-upload-resume");
             }}
           >
-            <PenIcon />
-            <span className="modal-description-text">Smart Generate</span>
+            Upload Multiple Resume
+          </button>
+          <button className="smart-generate-btn">
+            Upload a Json or CSV file
           </button>
         </div>
       </div>
@@ -66,4 +65,4 @@ const CreateCandidateModal = ({ visible, onClose }) => {
   );
 };
 
-export default CreateCandidateModal;
+export default SmartGenerateModal;

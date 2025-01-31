@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import "./Candidates.css";
+import "./candidates.css";
 import { Menu, MenuItem, ListItemIcon, Typography } from "@mui/material";
 import { css } from "@emotion/react";
 
@@ -21,6 +21,8 @@ import Header from "../../../components/Header/Header";
 import CreateCandidateModal from "../../../components/modals/CreateCandidateModal";
 import { useModal } from "../../../components/common/ModalProvider";
 import CreateCandidateFormModal from "../../../components/modals/CreateCandidateFormModal";
+import SmartGenerateModal from "../../../components/modals/SmartGenerateModal";
+import UploadResumeCandidateModal from "../../../components/modals/UploadResumeCandidateModal";
 
 const candidates = [
   {
@@ -867,6 +869,16 @@ const Candidates = ({ isDrawerOpen }) => {
         visible={modals?.createCandidateFormModalVisible}
         onClose={() =>
           setModalVisibility("createCandidateFormModalVisible", false)
+        }
+      />
+      <SmartGenerateModal
+        visible={modals?.smartGenerateModalVisible}
+        onClose={() => setModalVisibility("smartGenerateModalVisible", false)}
+      />
+      <UploadResumeCandidateModal
+        visible={modals?.uploadResumeCandidateModalVisible}
+        onClose={() =>
+          setModalVisibility("uploadResumeCandidateModalVisible", false)
         }
       />
     </div>

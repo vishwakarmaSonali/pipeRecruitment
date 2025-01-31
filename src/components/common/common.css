@@ -12,6 +12,7 @@
   stroke: blue !important;
   fill: blue;
 }
+
 .main-container-html-view {
   border: 1px solid var(--off-white);
   border-radius: 8px;
@@ -142,6 +143,24 @@
   font-family: "Ubuntu";
   font-weight: 400;
   color: var(--white);
+  box-sizing: border-box;
+}
+
+.cancel-btn {
+  padding: 10px 14px;
+  min-width: 120px;
+  border-radius: 8px;
+  background-color: transparent;
+  border: 1px solid var(--blue);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 36px;
+  font-size: 14px;
+  line-height: 16.09px;
+  font-family: "Ubuntu";
+  font-weight: 400;
+  color: var(--blue);
   box-sizing: border-box;
 }
 

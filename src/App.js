@@ -12,6 +12,7 @@ import { ModalProvider, useModal } from "./components/common/ModalProvider";
 import "react-toastify/dist/ReactToastify.css";
 import "react-loading-skeleton/dist/skeleton.css";
 import { ToastContainer, Bounce } from "react-toastify";
+import UploadResumePage from "./pages/Recruitment/Candidates/UploadResumePage";
 
 const router = createBrowserRouter([
   {
@@ -29,6 +30,10 @@ const router = createBrowserRouter([
   {
     path: "/candidates",
     element: <Candidates />,
+  },
+  {
+    path: "/candidate-upload-resume",
+    element: <UploadResumePage />,
   },
 ]);
 

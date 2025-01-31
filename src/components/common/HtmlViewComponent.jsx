@@ -15,9 +15,7 @@ import "./common.css";
 
 // Add custom icons to Quill
 const icons = Quill.import("ui/icons");
-icons.header = ReactDOMServer.renderToStaticMarkup(
-  <HeadingIcon stroke="#151B23" />
-);
+
 icons.bold = ReactDOMServer.renderToStaticMarkup(<BoldIcon stroke="#151B23" />);
 icons.italic = ReactDOMServer.renderToStaticMarkup(
   <ItalicIcon stroke="#151B23" />
@@ -40,15 +38,14 @@ const HtmlViewComponent = ({ value, onChange }) => {
   useEffect(() => {
     if (quillRef.current) {
       const editor = quillRef.current.getEditor();
-      console.log("🔹 Quill Editor Loaded:", editor);
-      console.log("🔹 History Module:", editor.history);
 
-      // Check if history is initialized
-      if (!editor.history) {
-        console.warn(
-          "🚨 Quill History Module Not Found! Undo/Redo won't work."
-        );
-      }
+      document.getElementById("undo").addEventListener("click", () => {
+        editor.history.undo();
+      });
+
+      document.getElementById("redo").addEventListener("click", () => {
+        editor.history.redo();
+      });
     }
   }, []);
 

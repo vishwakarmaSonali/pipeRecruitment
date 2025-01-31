@@ -11,13 +11,7 @@ import CommonTextInput from "../common/CommonTextInput";
 import CommonDropdown from "../common/CommonDropdown";
 import CommonButton from "../common/CommonButton";
 import PhoneInputComponent from "../common/PhoneInputComponent";
-
-const jobOptions = [
-  { id: 1, value: "UpTech", place: "New York, USA" },
-  { id: 2, value: "WebSolutions", place: "Sydney, Australia" },
-  { id: 3, value: "Spark Solutions", place: "New York, USA" },
-  { id: 4, value: "KiwiTech Ltd.", place: "Auckland, New Zealand" },
-];
+import { jobOptions } from "../../helpers/config";
 
 const CreateCandidateFormModal = ({ visible, onClose }) => {
   const quillRef = useRef(null);
