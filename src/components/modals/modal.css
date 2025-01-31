@@ -38,6 +38,7 @@
 
 .common-modal-container {
   max-width: 400px;
+  min-width: 400px;
   background-color: #fff;
   border-radius: 14px;
   padding: 14px;
