@@ -59,7 +59,55 @@
 .candidate-details {
   @apply w-[60%] mr-4 p-[14px] pb-[20px] mb-[110px] overflow-auto scroll-width-none bg-white h-auto rounded-[14px];
 }
+/* ✅ Remove Blue Focus Outline */
+button:focus {
+  outline: none;
+  box-shadow: none;
+}
 
+/* ✅ Adjust Padding & Borders */
+.dropdown-button {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  font-size: 16px;
+  font-weight: 600;
+  border: none;
+  border-radius: 6px;
+  background-color: transparent;
+  transition: background 0.2s ease-in-out;
+}
+
+.dropdown-button:hover {
+  background-color: #f3f4f6;
+}
+
+/* ✅ Align Dropdown Items */
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 250px;
+  background: white;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  border-radius: 6px;
+  padding: 10px;
+  z-index: 1000;
+}
+
+.header-container {
+  overflow: visible !important;
+}
+.candidate-dropdown-div{
+  @apply flex items-center px-[14px] py-[12px] gap-[10px]
+}
+.candidate-dropdown-heading{
+  @apply text-customBlue font-medium text-sm  font-ubuntu  
+}
+.candidate-dropdown-list {
+  @apply flex items-center w-full px-[14px] py-[14px] gap-[10px] text-customBlue text-l font-ubuntu hover:bg-gray-100 rounded-lg
+}
 
 /* Mobile View */
 @media (min-width: 240px) and (max-width: 1024px) {

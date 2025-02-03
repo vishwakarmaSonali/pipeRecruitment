@@ -244,3 +244,83 @@ textarea,
   justify-content: space-between;
   gap: 12px;
 }
+
+/* Toggle Container */
+.toggle-container {
+  display: flex;
+  align-items: center;
+  margin-top: 15px;
+  gap: 10px;
+}
+
+/* Toggle Switch */
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 58px;
+  height: 30px;
+}
+
+/* Hide default checkbox */
+.toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* The Slider */
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color:#D7D7D7;
+  border-radius: 20px;
+  transition: 0.4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 22px;
+  width: 22px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  border-radius: 50%;
+  transition: 0.4s;
+}
+
+/* When Checked */
+.toggle-switch input:checked + .slider {
+  background-color: #46A13C;
+}
+
+.toggle-switch input:checked + .slider:before {
+  transform: translateX(28px);
+}
+
+/* Rounded slider */
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+
+/* Share text */
+.share-text {
+  font-size: 14px;
+  font-family: 'Ubuntu', 'sans-serif';
+  color: #797979
+}
+
+/* Info icon */
+.info-icon {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}

@@ -1,5 +1,5 @@
 import React, { useRef, useState } from "react";
-import "./candidates.css";
+import "./Candidates.css";
 import Sidebar from "../../../components/sidebar/Sidebar";
 import Header from "../../../components/Header/Header";
 import { ReactComponent as UploadIcon } from "../../../assets/icons/uploadIcon.svg";

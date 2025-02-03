@@ -14,7 +14,9 @@ import "react-loading-skeleton/dist/skeleton.css";
 import { ToastContainer, Bounce } from "react-toastify";
 import UploadResumePage from "./pages/Recruitment/Candidates/UploadResumePage";
 import SingleResumeHistoryPage from "./pages/Recruitment/Candidates/SingleResumeHistoryPage";
-import UploadResumeCsvJsonPage from "./pages/Recruitment/Candidates/UploadResumeCsvJsonPage";
+import UploadResumeCsvJsonPage from "./pages/Recruitment/Candidates/UploadResumeCsvJsonPage";import { Provider } from "react-redux";
+import { PersistGate } from "redux-persist/integration/react";
+import { store, persistor } from "./store/store"; 
 
 const router = createBrowserRouter([
   {
@@ -50,6 +52,8 @@ const router = createBrowserRouter([
 const App = () => {
   const { isAnyModalOpen } = useModal();
   return (
+    <Provider store={store}>
+      <PersistGate loading={null} persistor={persistor}>
     <>
       <div className={`main-content`}>
         <RouterProvider router={router} />
@@ -70,6 +74,8 @@ const App = () => {
         limit={1}
       />
     </>
+    </PersistGate>
+    </Provider>
   );
 };
 

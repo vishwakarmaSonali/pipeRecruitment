@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import "./Header.css";
+import ReactDOM from "react-dom";
 import SearchIcon from "../../assets/icons/sourcingIcons/search-normal.svg";
 import Add from "../../assets/icons/add.svg";
 import MessagesIcon from "../../assets/icons/sourcingIcons/messages.svg";
@@ -7,6 +8,8 @@ import NotificationIcon from "../../assets/icons/sourcingIcons/notification.svg"
 import ProfileImage from "../../assets/images/profileImage.svg";
 import CollapsibleDrawer from "../Drawer/CollapsibleDrawer";
 import { ReactComponent as Menubar } from "../../assets/icons/menuBar.svg";
+import { ReactComponent as DownArrow } from "../../assets/icons/droparrow.svg";
+
 import { Drawer } from "@mui/material";
 import { ReactComponent as Logo } from "../../assets/images/LogoExpanded.svg";
 import { ReactComponent as HomeIcon } from "../../assets/icons/homeIcon.svg";
@@ -19,6 +22,10 @@ import { ReactComponent as Placements } from "../../assets/icons/placements.svg"
 import { ReactComponent as SourcingIcon } from "../../assets/icons/sourcing.svg";
 import { ReactComponent as Reports } from "../../assets/icons/reports.svg";
 import { ReactComponent as Calendar } from "../../assets/icons/calendar.svg";
+import { ReactComponent as StarFilled } from "../../assets/icons/starfilledYellow.svg";
+import { ReactComponent as StarOutline } from "../../assets/icons/starOutline.svg";
+import { ReactComponent as InfoCircle } from "../../assets/icons/infoCircle.svg";
+
 import { useLocation, Link } from "react-router-dom";
 
 const Header = ({ title }) => {
@@ -27,6 +34,24 @@ const Header = ({ title }) => {
   const [isSearchExpanded, setIsSearchExpanded] = useState(false);
   const [drawerOpen, setdrawerOpen] = useState(false);
   const [activeLink, setActiveLink] = useState("/");
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState("Candidates");
+
+
+  const dropdownRef = useRef(null);
+  const buttonRef = useRef(null);
+  const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0 });
+
+  const categories = [
+    { label: "Candidates without jobs", type: "favorite" },
+    { label: "Duplicates", type: "favorite" },
+  ];
+
+  const createdByMe = [
+    { label: "Sourced", type: "created" },
+    { label: "Owned by me", type: "created" },
+    { label: "Referrals", type: "created" },
+  ];
 
   const toggleDrawer = (open) => (event) => {
     if (
@@ -37,6 +62,33 @@ const Header = ({ title }) => {
     }
     setdrawerOpen(open);
   };
+    // ✅ Close dropdown when clicking outside
+    useEffect(() => {
+      function handleClickOutside(event) {
+        if (
+          dropdownRef.current &&
+          !dropdownRef.current.contains(event.target) &&
+          buttonRef.current &&
+          !buttonRef.current.contains(event.target)
+        ) {
+          setIsDropdownOpen(false);
+        }
+      }
+      document.addEventListener("mousedown", handleClickOutside);
+      return () => document.removeEventListener("mousedown", handleClickOutside);
+    }, []);
+  
+    // ✅ Position the dropdown correctly
+    const handleDropdownOpen = () => {
+      if (buttonRef.current) {
+        const rect = buttonRef.current.getBoundingClientRect();
+        setDropdownPosition({
+          top: rect.bottom + window.scrollY + 4,
+          left: rect.left + window.scrollX,
+        });
+      }
+      setIsDropdownOpen((prev) => !prev);
+    };
 
   useEffect(() => {
     setActiveLink(location.pathname);
@@ -58,6 +110,7 @@ const Header = ({ title }) => {
     setSearchQuery("");
   };
 
+ 
   return (
     <div className="w-full  overflow-hidden sticky-header ">
       {isSearchExpanded ? (
@@ -89,7 +142,109 @@ const Header = ({ title }) => {
           <button className="hamburger-button" onClick={toggleDrawer(true)}>
             <Menubar />
           </button>
-          <h1 className="header-title">{title}</h1>
+        {/* ✅ Dropdown in Title */}
+        {title === "Candidates" ? (
+            <div className="relative inline-block">
+              <button
+                ref={buttonRef}
+                className="text-lg font-semibold text-black flex items-center space-x-2 px-3 py-2 rounded-lg"
+                onClick={handleDropdownOpen}
+              >
+                <span>{selectedCategory}</span>
+                <DownArrow className="w-4 h-4" fill="customBlue" />
+              </button>
+
+              {isDropdownOpen &&
+                ReactDOM.createPortal(
+                  <div
+                    ref={dropdownRef}
+                    className="absolute w-64 max-h-[500px] overflow-auto scroll-width-none bg-white shadow-lg rounded-[14px] z-[9999]"
+                    style={{
+                      position: "absolute",
+                      top: `${dropdownPosition.top}px`,
+                      left: `${dropdownPosition.left}px`,
+                      width: "max-content",
+                      minWidth: "220px",
+                      borderRadius: "8px",
+                      boxShadow: "0px 4px 10px rgba(0,0,0,0.1)",
+                      zIndex: 9999,
+                    }}
+                  >
+                    <div>
+                      <div className="candidate-dropdown-div">
+                      <p className="candidate-dropdown-heading">Favourite</p>
+                     <InfoCircle />
+                        </div>
+                      {categories.map((item) => (
+                        <button
+                          key={item.label}
+                          className="candidate-dropdown-list"
+                          onClick={() => {
+                            setSelectedCategory(item.label);
+                            setIsDropdownOpen(false);
+                          }}
+                        >
+                          <StarFilled />
+                          {item.label}
+                        </button>
+                      ))}
+                    </div>
+
+                    <div className="">
+                    <div className="candidate-dropdown-div">
+                      <p className="candidate-dropdown-heading">Created by me</p>
+                     <InfoCircle />
+                        </div>
+                      {createdByMe.map((item) => (
+                        <button
+                          key={item.label}
+                          className="candidate-dropdown-list"
+                          onClick={() => {
+                            setSelectedCategory(item.label);
+                            setIsDropdownOpen(false);
+                          }}
+                        >
+                             <StarOutline />
+                          {item.label}
+                        </button>
+                      ))}
+                    <text className="candidate-dropdown-list">See all</text>
+                    </div>
+                    <div className="">
+                    <div className="candidate-dropdown-div justify-between">
+                     <div className="flex items-center gap-[10px]">
+                     <p className="candidate-dropdown-heading">Shared with me</p>
+                     <InfoCircle />
+                      </div>
+                     <DownArrow  fill="customBlue"/>
+                        </div>
+                      {createdByMe.map((item) => (
+                        <button
+                          key={item.label}
+                          className="candidate-dropdown-list"
+                          onClick={() => {
+                            setSelectedCategory(item.label);
+                            setIsDropdownOpen(false);
+                          }}
+                        >
+                          
+                          {item.label}
+                        </button>
+                      ))}
+                 
+                    </div>
+                    <div className="border-t border-gray-200 ">
+                      <button className="candidate-dropdown-list">
+                        Manage filters
+                      </button>
+                    </div>
+                  </div>,
+                  document.body
+                )}
+            </div>
+          ) : (
+            <h1 className="header-title">{title}</h1>
+          )}
           <div className="flex items-center header-icons-container space-x-2">
             <div className="relative hidden md:hidden lg:flex ">
               <img

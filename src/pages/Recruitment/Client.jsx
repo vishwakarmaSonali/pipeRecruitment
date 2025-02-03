@@ -1,6 +1,7 @@
 import React from "react";
 import Sidebar from "../../components/sidebar/Sidebar";
 import Header from "../../components/Header/Header";
+import SavedFiltersList from "../../components/savedFiilterList";
 
 const Client = () => {
   const NoFiltersScreen = () => {
@@ -87,7 +88,7 @@ const Client = () => {
             backgroundColor: "#fff",
           }}
         >
-          <NoFiltersScreen />
+         <SavedFiltersList />
         </div>
       </div>
     </div>
