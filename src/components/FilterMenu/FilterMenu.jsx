@@ -33,7 +33,7 @@ const FilterMenu = ({ anchorEl, open, onClose, selectedOption, onApply }) => {
               size="small"
               className="text-black"
             />
-            <span className="text-sm fotn-ubuntu text-customBlue">
+            <span className="text-sm font-ubuntu text-customBlue">
               {option}
             </span>
           </MenuItem>

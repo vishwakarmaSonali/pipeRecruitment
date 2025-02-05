@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 @keyframes shake {
   0% {
     transform: translateX(0);
@@ -17,6 +21,16 @@
   100% {
     transform: translateX(0);
   }
+}
+
+.scroll-width-none {
+  /* Hide scrollbar for all browsers */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* Internet Explorer 10+ */
+}
+
+.scroll-width-none::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Edge */
 }
 
 .shake {
@@ -83,7 +97,13 @@
 .text-center {
   text-align: center;
 }
-
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  /* padding: 14px 16px; */
+  border-bottom: 1px solid #ddd;
+}
 .modal-title-text {
   font-size: 16px;
   line-height: 18.38px;
@@ -323,4 +343,135 @@ textarea,
   width: 16px;
   height: 16px;
   cursor: pointer;
+}
+
+
+/* save filter modal css */
+/* Prevent dragging items from moving outside the modal */
+/* Ensure modal does not overflow */
+
+/* Fix drag container inside modal */
+.draggable-container {
+  /* max-height:450px; */
+  overflow-y: auto;
+  /* background: #f9f9f9; */
+  padding: 0px;
+  margin: 0px;
+  border-radius: 6px;
+}
+
+/* Ensure rows are properly aligned */
+.columns-container {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+/* Left-side column selection */
+.column-selection {
+  flex: 1;
+  max-height: 450px;
+  overflow-y: auto;
+
+  scrollbar-width: none;
+}
+
+/* Right-side reorder section */
+.column-reorder {
+  flex: 1;
+  max-height: 450px;
+  overflow-y: hidden;
+  padding: 5px;
+}
+
+/* Draggable item */
+.draggable-item {
+  display: flex;
+  overflow-y: auto;
+  align-items: center;
+  background: white;
+  padding: 10px;
+  margin: 6px 10px;
+  border-radius: 6px;
+  cursor: grab;
+  border: 1px solid #ddd;
+  transition: transform 0.2s ease-in-out;
+}
+
+/* Remove button */
+.remove-btn {
+  margin-left: auto;
+  background: none;
+  border: none;
+  color: customBlue;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.remove-btn:hover {
+  color: customBlue;
+}
+.checkbox-list{
+  @apply  mb-[12px]
+}
+.column-option {
+  display: flex;
+  align-items: center;
+  @apply mb-[15px] gap-[8px] 
+  /* padding: 0; */
+}
+.row-title{
+  @apply text-customBlue text-m font-ubuntu font-medium mb-[12px]
+}
+.modal-footer {
+  text-align: center;
+ border: none;
+ align-items: center;
+ justify-content: center;
+ padding: 0%;
+ margin: 0%;
+}
+
+
+/* saved filter modal */
+/* ✅ Filters Section */
+.filters-section {
+  /* padding: 10px 14px; */
+  @apply px-[14px]
+}
+
+/* ✅ Section Title */
+.filters-section p {
+  font-size: 13px;
+  font-weight: 600;
+  color: #666;
+  margin-bottom: 8px;
+}
+
+/* ✅ Filter Item */
+.filter-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  /* padding: 8px 12px; */
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s ease-in-out;
+}
+
+
+
+/* ✅ Star Icon */
+.filter-item .star-icon {
+  color: gold;
+}
+
+/* ✅ Three Dots Menu */
+.filter-item .more-icon {
+  color: #888;
+  cursor: pointer;
+}
+
+.more-icon:hover {
+  color: #333;
 }

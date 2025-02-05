@@ -33,454 +33,18 @@ import GlobalMenu from "../../../components/GlobalMenu/GlobalMenu";
 import SearchableMenu from "../../../components/SearchableMenu/SearchableMenu";
 import FilterMenu from "../../../components/FilterMenu/FilterMenu";
 import SaveFiltersModal from "../../../components/modals/SaveFiltersModal";
+import EditColumnModal from "../../../components/modals/EditColumns";
+import { candidates } from "../../../helpers/dataCandidates";
 
-const candidates = [
-  {
-    id: 1,
-    name: "Michael Bennett",
-    initials: "MB",
-    referenceId: "B1X3A",
-    location: "New York, USA",
-    company: "TechSavvy Inc.",
-    position: "Software Engineer",
-    email: "michael.b@techsavvy.com",
-    contact: "+1-555-1234",
-  },
-  {
-    id: 2,
-    name: "Sarah Johnson",
-    initials: "SJ",
-    referenceId: "Z4K7M",
-    location: "Toronto, Canada",
-    company: "Innovate Solutions",
-    position: "Project Manager",
-    email: "sarah.j@innovatesol.com",
-    contact: "+1-647-9876",
-  },
-  {
-    id: 3,
-    name: "Michael Bennett",
-    initials: "MB",
-    referenceId: "B1X3A",
-    location: "New York, USA",
-    company: "TechSavvy Inc.",
-    position: "Software Engineer",
-    email: "michael.b@techsavvy.com",
-    contact: "+1-555-1234",
-  },
-  {
-    id: 4,
-    name: "Sarah Johnson",
-    initials: "SJ",
-    referenceId: "Z4K7M",
-    location: "Toronto, Canada",
-    company: "Innovate Solutions",
-    position: "Project Manager",
-    email: "sarah.j@innovatesol.com",
-    contact: "+1-647-9876",
-  },
-  {
-    id: 5,
-    name: "Michael Bennett",
-    initials: "MB",
-    referenceId: "B1X3A",
-    location: "New York, USA",
-    company: "TechSavvy Inc.",
-    position: "Software Engineer",
-    email: "michael.b@techsavvy.com",
-    contact: "+1-555-1234",
-  },
-  {
-    id: 6,
-    name: "Sarah Johnson",
-    initials: "SJ",
-    referenceId: "Z4K7M",
-    location: "Toronto, Canada",
-    company: "Innovate Solutions",
-    position: "Project Manager",
-    email: "sarah.j@innovatesol.com",
-    contact: "+1-647-9876",
-  },
-  {
-    id: 7,
-    name: "Michael Bennett",
-    initials: "MB",
-    referenceId: "B1X3A",
-    location: "New York, USA",
-    company: "TechSavvy Inc.",
-    position: "Software Engineer",
-    email: "michael.b@techsavvy.com",
-    contact: "+1-555-1234",
-  },
-  {
-    id: 8,
-    name: "Sarah Johnson",
-    initials: "SJ",
-    referenceId: "Z4K7M",
-    location: "Toronto, Canada",
-    company: "Innovate Solutions",
-    position: "Project Manager",
-    email: "sarah.j@innovatesol.com",
-    contact: "+1-647-9876",
-  },
-  {
-    id: 9,
-    name: "Michael Bennett",
-    initials: "MB",
-    referenceId: "B1X3A",
-    location: "New York, USA",
-    company: "TechSavvy Inc.",
-    position: "Software Engineer",
-    email: "michael.b@techsavvy.com",
-    contact: "+1-555-1234",
-  },
-  {
-    id: 10,
-    name: "Sarah Johnson",
-    initials: "SJ",
-    referenceId: "Z4K7M",
-    location: "Toronto, Canada",
-    company: "Innovate Solutions",
-    position: "Project Manager",
-    email: "sarah.j@innovatesol.com",
-    contact: "+1-647-9876",
-  },
-  {
-    id: 11,
-    name: "Michael Bennett",
-    initials: "MB",
-    referenceId: "B1X3A",
-    location: "New York, USA",
-    company: "TechSavvy Inc.",
-    position: "Software Engineer",
-    email: "michael.b@techsavvy.com",
-    contact: "+1-555-1234",
-  },
-  {
-    id: 12,
-    name: "Sarah Johnson",
-    initials: "SJ",
-    referenceId: "Z4K7M",
-    location: "Toronto, Canada",
-    company: "Innovate Solutions",
-    position: "Project Manager",
-    email: "sarah.j@innovatesol.com",
-    contact: "+1-647-9876",
-  },
-  {
-    id: 13,
-    name: "Michael Bennett",
-    initials: "MB",
-    referenceId: "B1X3A",
-    location: "New York, USA",
-    company: "TechSavvy Inc.",
-    position: "Software Engineer",
-    email: "michael.b@techsavvy.com",
-    contact: "+1-555-1234",
-  },
-  {
-    id: 14,
-    name: "Sarah Johnson",
-    initials: "SJ",
-    referenceId: "Z4K7M",
-    location: "Toronto, Canada",
-    company: "Innovate Solutions",
-    position: "Project Manager",
-    email: "sarah.j@innovatesol.com",
-    contact: "+1-647-9876",
-  },
-  {
-    id: 15,
-    name: "Michael Bennett",
-    initials: "MB",
-    referenceId: "B1X3A",
-    location: "New York, USA",
-    company: "TechSavvy Inc.",
-    position: "Software Engineer",
-    email: "michael.b@techsavvy.com",
-    contact: "+1-555-1234",
-  },
-  {
-    id: 16,
-    name: "Sarah Johnson",
-    initials: "SJ",
-    referenceId: "Z4K7M",
-    location: "Toronto, Canada",
-    company: "Innovate Solutions",
-    position: "Project Manager",
-    email: "sarah.j@innovatesol.com",
-    contact: "+1-647-9876",
-  },
-  {
-    id: 17,
-    name: "Michael Bennett",
-    initials: "MB",
-    referenceId: "B1X3A",
-    location: "New York, USA",
-    company: "TechSavvy Inc.",
-    position: "Software Engineer",
-    email: "michael.b@techsavvy.com",
-    contact: "+1-555-1234",
-  },
-  {
-    id: 18,
-    name: "Sarah Johnson",
-    initials: "SJ",
-    referenceId: "Z4K7M",
-    location: "Toronto, Canada",
-    company: "Innovate Solutions",
-    position: "Project Manager",
-    email: "sarah.j@innovatesol.com",
-    contact: "+1-647-9876",
-  },
-  {
-    id: 19,
-    name: "Michael Bennett",
-    initials: "MB",
-    referenceId: "B1X3A",
-    location: "New York, USA",
-    company: "TechSavvy Inc.",
-    position: "Software Engineer",
-    email: "michael.b@techsavvy.com",
-    contact: "+1-555-1234",
-  },
-  {
-    id: 20,
-    name: "Sarah Johnson",
-    initials: "SJ",
-    referenceId: "Z4K7M",
-    location: "Toronto, Canada",
-    company: "Innovate Solutions",
-    position: "Project Manager",
-    email: "sarah.j@innovatesol.com",
-    contact: "+1-647-9876",
-  },
-  {
-    id: 21,
-    name: "Michael Bennett",
-    initials: "MB",
-    referenceId: "B1X3A",
-    location: "New York, USA",
-    company: "TechSavvy Inc.",
-    position: "Software Engineer",
-    email: "michael.b@techsavvy.com",
-    contact: "+1-555-1234",
-  },
-  {
-    id: 22,
-    name: "Sarah Johnson",
-    initials: "SJ",
-    referenceId: "Z4K7M",
-    location: "Toronto, Canada",
-    company: "Innovate Solutions",
-    position: "Project Manager",
-    email: "sarah.j@innovatesol.com",
-    contact: "+1-647-9876",
-  },
-  {
-    id: 23,
-    name: "Michael Bennett",
-    initials: "MB",
-    referenceId: "B1X3A",
-    location: "New York, USA",
-    company: "TechSavvy Inc.",
-    position: "Software Engineer",
-    email: "michael.b@techsavvy.com",
-    contact: "+1-555-1234",
-  },
-  {
-    id: 24,
-    name: "Sarah Johnson",
-    initials: "SJ",
-    referenceId: "Z4K7M",
-    location: "Toronto, Canada",
-    company: "Innovate Solutions",
-    position: "Project Manager",
-    email: "sarah.j@innovatesol.com",
-    contact: "+1-647-9876",
-  },
-  {
-    id: 25,
-    name: "Michael Bennett",
-    initials: "MB",
-    referenceId: "B1X3A",
-    location: "New York, USA",
-    company: "TechSavvy Inc.",
-    position: "Software Engineer",
-    email: "michael.b@techsavvy.com",
-    contact: "+1-555-1234",
-  },
-  {
-    id: 26,
-    name: "Sarah Johnson",
-    initials: "SJ",
-    referenceId: "Z4K7M",
-    location: "Toronto, Canada",
-    company: "Innovate Solutions",
-    position: "Project Manager",
-    email: "sarah.j@innovatesol.com",
-    contact: "+1-647-9876",
-  },
-  {
-    id: 27,
-    name: "Michael Bennett",
-    initials: "MB",
-    referenceId: "B1X3A",
-    location: "New York, USA",
-    company: "TechSavvy Inc.",
-    position: "Software Engineer",
-    email: "michael.b@techsavvy.com",
-    contact: "+1-555-1234",
-  },
-  {
-    id: 28,
-    name: "Sarah Johnson",
-    initials: "SJ",
-    referenceId: "Z4K7M",
-    location: "Toronto, Canada",
-    company: "Innovate Solutions",
-    position: "Project Manager",
-    email: "sarah.j@innovatesol.com",
-    contact: "+1-647-9876",
-  },
-  {
-    id: 28,
-    name: "Michael Bennett",
-    initials: "MB",
-    referenceId: "B1X3A",
-    location: "New York, USA",
-    company: "TechSavvy Inc.",
-    position: "Software Engineer",
-    email: "michael.b@techsavvy.com",
-    contact: "+1-555-1234",
-  },
-  {
-    id: 30,
-    name: "Sarah Johnson",
-    initials: "SJ",
-    referenceId: "Z4K7M",
-    location: "Toronto, Canada",
-    company: "Innovate Solutions",
-    position: "Project Manager",
-    email: "sarah.j@innovatesol.com",
-    contact: "+1-647-9876",
-  },
-  {
-    id: 31,
-    name: "Michael Bennett",
-    initials: "MB",
-    referenceId: "B1X3A",
-    location: "New York, USA",
-    company: "TechSavvy Inc.",
-    position: "Software Engineer",
-    email: "michael.b@techsavvy.com",
-    contact: "+1-555-1234",
-  },
-  {
-    id: 32,
-    name: "Sarah Johnson",
-    initials: "SJ",
-    referenceId: "Z4K7M",
-    location: "Toronto, Canada",
-    company: "Innovate Solutions",
-    position: "Project Manager",
-    email: "sarah.j@innovatesol.com",
-    contact: "+1-647-9876",
-  },
-  {
-    id: 33,
-    name: "Michael Bennett",
-    initials: "MB",
-    referenceId: "B1X3A",
-    location: "New York, USA",
-    company: "TechSavvy Inc.",
-    position: "Software Engineer",
-    email: "michael.b@techsavvy.com",
-    contact: "+1-555-1234",
-  },
-  {
-    id: 34,
-    name: "Sarah Johnson",
-    initials: "SJ",
-    referenceId: "Z4K7M",
-    location: "Toronto, Canada",
-    company: "Innovate Solutions",
-    position: "Project Manager",
-    email: "sarah.j@innovatesol.com",
-    contact: "+1-647-9876",
-  },
-  {
-    id: 35,
-    name: "Michael Bennett",
-    initials: "MB",
-    referenceId: "B1X3A",
-    location: "New York, USA",
-    company: "TechSavvy Inc.",
-    position: "Software Engineer",
-    email: "michael.b@techsavvy.com",
-    contact: "+1-555-1234",
-  },
-  {
-    id: 36,
-    name: "Sarah Johnson",
-    initials: "SJ",
-    referenceId: "Z4K7M",
-    location: "Toronto, Canada",
-    company: "Innovate Solutions",
-    position: "Project Manager",
-    email: "sarah.j@innovatesol.com",
-    contact: "+1-647-9876",
-  },
-  {
-    id: 37,
-    name: "Michael Bennett",
-    initials: "MB",
-    referenceId: "B1X3A",
-    location: "New York, USA",
-    company: "TechSavvy Inc.",
-    position: "Software Engineer",
-    email: "michael.b@techsavvy.com",
-    contact: "+1-555-1234",
-  },
-  {
-    id: 38,
-    name: "Sarah Johnson",
-    initials: "SJ",
-    referenceId: "Z4K7M",
-    location: "Toronto, Canada",
-    company: "Innovate Solutions",
-    position: "Project Manager",
-    email: "sarah.j@innovatesol.com",
-    contact: "+1-647-9876",
-  },
-  {
-    id: 39,
-    name: "Michael Bennett",
-    initials: "MB",
-    referenceId: "B1X3A",
-    location: "New York, USA",
-    company: "TechSavvy Inc.",
-    position: "Software Engineer",
-    email: "michael.b@techsavvy.com",
-    contact: "+1-555-1234",
-  },
-  {
-    id: 40,
-    name: "Sarah Johnson",
-    initials: "SJ",
-    referenceId: "Z4K7M",
-    location: "Toronto, Canada",
-    company: "Innovate Solutions",
-    position: "Project Manager",
-    email: "sarah.j@innovatesol.com",
-    contact: "+1-647-9876",
-  },
-];
 
 const Candidates = ({ isDrawerOpen }) => {
+  const [candidateList, setCandidateList] = useState(candidates);
+  console.log("candidatesid >>>>>",candidateList);
+
   const { modals, setModalVisibility } = useModal();
   const [activeTab, setActiveTab] = useState("candidates");
   const [selectedCandidates, setSelectedCandidates] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const [anchorBulkActionEl, setAnchorBulkActionEl] = useState(null);
@@ -539,7 +103,7 @@ const Candidates = ({ isDrawerOpen }) => {
     {
       label: "Edit Columns",
       icon: <EditIcon />,
-      onClick: () => console.log("Edit Columns"),
+      onClick: (event) => (setModalVisibility("editColumnModalVisible", true),handleClose()),
     },
     {
       label: "Export",
@@ -559,7 +123,6 @@ const Candidates = ({ isDrawerOpen }) => {
       onClick: (event) => (handleSettingsClose()),
     },
   ];
-
   // 🔍 Searchable Menu Items
   const searchableMenuItems = [
     {
@@ -595,6 +158,12 @@ const Candidates = ({ isDrawerOpen }) => {
       onClick: (event) => handleSearchableSelect("Created By", event),
     },
   ];
+   // 🔍 Filter candidates based on search query
+   const filteredCandidates = candidateList.filter((candidate) =>
+   (console.log("candidate>>>",candidate),
+   candidate?.candidate_name?.toLowerCase().includes(searchQuery?.toLowerCase()))
+   
+  );
   const handleSeacrchableMenuOpen = (event) => {
     setAnchorAddConditionEl(event.currentTarget);
   };
@@ -621,22 +190,21 @@ const Candidates = ({ isDrawerOpen }) => {
     setConditions(conditions.filter((_, i) => i !== index));
   };
 
-  // ✅ Toggle individual candidate selection
-  const handleCandidateSelection = (id) => {
-    setSelectedCandidates(
-      (prevSelected) =>
-        prevSelected.includes(id)
-          ? prevSelected.filter((candidateId) => candidateId !== id) // Deselect
-          : [...prevSelected, id] // Select
-    );
-  };
+ // ✅ Handle Candidate Selection
+ const handleCandidateSelection = (id) => {
+  setSelectedCandidates((prevSelected) =>
+    prevSelected.includes(id)
+      ? prevSelected.filter((candidateId) => candidateId !== id)
+      : [...prevSelected, id]
+  );
+};
 
   // ✅ Select/Deselect All Candidates
   const handleSelectAll = () => {
-    if (selectedCandidates.length === candidates.length) {
+    if (selectedCandidates.length === filteredCandidates.length) {
       setSelectedCandidates([]); // Deselect all
     } else {
-      setSelectedCandidates(candidates.map((candidate) => candidate.id)); // Select all
+      setSelectedCandidates(filteredCandidates.map((candidate) => candidate.id)); // Select all
     }
   };
 
@@ -805,6 +373,14 @@ const Candidates = ({ isDrawerOpen }) => {
   };
   const handleApplyFilter = () => {
     console.log("Applied Filters:", conditions);
+  };
+  const getInitials = (name) => {
+    if (!name) return "";
+    const nameParts = name.split(" ");
+    const initials = nameParts
+      .map((part) => part[0].toUpperCase()) // Take the first letter of each part
+      .join(""); // Combine them
+    return initials.substring(0, 2); // Limit to 2 initials
   };
   return (
     <div
@@ -977,75 +553,83 @@ const Candidates = ({ isDrawerOpen }) => {
         {/* Table Wrapper with Horizontal Scroll */}
 
         <div className="overflow-x-auto px-[10px] scroll-width-none bg-white shadow-md ">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="sticky top-0 bg-white z-[50] ">
-              <tr className="text-left text-gray-600 font-semibold">
-                <th className="th-title sticky top-0 bg-blueBg z-[50]">
-                  <div
-                    className={`w-[20px] h-[20px] border border-customBlue bg-white  rounded-[6px]  flex items-center justify-center cursor-pointer`}
-                    onClick={handleSelectAll}
-                  >
-                    {selectedCandidates.length === candidates.length ? (
-                      <img src={Tick} alt="Selected" />
-                    ) : null}
+        <table className="min-w-full divide-y divide-gray-200">
+  {/* Table Header */}
+  <thead className="sticky top-0 bg-white z-[50]">
+    <tr className="text-left text-gray-600 font-semibold">
+      {/* Checkbox Column for Selecting All */}
+      <th className="th-title sticky top-0 bg-blueBg z-[50]">
+        <div
+          className={`w-[20px] h-[20px] border border-customBlue bg-white rounded-[6px] flex items-center justify-center cursor-pointer`}
+          onClick={handleSelectAll}
+        >
+          {selectedCandidates.length === filteredCandidates.length ? (
+            <img src={Tick} alt="Selected" />
+          ) : null}
+        </div>
+      </th>
+
+      {/* Dynamically Generate Column Headers */}
+      {filteredCandidates.length > 0 &&
+        Object.keys(
+          filteredCandidates.reduce((acc, obj) => ({ ...acc, ...obj }), {})
+        ) // Merge all objects to get all unique keys
+          .filter((key) => key !== "id") // Exclude `id` column
+          .map((key) => (
+            <th key={key} className="th-title bg-blueBg max-w-60 min-w-40">
+              {key
+                .replace(/_/g, " ") // Convert snake_case to space-separated words
+                .replace(/\b\w/g, (char) => char.toUpperCase())}{" "}
+              {/* Capitalize words */}
+            </th>
+          ))}
+    </tr>
+  </thead>
+
+  {/* Table Body */}
+  <tbody className="divide-y divide-gray-200 mx-4">
+    {filteredCandidates.map((candidate) => (
+      <tr key={candidate.id} className="hover:bg-gray-50">
+        {/* Checkbox Column for Selecting Candidates */}
+        <td className="px-2">
+          <div
+            className={`w-[20px] h-[20px] border border-customBlue bg-white rounded-[6px] flex items-center justify-center cursor-pointer`}
+            onClick={() => handleCandidateSelection(candidate.id)}
+          >
+            {selectedCandidates.includes(candidate.id) ? (
+              <img src={Tick} alt="Selected" />
+            ) : null}
+          </div>
+        </td>
+
+        {/* Dynamically Generate Data Cells */}
+        {Object.keys(
+          filteredCandidates.reduce((acc, obj) => ({ ...acc, ...obj }), {})
+        )
+          .filter((key) => key !== "id") // Exclude `id` column
+          .map((key) => (
+            <td
+              key={key}
+              className={`td-text ${key === "email" ? "text-blue-500" : ""}`}
+            >
+              {key === "candidate_name" ? (
+                // Show Candidate Initials + Name for First Column
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 rounded-3xl p-2 bg-orange-300 flex items-center justify-center text-white font-bold">
+                    {getInitials(candidate?.candidate_name)}
                   </div>
-                </th>
-                <th className="th-title bg-blueBg max-w-60 min-w-60">
-                  Candidate Name
-                </th>
-                <th className="th-title bg-blueBg max-w-40 min-w-40">
-                  Reference ID
-                </th>
-                <th className="th-title bg-blueBg max-w-60 min-w-40">
-                  Location
-                </th>
-                <th className="th-title bg-blueBg max-w-60 min-w-40">
-                  Current Company
-                </th>
-                <th className="th-title bg-blueBg max-w-60 min-w-40">
-                  Current Position
-                </th>
-                <th className="th-title bg-blueBg max-w-60 min-w-40">
-                  Email ID
-                </th>
-                <th className="th-title bg-blueBg max-w-40 min-w-40">
-                  Contact
-                </th>
-              </tr>
-            </thead>
-            {/* Table Body */}
-            <tbody className="divide-y divide-gray-200 mx-4">
-              {candidates.map((candidate) => (
-                <tr key={candidate.id} className="hover:bg-gray-50">
-                  <td className="px-2">
-                    <div
-                      className={`w-[20px] h-[20px] border border-customBlue bg-white rounded-[6px] flex items-center justify-center cursor-pointer`}
-                      onClick={() => handleCandidateSelection(candidate.id)}
-                    >
-                      {selectedCandidates.includes(candidate.id) ? (
-                        <img src={Tick} alt="Selected" />
-                      ) : null}
-                    </div>
-                  </td>
-                  <td className="td-text flex items-center gap-2">
-                    {/* Circle with Initials */}
-                    <div className="w-8 h-8 rounded-3xl p-2 bg-orange-300 flex items-center justify-center text-white font-bold">
-                      {candidate.initials}
-                    </div>
-                    {candidate.name}
-                  </td>
-                  <td className="td-text max-w-[180px]">
-                    {candidate.referenceId}
-                  </td>
-                  <td className="td-text">{candidate.location}</td>
-                  <td className="td-text">{candidate.company}</td>
-                  <td className="td-text">{candidate.position}</td>
-                  <td className="td-text text-blue-500">{candidate.email}</td>
-                  <td className="td-text">{candidate.contact}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+                  {candidate[key] || "-"} {/* Handle missing data */}
+                </div>
+              ) : (
+                candidate[key] || "N/A" // Handle missing data
+              )}
+            </td>
+          ))}
+      </tr>
+    ))}
+  </tbody>
+</table>
+
         </div>
       </div>
       <PaginationFooter />
@@ -1076,6 +660,12 @@ const Candidates = ({ isDrawerOpen }) => {
           setModalVisibility("uploadResumeCandidateModalVisible", false)
         }
       />
+      <EditColumnModal
+        visible={modals?.editColumnModalVisible}
+        onClose={() =>
+          setModalVisibility("editColumnModalVisible", false)
+        }
+      />
       <GlobalMenu
         anchorEl={anchorBulkActionEl}
         open={openBulkAction}
@@ -1102,6 +692,7 @@ const Candidates = ({ isDrawerOpen }) => {
         onClose={handleSearchableMenuClose}
         menuItems={searchableMenuItems}
       />
+     
 
       {/* 🔹 Filter Menu (Opens after selection from Searchable Menu) */}
       <FilterMenu
