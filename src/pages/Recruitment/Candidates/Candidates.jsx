@@ -36,10 +36,9 @@ import SaveFiltersModal from "../../../components/modals/SaveFiltersModal";
 import EditColumnModal from "../../../components/modals/EditColumns";
 import { candidates } from "../../../helpers/dataCandidates";
 
-
 const Candidates = ({ isDrawerOpen }) => {
   const [candidateList, setCandidateList] = useState(candidates);
-  console.log("candidatesid >>>>>",candidateList);
+  console.log("candidatesid >>>>>", candidateList);
 
   const { modals, setModalVisibility } = useModal();
   const [activeTab, setActiveTab] = useState("candidates");
@@ -103,7 +102,9 @@ const Candidates = ({ isDrawerOpen }) => {
     {
       label: "Edit Columns",
       icon: <EditIcon />,
-      onClick: (event) => (setModalVisibility("editColumnModalVisible", true),handleClose()),
+      onClick: (event) => (
+        setModalVisibility("editColumnModalVisible", true), handleClose()
+      ),
     },
     {
       label: "Export",
@@ -115,12 +116,15 @@ const Candidates = ({ isDrawerOpen }) => {
     {
       label: "Save filter",
 
-      onClick: (event) => (setModalVisibility("saveFiltersModalVisible", true),handleSettingsClose()),
+      onClick: (event) => (
+        setModalVisibility("saveFiltersModalVisible", true),
+        handleSettingsClose()
+      ),
     },
     {
       label: "Clear all filters",
 
-      onClick: (event) => (handleSettingsClose()),
+      onClick: (event) => handleSettingsClose(),
     },
   ];
   // 🔍 Searchable Menu Items
@@ -158,11 +162,14 @@ const Candidates = ({ isDrawerOpen }) => {
       onClick: (event) => handleSearchableSelect("Created By", event),
     },
   ];
-   // 🔍 Filter candidates based on search query
-   const filteredCandidates = candidateList.filter((candidate) =>
-   (console.log("candidate>>>",candidate),
-   candidate?.candidate_name?.toLowerCase().includes(searchQuery?.toLowerCase()))
-   
+  // 🔍 Filter candidates based on search query
+  const filteredCandidates = candidateList.filter(
+    (candidate) => (
+      console.log("candidate>>>", candidate),
+      candidate?.candidate_name
+        ?.toLowerCase()
+        .includes(searchQuery?.toLowerCase())
+    )
   );
   const handleSeacrchableMenuOpen = (event) => {
     setAnchorAddConditionEl(event.currentTarget);
@@ -190,21 +197,23 @@ const Candidates = ({ isDrawerOpen }) => {
     setConditions(conditions.filter((_, i) => i !== index));
   };
 
- // ✅ Handle Candidate Selection
- const handleCandidateSelection = (id) => {
-  setSelectedCandidates((prevSelected) =>
-    prevSelected.includes(id)
-      ? prevSelected.filter((candidateId) => candidateId !== id)
-      : [...prevSelected, id]
-  );
-};
+  // ✅ Handle Candidate Selection
+  const handleCandidateSelection = (id) => {
+    setSelectedCandidates((prevSelected) =>
+      prevSelected.includes(id)
+        ? prevSelected.filter((candidateId) => candidateId !== id)
+        : [...prevSelected, id]
+    );
+  };
 
   // ✅ Select/Deselect All Candidates
   const handleSelectAll = () => {
     if (selectedCandidates.length === filteredCandidates.length) {
       setSelectedCandidates([]); // Deselect all
     } else {
-      setSelectedCandidates(filteredCandidates.map((candidate) => candidate.id)); // Select all
+      setSelectedCandidates(
+        filteredCandidates.map((candidate) => candidate.id)
+      ); // Select all
     }
   };
 
@@ -535,14 +544,16 @@ const Candidates = ({ isDrawerOpen }) => {
             </div>
             <div className="flex items-center justify-center gap-[8px]">
               <button
-                className={`buttons border border-blue-600 text-buttonBLue cursor-pointer ${conditions.length >0 ? "text-buttonBLue":"text-customGray"}`}
+                className={`buttons border border-blue-600 text-buttonBLue cursor-pointer ${
+                  conditions.length > 0 ? "text-buttonBLue" : "text-customGray"
+                }`}
                 onClick={handleApplyFilter}
-                disabled= {conditions.length >0}
+                disabled={conditions.length > 0}
               >
                 Apply filter
               </button>
               <button
-                className="buttons border border-blue-600 justify-center text-buttonBLue min-w-[120px]"
+                className="buttons border min-w-[44px] border-blue-600 justify-center text-buttonBLue"
                 onClick={handleClickSetting}
               >
                 <img src={SettingIcon} alt="settings" />
@@ -553,83 +564,93 @@ const Candidates = ({ isDrawerOpen }) => {
         {/* Table Wrapper with Horizontal Scroll */}
 
         <div className="overflow-x-auto px-[10px] scroll-width-none bg-white shadow-md ">
-        <table className="min-w-full divide-y divide-gray-200">
-  {/* Table Header */}
-  <thead className="sticky top-0 bg-white z-[50]">
-    <tr className="text-left text-gray-600 font-semibold">
-      {/* Checkbox Column for Selecting All */}
-      <th className="th-title sticky top-0 bg-blueBg z-[50]">
-        <div
-          className={`w-[20px] h-[20px] border border-customBlue bg-white rounded-[6px] flex items-center justify-center cursor-pointer`}
-          onClick={handleSelectAll}
-        >
-          {selectedCandidates.length === filteredCandidates.length ? (
-            <img src={Tick} alt="Selected" />
-          ) : null}
-        </div>
-      </th>
-
-      {/* Dynamically Generate Column Headers */}
-      {filteredCandidates.length > 0 &&
-        Object.keys(
-          filteredCandidates.reduce((acc, obj) => ({ ...acc, ...obj }), {})
-        ) // Merge all objects to get all unique keys
-          .filter((key) => key !== "id") // Exclude `id` column
-          .map((key) => (
-            <th key={key} className="th-title bg-blueBg max-w-60 min-w-40">
-              {key
-                .replace(/_/g, " ") // Convert snake_case to space-separated words
-                .replace(/\b\w/g, (char) => char.toUpperCase())}{" "}
-              {/* Capitalize words */}
-            </th>
-          ))}
-    </tr>
-  </thead>
-
-  {/* Table Body */}
-  <tbody className="divide-y divide-gray-200 mx-4">
-    {filteredCandidates.map((candidate) => (
-      <tr key={candidate.id} className="hover:bg-gray-50">
-        {/* Checkbox Column for Selecting Candidates */}
-        <td className="px-2">
-          <div
-            className={`w-[20px] h-[20px] border border-customBlue bg-white rounded-[6px] flex items-center justify-center cursor-pointer`}
-            onClick={() => handleCandidateSelection(candidate.id)}
-          >
-            {selectedCandidates.includes(candidate.id) ? (
-              <img src={Tick} alt="Selected" />
-            ) : null}
-          </div>
-        </td>
-
-        {/* Dynamically Generate Data Cells */}
-        {Object.keys(
-          filteredCandidates.reduce((acc, obj) => ({ ...acc, ...obj }), {})
-        )
-          .filter((key) => key !== "id") // Exclude `id` column
-          .map((key) => (
-            <td
-              key={key}
-              className={`td-text ${key === "email" ? "text-blue-500" : ""}`}
-            >
-              {key === "candidate_name" ? (
-                // Show Candidate Initials + Name for First Column
-                <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 rounded-3xl p-2 bg-orange-300 flex items-center justify-center text-white font-bold">
-                    {getInitials(candidate?.candidate_name)}
+          <table className="min-w-full divide-y divide-gray-200">
+            {/* Table Header */}
+            <thead className="sticky top-0 bg-white z-[50]">
+              <tr className="text-left text-gray-600 font-semibold">
+                {/* Checkbox Column for Selecting All */}
+                <th className="th-title sticky top-0 bg-blueBg z-[50]">
+                  <div
+                    className={`w-[20px] h-[20px] border border-customBlue bg-white rounded-[6px] flex items-center justify-center cursor-pointer`}
+                    onClick={handleSelectAll}
+                  >
+                    {selectedCandidates.length === filteredCandidates.length ? (
+                      <img src={Tick} alt="Selected" />
+                    ) : null}
                   </div>
-                  {candidate[key] || "-"} {/* Handle missing data */}
-                </div>
-              ) : (
-                candidate[key] || "N/A" // Handle missing data
-              )}
-            </td>
-          ))}
-      </tr>
-    ))}
-  </tbody>
-</table>
+                </th>
 
+                {/* Dynamically Generate Column Headers */}
+                {filteredCandidates.length > 0 &&
+                  Object.keys(
+                    filteredCandidates.reduce(
+                      (acc, obj) => ({ ...acc, ...obj }),
+                      {}
+                    )
+                  ) // Merge all objects to get all unique keys
+                    .filter((key) => key !== "id") // Exclude `id` column
+                    .map((key) => (
+                      <th
+                        key={key}
+                        className="th-title bg-blueBg max-w-60 min-w-40"
+                      >
+                        {key
+                          .replace(/_/g, " ") // Convert snake_case to space-separated words
+                          .replace(/\b\w/g, (char) => char.toUpperCase())}{" "}
+                        {/* Capitalize words */}
+                      </th>
+                    ))}
+              </tr>
+            </thead>
+
+            {/* Table Body */}
+            <tbody className="divide-y divide-gray-200 mx-4">
+              {filteredCandidates.map((candidate) => (
+                <tr key={candidate.id} className="hover:bg-gray-50">
+                  {/* Checkbox Column for Selecting Candidates */}
+                  <td className="px-2">
+                    <div
+                      className={`w-[20px] h-[20px] border border-customBlue bg-white rounded-[6px] flex items-center justify-center cursor-pointer`}
+                      onClick={() => handleCandidateSelection(candidate.id)}
+                    >
+                      {selectedCandidates.includes(candidate.id) ? (
+                        <img src={Tick} alt="Selected" />
+                      ) : null}
+                    </div>
+                  </td>
+
+                  {/* Dynamically Generate Data Cells */}
+                  {Object.keys(
+                    filteredCandidates.reduce(
+                      (acc, obj) => ({ ...acc, ...obj }),
+                      {}
+                    )
+                  )
+                    .filter((key) => key !== "id") // Exclude `id` column
+                    .map((key) => (
+                      <td
+                        key={key}
+                        className={`td-text ${
+                          key === "email" ? "text-blue-500" : ""
+                        }`}
+                      >
+                        {key === "candidate_name" ? (
+                          // Show Candidate Initials + Name for First Column
+                          <div className="flex items-center gap-2">
+                            <div className="w-8 h-8 rounded-3xl p-2 bg-orange-300 flex items-center justify-center text-white font-bold">
+                              {getInitials(candidate?.candidate_name)}
+                            </div>
+                            {candidate[key] || "-"} {/* Handle missing data */}
+                          </div>
+                        ) : (
+                          candidate[key] || "-" // Handle missing data
+                        )}
+                      </td>
+                    ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       </div>
       <PaginationFooter />
@@ -662,9 +683,7 @@ const Candidates = ({ isDrawerOpen }) => {
       />
       <EditColumnModal
         visible={modals?.editColumnModalVisible}
-        onClose={() =>
-          setModalVisibility("editColumnModalVisible", false)
-        }
+        onClose={() => setModalVisibility("editColumnModalVisible", false)}
       />
       <GlobalMenu
         anchorEl={anchorBulkActionEl}
@@ -692,7 +711,6 @@ const Candidates = ({ isDrawerOpen }) => {
         onClose={handleSearchableMenuClose}
         menuItems={searchableMenuItems}
       />
-     
 
       {/* 🔹 Filter Menu (Opens after selection from Searchable Menu) */}
       <FilterMenu
