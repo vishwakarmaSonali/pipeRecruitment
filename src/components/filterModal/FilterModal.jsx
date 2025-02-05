@@ -76,6 +76,7 @@ const FilterModal = ({ isOpen, onClose, onApply, onReset, filters }) => {
       school: localFilters.schoolList,
       degree: localFilters.degreeList,
       radius: radius,
+      skill: localFilters.skillList,
       industry: industry,
       experienceFrom: experience.from,
       experienceTo: experience.to,
@@ -302,7 +303,32 @@ const FilterModal = ({ isOpen, onClose, onApply, onReset, filters }) => {
               )}
             </div>
 
-            {/* Industry Dropdown */}
+            <div>
+              <label className="filter-title">Skills</label>
+              <input
+                type="text"
+                placeholder="Enter skill"
+                className="filter-input"
+                value={localFilters.skill || ""}
+                onChange={(e) => handleInputChange(e, "skill")}
+                onKeyDown={(e) => handleKeyDown(e, "skill")}
+              />
+              {localFilters.skillList?.length > 0 && (
+                <div className="inputItemsDiv">
+                  {localFilters.skillList?.map((skill, index) => (
+                    <div key={index} className="inputed-item">
+                      {skill}
+                      <button
+                        className="ml-2 text-customBlue"
+                        onClick={() => removeItem("skill", index)}
+                      >
+                        ✕
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
             {/* Industry Dropdown */}
             <div>
               <label className="filter-title">Industry</label>

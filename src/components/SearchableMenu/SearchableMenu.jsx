@@ -15,6 +15,7 @@ const SearchableMenu = ({ anchorEl, open, onClose, menuItems }) => {
       anchorEl={anchorEl}
       open={open}
       onClose={onClose}
+     sx={{padding:0,margin:0}}
       PaperProps={{
         sx: {
           borderRadius: "10px",
@@ -23,11 +24,12 @@ const SearchableMenu = ({ anchorEl, open, onClose, menuItems }) => {
           fontFamily: "'Ubuntu', sans-serif",
           fontSize: "14px",
           color: "customBlue",
+         
         },
       }}
     >
       {/* 🔍 Search Bar */}
-      <div className="flex items-center border-b border-gray-300 bg-white px-[14px] py-[10px] mb-[8px]  gap-[8px]">
+      <div className="flex items-center border-b border-gray-300 p-[12px] gap-[8px]">
         <SearchIcon />
         <input
           type="text"
@@ -44,13 +46,18 @@ const SearchableMenu = ({ anchorEl, open, onClose, menuItems }) => {
           <MenuItem
             key={index}
             onClick={item.onClick}
-            className="p-[14px] text-gray-800 text-sm hover:bg-gray-100 rounded-md"
+            className="p-[10px] rounded-md"
+            sx={{
+              padding: "14px !important",
+              borderRadius: "8px !important", // Adjust if necessary
+           
+            }}
           >
  <span className="text-sm text-customBlue font-ubuntu">{item.label}</span>
           </MenuItem>
         ))
       ) : (
-        <MenuItem disabled className="p-[14px] text-gray-400 text-sm text-customBlue font-ubuntu font-medium">
+        <MenuItem disabled className="p-[14px] text-sm text-customBlue font-ubuntu font-medium">
           No results found
         </MenuItem>
       )}

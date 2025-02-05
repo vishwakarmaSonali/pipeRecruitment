@@ -38,30 +38,8 @@ import { candidates } from "../../../helpers/dataCandidates";
 
 const Candidates = ({ isDrawerOpen }) => {
   const [candidateList, setCandidateList] = useState(candidates);
-  console.log("candidatesid >>>>>", candidateList);
-
-  const { modals, setModalVisibility } = useModal();
-  const [activeTab, setActiveTab] = useState("candidates");
   const [selectedCandidates, setSelectedCandidates] = useState([]);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [anchorEl, setAnchorEl] = useState(null);
-  const open = Boolean(anchorEl);
-  const [anchorBulkActionEl, setAnchorBulkActionEl] = useState(null);
-  const openBulkAction = Boolean(anchorBulkActionEl);
-  const [anchorSettingEl, setAnchorSettingEl] = useState(null);
-  const openSetting = Boolean(anchorSettingEl);
-  const [anchorAddConditionEl, setAnchorAddConditionEl] = useState(null);
-  const openAddCondition = Boolean(anchorAddConditionEl);
-  const [anchorFilterMenuEl, setAnchorFilterMenuEl] = useState(null);
-  const openFilterMenu = Boolean(anchorFilterMenuEl);
-  const [isFilter, setIsFilter] = useState(false);
-  const [selectedSearchableOption, setSelectedSearchableOption] = useState("");
-  const [filterSelection, setFilterSelection] = useState("");
-  const [filterInput, setFilterInput] = useState("");
-  const [conditions, setConditions] = useState([]); // Store multiple conditions
-
-  const [finalCondition, setFinalCondition] = useState(""); // Stores the final string
-
+ 
   const bulkMenuItems = [
     {
       label: "Add to jobs",
@@ -128,44 +106,47 @@ const Candidates = ({ isDrawerOpen }) => {
     },
   ];
   // 🔍 Searchable Menu Items
-  const searchableMenuItems = [
-    {
-      label: "Candidate Name",
-      onClick: (event) => handleSearchableSelect("Candidate Name", event),
-    },
-    {
-      label: "Email Id",
-      onClick: (event) => handleSearchableSelect("Email Id", event),
-    },
-    {
-      label: "Contact Number",
-      onClick: (event) => handleSearchableSelect("Contact Number", event),
-    },
-    {
-      label: "Location",
-      onClick: (event) => handleSearchableSelect("Location", event),
-    },
-    {
-      label: "Nationality",
-      onClick: (event) => handleSearchableSelect("Nationality", event),
-    },
-    {
-      label: "Language",
-      onClick: (event) => handleSearchableSelect("Language", event),
-    },
-    {
-      label: "ATS Score",
-      onClick: (event) => handleSearchableSelect("ATS Score", event),
-    },
-    {
-      label: "Created By",
-      onClick: (event) => handleSearchableSelect("Created By", event),
-    },
+ const initialSearchableItems = [
+    { label: "Candidate Name", onClick: (event) => handleSearchableSelect("Candidate Name", event) },
+    { label: "Email Id", onClick: (event) => handleSearchableSelect("Email Id", event) },
+    { label: "Contact Number", onClick: (event) => handleSearchableSelect("Contact Number", event) },
+    { label: "Location", onClick: (event) => handleSearchableSelect("Location", event) },
+    { label: "Nationality", onClick: (event) => handleSearchableSelect("Nationality", event) },
+    { label: "Language", onClick: (event) => handleSearchableSelect("Language", event) },
+    { label: "ATS Score", onClick: (event) => handleSearchableSelect("ATS Score", event) },
+    { label: "Created By", onClick: (event) => handleSearchableSelect("Created By", event) },
   ];
+
+  const [searchableMenuItems, setSearchableMenuItems] = useState(initialSearchableItems);
+  const { modals, setModalVisibility } = useModal();
+  const [activeTab, setActiveTab] = useState("candidates");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [anchorEl, setAnchorEl] = useState(null);
+  const open = Boolean(anchorEl);
+  const [anchorBulkActionEl, setAnchorBulkActionEl] = useState(null);
+  const openBulkAction = Boolean(anchorBulkActionEl);
+  const [anchorSettingEl, setAnchorSettingEl] = useState(null);
+  const openSetting = Boolean(anchorSettingEl);
+  const [anchorAddConditionEl, setAnchorAddConditionEl] = useState(null);
+  const openAddCondition = Boolean(anchorAddConditionEl);
+  const [anchorFilterMenuEl, setAnchorFilterMenuEl] = useState(null);
+  const openFilterMenu = Boolean(anchorFilterMenuEl);
+  const [isFilter, setIsFilter] = useState(false);
+  const [selectedSearchableOption, setSelectedSearchableOption] = useState("");
+
+  const [conditions, setConditions] = useState([]); // Store multiple conditions
+  
+  useEffect(() => {
+    if (conditions.length === 0) {
+      setSearchableMenuItems([...initialSearchableItems]); // Restore all items when no filters remain
+    }
+  }, [conditions]);
+  
+
   // 🔍 Filter candidates based on search query
   const filteredCandidates = candidateList.filter(
     (candidate) => (
-      console.log("candidate>>>", candidate),
+     
       candidate?.candidate_name
         ?.toLowerCase()
         .includes(searchQuery?.toLowerCase())
@@ -187,16 +168,60 @@ const Candidates = ({ isDrawerOpen }) => {
 
   // ✅ Handle Filter Menu Apply
   const handleFilterApply = (filterOption, inputValue) => {
+    if (!inputValue || inputValue.trim() === "") {
+      console.error("Filter input value is missing. Please enter a valid value.");
+      return;
+    }
+  
     const newCondition = `${selectedSearchableOption} ${filterOption} ${inputValue}`;
-    setConditions([...conditions, newCondition]); // Add condition to array
+  
+    setConditions((prevConditions) => {
+      // Prevent duplicates
+      if (prevConditions.some((condition) => condition.startsWith(selectedSearchableOption))) {
+        return prevConditions;
+      }
+      return [...prevConditions, newCondition];
+    });
+  
+    // Remove the selected filter from the searchable menu
+    setSearchableMenuItems((prevItems) =>
+      prevItems.filter((item) => item.label !== selectedSearchableOption)
+    );
+  
+    setSelectedSearchableOption("");
     setAnchorFilterMenuEl(null);
   };
+  
+  
 
-  // ❌ Remove a condition
+  // ❌ Remove a condition and restore it to the searchable menu
   const removeCondition = (index) => {
-    setConditions(conditions.filter((_, i) => i !== index));
+    setConditions((prevConditions) => {
+      if (prevConditions.length === 0) return prevConditions;
+  
+      // Extract label from the condition being removed
+      const removedConditionLabel = prevConditions[index].split(" ")[0];
+  
+      // Remove the condition from the list
+      const updatedConditions = prevConditions.filter((_, i) => i !== index);
+  
+      setSearchableMenuItems((prevItems) => {
+        // Ensure the removed condition is added back only if it’s not already present
+        const itemToRestore = initialSearchableItems.find(
+          (item) => item.label === removedConditionLabel
+        );
+  
+        if (itemToRestore && !prevItems.some((item) => item.label === removedConditionLabel)) {
+          return [...prevItems, itemToRestore];
+        }
+  
+        return prevItems;
+      });
+  
+      return updatedConditions;
+    });
   };
-
+  
   // ✅ Handle Candidate Selection
   const handleCandidateSelection = (id) => {
     setSelectedCandidates((prevSelected) =>
@@ -381,7 +406,7 @@ const Candidates = ({ isDrawerOpen }) => {
     );
   };
   const handleApplyFilter = () => {
-    console.log("Applied Filters:", conditions);
+   
   };
   const getInitials = (name) => {
     if (!name) return "";
@@ -704,21 +729,21 @@ const Candidates = ({ isDrawerOpen }) => {
         onClose={handleSettingsClose}
         menuItems={settingsMenuItems}
       />
-      {/* 🔍 Searchable Menu */}
-      <SearchableMenu
+ {/* 🔍 Searchable Menu */}
+ <SearchableMenu
         anchorEl={anchorAddConditionEl}
         open={Boolean(anchorAddConditionEl)}
         onClose={handleSearchableMenuClose}
-        menuItems={searchableMenuItems}
+        menuItems={searchableMenuItems} // Pass dynamic items
       />
 
-      {/* 🔹 Filter Menu (Opens after selection from Searchable Menu) */}
+      {/* 🔹 Filter Menu */}
       <FilterMenu
         anchorEl={anchorFilterMenuEl}
         open={Boolean(anchorFilterMenuEl)}
         onClose={() => setAnchorFilterMenuEl(null)}
         selectedOption={selectedSearchableOption}
-        onApply={handleFilterApply}
+        onApply={handleFilterApply} // Use modified handleApply
       />
     </div>
   );
