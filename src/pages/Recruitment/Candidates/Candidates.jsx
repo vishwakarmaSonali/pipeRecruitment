@@ -551,12 +551,15 @@ const Candidates = ({ isDrawerOpen }) => {
     {
       label: "Save filter",
 
-      onClick: (event) => (setModalVisibility("saveFiltersModalVisible", true),handleSettingsClose()),
+      onClick: (event) => (
+        setModalVisibility("saveFiltersModalVisible", true),
+        handleSettingsClose()
+      ),
     },
     {
       label: "Clear all filters",
 
-      onClick: (event) => (handleSettingsClose()),
+      onClick: (event) => handleSettingsClose(),
     },
   ];
 
@@ -959,9 +962,11 @@ const Candidates = ({ isDrawerOpen }) => {
             </div>
             <div className="flex items-center justify-center gap-[8px]">
               <button
-                className={`buttons border border-blue-600 text-buttonBLue cursor-pointer ${conditions.length >0 ? "text-buttonBLue":"text-customGray"}`}
+                className={`buttons border border-blue-600 text-buttonBLue cursor-pointer ${
+                  conditions.length > 0 ? "text-buttonBLue" : "text-customGray"
+                }`}
                 onClick={handleApplyFilter}
-                disabled= {conditions.length >0}
+                disabled={conditions.length > 0}
               >
                 Apply filter
               </button>

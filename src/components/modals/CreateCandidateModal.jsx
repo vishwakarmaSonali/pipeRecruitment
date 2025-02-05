@@ -48,8 +48,8 @@ const CreateCandidateModal = ({ visible, onClose }) => {
                 setModalVisibility("createCandidateFormModalVisible", true);
               }}
             >
-              <FormIcon />
-              <span className="modal-description-text">Fill Form</span>
+              <FormIcon className="form-icon" />
+              <span className="modal-description-text ">Fill Form</span>
             </button>
             <button
               className="fill-form-btn"
@@ -58,8 +58,8 @@ const CreateCandidateModal = ({ visible, onClose }) => {
                 setModalVisibility("smartGenerateModalVisible", true);
               }}
             >
-              <PenIcon />
-              <span className="modal-description-text">Smart Generate</span>
+              <PenIcon className="form-icon" />
+              <span className="modal-description-text ">Smart Generate</span>
             </button>
           </div>
         </div>

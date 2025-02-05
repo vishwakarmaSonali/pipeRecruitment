@@ -7,9 +7,8 @@ import { useModal } from "../common/ModalProvider";
 import { useDispatch, useSelector } from "react-redux";
 import { saveFilterAsync } from "../../store/filterSlice"; // Import Redux thunk action
 
-
-const SaveFiltersModal = ({ visible, onClose,selectedConditions }) => {
-    const dispatch = useDispatch();
+const SaveFiltersModal = ({ visible, onClose, selectedConditions }) => {
+  const dispatch = useDispatch();
 
   const { modals, setModalVisibility } = useModal();
   const [isShared, setIsShared] = useState(false);
@@ -30,7 +29,13 @@ const SaveFiltersModal = ({ visible, onClose,selectedConditions }) => {
     }
 
     // Dispatch thunk action to save filter in Redux
-    dispatch(saveFilterAsync({ name: filterName, conditions: selectedConditions, shared: isShared }));
+    dispatch(
+      saveFilterAsync({
+        name: filterName,
+        conditions: selectedConditions,
+        shared: isShared,
+      })
+    );
 
     // Reset state
     setFilterName("");
@@ -42,7 +47,7 @@ const SaveFiltersModal = ({ visible, onClose,selectedConditions }) => {
   return (
     <Modal
       show={visible}
-      onHide={onClose}
+      onHide={handleBackdropClick}
       dialogClassName={`common-modal `}
       contentClassName="modal-content"
       backdropClassName="custom-backdrop"
@@ -85,13 +90,16 @@ const SaveFiltersModal = ({ visible, onClose,selectedConditions }) => {
               <span className="share-text">Share with team members</span>
               <InfoIcon className="info-icon" />
             </div>
-              {/* Show loading or error messages */}
-              {loading && <p>Saving filter...</p>}
+            {/* Show loading or error messages */}
+            {loading && <p>Saving filter...</p>}
             {error && <p className="text-red-500">{error}</p>}
 
             <div className="flex justify-center mt-[24px] ">
-              <button  onClick={handleSaveFilter} className=" px-[14px] py-[10px] max-h-[36px] text-m font-ubuntu rounded-[8px] flex items-center gap-1 min-w-[120px] justify-center  text-white  bg-buttonBLue">
-              {loading ? "Saving..." : "Save"}
+              <button
+                onClick={handleSaveFilter}
+                className=" px-[14px] py-[10px] max-h-[36px] text-m font-ubuntu rounded-[8px] flex items-center gap-1 min-w-[120px] justify-center  text-white  bg-buttonBLue"
+              >
+                {loading ? "Saving..." : "Save"}
               </button>
             </div>
           </div>

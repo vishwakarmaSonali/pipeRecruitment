@@ -16,7 +16,7 @@
   @apply font-ubuntu text-m;
 }
 .buttons {
-  @apply px-[14px] py-[10px] max-h-[36px] text-m font-ubuntu rounded-[8px] flex items-center gap-1 min-w-[120px] justify-center ;
+  @apply px-[14px] py-[10px] max-h-[36px] text-m font-ubuntu rounded-[8px] flex items-center gap-1 min-w-[120px] justify-center;
 }
 /* .buttons{
     @apply px-[14px] py-[10px] max-h-[36px] text-m font-ubuntu rounded-[8px] flex items-center gap-1 
@@ -161,4 +161,107 @@
   color: #1761d8;
   border-radius: 6px;
   align-self: flex-start;
+}
+
+.profile-progress-div-1 {
+  width: 48px;
+  height: 48px;
+  border-radius: 100px;
+  background-color: #98d4df;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 14px;
+  line-height: 16.09px;
+  font-family: "Ubuntu";
+  font-weight: 400;
+  color: var(--dark-black);
+  box-sizing: border-box;
+}
+
+.profile-progress-div-2 {
+  width: 48px;
+  height: 48px;
+  border-radius: 100px;
+  background-color: transparent;
+  border: 2px solid #98d4df;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 14px;
+  line-height: 16.09px;
+  font-family: "Ubuntu";
+  font-weight: 400;
+  color: var(--dark-black);
+  box-sizing: border-box;
+}
+
+.candidate-info-header {
+  padding: 16px;
+  background-color: var(--white);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.candidate-info-label {
+  border: 1px solid #d7d7d7;
+  padding: 6px 10px;
+  min-height: 28px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  border-radius: 100px;
+  font-family: "Ubuntu";
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 13.79px;
+  color: var(--dark-black);
+}
+
+.add-label-btn-candidate-info {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-family: "Ubuntu";
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 13.79px;
+  color: #1761d8;
+}
+
+.candidate-info-tab-main {
+  display: flex;
+  gap: 6px;
+  border-bottom: 1px solid #797979;
+}
+
+.candidate-info-tab-btn {
+  display: flex;
+  padding: 8px 10px;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  min-height: 34px;
+  font-family: "Ubuntu";
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 16.09px;
+  color: #797979;
+  border-bottom: 1px solid transparent;
+  box-sizing: border-box;
+  transition: border-bottom 300ms ease, color 300ms ease;
+}
+
+.active-info-tab {
+  border-bottom: 1px solid var(--dark-black);
+  color: var(--dark-black);
+}
+
+.candidate-info-tab-count {
+  font-family: "Ubuntu";
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 16.09px;
+  color: #1761d8;
 }
