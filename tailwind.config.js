@@ -53,7 +53,8 @@ module.exports = {
       blueBg:'#1761D81A',
       borderGrey:'#ebebeb',
       buttonBLue:"#1761D8",
-      buttonBlueOpacity:"#1761D80F"
+      buttonBlueOpacity:"#1761D80F",
+      red:"#E03636"
     },
   },
   screens: {

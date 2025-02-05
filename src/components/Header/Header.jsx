@@ -25,8 +25,9 @@ import { ReactComponent as Calendar } from "../../assets/icons/calendar.svg";
 import { ReactComponent as StarFilled } from "../../assets/icons/starfilledYellow.svg";
 import { ReactComponent as StarOutline } from "../../assets/icons/starOutline.svg";
 import { ReactComponent as InfoCircle } from "../../assets/icons/infoCircle.svg";
-
 import { useLocation, Link } from "react-router-dom";
+import { useModal } from "../common/ModalProvider";
+import SavedFiltersModal from "../modals/SavedFiltersModal";
 
 const Header = ({ title }) => {
   const location = useLocation();
@@ -36,6 +37,7 @@ const Header = ({ title }) => {
   const [activeLink, setActiveLink] = useState("/");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("Candidates");
+  const { modals, setModalVisibility } = useModal();
 
 
   const dropdownRef = useRef(null);
@@ -234,7 +236,7 @@ const Header = ({ title }) => {
                  
                     </div>
                     <div className="border-t border-gray-200 ">
-                      <button className="candidate-dropdown-list">
+                      <button className="candidate-dropdown-list"  onClick={ (event) => (setModalVisibility("savedFiltersModalVisible", true),setIsDropdownOpen(false))}>
                         Manage filters
                       </button>
                     </div>
@@ -400,6 +402,12 @@ const Header = ({ title }) => {
           </div>
         </div>
       </Drawer>
+      <SavedFiltersModal
+        visible={modals?.savedFiltersModalVisible}
+        onClose={() =>
+          setModalVisibility("savedFiltersModalVisible", false)
+        }
+      />
     </div>
   );
 };

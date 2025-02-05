@@ -17,14 +17,26 @@ const FilterMenu = ({ anchorEl, open, onClose, selectedOption, onApply }) => {
       anchorEl={anchorEl}
       open={open}
       onClose={onClose}
-      PaperProps={{ className: "border rounded-lg shadow-md w-64" }}
+      sx={{padding:0,margin:0}}
+      PaperProps={{
+        sx: {
+          borderRadius: "10px",
+          boxShadow: "-1px 2px 10px rgba(0,0,0,0.3)",
+          width: "240px",
+          fontFamily: "'Ubuntu', sans-serif",
+          fontSize: "14px",
+          color: "customBlue",
+         
+        },
+      }}
     >
       <div className="flex flex-col">
         {/* Filter Selection */}
         {filterOptions.map((option) => (
           <MenuItem
             key={option}
-            className="px-[14px] "
+           
+            sx={{paddingX:"14px"}}
             onClick={() => setSelectedFilter(option)}
           >
             <Radio
@@ -33,7 +45,7 @@ const FilterMenu = ({ anchorEl, open, onClose, selectedOption, onApply }) => {
               size="small"
               className="text-black"
             />
-            <span className="text-sm fotn-ubuntu text-customBlue">
+            <span className="text-sm font-ubuntu text-customBlue">
               {option}
             </span>
           </MenuItem>
