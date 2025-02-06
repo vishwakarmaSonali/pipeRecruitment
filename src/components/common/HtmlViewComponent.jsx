@@ -12,6 +12,7 @@ import { ReactComponent as RedoIcon } from "../../assets/icons/redo.svg";
 import { ReactComponent as HeadingIcon } from "../../assets/icons/heading.svg";
 import ReactDOMServer from "react-dom/server";
 import "./common.css";
+import EditorToolbar, { modules, formats } from "./EditorToolbar";
 
 // Add custom icons to Quill
 const icons = Quill.import("ui/icons");
@@ -33,82 +34,18 @@ icons["list"]["bullet"] = ReactDOMServer.renderToStaticMarkup(
   <UnorderListIcon stroke="#151B23" />
 );
 const HtmlViewComponent = ({ value, onChange }) => {
-  const quillRef = useRef(null);
-
-  useEffect(() => {
-    if (quillRef.current) {
-      const editor = quillRef.current.getEditor();
-
-      document.getElementById("undo").addEventListener("click", () => {
-        editor.history.undo();
-      });
-
-      document.getElementById("redo").addEventListener("click", () => {
-        editor.history.redo();
-      });
-    }
-  }, []);
-
-  const handleUndo = () => {
-    if (quillRef.current) {
-      const editor = quillRef.current.getEditor();
-      if (editor.history) {
-        console.log("🟢 Undo Triggered");
-        editor.history.undo();
-      } else {
-        console.warn("🚨 Undo Failed: Quill History Module Not Found!");
-      }
-    }
-  };
-
-  const handleRedo = () => {
-    if (quillRef.current) {
-      const editor = quillRef.current.getEditor();
-      if (editor.history) {
-        console.log("🟢 Redo Triggered");
-        editor.history.redo();
-      } else {
-        console.warn("🚨 Redo Failed: Quill History Module Not Found!");
-      }
-    }
-  };
-
-  const handleChange = (content, delta, source, editor) => {
-    if (editor.history) {
-      editor.history.record();
-    }
-
-    onChange(content);
-  };
   return (
-    <ReactQuill
-      className="main-container-html-view"
-      value={value}
-      modules={{
-        toolbar: {
-          container: [
-            { header: [1, 2, 3, 4, 5, 6, false] },
-            "bold",
-            "italic",
-            "underline",
-            { list: "ordered" },
-            { list: "bullet" },
-            "link",
-            "undo",
-            "redo",
-          ],
-          handlers: {
-            undo: handleUndo,
-            redo: handleRedo,
-          },
-        },
-        history: {
-          delay: 200,
-          maxStack: 100,
-          userOnly: true,
-        },
-      }}
-    />
+    <div className="editor-main-div">
+      <EditorToolbar toolbarId={"t1"} />
+      <ReactQuill
+        theme="snow"
+        value={value}
+        onChange={onChange}
+        placeholder={"Add Description"}
+        modules={modules("t1")}
+        // formats={formats}
+      />
+    </div>
   );
 };
 
