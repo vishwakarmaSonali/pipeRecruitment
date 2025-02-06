@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-.sourcing-inner-div {
+.sourcing-main-inner-div {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -239,4 +239,45 @@
 }
 .dilogbox {
   @apply absolute bottom-full right-0 transform translate-y-[-5px] bg-gray-800 text-white text-xs rounded-md px-3 py-1 shadow-md whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 font-ubuntu;
+}
+
+.font-22-medium {
+  font-family: "Ubuntu";
+  font-size: 22px;
+  font-weight: 500;
+  line-height: 25.28px;
+}
+
+.sourcing-header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  position: sticky;
+  top: 0px;
+  background-color: transparent;
+}
+
+.sourcing-inner-div {
+  display: flex;
+  gap: 12px;
+  margin: 10px 16px;
+}
+
+.sourcing-inner-section-1 {
+  flex: 1;
+  max-width: 450px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  overflow: auto;
+}
+
+.sourcing-inner-section-2 {
+  flex: 1;
+}
+
+.sourcing-candidate-details {
+  flex: 1;
+  overflow: auto;
 }

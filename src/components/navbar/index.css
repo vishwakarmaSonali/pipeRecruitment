@@ -1,5 +1,6 @@
 .navbar-main-container {
   padding: 10px 16px;
+  min-height: 58px;
   display: flex;
   align-items: center;
   justify-content: space-between;

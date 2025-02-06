@@ -202,12 +202,11 @@ const BulkActionView = ({
   const menuItemStyle = css`
   font-size: 14px;
   font-weight: 500;
- text:'ubuntu'
-fontFamily: "'Ubuntu', sans-serif",  // Apply Ubuntu font
- color: #333;
-  &:hover {
+  text:'ubuntu'
+  fontFamily: "'Ubuntu', sans-serif",  // Apply Ubuntu font
+  color: #333;
+   &:hover {
     background-color: #f0f0f0;
-
   }
 `;
   // Function to handle opening the dropdown menu
@@ -228,8 +227,8 @@ fontFamily: "'Ubuntu', sans-serif",  // Apply Ubuntu font
     setJobModalOpen(true);
   };
   return (
-    <div className="w-full bg-gray-100 p-4 flex items-center justify-between">
-      <div className="flex items-center space-x-2">
+    <div className="sourcing-header-container">
+      {/* <div className="flex items-center space-x-2">
         <div
           className={`w-[20px] h-[20px] border border-customBlue rounded-[6px] flex items-center justify-center cursor-pointer`}
           onClick={onSelectAll}
@@ -241,8 +240,8 @@ fontFamily: "'Ubuntu', sans-serif",  // Apply Ubuntu font
           <span className="cursor-pointer text-sm font-ubuntu">1-100</span> of{" "}
           {candidates.length}
         </p>
-      </div>
-
+      </div> */}
+      <p className="font-22-medium color-dark-black">Sourcing</p>
       <button
         className="text-white bg-buttonBLue px-[14px] py-[10px] rounded-[8px] flex items-center space-x-1 shadow-md hover:bg-opacity-80"
         onClick={isBulkAction ? handleClick : toggleModal}
@@ -330,90 +329,80 @@ const CandidateList = ({
   // const [isChecked, setIsChecked] = useState(false);
 
   return (
-    <div className="candidate-scroll">
-      <div className="space-y-4 mb-[110px]">
-        {/* Candidate Cards */}
-        {candidates.map((candidate) => {
-          console.log("cadidate selectssss", selectedCandidateId, candidate.id);
-          return (
-            <div
-              key={candidate.id}
-              className={`p-4 rounded-[14px]  bg-white flex flex-col cursor-pointer ${
-                selectedCandidateId === candidate.id && window.innerWidth > 1024
-                  ? "border-2 border-blue-500"
-                  : ""
-              }`}
-              onClick={() => {
-                onSelect(candidate);
-              }}
-            >
-              {/* Candidate Details */}
-              <div className="flex items-center space-x-2">
-                {/* Checkbox */}
-                <div
-                  className={`w-[20px] h-[20px] border  border-customBlue bg-white  rounded-[6px]  flex items-center justify-center cursor-pointer`}
-                  onClick={(e) => {
-                    e.stopPropagation(); // Prevent candidate card click event
-                    onCandidateSelect(candidate.id);
-                  }}
-                >
-                  {selectedCandidates.includes(candidate.id) && (
-                    <img src={Tick} alt="Selected" />
-                  )}
-                </div>
-
-                {/* Profile Image */}
-                <div className="candidate-profile-div">
-                  <img
-                    src={ProfileImage}
-                    alt="Profile"
-                    className="w-[46px] h-[46px] rounded-[100px]"
-                  />
-                </div>
-
-                {/* Candidate Info */}
-                <div className="flex flex-col ml-4">
-                  <p className="candidate-name">{candidate.name}</p>
-                  <p className="candidate-designation">{candidate.position}</p>
-                </div>
+    <div className="space-y-4 mb-[110px]">
+      {/* Candidate Cards */}
+      {candidates.map((candidate) => {
+        console.log("cadidate selectssss", selectedCandidateId, candidate.id);
+        return (
+          <div
+            key={candidate.id}
+            className={`p-4 rounded-[14px]  bg-white flex flex-col cursor-pointer ${
+              selectedCandidateId === candidate.id && window.innerWidth > 1024
+                ? "border-2 border-blue-500"
+                : ""
+            }`}
+            onClick={() => {
+              onSelect(candidate);
+            }}
+          >
+            {/* Candidate Details */}
+            <div className="flex items-center space-x-2">
+              {/* Checkbox */}
+              <div
+                className={`w-[20px] h-[20px] border  border-customBlue bg-white  rounded-[6px]  flex items-center justify-center cursor-pointer`}
+                onClick={(e) => {
+                  e.stopPropagation(); // Prevent candidate card click event
+                  onCandidateSelect(candidate.id);
+                }}
+              >
+                {selectedCandidates.includes(candidate.id) && (
+                  <img src={Tick} alt="Selected" />
+                )}
               </div>
 
-              {/* Dotted Line */}
-              <div className="border-b border-dashed border-customGray my-[12px]"></div>
-
-              {/* Location and University Info */}
-              <div className="flex items-center space-x-[12px] pb-[12px]">
+              {/* Profile Image */}
+              <div className="candidate-profile-div">
                 <img
-                  src={LocationPin}
-                  alt="Location Icon"
-                  className="w-5 h-5"
+                  src={ProfileImage}
+                  alt="Profile"
+                  className="w-[46px] h-[46px] rounded-[100px]"
                 />
-                <text className="candidate-location-designation-text">
-                  {candidate.location}
-                </text>
               </div>
-              <div className="flex items-center space-x-[12px]">
-                <img
-                  src={University}
-                  alt="University Icon"
-                  className="w-5 h-5"
-                />
-                <p className="candidate-location-designation-text font-ubuntu">
-                  Rhode Island School of Design
-                </p>
-              </div>
-              {/* Skills Grid */}
-              <SkillsList isExpanded={false} />
-              <div className="flex items-center justify-between">
-                <text className="font-ubuntu text-sm text-customGray">
-                  Contact information:
-                </text>
-                <img src={LinkedIn} alt="linkedin" />
+
+              {/* Candidate Info */}
+              <div className="flex flex-col ml-4">
+                <p className="candidate-name">{candidate.name}</p>
+                <p className="candidate-designation">{candidate.position}</p>
               </div>
             </div>
-          );
-        })}
-      </div>
+
+            {/* Dotted Line */}
+            <div className="border-b border-dashed border-customGray my-[12px]"></div>
+
+            {/* Location and University Info */}
+            <div className="flex items-center space-x-[12px] pb-[12px]">
+              <img src={LocationPin} alt="Location Icon" className="w-5 h-5" />
+              <text className="candidate-location-designation-text">
+                {candidate.location}
+              </text>
+            </div>
+            <div className="flex items-center space-x-[12px]">
+              <img src={University} alt="University Icon" className="w-5 h-5" />
+              <p className="candidate-location-designation-text font-ubuntu">
+                Rhode Island School of Design
+              </p>
+            </div>
+            {/* Skills Grid */}
+            <SkillsList isExpanded={false} />
+            <div className="flex items-center justify-between">
+              <text className="font-ubuntu text-sm text-customGray">
+                Contact information:
+              </text>
+              <img src={LinkedIn} alt="linkedin" />
+            </div>
+          </div>
+        );
+      })}
     </div>
   );
 };
@@ -507,7 +496,7 @@ const CandidateDetails = ({ selectedCandidate }) => {
   }
 
   return (
-    <>
+    <div className="sourcing-candidate-details">
       {/* detail header */}
       <div className="flex items-center justify-between ">
         {/* profile and name and actions */}
@@ -600,7 +589,7 @@ const CandidateDetails = ({ selectedCandidate }) => {
           onClose={() => setJobModalOpen(false)}
         />
       )}
-    </>
+    </div>
   );
 };
 
@@ -678,7 +667,7 @@ const PaginationFooter = () => {
 };
 const NoFiltersScreen = ({ onStartSearching }) => {
   return (
-    <div className="sourcing-inner-div">
+    <div className="sourcing-main-inner-div">
       <h2 className="font-ubuntu text-3xl text-customBlue  text-center font-medium z-50 max-w-[420px]">
         Expand Your Talent Search with Our Sourcing Hub
       </h2>
@@ -781,17 +770,23 @@ const Sourcing = () => {
 
   return (
     <div
-      className="w-full h-screen bg-white overflow-hidden overscroll-none"
-      style={{ boxSizing: "border-box", display: "flex" }}
+      className="w-full h-screen overflow-hidden overscroll-none"
+      style={{
+        boxSizing: "border-box",
+        display: "flex",
+        flexDirection: "column",
+        backgroundColor: "#fff",
+      }}
     >
-      {/* <Sidebar /> */}
+      <Navbar />
       <div
-        className="overflow-auto  scroll-width-none"
-        style={{ flex: 1, display: "flex", flexDirection: "column" }}
+        style={{
+          flex: 1,
+          display: "flex",
+          flexDirection: "column",
+          backgroundColor: "transparent",
+        }}
       >
-        {/* <Header title={"Sourcing Hub"} /> */}
-        <Navbar />
-
         {!filtersApplied ? (
           <div
             className="scroll-width-none"
@@ -823,8 +818,14 @@ const Sourcing = () => {
             </p>
           </div>
         ) : (
-          <div className="overflow-hidden  scroll-width-none">
-            {/* ScrollView */}
+          <div
+            style={{
+              flex: 1,
+              display: "flex",
+              flexDirection: "column",
+              backgroundColor: "transparent",
+            }}
+          >
             <BulkActionView
               toggleModal={toggleModal}
               isBulkAction={selectedCandidates.length > 1}
@@ -833,9 +834,8 @@ const Sourcing = () => {
               jobModalOpen={toggleJobModal}
               filters={filters} // Pass filters as a prop
             />
-            <div className="w-full scroll-width-none h-screen overflow-hidden overscroll-none flex">
-              {/* Candidate List Section */}
-              <div className="candidate-list w-full lg:w-[40%] px-4">
+            <div className="sourcing-inner-div">
+              <div className="sourcing-inner-section-1">
                 <CandidateList
                   onSelect={handleCandidateSelectContainer}
                   selectedCandidateId={selectedCandidate?.id}
@@ -843,9 +843,7 @@ const Sourcing = () => {
                   selectedCandidates={selectedCandidates}
                 />
               </div>
-
-              {/* Candidate Details Section */}
-              <div className="candidate-details hidden lg:block p-4 h-auto">
+              <div className="sourcing-inner-section-2">
                 <CandidateDetails selectedCandidate={selectedCandidate} />
               </div>
             </div>
