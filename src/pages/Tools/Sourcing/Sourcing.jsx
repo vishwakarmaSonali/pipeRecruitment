@@ -26,6 +26,7 @@ import AddToJobsModal from "../../../components/AddToJobsModals/AddToJobs";
 import Sidebar from "../../../components/sidebar/Sidebar";
 import Header from "../../../components/Header/Header";
 import { sourcingHubInfo } from "./config";
+import Navbar from "../../../components/navbar/Navbar";
 
 const skills = [
   "UI Design",
@@ -783,13 +784,14 @@ const Sourcing = () => {
       className="w-full h-screen bg-white overflow-hidden overscroll-none"
       style={{ boxSizing: "border-box", display: "flex" }}
     >
-      <Sidebar />
-
+      {/* <Sidebar /> */}
       <div
         className="overflow-auto  scroll-width-none"
         style={{ flex: 1, display: "flex", flexDirection: "column" }}
       >
-        <Header title={"Sourcing Hub"} />
+        {/* <Header title={"Sourcing Hub"} /> */}
+        <Navbar />
+
         {!filtersApplied ? (
           <div
             className="scroll-width-none"
