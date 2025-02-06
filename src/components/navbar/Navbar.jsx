@@ -96,7 +96,7 @@ const Navbar = () => {
                 type="text"
                 placeholder="Search"
                 className="search-input-nav"
-                //   autoFocus
+                autoFocus
                 value={searchValue}
                 onChange={(e) => {
                   setSearchValue(e.target.value);

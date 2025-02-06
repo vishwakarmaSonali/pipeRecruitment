@@ -8,6 +8,7 @@
   top: 0px;
   overflow: hidden;
   transition: all 300ms ease;
+  z-index: 10;
 }
 
 .navbar-menu-div {
@@ -83,6 +84,7 @@
   font-weight: 400;
   line-height: 13.79px;
   color: var(--dark-black);
+  height: 100%;
 }
 
 .search-input-nav::placeholder {
