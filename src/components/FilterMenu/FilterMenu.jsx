@@ -9,6 +9,7 @@ const FilterMenu = ({ anchorEl, open, onClose, selectedOption, onApply }) => {
 
   const handleApply = () => {
     onApply(selectedFilter, conditionValue);
+    setConditionValue("")
     onClose();
   };
 

@@ -55,7 +55,7 @@ const Sidebar = () => {
     >
       <div
         className={`sidebar-section-1  ${
-          isExpanded ? "pl-[20px] pr-[20px]" : ""
+          isExpanded ? "px-[20px]" : ""
         }`}
       >
         {isExpanded ? <LogoExpanded /> : <Logo />}

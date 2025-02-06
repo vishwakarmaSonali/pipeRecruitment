@@ -1,33 +1,27 @@
 import React, { useState } from "react";
 import Modal from "react-bootstrap/Modal";
 import "./modal.css";
+import { useDispatch, useSelector } from "react-redux";
+import { deleteFilter } from "../../store/filterSlice"; // Redux action
 import { ReactComponent as CloseIcon } from "../../assets/icons/closeModal.svg";
 import { ReactComponent as SearchIcon } from "../../assets/icons/sourcingIcons/search-normal.svg";
 import { ReactComponent as ThreeDots } from "../../assets/icons/threeDots.svg";
 import { ReactComponent as StarFilled } from "../../assets/icons/starfilledYellow.svg";
 import { ReactComponent as StarOutline } from "../../assets/icons/starOutline.svg";
 import { ReactComponent as InfoIcon } from "../../assets/icons/infoCircle.svg";
-import { Menu, MenuItem, Typography, Button } from "@mui/material";
-
-const savedFilters = {
-  favourite: [
-    { id: 1, name: "Candidates without jobs" },
-    { id: 2, name: "Duplicates" },
-  ],
-  createdByMe: [
-    { id: 3, name: "Applied" },
-    { id: 4, name: "Sourced" },
-    { id: 5, name: "Owned by me" },
-  ],
-};
+import { Menu, MenuItem } from "@mui/material";
 
 const SavedFiltersModal = ({ visible, onClose }) => {
+  const dispatch = useDispatch();
+  const savedFilters = useSelector((state) => state.filters.filters); // Get saved filters from Redux
+console.log("saved filtersasssss>>.",savedFilters);
+
   const [searchQuery, setSearchQuery] = useState("");
   const [menuAnchor, setMenuAnchor] = useState(null);
   const [selectedFilter, setSelectedFilter] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
-  // 🔍 Filter items based on search
+  // 🔍 Filter items based on search query
   const filterItems = (items) =>
     items.filter((item) =>
       item.name.toLowerCase().includes(searchQuery.toLowerCase())
@@ -53,9 +47,10 @@ const SavedFiltersModal = ({ visible, onClose }) => {
 
   // Handle delete confirmation
   const handleDeleteConfirm = () => {
-    console.log("Deleting filter:", selectedFilter);
+    if (selectedFilter) {
+      dispatch(deleteFilter(selectedFilter.id)); // Dispatch delete action
+    }
     setShowDeleteModal(false);
-    // 🔴 Here you can add actual deletion logic (e.g., API call)
   };
 
   return (
@@ -87,51 +82,40 @@ const SavedFiltersModal = ({ visible, onClose }) => {
           />
         </div>
 
-        {/* Favourite Filters */}
-        <div className="filters-section border-b">
-          <div className="flex items-center justify-between">
-            <p className="text-sm font-medium text-customBlue">Favourite</p>
-            <InfoIcon />
-          </div>
-          <div className="mt-2 mb-[8px]">
-            {filterItems(savedFilters.favourite).map((filter) => (
-              <div
-                key={filter.id}
-                className="filter-item flex items-center justify-between py-[13px] rounded-md cursor-pointer relative"
-              >
-                <div className="flex items-center gap-2">
-                  <StarFilled className="text-yellow-500" />
-                  <span className="text-sm text-gray-800">{filter.name}</span>
-                </div>
-                <button onClick={(e) => handleMenuOpen(e, filter)}>
-                  <ThreeDots />
-                </button>
-              </div>
-            ))}
-          </div>
-        </div>
-
         {/* Created by Me Filters */}
         <div className="filters-section mt-3">
           <div className="flex items-center justify-between">
-            <p className="text-sm font-medium text-customBlue">Created by me</p>
+            <p className="text-sm font-medium text-customBlue">Created by Me</p>
             <InfoIcon />
           </div>
           <div className="mt-2">
-            {filterItems(savedFilters.createdByMe).map((filter) => (
-              <div
-                key={filter.id}
-                className="filter-item flex items-center justify-between py-[13px] rounded-md cursor-pointer relative"
-              >
-                <div className="flex items-center gap-2">
-                  <StarOutline className="text-gray-400" />
-                  <span className="text-sm text-gray-800">{filter.name}</span>
-                </div>
-                <button onClick={(e) => handleMenuOpen(e, filter)}>
-                  <ThreeDots />
-                </button>
-              </div>
-            ))}
+            {savedFilters.length > 0 ? (
+              filterItems(savedFilters).map((filter) => {
+                console.log("filter",  filterItems(savedFilters));
+                
+                return (
+                  <div
+                    key={filter.id}
+                    className="filter-item flex items-center justify-between py-[13px] rounded-md cursor-pointer relative"
+                  >
+                    <div className="flex items-center gap-2">
+                      <StarOutline className="text-gray-400" />
+                      <div>
+                        <span className="text-sm text-gray-800">{filter.name}</span>
+                        <p className="text-xs text-gray-500">
+                          Conditions: {filter.conditions.join(", ")}
+                        </p>
+                      </div>
+                    </div>
+                    <button onClick={(e) => handleMenuOpen(e, filter)}>
+                      <ThreeDots />
+                    </button>
+                  </div>
+                )
+              })
+            ) : (
+              <p className="text-sm text-gray-500 mt-2">No saved filters found.</p>
+            )}
           </div>
         </div>
 
@@ -161,7 +145,7 @@ const SavedFiltersModal = ({ visible, onClose }) => {
           <MenuItem onClick={handleMenuClose}>
             <span className="text-sm text-customBlue font-ubuntu">Edit filter</span>
           </MenuItem>
-          <MenuItem onClick={handleDeleteClick} >
+          <MenuItem onClick={handleDeleteClick}>
             <span className="text-sm text-customBlue font-ubuntu">Delete filter</span>
           </MenuItem>
         </Menu>
@@ -170,11 +154,11 @@ const SavedFiltersModal = ({ visible, onClose }) => {
         <Modal
           show={showDeleteModal}
           onHide={() => setShowDeleteModal(false)}
-          dialogClassName="delete-modal  flex items-center  justify-center "
+          dialogClassName="delete-modal flex items-center justify-center"
           centered
           className="delete-modal-backdrop"
         >
-          <div className="delete-modal-container items-center bg-white min-w-[400px] p-[14px] rounded-[8px]">
+          <div className="delete-modal-container bg-white min-w-[400px] p-[14px] rounded-[8px]">
             <h3 className="text-lg font-semibold text-gray-900 text-center">
               Delete Filter
             </h3>
@@ -184,18 +168,10 @@ const SavedFiltersModal = ({ visible, onClose }) => {
 
             {/* Buttons */}
             <div className="flex justify-center gap-3 mt-4 text-center">
-            <button
-                className={`buttons border border-blue-600 text-buttonBLue cursor-pointer `}
-                 onClick={() => setShowDeleteModal(false)}
-                // disabled={conditions.length > 0}
-              >
-               Cancel
+              <button className="buttons border border-blue-600 text-buttonBLue" onClick={() => setShowDeleteModal(false)}>
+                Cancel
               </button>
-              <button
-                className={`buttons bg-red text-white cursor-pointer `}
-                 onClick={() => setShowDeleteModal(false)}
-                // disabled={conditions.length > 0}
-              >
+              <button className="buttons bg-red text-white" onClick={handleDeleteConfirm}>
                 Delete
               </button>
             </div>

@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import "./Candidates.css";
+import { useSelector } from "react-redux"; // Import Redux selector
 
 import { ReactComponent as CandidatesIcon } from "../../../assets/icons/candidates/candidateFilled.svg";
 import { ReactComponent as Folder } from "../../../assets/icons/candidates/folderCandidates.svg";
@@ -35,11 +36,17 @@ import FilterMenu from "../../../components/FilterMenu/FilterMenu";
 import SaveFiltersModal from "../../../components/modals/SaveFiltersModal";
 import EditColumnModal from "../../../components/modals/EditColumns";
 import { candidates } from "../../../helpers/dataCandidates";
+import { updateFilterAsync } from "../../../store/filterSlice";
+import { useDispatch } from "react-redux";
 
 const Candidates = ({ isDrawerOpen }) => {
   const [candidateList, setCandidateList] = useState(candidates);
   const [selectedCandidates, setSelectedCandidates] = useState([]);
- 
+  const savedFilters = useSelector((state) => state.filters.filters); // Get saved filters from Redux
+  const [isFilterSaved, setIsFilterSaved] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState("Candidates");
+  const dispatch = useDispatch();
+
   const bulkMenuItems = [
     {
       label: "Add to jobs",
@@ -90,34 +97,58 @@ const Candidates = ({ isDrawerOpen }) => {
       onClick: () => console.log("Export"),
     },
   ];
-  const settingsMenuItems = [
-    {
-      label: "Save filter",
+ // Settings menu items
+ const settingsMenuItems = isFilterSaved
+ ? [
+     { label: "Update filter", onClick: () => (updateFilter(),handleSettingsClose()) },
+     { label: "Save as new filter",onClick: () => (setModalVisibility("saveFiltersModalVisible", true), handleSettingsClose()) },
+     { label: "Discard changes", onClick: () => (discardChanges(),handleSettingsClose()) },
+     { label: "Clear all filters", onClick: () => (clearAllFilters(),handleSettingsClose()) },
+   ]
+ : [
+     { label: "Save filter", onClick: () => (setModalVisibility("saveFiltersModalVisible", true), handleSettingsClose()) },
+     { label: "Clear all filters", onClick: () => (clearAllFilters(),handleSettingsClose()) },
+   ];
 
-      onClick: (event) => (
-        setModalVisibility("saveFiltersModalVisible", true),
-        handleSettingsClose()
-      ),
-    },
-    {
-      label: "Clear all filters",
-
-      onClick: (event) => handleSettingsClose(),
-    },
-  ];
   // 🔍 Searchable Menu Items
- const initialSearchableItems = [
-    { label: "Candidate Name", onClick: (event) => handleSearchableSelect("Candidate Name", event) },
-    { label: "Email Id", onClick: (event) => handleSearchableSelect("Email Id", event) },
-    { label: "Contact Number", onClick: (event) => handleSearchableSelect("Contact Number", event) },
-    { label: "Location", onClick: (event) => handleSearchableSelect("Location", event) },
-    { label: "Nationality", onClick: (event) => handleSearchableSelect("Nationality", event) },
-    { label: "Language", onClick: (event) => handleSearchableSelect("Language", event) },
-    { label: "ATS Score", onClick: (event) => handleSearchableSelect("ATS Score", event) },
-    { label: "Created By", onClick: (event) => handleSearchableSelect("Created By", event) },
+  const initialSearchableItems = [
+    {
+      label: "Candidate Name",
+      onClick: (event) => handleSearchableSelect("Candidate Name", event),
+    },
+    {
+      label: "Email Id",
+      onClick: (event) => handleSearchableSelect("Email Id", event),
+    },
+    {
+      label: "Contact Number",
+      onClick: (event) => handleSearchableSelect("Contact Number", event),
+    },
+    {
+      label: "Location",
+      onClick: (event) => handleSearchableSelect("Location", event),
+    },
+    {
+      label: "Nationality",
+      onClick: (event) => handleSearchableSelect("Nationality", event),
+    },
+    {
+      label: "Language",
+      onClick: (event) => handleSearchableSelect("Language", event),
+    },
+    {
+      label: "ATS Score",
+      onClick: (event) => handleSearchableSelect("ATS Score", event),
+    },
+    {
+      label: "Created By",
+      onClick: (event) => handleSearchableSelect("Created By", event),
+    },
   ];
 
-  const [searchableMenuItems, setSearchableMenuItems] = useState(initialSearchableItems);
+  const [searchableMenuItems, setSearchableMenuItems] = useState(
+    initialSearchableItems
+  );
   const { modals, setModalVisibility } = useModal();
   const [activeTab, setActiveTab] = useState("candidates");
   const [searchQuery, setSearchQuery] = useState("");
@@ -133,25 +164,56 @@ const Candidates = ({ isDrawerOpen }) => {
   const openFilterMenu = Boolean(anchorFilterMenuEl);
   const [isFilter, setIsFilter] = useState(false);
   const [selectedSearchableOption, setSelectedSearchableOption] = useState("");
-
+  const [originalConditions, setOriginalConditions] = useState([])
   const [conditions, setConditions] = useState([]); // Store multiple conditions
-  
+
   useEffect(() => {
     if (conditions.length === 0) {
       setSearchableMenuItems([...initialSearchableItems]); // Restore all items when no filters remain
     }
   }, [conditions]);
+
+  const applySavedFilter = (filterName) => {
+    const selectedFilter = savedFilters.find(filter => filter.name === filterName);
+    if (selectedFilter) {
+      setConditions(selectedFilter.conditions);
+      setOriginalConditions([...selectedFilter.conditions]);
+      setIsFilterSaved(true);
+      setSelectedCategory(filterName);
+    }
+  };
+
+  useEffect(() => {
+    if (modals?.savedFiltersModalVisible) {
+      const selectedFilter = savedFilters.find(filter => filter.isSelected);
+      if (selectedFilter) {
+        setConditions(selectedFilter.conditions);
+        setOriginalConditions([...selectedFilter.conditions]);
+        setIsFilterSaved(true);
+        setSelectedCategory(selectedFilter.name);
+      }
+    }
+  }, [modals?.savedFiltersModalVisible, savedFilters]);
+
+// Function to clear all filters
+const clearAllFilters = () => {
+  setConditions([]);
+  setIsFilterSaved(false);
+  setSelectedCategory("Candidates");
+};
+  // Function to update filter
+  const updateFilter = () => {
+    if (!isFilterSaved) return;
+    dispatch(updateFilterAsync({ name: selectedCategory, conditions }));
+  };
+  // 🔍 Filter candidates based on search query
+  const filteredCandidates = candidateList.filter((candidate) =>
+    candidate?.candidate_name
+      ?.toLowerCase()
+      .includes(searchQuery?.toLowerCase())
+  );
   
 
-  // 🔍 Filter candidates based on search query
-  const filteredCandidates = candidateList.filter(
-    (candidate) => (
-     
-      candidate?.candidate_name
-        ?.toLowerCase()
-        .includes(searchQuery?.toLowerCase())
-    )
-  );
   const handleSeacrchableMenuOpen = (event) => {
     setAnchorAddConditionEl(event.currentTarget);
   };
@@ -165,63 +227,72 @@ const Candidates = ({ isDrawerOpen }) => {
     handleSearchableMenuClose(); // Close searchable menu
     setAnchorFilterMenuEl(event.currentTarget); // Set position for filter menu
   };
-
+  const discardChanges = () => {
+    setConditions([...originalConditions]);
+  };
   // ✅ Handle Filter Menu Apply
   const handleFilterApply = (filterOption, inputValue) => {
     if (!inputValue || inputValue.trim() === "") {
-      console.error("Filter input value is missing. Please enter a valid value.");
+      console.error(
+        "Filter input value is missing. Please enter a valid value."
+      );
       return;
     }
-  
+
     const newCondition = `${selectedSearchableOption} ${filterOption} ${inputValue}`;
-  
+
     setConditions((prevConditions) => {
       // Prevent duplicates
-      if (prevConditions.some((condition) => condition.startsWith(selectedSearchableOption))) {
+      if (
+        prevConditions.some((condition) =>
+          condition.startsWith(selectedSearchableOption)
+        )
+      ) {
         return prevConditions;
       }
       return [...prevConditions, newCondition];
     });
-  
+
     // Remove the selected filter from the searchable menu
     setSearchableMenuItems((prevItems) =>
       prevItems.filter((item) => item.label !== selectedSearchableOption)
     );
-  
+
     setSelectedSearchableOption("");
     setAnchorFilterMenuEl(null);
   };
-  
-  
 
   // ❌ Remove a condition and restore it to the searchable menu
   const removeCondition = (index) => {
     setConditions((prevConditions) => {
       if (prevConditions.length === 0) return prevConditions;
-  
+
       // Extract label from the condition being removed
       const removedConditionLabel = prevConditions[index].split(" ")[0];
-  
+
       // Remove the condition from the list
       const updatedConditions = prevConditions.filter((_, i) => i !== index);
-  
+
       setSearchableMenuItems((prevItems) => {
         // Ensure the removed condition is added back only if it’s not already present
         const itemToRestore = initialSearchableItems.find(
           (item) => item.label === removedConditionLabel
         );
-  
-        if (itemToRestore && !prevItems.some((item) => item.label === removedConditionLabel)) {
+
+        if (
+          itemToRestore &&
+          !prevItems.some((item) => item.label === removedConditionLabel)
+        ) {
           return [...prevItems, itemToRestore];
         }
-  
+
         return prevItems;
       });
-  
+
       return updatedConditions;
     });
   };
-  
+
   // ✅ Handle Candidate Selection
   const handleCandidateSelection = (id) => {
     setSelectedCandidates((prevSelected) =>
@@ -405,9 +476,7 @@ const Candidates = ({ isDrawerOpen }) => {
       </div>
     );
   };
-  const handleApplyFilter = () => {
-   
-  };
+  const handleApplyFilter = () => {};
   const getInitials = (name) => {
     if (!name) return "";
     const nameParts = name.split(" ");
@@ -426,7 +495,7 @@ const Candidates = ({ isDrawerOpen }) => {
         className="overflow-auto scroll-width-none bg-grey-90"
         style={{ flex: 1, display: "flex", flexDirection: "column" }}
       >
-        <Header title={"Candidates"} />
+        <Header title={"Candidates"} onFilterSelect={applySavedFilter} />
 
         {/* Tabs Section */}
 
@@ -515,7 +584,7 @@ const Candidates = ({ isDrawerOpen }) => {
                 }
               >
                 Create Candidate
-                <Plus />
+                <Plus stroke="#ffffff" />
               </button>
             )}
 
@@ -528,7 +597,7 @@ const Candidates = ({ isDrawerOpen }) => {
               Filter <FilterIcon />
             </button>
 
-            <button className="buttons border border-blue-600 text-buttonBLue ">
+            <button className="buttons border-1 border-blue-600 text-buttonBLue ">
               Refresh
               <RefreshIcon />
             </button>
@@ -543,24 +612,24 @@ const Candidates = ({ isDrawerOpen }) => {
           <div className="flex items-center justify-between p-[10px]">
             {/* Display Applied Filters */}
             <div className="flex items-center gap-2 flex-wrap">
-              {conditions.length > 0 && (
+        {conditions.length > 0 && (
                 <div className=" flex flex-wrap gap-2">
-                  {conditions.map((condition, index) => (
+              {conditions.map((condition, index) => (
                     <span
                       key={index}
                       className="border border-customGray text-customBlue px-3 py-1 rounded-lg text-sm flex items-center"
                     >
-                      {condition}
+                  {condition}
                       <button
                         className="ml-2 text-red-500 hover:text-red-700"
                         onClick={() => removeCondition(index)}
                       >
                         <img src={close} height={8} width={8} alt="close" />
                       </button>
-                    </span>
-                  ))}
-                </div>
-              )}
+                </span>
+              ))}
+          </div>
+        )}
               <div onClick={handleSeacrchableMenuOpen}>
                 <span className="text-buttonBLue font-ubuntu text-sm cursor-pointer">
                   + Add condition
@@ -569,8 +638,10 @@ const Candidates = ({ isDrawerOpen }) => {
             </div>
             <div className="flex items-center justify-center gap-[8px]">
               <button
-                className={`buttons border border-blue-600 text-buttonBLue cursor-pointer ${
-                  conditions.length > 0 ? "text-buttonBLue" : "text-customGray"
+                className={`buttons border-1  text-buttonBLue cursor-pointer ${
+                  conditions.length > 0
+                    ? "text-buttonBLue border-buttonBLue"
+                    : "text-customGray border-customGray"
                 }`}
                 onClick={handleApplyFilter}
                 disabled={conditions.length > 0}
@@ -578,8 +649,9 @@ const Candidates = ({ isDrawerOpen }) => {
                 Apply filter
               </button>
               <button
-                className="buttons border min-w-[44px] border-blue-600 justify-center text-buttonBLue"
+                className="buttons border-1 min-w-[44px] border-buttonBLue justify-center text-buttonBLue"
                 onClick={handleClickSetting}
+                style={{ borderColor: "#1761D8" }} // Use your exact blue color code
               >
                 <img src={SettingIcon} alt="settings" />
               </button>
@@ -729,8 +801,8 @@ const Candidates = ({ isDrawerOpen }) => {
         onClose={handleSettingsClose}
         menuItems={settingsMenuItems}
       />
- {/* 🔍 Searchable Menu */}
- <SearchableMenu
+      {/* 🔍 Searchable Menu */}
+      <SearchableMenu
         anchorEl={anchorAddConditionEl}
         open={Boolean(anchorAddConditionEl)}
         onClose={handleSearchableMenuClose}
