@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import CloseIcon from "../../assets/icons/close.svg";
 import SearchIcon from "../../assets/icons/sourcingIcons/search-normal.svg";
 import { ReactComponent as DropArrow } from "../../assets/icons/droparrow.svg";
-
+import {ReactComponent as PlusIcon} from "../../assets/icons/plus.svg"
 const jobStatusOptions = [
   { id: 1, type: "Active", color: "#98D4DF" },
   { id: 2, type: "In-active", color: "#F2AFAF" },
@@ -84,7 +84,7 @@ const AddToJobsModal = ({ isOpen, onClose }) => {
                 
               )}
             </div>
-            <DropArrow fill={"customBlue"} className={`w-4 h-4 transition-transform ${isDropdownOpen ? "rotate-180" : ""}`} />
+            <DropArrow fill={"customBlue"} className={`w-[14px] h-[14px] transition-transform ${isDropdownOpen ? "rotate-180" : ""}`} />
           </div>
 
           {/* Dropdown Items */}
@@ -110,14 +110,20 @@ const AddToJobsModal = ({ isOpen, onClose }) => {
                 <li
                   key={index}
                   onClick={onClose}
-                  className="flex items-center space-x-3 px-2 py-[8.5px] mb-[10px] hover:bg-gray-100 rounded-md cursor-pointer"
+                  className="flex items-center justify-between space-x-3 px-2 py-[8.5px] mb-[10px] hover:bg-gray-100 rounded-md cursor-pointer"
                 >
-                  <div className={`w-10 h-10 flex items-center justify-center text-white font-bold rounded-full ${company.color}`}>
+                <div className="flex items-center  space-x-3">
+                <div className={`w-10 h-10 flex items-center justify-center text-white font-bold rounded-full ${company.color}`}>
                     {company.initials}
                   </div>
                   <div>
                     <p className="font-semibold">{company.name}</p>
                     <p className="text-gray-500 text-sm">{company.location}</p>
+                  </div>
+                </div>
+                  <div className="flex items-center space-x-2">
+                  <div className={`w-3 h-3 rounded-full ${company.color}`} style={{ backgroundColor: company?.color }}></div>
+                  <PlusIcon stroke="#1761D8" />
                   </div>
                 </li>
               ))}

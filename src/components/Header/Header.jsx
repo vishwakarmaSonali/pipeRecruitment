@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import "./Header.css";
 import ReactDOM from "react-dom";
+import { useSelector } from "react-redux"; // Import Redux selector
+
 import SearchIcon from "../../assets/icons/sourcingIcons/search-normal.svg";
 import Add from "../../assets/icons/add.svg";
 import MessagesIcon from "../../assets/icons/sourcingIcons/messages.svg";
@@ -29,7 +31,7 @@ import { useLocation, Link } from "react-router-dom";
 import { useModal } from "../common/ModalProvider";
 import SavedFiltersModal from "../modals/SavedFiltersModal";
 
-const Header = ({ title }) => {
+const Header = ({ title,onFilterSelect }) => {
   const location = useLocation();
   const [searchQuery, setSearchQuery] = useState("");
   const [isSearchExpanded, setIsSearchExpanded] = useState(false);
@@ -38,7 +40,8 @@ const Header = ({ title }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("Candidates");
   const { modals, setModalVisibility } = useModal();
-
+  const savedFilters = useSelector((state) => state.filters.filters); // Get saved filters from Redux
+  const [showAllFilters, setShowAllFilters] = useState(false); // State to track showing all filters
 
   const dropdownRef = useRef(null);
   const buttonRef = useRef(null);
@@ -49,11 +52,11 @@ const Header = ({ title }) => {
     { label: "Duplicates", type: "favorite" },
   ];
 
-  const createdByMe = [
-    { label: "Sourced", type: "created" },
-    { label: "Owned by me", type: "created" },
-    { label: "Referrals", type: "created" },
-  ];
+  // const createdByMe = [
+  //   { label: "Sourced", type: "created" },
+  //   { label: "Owned by me", type: "created" },
+  //   { label: "Referrals", type: "created" },
+  // ];
 
   const toggleDrawer = (open) => (event) => {
     if (
@@ -91,7 +94,13 @@ const Header = ({ title }) => {
       }
       setIsDropdownOpen((prev) => !prev);
     };
-
+    const handleDropdownSelect = (filterName) => {
+      setSelectedCategory(filterName);
+      setIsDropdownOpen(false);
+      if (onFilterSelect) {
+        onFilterSelect(filterName); // Call the function passed from Candidates component
+      }
+    };
   useEffect(() => {
     setActiveLink(location.pathname);
   }, [location.pathname]);
@@ -197,20 +206,36 @@ const Header = ({ title }) => {
                       <p className="candidate-dropdown-heading">Created by me</p>
                      <InfoCircle />
                         </div>
-                      {createdByMe.map((item) => (
+                        {savedFilters.length > 0 ? (
+                      (showAllFilters ? savedFilters : savedFilters.slice(0, 3)).map((filter) => (
                         <button
-                          key={item.label}
+                          key={filter.id}
                           className="candidate-dropdown-list"
-                          onClick={() => {
-                            setSelectedCategory(item.label);
-                            setIsDropdownOpen(false);
-                          }}
+                          // onClick={() => {
+                          //   setSelectedCategory(filter.name);
+                          //   setIsDropdownOpen(false);
+                          // }}
+                          onClick={() => handleDropdownSelect(filter.name)}
                         >
-                             <StarOutline />
-                          {item.label}
+                          <StarOutline />
+                          {filter.name} {/* Show filter name */}
                         </button>
-                      ))}
-                    <text className="candidate-dropdown-list">See all</text>
+                      ))
+                    ) : (
+                      <p className="candidate-dropdown-list text-gray-500">
+                        No saved filters
+                      </p>
+                    )}
+
+                    {/* ✅ Toggle Button to Show All Filters */}
+                    {savedFilters.length > 3 && (
+                      <button
+                        className="candidate-dropdown-list text-customBlue font-medium"
+                        onClick={() => setShowAllFilters((prev) => !prev)}
+                      >
+                        {showAllFilters ? "Show less" : "See all"}
+                      </button>
+                    )}
                     </div>
                     <div className="">
                     <div className="candidate-dropdown-div justify-between">
@@ -220,7 +245,7 @@ const Header = ({ title }) => {
                       </div>
                      <DownArrow  fill="customBlue"/>
                         </div>
-                      {createdByMe.map((item) => (
+                      {/* {createdByMe.map((item) => (
                         <button
                           key={item.label}
                           className="candidate-dropdown-list"
@@ -232,7 +257,7 @@ const Header = ({ title }) => {
                           
                           {item.label}
                         </button>
-                      ))}
+                      ))} */}
                  
                     </div>
                     <div className="border-t border-gray-200 ">
