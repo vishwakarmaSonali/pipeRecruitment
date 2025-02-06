@@ -40,12 +40,13 @@ import { updateFilterAsync } from "../../../store/filterSlice";
 import { useDispatch } from "react-redux";
 
 const Candidates = ({ isDrawerOpen }) => {
+  const dispatch = useDispatch();
   const [candidateList, setCandidateList] = useState(candidates);
   const [selectedCandidates, setSelectedCandidates] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState("Candidates");
+  const selectedColumns = useSelector((state) => state.columns.selected); // Get selected columns from Redux
   const savedFilters = useSelector((state) => state.filters.filters); // Get saved filters from Redux
   const [isFilterSaved, setIsFilterSaved] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState("Candidates");
-  const dispatch = useDispatch();
 
   const bulkMenuItems = [
     {
@@ -109,7 +110,29 @@ const Candidates = ({ isDrawerOpen }) => {
      { label: "Save filter", onClick: () => (setModalVisibility("saveFiltersModalVisible", true), handleSettingsClose()) },
      { label: "Clear all filters", onClick: () => (clearAllFilters(),handleSettingsClose()) },
    ];
-
+ // 🔍 Map formatted column names to actual data keys
+ const columnMapping = {
+  "Candidate Name": "candidate_name",
+  "Candidate First Name": "candidate_first_name",
+  "Candidate Last Name": "candidate_last_name",
+  "Reference Id": "reference_id",
+  "Location": "location",
+  "Gender": "gender",
+  "Diploma": "diploma",
+  "University": "university",
+  "Current Company": "current_company",
+  "Current Position": "current_position",
+  "Email": "email",
+  "Birthdate": "birthDate",
+  "Candidate Address": "candidate_address",
+  "Employment Status": "employment_status",
+  "Contact Number": "phone",
+  "Hired Date": "hired_date",
+  "Start Date": "start_date",
+  "ATS score": "ats_score",
+  "Created Date": "created_at",
+  "Created By": "created_by",
+};
   // 🔍 Searchable Menu Items
   const initialSearchableItems = [
     {
@@ -206,12 +229,10 @@ const clearAllFilters = () => {
     if (!isFilterSaved) return;
     dispatch(updateFilterAsync({ name: selectedCategory, conditions }));
   };
-  // 🔍 Filter candidates based on search query
-  const filteredCandidates = candidateList.filter((candidate) =>
-    candidate?.candidate_name
-      ?.toLowerCase()
-      .includes(searchQuery?.toLowerCase())
-  );
+ // 🔍 Filter Candidates based on Search Query
+ const filteredCandidates = candidateList.filter((candidate) =>
+  candidate?.candidate_name?.toLowerCase().includes(searchQuery.toLowerCase())
+);
   
 
   const handleSeacrchableMenuOpen = (event) => {
@@ -661,7 +682,7 @@ const clearAllFilters = () => {
         {/* Table Wrapper with Horizontal Scroll */}
 
         <div className="overflow-x-auto px-[10px] scroll-width-none bg-white shadow-md ">
-          <table className="min-w-full divide-y divide-gray-200">
+        <table className="min-w-full divide-y divide-gray-200">
             {/* Table Header */}
             <thead className="sticky top-0 bg-white z-[50]">
               <tr className="text-left text-gray-600 font-semibold">
@@ -669,7 +690,13 @@ const clearAllFilters = () => {
                 <th className="th-title sticky top-0 bg-blueBg z-[50]">
                   <div
                     className={`w-[20px] h-[20px] border border-customBlue bg-white rounded-[6px] flex items-center justify-center cursor-pointer`}
-                    onClick={handleSelectAll}
+                    onClick={() =>
+                      setSelectedCandidates(
+                        selectedCandidates.length === filteredCandidates.length
+                          ? []
+                          : filteredCandidates.map((c) => c.id)
+                      )
+                    }
                   >
                     {selectedCandidates.length === filteredCandidates.length ? (
                       <img src={Tick} alt="Selected" />
@@ -677,38 +704,30 @@ const clearAllFilters = () => {
                   </div>
                 </th>
 
-                {/* Dynamically Generate Column Headers */}
-                {filteredCandidates.length > 0 &&
-                  Object.keys(
-                    filteredCandidates.reduce(
-                      (acc, obj) => ({ ...acc, ...obj }),
-                      {}
-                    )
-                  ) // Merge all objects to get all unique keys
-                    .filter((key) => key !== "id") // Exclude `id` column
-                    .map((key) => (
-                      <th
-                        key={key}
-                        className="th-title bg-blueBg max-w-60 min-w-40"
-                      >
-                        {key
-                          .replace(/_/g, " ") // Convert snake_case to space-separated words
-                          .replace(/\b\w/g, (char) => char.toUpperCase())}{" "}
-                        {/* Capitalize words */}
-                      </th>
-                    ))}
+                {/* ✅ Dynamically Generate Column Headers from selectedColumns */}
+                {selectedColumns.map((columnName) => (
+                  <th key={columnName} className="th-title bg-blueBg max-w-60 min-w-40">
+                    {columnName}
+                  </th>
+                ))}
               </tr>
             </thead>
 
-            {/* Table Body */}
-            <tbody className="divide-y divide-gray-200 mx-4">
+            {/* ✅ Table Body */}
+            <tbody className="divide-y divide-gray-200">
               {filteredCandidates.map((candidate) => (
                 <tr key={candidate.id} className="hover:bg-gray-50">
                   {/* Checkbox Column for Selecting Candidates */}
                   <td className="px-2">
                     <div
                       className={`w-[20px] h-[20px] border border-customBlue bg-white rounded-[6px] flex items-center justify-center cursor-pointer`}
-                      onClick={() => handleCandidateSelection(candidate.id)}
+                      onClick={() =>
+                        setSelectedCandidates((prev) =>
+                          prev.includes(candidate.id)
+                            ? prev.filter((id) => id !== candidate.id)
+                            : [...prev, candidate.id]
+                        )
+                      }
                     >
                       {selectedCandidates.includes(candidate.id) ? (
                         <img src={Tick} alt="Selected" />
@@ -716,34 +735,15 @@ const clearAllFilters = () => {
                     </div>
                   </td>
 
-                  {/* Dynamically Generate Data Cells */}
-                  {Object.keys(
-                    filteredCandidates.reduce(
-                      (acc, obj) => ({ ...acc, ...obj }),
-                      {}
-                    )
-                  )
-                    .filter((key) => key !== "id") // Exclude `id` column
-                    .map((key) => (
-                      <td
-                        key={key}
-                        className={`td-text ${
-                          key === "email" ? "text-blue-500" : ""
-                        }`}
-                      >
-                        {key === "candidate_name" ? (
-                          // Show Candidate Initials + Name for First Column
-                          <div className="flex items-center gap-2">
-                            <div className="w-8 h-8 rounded-3xl p-2 bg-orange-300 flex items-center justify-center text-white font-bold">
-                              {getInitials(candidate?.candidate_name)}
-                            </div>
-                            {candidate[key] || "-"} {/* Handle missing data */}
-                          </div>
-                        ) : (
-                          candidate[key] || "-" // Handle missing data
-                        )}
+                  {/* ✅ Dynamically Show Data for Selected Columns */}
+                  {selectedColumns.map((columnName) => {
+                    const key = columnMapping[columnName]; // Get actual key from mapping
+                    return (
+                      <td key={key} className="td-text">
+                        {candidate[key] || "-"} {/* Handle missing data */}
                       </td>
-                    ))}
+                    );
+                  })}
                 </tr>
               ))}
             </tbody>
