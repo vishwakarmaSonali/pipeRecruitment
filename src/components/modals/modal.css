@@ -236,7 +236,7 @@ textarea,
   background-color: #1761d80f;
 }
 
-.font-12-ubuntu {
+.font-12-regular {
   font-size: 12px;
   line-height: 13.79px;
   font-family: "Ubuntu";
@@ -365,7 +365,6 @@ textarea,
   cursor: pointer;
 }
 
-
 /* save filter modal css */
 /* Prevent dragging items from moving outside the modal */
 /* Ensure modal does not overflow */
@@ -431,33 +430,32 @@ textarea,
 .remove-btn:hover {
   color: customBlue;
 }
-.checkbox-list{
-  @apply  mb-[12px]
+.checkbox-list {
+  @apply mb-[12px];
 }
 .column-option {
   display: flex;
   align-items: center;
   @apply mb-[15px] gap-[8px] 
-  /* padding: 0; */
+  /* padding: 0; */;
 }
-.row-title{
-  @apply text-customBlue text-m font-ubuntu font-medium mb-[12px]
+.row-title {
+  @apply text-customBlue text-m font-ubuntu font-medium mb-[12px];
 }
 .modal-footer {
   text-align: center;
- border: none;
- align-items: center;
- justify-content: center;
- padding: 0%;
- margin: 0%;
+  border: none;
+  align-items: center;
+  justify-content: center;
+  padding: 0%;
+  margin: 0%;
 }
-
 
 /* saved filter modal */
 /* ✅ Filters Section */
 .filters-section {
   /* padding: 10px 14px; */
-  @apply px-[14px]
+  @apply px-[14px];
 }
 
 /* ✅ Section Title */
@@ -478,8 +476,6 @@ textarea,
   cursor: pointer;
   transition: background 0.2s ease-in-out;
 }
-
-
 
 /* ✅ Star Icon */
 .filter-item .star-icon {

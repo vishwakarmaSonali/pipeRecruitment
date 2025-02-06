@@ -27,6 +27,7 @@ import Sidebar from "../../../components/sidebar/Sidebar";
 import Header from "../../../components/Header/Header";
 import { sourcingHubInfo } from "./config";
 import Navbar from "../../../components/navbar/Navbar";
+import CandidateCard from "../../../components/sourcing/CandidateCard";
 
 const skills = [
   "UI Design",
@@ -320,93 +321,6 @@ const BulkActionView = ({
   );
 };
 
-const CandidateList = ({
-  onSelect,
-  selectedCandidateId,
-  onCandidateSelect,
-  selectedCandidates,
-}) => {
-  // const [isChecked, setIsChecked] = useState(false);
-
-  return (
-    <div className="space-y-4 mb-[110px]">
-      {/* Candidate Cards */}
-      {candidates.map((candidate) => {
-        console.log("cadidate selectssss", selectedCandidateId, candidate.id);
-        return (
-          <div
-            key={candidate.id}
-            className={`p-4 rounded-[14px]  bg-white flex flex-col cursor-pointer ${
-              selectedCandidateId === candidate.id && window.innerWidth > 1024
-                ? "border-2 border-blue-500"
-                : ""
-            }`}
-            onClick={() => {
-              onSelect(candidate);
-            }}
-          >
-            {/* Candidate Details */}
-            <div className="flex items-center space-x-2">
-              {/* Checkbox */}
-              <div
-                className={`w-[20px] h-[20px] border  border-customBlue bg-white  rounded-[6px]  flex items-center justify-center cursor-pointer`}
-                onClick={(e) => {
-                  e.stopPropagation(); // Prevent candidate card click event
-                  onCandidateSelect(candidate.id);
-                }}
-              >
-                {selectedCandidates.includes(candidate.id) && (
-                  <img src={Tick} alt="Selected" />
-                )}
-              </div>
-
-              {/* Profile Image */}
-              <div className="candidate-profile-div">
-                <img
-                  src={ProfileImage}
-                  alt="Profile"
-                  className="w-[46px] h-[46px] rounded-[100px]"
-                />
-              </div>
-
-              {/* Candidate Info */}
-              <div className="flex flex-col ml-4">
-                <p className="candidate-name">{candidate.name}</p>
-                <p className="candidate-designation">{candidate.position}</p>
-              </div>
-            </div>
-
-            {/* Dotted Line */}
-            <div className="border-b border-dashed border-customGray my-[12px]"></div>
-
-            {/* Location and University Info */}
-            <div className="flex items-center space-x-[12px] pb-[12px]">
-              <img src={LocationPin} alt="Location Icon" className="w-5 h-5" />
-              <text className="candidate-location-designation-text">
-                {candidate.location}
-              </text>
-            </div>
-            <div className="flex items-center space-x-[12px]">
-              <img src={University} alt="University Icon" className="w-5 h-5" />
-              <p className="candidate-location-designation-text font-ubuntu">
-                Rhode Island School of Design
-              </p>
-            </div>
-            {/* Skills Grid */}
-            <SkillsList isExpanded={false} />
-            <div className="flex items-center justify-between">
-              <text className="font-ubuntu text-sm text-customGray">
-                Contact information:
-              </text>
-              <img src={LinkedIn} alt="linkedin" />
-            </div>
-          </div>
-        );
-      })}
-    </div>
-  );
-};
-
 const ExperienceEducation = () => {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2 gap-3 bg-white items-start">
@@ -516,7 +430,9 @@ const CandidateDetails = ({ selectedCandidate }) => {
               alt="Profile Add"
               className="proifle-action-icon"
             />
-            <span className="dilogbox">Add to candidate</span>
+            <span className="dilogbox" style={{ zIndex: 99 }}>
+              Add to candidate
+            </span>
           </div>
 
           <div className="relative group" onClick={() => setJobModalOpen(true)}>
@@ -760,8 +676,8 @@ const Sourcing = () => {
         : [...prevSelected, candidateId]
     );
   };
-  const handleCandidateSelectContainer = (candidateId) => {
-    setSelectedCandidate(candidateId);
+  const handleCandidateSelectContainer = (candidate) => {
+    setSelectedCandidate(candidate);
     if (window.innerWidth >= 768 && window.innerWidth < 1024) {
       console.log("called");
       setIsCandidateModalVisible(true);
@@ -769,15 +685,7 @@ const Sourcing = () => {
   };
 
   return (
-    <div
-      className="w-full h-screen overflow-hidden overscroll-none"
-      style={{
-        boxSizing: "border-box",
-        display: "flex",
-        flexDirection: "column",
-        backgroundColor: "#fff",
-      }}
-    >
+    <div className="sourcing-main-container">
       <Navbar />
       <div
         style={{
@@ -836,12 +744,20 @@ const Sourcing = () => {
             />
             <div className="sourcing-inner-div">
               <div className="sourcing-inner-section-1">
-                <CandidateList
-                  onSelect={handleCandidateSelectContainer}
-                  selectedCandidateId={selectedCandidate?.id}
-                  onCandidateSelect={handleCandidateSelect}
-                  selectedCandidates={selectedCandidates}
-                />
+                {candidates?.map((item) => {
+                  return (
+                    <CandidateCard
+                      selectedCandidates={selectedCandidates}
+                      candidateData={item}
+                      selectCandidateClick={(e) => {
+                        e.stopPropagation();
+                        handleCandidateSelect(item?.id);
+                      }}
+                      selectedCandidateId={selectedCandidate?.id}
+                      onClick={() => handleCandidateSelectContainer(item)}
+                    />
+                  );
+                })}
               </div>
               <div className="sourcing-inner-section-2">
                 <CandidateDetails selectedCandidate={selectedCandidate} />

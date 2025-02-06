@@ -139,10 +139,10 @@ const UploadResumeCandidateModal = ({ visible, onClose }) => {
                     }`}
                   >
                     <UploadIcon />
-                    <p className="font-12-ubuntu color-dark-black">
+                    <p className="-ubuntu color-dark-black">
                       Select a file to upload or drag and drop it here
                     </p>
-                    <p className="font-12-ubuntu color-grey">
+                    <p className="font-12-regular color-grey">
                       Supported file types .pdf, .doc, .docx, .rtf (max 20MB)
                     </p>
                   </div>
@@ -159,7 +159,7 @@ const UploadResumeCandidateModal = ({ visible, onClose }) => {
                       </p>
                     )}
                     {!!fileDetails?.size && (
-                      <p className="font-12-ubuntu color-dark-black">
+                      <p className="font-12-regular color-dark-black">
                         {" "}
                         {(fileDetails?.size / 1024).toFixed(2)} KB
                       </p>

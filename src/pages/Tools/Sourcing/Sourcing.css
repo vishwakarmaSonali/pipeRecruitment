@@ -2,6 +2,17 @@
 @tailwind components;
 @tailwind utilities;
 
+.sourcing-main-container {
+  background-color: var(--white);
+  width: 100%;
+  position: relative;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
 .sourcing-main-inner-div {
   display: flex;
   flex-direction: column;
@@ -255,10 +266,11 @@
   padding: 16px;
   position: sticky;
   top: 0px;
-  background-color: transparent;
+  background-color: #fff;
 }
 
 .sourcing-inner-div {
+  flex: 1;
   display: flex;
   gap: 12px;
   margin: 10px 16px;
@@ -266,18 +278,27 @@
 
 .sourcing-inner-section-1 {
   flex: 1;
+  height: calc(100vh - 200px);
+  overflow-y: auto;
   max-width: 450px;
   display: flex;
   flex-direction: column;
   gap: 12px;
-  overflow: auto;
+  box-sizing: border-box;
+}
+.sourcing-inner-section-1::-webkit-scrollbar,
+.sourcing-inner-section-2::-webkit-scrollbar {
+  width: 10px;
+  border-radius: 2.5px;
+}
+.sourcing-inner-section-1::-webkit-scrollbar-thumb,
+.sourcing-inner-section-2::-webkit-scrollbar-thumb {
+  background: rgba(83, 166, 216, 0.5);
+  border-radius: 10px;
 }
 
 .sourcing-inner-section-2 {
   flex: 1;
-}
-
-.sourcing-candidate-details {
-  flex: 1;
-  overflow: auto;
+  height: calc(100vh - 200px);
+  overflow-y: auto;
 }

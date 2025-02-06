@@ -1,0 +1,57 @@
+.sourcing-candidate-card {
+  border: 1px solid #d7d7d7;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  border-radius: 14px;
+  transition: border 300ms ease;
+}
+
+.selected-candidate-card {
+  border: 1.5px solid #1761d8;
+}
+
+.candidate-card-profile-img {
+  width: 38px;
+  height: 38px;
+  border-radius: 100px;
+  overflow: hidden;
+}
+
+.social-link {
+  transition: all 0.5s ease;
+}
+
+.social-link:hover {
+  transform: scale(1.1);
+}
+
+.candidate-card-divider-line {
+  border: 0.8px dashed #797979;
+}
+
+.skill-more-btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 6px;
+  border-radius: 6px;
+  background-color: #1761d81a;
+  font-family: "Ubuntu";
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 16.09px;
+  color: var(--dark-black);
+}
+
+.candidate-card-checkbox {
+  width: 18.33px;
+  height: 18.33px;
+  border: 1px solid #151b23;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 6px;
+  cursor: pointer;
+}
