@@ -8,6 +8,8 @@ import { ReactComponent as JobIcon } from "../../assets/icons/sourcingIcons/brie
 import { ReactComponent as FolderAdd } from "../../assets/icons/sourcingIcons/folder-add.svg";
 import { ReactComponent as Download } from "../../assets/icons/sourcingIcons/download.svg";
 import { skills } from "./CandidateCard";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 
 export const languages = ["English", "Mandarin", "Spanish"];
 
@@ -56,8 +58,53 @@ export const educationData = [
   },
 ];
 
-const CandidateDetails = ({ data }) => {
+const CandidateDetails = ({ data, loading }) => {
   const [validImageUrl, setValidImageUrl] = useState(true);
+
+  if (loading) {
+    return (
+      <div className="candidate-details-card">
+        <div className="display-flex-justify align-center">
+          <div className="display-flex align-center" style={{ gap: 8 }}>
+            <div className="candidate-card-profile-img">
+              <Skeleton circle width={"100%"} height={"100%"} />
+            </div>
+            <div className="display-column" style={{ gap: 4 }}>
+              <Skeleton width={100} height={16} />
+              <Skeleton width={300} height={14} />
+            </div>
+          </div>
+          <div className="display-flex" style={{ gap: 12 }}>
+            <Skeleton width={20} height={20} />
+            <Skeleton width={20} height={20} />
+            <Skeleton width={20} height={20} />
+            <Skeleton width={20} height={20} />
+          </div>
+        </div>
+        <div className="display-column" style={{ gap: 10 }}>
+          <Skeleton width={100} height={16} />
+          <Skeleton width={"100%"} height={50} />
+        </div>
+        <div className="divider-line" />
+        <div className="display-column" style={{ gap: 10 }}>
+          <Skeleton width={100} height={16} />
+          <Skeleton width={"100%"} height={100} />
+        </div>
+        <div className="divider-line" />
+        <div className="display-flex" style={{ gap: 12 }}>
+          <div className="display-column flex-1" style={{ gap: 10 }}>
+            <Skeleton width={100} height={16} />
+            <Skeleton width={"100%"} height={200} />
+          </div>
+
+          <div className="display-column flex-1" style={{ gap: 10 }}>
+            <Skeleton width={100} height={16} />
+            <Skeleton width={"100%"} height={200} />
+          </div>
+        </div>
+      </div>
+    );
+  }
   return (
     <div className="candidate-details-card">
       <div className="display-flex-justify align-center">

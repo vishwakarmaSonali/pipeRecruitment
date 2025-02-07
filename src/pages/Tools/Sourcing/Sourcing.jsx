@@ -24,6 +24,7 @@ import PaginationComponent from "../../../components/common/PaginationComponent"
 import CandidateDetailsDrawer from "../../../components/sourcing/CandidateDetailsDrawer";
 import { fetchCandidates } from "../../../actions/sourcingActions";
 import { useDispatch, useSelector } from "react-redux";
+import ShimmerEffectCandidateCard from "../../../components/sourcing/ShimmerEffectCandidateCard";
 
 const candidates = [
   {
@@ -439,23 +440,32 @@ const Sourcing = () => {
             />
             <div className="sourcing-inner-div">
               <div className="sourcing-inner-section-1">
-                {candidateData?.map((item) => {
-                  return (
-                    <CandidateCard
-                      selectedCandidates={selectedCandidates}
-                      data={item}
-                      selectCandidateClick={(e) => {
-                        e.stopPropagation();
-                        handleCandidateSelect(item?._id);
-                      }}
-                      selectedCandidateId={selectedCandidate?._id}
-                      onClick={() => handleCandidateSelectContainer(item)}
-                    />
-                  );
-                })}
+                {fetchMoreLoading
+                  ? Array(3)
+                      .fill("")
+                      .map((_, index) => (
+                        <ShimmerEffectCandidateCard key={index} />
+                      ))
+                  : candidateData?.map((item) => {
+                      return (
+                        <CandidateCard
+                          selectedCandidates={selectedCandidates}
+                          data={item}
+                          selectCandidateClick={(e) => {
+                            e.stopPropagation();
+                            handleCandidateSelect(item?._id);
+                          }}
+                          selectedCandidateId={selectedCandidate?._id}
+                          onClick={() => handleCandidateSelectContainer(item)}
+                        />
+                      );
+                    })}
               </div>
               <div className="sourcing-inner-section-2">
-                <CandidateDetails data={selectedCandidate} />
+                <CandidateDetails
+                  data={selectedCandidate}
+                  loading={fetchMoreLoading}
+                />
               </div>
             </div>
 
@@ -473,8 +483,11 @@ const Sourcing = () => {
                   )}
                 </div>
                 <p className="font-12-regular color-dark-black">
-                  {selectedCandidates?.length} - {candidates.length} of{" "}
-                  {totalCandidateData}
+                  {perPageLimit * (currentPage - 1)} -{" "}
+                  {perPageLimit * currentPage > totalCandidateData
+                    ? totalCandidateData
+                    : perPageLimit * currentPage}{" "}
+                  of {totalCandidateData}
                 </p>
               </div>
               <div
