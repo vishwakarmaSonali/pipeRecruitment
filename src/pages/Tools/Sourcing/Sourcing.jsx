@@ -22,6 +22,8 @@ import CandidateCard from "../../../components/sourcing/CandidateCard";
 import CandidateDetails from "../../../components/sourcing/CandidateDetails";
 import PaginationComponent from "../../../components/common/PaginationComponent";
 import CandidateDetailsDrawer from "../../../components/sourcing/CandidateDetailsDrawer";
+import { fetchCandidates } from "../../../actions/sourcingActions";
+import { useDispatch, useSelector } from "react-redux";
 
 const candidates = [
   {
@@ -235,191 +237,6 @@ const BulkActionView = ({
   );
 };
 
-// const CandidateDetails = ({ selectedCandidate }) => {
-//   const [modalOpen, setModalOpen] = useState(false);
-//   const [jobModalOpen, setJobModalOpen] = useState(false);
-
-//   if (!selectedCandidate) {
-//     return (
-//       <div className="w-3/5 flex items-center justify-center text-gray-500 text-lg">
-//         Select a candidate to view details
-//       </div>
-//     );
-//   }
-
-//   return (
-//     <div className="sourcing-candidate-details">
-//       {/* detail header */}
-//       <div className="flex items-center justify-between ">
-//         {/* profile and name and actions */}
-//         <div className="items-center flex space-x-[10px] ">
-//           <img
-//             src={ProfileImage}
-//             alt="profileImage"
-//             className="h-[52px] w-[52px] rounded-[100px]"
-//           />
-//           <text className="detail-profile-name">{selectedCandidate.name}</text>
-//         </div>
-//         {/* profile actions */}
-//         <div className="flex items-center justify-between space-x-[12px]">
-//           <div className="relative group">
-//             <img
-//               src={ProfileAdd}
-//               alt="Profile Add"
-//               className="proifle-action-icon"
-//             />
-//             <span className="dilogbox" style={{ zIndex: 99 }}>
-//               Add to candidate
-//             </span>
-//           </div>
-
-//           <div className="relative group" onClick={() => setJobModalOpen(true)}>
-//             <img
-//               src={jobIcon}
-//               alt="jobIcon Add"
-//               className="proifle-action-icon"
-//             />
-//             <span className="dilogbox">Add to Job</span>
-//           </div>
-
-//           <div className="relative group" onClick={() => setModalOpen(true)}>
-//             <img
-//               src={FolderAdd}
-//               alt="Folder Add"
-//               className="proifle-action-icon"
-//             />
-//             <span className="dilogbox">Add to Folder</span>
-//           </div>
-
-//           <div className="relative group">
-//             <img
-//               src={Download}
-//               alt="Download"
-//               className="proifle-action-icon"
-//             />
-//             <span className="dilogbox">Download resume</span>
-//           </div>
-//         </div>
-//       </div>
-
-//       {/* skills div */}
-//       <div className="details-specific-div">
-//         <text className="details-title">SKILLS</text>
-//         <SkillsList isExpanded={true} />
-//       </div>
-//       <div className="details-specific-div">
-//         <text className="details-title">PERSONAL DETAILS</text>
-//         <div className="divider-border"></div>
-//         {/* personal details grid */}
-//         <div className="grid grid-cols-2 gap-4">
-//           <div className="space-y-[8px]">
-//             <p className="grid-title">Location:</p>
-//             <p className="grid-title">Email:</p>
-//             <p className="grid-title">Phone Number:</p>
-//             <p className="grid-title">Linked In:</p>
-//             <p className="grid-title">Languages:</p>
-//           </div>
-
-//           <div className="space-y-2">
-//             <p className="grid-desc">San Francisco, CA</p>
-//             <p className="grid-desc">joanna.chou@example.com</p>
-//             <p className="grid-desc">+1-415-123-4567</p>
-//             <p className="grid-desc">linkedin.com/in/joannachou</p>
-//             <div className="flex space-x-2">
-//               <span className="language">English</span>
-//               <span className="language">Mandarin</span>
-//               <span className="language">Spanish</span>
-//             </div>
-//           </div>
-//         </div>
-//       </div>
-//       <ExperienceEducation />
-//       {modalOpen && (
-//         <FolderModal isOpen={modalOpen} onClose={() => setModalOpen(false)} />
-//       )}
-//       {jobModalOpen && (
-//         <AddToJobsModal
-//           isOpen={jobModalOpen}
-//           onClose={() => setJobModalOpen(false)}
-//         />
-//       )}
-//     </div>
-//   );
-// };
-
-// const PaginationFooter = () => {
-//   const [currentPage, setCurrentPage] = useState(1);
-//   const totalPages = 1154;
-
-//   const handlePageClick = (page) => {
-//     setCurrentPage(page);
-//   };
-
-//   return (
-//     <div className="fixed bottom-0 w-screen bg-gray-100 py-2 flex items-center justify-center shadow-md">
-//       <div className="flex items-center space-x-4">
-//         {/* Previous Page Button */}
-//         <button
-//           className={`px-3 py-1 rounded-md ${
-//             currentPage === 1
-//               ? "text-gray-400 cursor-not-allowed"
-//               : "text-black"
-//           }`}
-//           onClick={() => handlePageClick(currentPage - 1)}
-//           disabled={currentPage === 1}
-//         >
-//           <img src={LeftArrow} alt="leftArrow" />
-//         </button>
-
-//         {/* Page Numbers */}
-//         <div className="flex items-center space-x-2 text-gray-700">
-//           {[1, 2, 3, 4].map((page) => (
-//             <button
-//               key={page}
-//               className={`px-3 py-1 rounded-md ${
-//                 currentPage === page
-//                   ? "text-blue-600 font-ubuntu font-medium text-sm"
-//                   : "text-gray-700 font-ubuntu font-medium text-sm"
-//               }`}
-//               onClick={() => handlePageClick(page)}
-//             >
-//               {page}
-//             </button>
-//           ))}
-
-//           {/* Ellipsis */}
-//           <span className="text-gray-500">...</span>
-
-//           {/* Last Page Number */}
-//           <button
-//             className={`px-3 py-1 rounded-md ${
-//               currentPage === totalPages
-//                 ? "text-blue-600 font-ubuntu font-medium text-sm"
-//                 : "text-gray-700 font-ubuntu font-medium text-sm"
-//             }`}
-//             onClick={() => handlePageClick(totalPages)}
-//           >
-//             {totalPages}
-//           </button>
-//         </div>
-
-//         {/* Next Page Button */}
-//         <button
-//           className={`px-3 py-1 rounded-md ${
-//             currentPage === totalPages
-//               ? "text-gray-400 cursor-not-allowed"
-//               : "text-black"
-//           }`}
-//           onClick={() => handlePageClick(currentPage + 1)}
-//           disabled={currentPage === totalPages}
-//         >
-//           <img src={RightArrow} alt="leftArrow" />
-//         </button>
-//       </div>
-//     </div>
-//   );
-// };
-
 const NoFiltersScreen = ({ onStartSearching }) => {
   return (
     <div className="sourcing-main-inner-div">
@@ -449,15 +266,24 @@ const NoFiltersScreen = ({ onStartSearching }) => {
   );
 };
 const Sourcing = () => {
+  const dispatch = useDispatch();
+  const {
+    fetchMoreLoading,
+    totalCandidateData,
+    totalCandidatePages,
+    candidateFilters,
+    candidateData,
+  } = useSelector((state) => state.sourcing);
+
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [selectedCandidate, setSelectedCandidate] = useState(
-    windowWidth < 1024 ? {} : candidates[0]
+    windowWidth < 1024 ? {} : candidateData[0]
   );
   const [selectedCandidates, setSelectedCandidates] = useState([]);
   const [filtersApplied, setFiltersApplied] = useState(false);
   const [isJobModalOpen, setIsJobModalOpen] = useState(false);
-  const totalItems = 23162;
   const [currentPage, setCurrentPage] = useState(1);
+  const perPageLimit = 10;
 
   const [filters, setFilters] = useState({
     jobTitle: "",
@@ -476,7 +302,9 @@ const Sourcing = () => {
   };
 
   const handlePageChange = (page) => {
+    setSelectedCandidates([]);
     setCurrentPage(page);
+    dispatch(fetchCandidates(null, candidateFilters, page));
   };
 
   const toggleModal = () => {
@@ -507,12 +335,13 @@ const Sourcing = () => {
     });
     setFiltersApplied(false);
   };
+
   // Function to select/deselect all candidates
   const handleSelectAll = () => {
-    if (selectedCandidates.length === candidates.length) {
-      setSelectedCandidates([]); // Deselect all
+    if (selectedCandidates?.length === candidateData?.length) {
+      setSelectedCandidates([]);
     } else {
-      setSelectedCandidates(candidates.map((candidate) => candidate.id)); // Select all
+      setSelectedCandidates(candidateData?.map((candidate) => candidate._id));
     }
   };
   // Handle individual candidate selection
@@ -540,6 +369,15 @@ const Sourcing = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+
+  useEffect(() => {
+    setCurrentPage(1);
+    dispatch(fetchCandidates(null, { limit: perPageLimit }, 1));
+  }, [dispatch]);
+
+  useEffect(() => {
+    setSelectedCandidate(candidateData[0]);
+  }, [candidateData]);
 
   return (
     <div className="sourcing-main-container">
@@ -601,16 +439,16 @@ const Sourcing = () => {
             />
             <div className="sourcing-inner-div">
               <div className="sourcing-inner-section-1">
-                {candidates?.map((item) => {
+                {candidateData?.map((item) => {
                   return (
                     <CandidateCard
                       selectedCandidates={selectedCandidates}
-                      candidateData={item}
+                      data={item}
                       selectCandidateClick={(e) => {
                         e.stopPropagation();
-                        handleCandidateSelect(item?.id);
+                        handleCandidateSelect(item?._id);
                       }}
-                      selectedCandidateId={selectedCandidate?.id}
+                      selectedCandidateId={selectedCandidate?._id}
                       onClick={() => handleCandidateSelectContainer(item)}
                     />
                   );
@@ -636,7 +474,7 @@ const Sourcing = () => {
                 </div>
                 <p className="font-12-regular color-dark-black">
                   {selectedCandidates?.length} - {candidates.length} of{" "}
-                  {totalItems}
+                  {totalCandidateData}
                 </p>
               </div>
               <div
@@ -647,7 +485,7 @@ const Sourcing = () => {
                 }}
               >
                 <PaginationComponent
-                  totalPages={100}
+                  totalPages={totalCandidatePages}
                   currentPage={currentPage}
                   onPageChange={handlePageChange}
                 />
@@ -672,6 +510,7 @@ const Sourcing = () => {
       <CandidateDetailsDrawer
         visible={candidateDrawerOpen}
         onClose={() => toggleCandidateDrawer(false)}
+        data={selectedCandidate}
       />
     </div>
   );
