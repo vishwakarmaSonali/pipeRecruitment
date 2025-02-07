@@ -9,7 +9,7 @@ import { ReactComponent as WhatappIcon } from "../../assets/icons/whatsapp.svg";
 import { ReactComponent as CallIcon } from "../../assets/icons/call.svg";
 import { ReactComponent as Tick } from "../../assets/icons/sourcingIcons/tick.svg";
 
-const skills = [
+export const skills = [
   "Access",
   "Business Analysis",
   "Business Intelligence",

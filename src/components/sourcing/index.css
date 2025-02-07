@@ -55,3 +55,25 @@
   border-radius: 6px;
   cursor: pointer;
 }
+
+.candidate-details-card {
+  width: 100%;
+  border: 1px solid #d7d7d7;
+  border-radius: 14px;
+  padding: 10px;
+  background-color: var(--white);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  box-sizing: border-box;
+}
+
+.divider-line {
+  height: 1px;
+  background-color: #d7d7d7;
+  width: 100%;
+}
+
+.flex-1 {
+  flex: 1;
+}

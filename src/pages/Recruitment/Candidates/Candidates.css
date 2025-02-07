@@ -106,6 +106,18 @@
   margin: 0px;
 }
 
+.font-14-medium {
+  font-family: "Ubuntu";
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 16.09px;
+  margin: 0px;
+}
+
+.text-uppercase {
+  text-transform: uppercase;
+}
+
 .resume-indo-list {
   list-style-type: disc;
   display: flex;

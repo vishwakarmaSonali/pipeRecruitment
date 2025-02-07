@@ -10,7 +10,7 @@ import ProfileAdd from "../../../assets/icons/sourcingIcons/profile-add.svg";
 import jobIcon from "../../../assets/icons/sourcingIcons/briefcase.svg";
 import FolderAdd from "../../../assets/icons/sourcingIcons/folder-add.svg";
 import Download from "../../../assets/icons/sourcingIcons/download.svg";
-import Tick from "../../../assets/icons/sourcingIcons/tick.svg";
+import { ReactComponent as Tick } from "../../../assets/icons/sourcingIcons/tick.svg";
 import FilterIcon from "../../../assets/icons/filter.svg";
 import { ReactComponent as DropArrow } from "../../../assets/icons/droparrow.svg";
 import LeftArrow from "../../../assets/icons/leftArrow.svg";
@@ -28,6 +28,8 @@ import Header from "../../../components/Header/Header";
 import { sourcingHubInfo } from "./config";
 import Navbar from "../../../components/navbar/Navbar";
 import CandidateCard from "../../../components/sourcing/CandidateCard";
+import CandidateDetails from "../../../components/sourcing/CandidateDetails";
+import PaginationComponent from "../../../components/common/PaginationComponent";
 
 const skills = [
   "UI Design",
@@ -116,59 +118,6 @@ const candidates = [
   },
 ];
 
-const SkillsList = ({ isExpanded }) => {
-  const maxRows = 2; // Maximum number of rows to display
-  const [visibleSkills, setVisibleSkills] = useState([]);
-  const [remainingCount, setRemainingCount] = useState(0);
-  const containerRef = useRef(null);
-
-  useEffect(() => {
-    // Calculate the visible skills based on the available space
-    const calculateSkills = () => {
-      if (containerRef.current) {
-        const containerWidth = containerRef.current.clientWidth;
-        const skillWidth = 110; // Approximate width of a skill item
-        const itemsPerRow = Math.floor(containerWidth / skillWidth);
-        const maxVisible = itemsPerRow * maxRows;
-
-        if (skills.length > maxVisible && !isExpanded) {
-          setVisibleSkills(skills.slice(0, maxVisible - 1));
-          setRemainingCount(skills.length - (maxVisible - 1));
-        } else {
-          setVisibleSkills(skills);
-          setRemainingCount(0);
-        }
-      }
-    };
-
-    calculateSkills();
-    window.addEventListener("resize", calculateSkills);
-    return () => window.removeEventListener("resize", calculateSkills);
-  }, [isExpanded]);
-
-  return (
-    <div ref={containerRef} className="py-[12px] bg-white">
-      <div className="flex flex-wrap gap-2">
-        {visibleSkills.map((skill, index) => (
-          <div key={index} className="candidate-skill">
-            {skill}
-          </div>
-        ))}
-
-        {/* Show "+X more" button in the 2nd row if needed */}
-        {remainingCount > 0 && (
-          <div
-            className="candidate-skill"
-            onClick={() => setVisibleSkills(skills)}
-          >
-            +{remainingCount} more
-          </div>
-        )}
-      </div>
-    </div>
-  );
-};
-
 const BulkActionView = ({
   toggleModal,
   isBulkAction,
@@ -229,19 +178,6 @@ const BulkActionView = ({
   };
   return (
     <div className="sourcing-header-container">
-      {/* <div className="flex items-center space-x-2">
-        <div
-          className={`w-[20px] h-[20px] border border-customBlue rounded-[6px] flex items-center justify-center cursor-pointer`}
-          onClick={onSelectAll}
-        >
-          {isAllSelected && <img src={Tick} alt="Selected" />}
-        </div>
-
-        <p className="text-gray-700 text-sm font-ubuntu">
-          <span className="cursor-pointer text-sm font-ubuntu">1-100</span> of{" "}
-          {candidates.length}
-        </p>
-      </div> */}
       <p className="font-22-medium color-dark-black">Sourcing</p>
       <button
         className="text-white bg-buttonBLue px-[14px] py-[10px] rounded-[8px] flex items-center space-x-1 shadow-md hover:bg-opacity-80"
@@ -321,266 +257,191 @@ const BulkActionView = ({
   );
 };
 
-const ExperienceEducation = () => {
-  return (
-    <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2 gap-3 bg-white items-start">
-      {/* Experience Section */}
-      <div className="details-griddiv">
-        <p className="details-title">EXPERIENCE</p>
-        <div className="divider-border"></div>
-        <div className="space-y-4">
-          <div>
-            <p className="main-title">
-              Senior UI/UX Designer at TechNova Solutions
-            </p>
-            <p className="main-title location-university-text-weight">
-              San Francisco, CA
-            </p>
-            <p className="main-title location-university-text-color">
-              March 2020 - Present
-            </p>
-          </div>
+// const CandidateDetails = ({ selectedCandidate }) => {
+//   const [modalOpen, setModalOpen] = useState(false);
+//   const [jobModalOpen, setJobModalOpen] = useState(false);
 
-          <div>
-            <p className="main-title">UI/UX Designer at PixelBright Studios</p>
-            <p className="main-title location-university-text-weight">
-              Los Angeles, CA
-            </p>
-            <p className="main-title location-university-text-color">
-              May 2016 - February 2020
-            </p>
-          </div>
+//   if (!selectedCandidate) {
+//     return (
+//       <div className="w-3/5 flex items-center justify-center text-gray-500 text-lg">
+//         Select a candidate to view details
+//       </div>
+//     );
+//   }
 
-          <div>
-            <p className="main-title">
-              Junior UI/UX Designer at DesignHive Creative Agency
-            </p>
-            <p className="main-title location-university-text-weight">
-              Austin, TX
-            </p>
-            <p className="main-title location-university-text-color">
-              June 2014 - April 2026
-            </p>
-          </div>
-        </div>
-      </div>
+//   return (
+//     <div className="sourcing-candidate-details">
+//       {/* detail header */}
+//       <div className="flex items-center justify-between ">
+//         {/* profile and name and actions */}
+//         <div className="items-center flex space-x-[10px] ">
+//           <img
+//             src={ProfileImage}
+//             alt="profileImage"
+//             className="h-[52px] w-[52px] rounded-[100px]"
+//           />
+//           <text className="detail-profile-name">{selectedCandidate.name}</text>
+//         </div>
+//         {/* profile actions */}
+//         <div className="flex items-center justify-between space-x-[12px]">
+//           <div className="relative group">
+//             <img
+//               src={ProfileAdd}
+//               alt="Profile Add"
+//               className="proifle-action-icon"
+//             />
+//             <span className="dilogbox" style={{ zIndex: 99 }}>
+//               Add to candidate
+//             </span>
+//           </div>
 
-      {/* Education Section */}
-      <div className="details-griddiv">
-        <p className="details-title">EDUCATION</p>
-        <div className="divider-border"></div>
-        <div className="space-y-4">
-          <div>
-            <p className="main-title">
-              Master of Fine Arts in Interaction Design
-            </p>
-            <p className="main-title location-university-text-weight">
-              Rhode Island School of Design
-            </p>
-            <p className="main-title location-university-text-color">
-              August 2012 - May 2014
-            </p>
-          </div>
+//           <div className="relative group" onClick={() => setJobModalOpen(true)}>
+//             <img
+//               src={jobIcon}
+//               alt="jobIcon Add"
+//               className="proifle-action-icon"
+//             />
+//             <span className="dilogbox">Add to Job</span>
+//           </div>
 
-          <div>
-            <p className="main-title">Bachelor of Arts in Graphic Design</p>
-            <p className="main-title location-university-text-weight">
-              California College of the Arts
-            </p>
-            <p className="main-title location-university-text-color">
-              August 2008 - May 2012
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
+//           <div className="relative group" onClick={() => setModalOpen(true)}>
+//             <img
+//               src={FolderAdd}
+//               alt="Folder Add"
+//               className="proifle-action-icon"
+//             />
+//             <span className="dilogbox">Add to Folder</span>
+//           </div>
 
-const CandidateDetails = ({ selectedCandidate }) => {
-  const [modalOpen, setModalOpen] = useState(false);
-  const [jobModalOpen, setJobModalOpen] = useState(false);
+//           <div className="relative group">
+//             <img
+//               src={Download}
+//               alt="Download"
+//               className="proifle-action-icon"
+//             />
+//             <span className="dilogbox">Download resume</span>
+//           </div>
+//         </div>
+//       </div>
 
-  if (!selectedCandidate) {
-    return (
-      <div className="w-3/5 flex items-center justify-center text-gray-500 text-lg">
-        Select a candidate to view details
-      </div>
-    );
-  }
+//       {/* skills div */}
+//       <div className="details-specific-div">
+//         <text className="details-title">SKILLS</text>
+//         <SkillsList isExpanded={true} />
+//       </div>
+//       <div className="details-specific-div">
+//         <text className="details-title">PERSONAL DETAILS</text>
+//         <div className="divider-border"></div>
+//         {/* personal details grid */}
+//         <div className="grid grid-cols-2 gap-4">
+//           <div className="space-y-[8px]">
+//             <p className="grid-title">Location:</p>
+//             <p className="grid-title">Email:</p>
+//             <p className="grid-title">Phone Number:</p>
+//             <p className="grid-title">Linked In:</p>
+//             <p className="grid-title">Languages:</p>
+//           </div>
 
-  return (
-    <div className="sourcing-candidate-details">
-      {/* detail header */}
-      <div className="flex items-center justify-between ">
-        {/* profile and name and actions */}
-        <div className="items-center flex space-x-[10px] ">
-          <img
-            src={ProfileImage}
-            alt="profileImage"
-            className="h-[52px] w-[52px] rounded-[100px]"
-          />
-          <text className="detail-profile-name">{selectedCandidate.name}</text>
-        </div>
-        {/* profile actions */}
-        <div className="flex items-center justify-between space-x-[12px]">
-          <div className="relative group">
-            <img
-              src={ProfileAdd}
-              alt="Profile Add"
-              className="proifle-action-icon"
-            />
-            <span className="dilogbox" style={{ zIndex: 99 }}>
-              Add to candidate
-            </span>
-          </div>
+//           <div className="space-y-2">
+//             <p className="grid-desc">San Francisco, CA</p>
+//             <p className="grid-desc">joanna.chou@example.com</p>
+//             <p className="grid-desc">+1-415-123-4567</p>
+//             <p className="grid-desc">linkedin.com/in/joannachou</p>
+//             <div className="flex space-x-2">
+//               <span className="language">English</span>
+//               <span className="language">Mandarin</span>
+//               <span className="language">Spanish</span>
+//             </div>
+//           </div>
+//         </div>
+//       </div>
+//       <ExperienceEducation />
+//       {modalOpen && (
+//         <FolderModal isOpen={modalOpen} onClose={() => setModalOpen(false)} />
+//       )}
+//       {jobModalOpen && (
+//         <AddToJobsModal
+//           isOpen={jobModalOpen}
+//           onClose={() => setJobModalOpen(false)}
+//         />
+//       )}
+//     </div>
+//   );
+// };
 
-          <div className="relative group" onClick={() => setJobModalOpen(true)}>
-            <img
-              src={jobIcon}
-              alt="jobIcon Add"
-              className="proifle-action-icon"
-            />
-            <span className="dilogbox">Add to Job</span>
-          </div>
+// const PaginationFooter = () => {
+//   const [currentPage, setCurrentPage] = useState(1);
+//   const totalPages = 1154;
 
-          <div className="relative group" onClick={() => setModalOpen(true)}>
-            <img
-              src={FolderAdd}
-              alt="Folder Add"
-              className="proifle-action-icon"
-            />
-            <span className="dilogbox">Add to Folder</span>
-          </div>
+//   const handlePageClick = (page) => {
+//     setCurrentPage(page);
+//   };
 
-          <div className="relative group">
-            <img
-              src={Download}
-              alt="Download"
-              className="proifle-action-icon"
-            />
-            <span className="dilogbox">Download resume</span>
-          </div>
-        </div>
-      </div>
+//   return (
+//     <div className="fixed bottom-0 w-screen bg-gray-100 py-2 flex items-center justify-center shadow-md">
+//       <div className="flex items-center space-x-4">
+//         {/* Previous Page Button */}
+//         <button
+//           className={`px-3 py-1 rounded-md ${
+//             currentPage === 1
+//               ? "text-gray-400 cursor-not-allowed"
+//               : "text-black"
+//           }`}
+//           onClick={() => handlePageClick(currentPage - 1)}
+//           disabled={currentPage === 1}
+//         >
+//           <img src={LeftArrow} alt="leftArrow" />
+//         </button>
 
-      {/* skills div */}
-      <div className="details-specific-div">
-        <text className="details-title">SKILLS</text>
-        <SkillsList isExpanded={true} />
-      </div>
-      <div className="details-specific-div">
-        <text className="details-title">PERSONAL DETAILS</text>
-        <div className="divider-border"></div>
-        {/* personal details grid */}
-        <div className="grid grid-cols-2 gap-4">
-          <div className="space-y-[8px]">
-            <p className="grid-title">Location:</p>
-            <p className="grid-title">Email:</p>
-            <p className="grid-title">Phone Number:</p>
-            <p className="grid-title">Linked In:</p>
-            <p className="grid-title">Languages:</p>
-          </div>
+//         {/* Page Numbers */}
+//         <div className="flex items-center space-x-2 text-gray-700">
+//           {[1, 2, 3, 4].map((page) => (
+//             <button
+//               key={page}
+//               className={`px-3 py-1 rounded-md ${
+//                 currentPage === page
+//                   ? "text-blue-600 font-ubuntu font-medium text-sm"
+//                   : "text-gray-700 font-ubuntu font-medium text-sm"
+//               }`}
+//               onClick={() => handlePageClick(page)}
+//             >
+//               {page}
+//             </button>
+//           ))}
 
-          <div className="space-y-2">
-            <p className="grid-desc">San Francisco, CA</p>
-            <p className="grid-desc">joanna.chou@example.com</p>
-            <p className="grid-desc">+1-415-123-4567</p>
-            <p className="grid-desc">linkedin.com/in/joannachou</p>
-            <div className="flex space-x-2">
-              <span className="language">English</span>
-              <span className="language">Mandarin</span>
-              <span className="language">Spanish</span>
-            </div>
-          </div>
-        </div>
-      </div>
-      <ExperienceEducation />
-      {modalOpen && (
-        <FolderModal isOpen={modalOpen} onClose={() => setModalOpen(false)} />
-      )}
-      {jobModalOpen && (
-        <AddToJobsModal
-          isOpen={jobModalOpen}
-          onClose={() => setJobModalOpen(false)}
-        />
-      )}
-    </div>
-  );
-};
+//           {/* Ellipsis */}
+//           <span className="text-gray-500">...</span>
 
-const PaginationFooter = () => {
-  const [currentPage, setCurrentPage] = useState(1);
-  const totalPages = 1154;
+//           {/* Last Page Number */}
+//           <button
+//             className={`px-3 py-1 rounded-md ${
+//               currentPage === totalPages
+//                 ? "text-blue-600 font-ubuntu font-medium text-sm"
+//                 : "text-gray-700 font-ubuntu font-medium text-sm"
+//             }`}
+//             onClick={() => handlePageClick(totalPages)}
+//           >
+//             {totalPages}
+//           </button>
+//         </div>
 
-  const handlePageClick = (page) => {
-    setCurrentPage(page);
-  };
+//         {/* Next Page Button */}
+//         <button
+//           className={`px-3 py-1 rounded-md ${
+//             currentPage === totalPages
+//               ? "text-gray-400 cursor-not-allowed"
+//               : "text-black"
+//           }`}
+//           onClick={() => handlePageClick(currentPage + 1)}
+//           disabled={currentPage === totalPages}
+//         >
+//           <img src={RightArrow} alt="leftArrow" />
+//         </button>
+//       </div>
+//     </div>
+//   );
+// };
 
-  return (
-    <div className="fixed bottom-0 w-screen bg-gray-100 py-2 flex items-center justify-center shadow-md">
-      <div className="flex items-center space-x-4">
-        {/* Previous Page Button */}
-        <button
-          className={`px-3 py-1 rounded-md ${
-            currentPage === 1
-              ? "text-gray-400 cursor-not-allowed"
-              : "text-black"
-          }`}
-          onClick={() => handlePageClick(currentPage - 1)}
-          disabled={currentPage === 1}
-        >
-          <img src={LeftArrow} alt="leftArrow" />
-        </button>
-
-        {/* Page Numbers */}
-        <div className="flex items-center space-x-2 text-gray-700">
-          {[1, 2, 3, 4].map((page) => (
-            <button
-              key={page}
-              className={`px-3 py-1 rounded-md ${
-                currentPage === page
-                  ? "text-blue-600 font-ubuntu font-medium text-sm"
-                  : "text-gray-700 font-ubuntu font-medium text-sm"
-              }`}
-              onClick={() => handlePageClick(page)}
-            >
-              {page}
-            </button>
-          ))}
-
-          {/* Ellipsis */}
-          <span className="text-gray-500">...</span>
-
-          {/* Last Page Number */}
-          <button
-            className={`px-3 py-1 rounded-md ${
-              currentPage === totalPages
-                ? "text-blue-600 font-ubuntu font-medium text-sm"
-                : "text-gray-700 font-ubuntu font-medium text-sm"
-            }`}
-            onClick={() => handlePageClick(totalPages)}
-          >
-            {totalPages}
-          </button>
-        </div>
-
-        {/* Next Page Button */}
-        <button
-          className={`px-3 py-1 rounded-md ${
-            currentPage === totalPages
-              ? "text-gray-400 cursor-not-allowed"
-              : "text-black"
-          }`}
-          onClick={() => handlePageClick(currentPage + 1)}
-          disabled={currentPage === totalPages}
-        >
-          <img src={RightArrow} alt="leftArrow" />
-        </button>
-      </div>
-    </div>
-  );
-};
 const NoFiltersScreen = ({ onStartSearching }) => {
   return (
     <div className="sourcing-main-inner-div">
@@ -614,6 +475,9 @@ const Sourcing = () => {
   const [selectedCandidates, setSelectedCandidates] = useState([]); // Store selected candidates
   const [filtersApplied, setFiltersApplied] = useState(false);
   const [isJobModalOpen, setIsJobModalOpen] = useState(false);
+  const totalItems = 23162;
+  const itemsPerPage = 100;
+  const [currentPage, setCurrentPage] = useState(1);
 
   const [filters, setFilters] = useState({
     jobTitle: "",
@@ -627,6 +491,11 @@ const Sourcing = () => {
   const [isCandidateModalVisible, setIsCandidateModalVisible] = useState(false);
   const [isSearchExpanded, setIsSearchExpanded] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
+
   // const [addToFolderModalVisible, setAddToFolderModalVisible] = useState(false);
   // Function to toggle modal visibility
   const toggleModal = () => {
@@ -760,10 +629,43 @@ const Sourcing = () => {
                 })}
               </div>
               <div className="sourcing-inner-section-2">
-                <CandidateDetails selectedCandidate={selectedCandidate} />
+                <CandidateDetails data={selectedCandidate} />
               </div>
             </div>
-            <PaginationFooter />
+
+            <div className="sourcing-pagination-div">
+              <div
+                className="display-flex align-center"
+                style={{ gap: 6, flex: 0.5 }}
+              >
+                <div
+                  className={`candidate-card-checkbox`}
+                  onClick={handleSelectAll}
+                >
+                  {selectedCandidates?.length === candidates?.length && (
+                    <Tick />
+                  )}
+                </div>
+                <p className="font-12-regular color-dark-black">
+                  {selectedCandidates?.length} - {candidates.length} of{" "}
+                  {totalItems}
+                </p>
+              </div>
+              <div
+                style={{
+                  flex: 1,
+                  display: "flex",
+                  justifyContent: "center",
+                }}
+              >
+                <PaginationComponent
+                  totalPages={100}
+                  currentPage={currentPage}
+                  onPageChange={handlePageChange}
+                />
+              </div>
+              <div style={{ flex: 0.5 }} />
+            </div>
           </div>
         )}
       </div>
@@ -788,9 +690,9 @@ const Sourcing = () => {
                   ✕
                 </button>
               </div>
-              <div className="flex-1 overflow-autoscroll-width-none">
+              {/* <div className="flex-1 overflow-autoscroll-width-none">
                 <CandidateDetails selectedCandidate={selectedCandidate} />
-              </div>
+              </div> */}
             </div>
           </div>
         </div>
