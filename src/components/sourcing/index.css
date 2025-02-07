@@ -1,0 +1,143 @@
+.sourcing-candidate-card {
+  border: 1px solid #d7d7d7;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  border-radius: 14px;
+  transition: border 300ms ease;
+}
+
+.selected-candidate-card {
+  border: 1.5px solid #1761d8;
+}
+
+.candidate-card-profile-img {
+  width: 38px;
+  height: 38px;
+  border-radius: 100px;
+  overflow: hidden;
+}
+
+.social-link {
+  transition: all 0.5s ease;
+}
+
+.social-link:hover {
+  transform: scale(1.1);
+}
+
+.candidate-card-divider-line {
+  border: 0.8px dashed #797979;
+}
+
+.skill-more-btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 6px;
+  border-radius: 6px;
+  background-color: #1761d81a;
+  font-family: "Ubuntu";
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 16.09px;
+  color: var(--dark-black);
+}
+
+.candidate-card-checkbox {
+  width: 18.33px;
+  height: 18.33px;
+  border: 1px solid #151b23;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.candidate-details-card {
+  width: 100%;
+  border: 1px solid #d7d7d7;
+  border-radius: 14px;
+  padding: 10px;
+  background-color: var(--white);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  box-sizing: border-box;
+  transition: all 300ms ease;
+}
+
+.divider-line {
+  height: 1px;
+  background-color: #d7d7d7;
+  width: 100%;
+}
+
+.flex-1 {
+  flex: 1;
+}
+
+.candidate-details-drawer {
+  width: 540px;
+  height: 100%;
+  padding: 0px 20px;
+  background-color: var(--white);
+  box-sizing: border-box;
+}
+
+.candidate-details-drawer-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.font-24-medium {
+  font-family: "Ubuntu";
+  font-size: 24px;
+  font-weight: 500;
+  line-height: 27.58px;
+}
+
+.font-20-medium {
+  font-family: "Ubuntu";
+  font-size: 20px;
+  font-weight: 500;
+  line-height: 22.98px;
+}
+
+.candidate-details-inner-section-drawer {
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.candidate-details-drawer-profile {
+  width: 42px;
+  height: 42px;
+  border-radius: 100px;
+  background-color: var(--grey);
+  overflow: hidden;
+}
+
+.candidate-details-drawer-common-div {
+  border: 1px solid #d7d7d7;
+  background-color: var(--white);
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  border-radius: 12px;
+}
+
+.position-sticy-drawer-header {
+  position: sticky;
+  top: 0px;
+  background-color: #fff;
+  z-index: 10;
+  padding-top: 20px;
+}
