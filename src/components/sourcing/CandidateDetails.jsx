@@ -9,9 +9,9 @@ import { ReactComponent as FolderAdd } from "../../assets/icons/sourcingIcons/fo
 import { ReactComponent as Download } from "../../assets/icons/sourcingIcons/download.svg";
 import { skills } from "./CandidateCard";
 
-const languages = ["English", "Mandarin", "Spanish"];
+export const languages = ["English", "Mandarin", "Spanish"];
 
-const experienceData = [
+export const experienceData = [
   {
     ended: "2023-12-01T00:00:00+0000",
     company: "Bible Society",
@@ -45,7 +45,7 @@ const experienceData = [
     companySize: "1000-5000",
   },
 ];
-const educationData = [
+export const educationData = [
   {
     url: "https://www.linkedin.com/school/university-of-leicester/",
     degree: "Bsc",

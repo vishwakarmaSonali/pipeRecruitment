@@ -285,11 +285,13 @@
   flex-direction: column;
   gap: 12px;
   box-sizing: border-box;
+  transition: all 300ms ease;
 }
 .sourcing-inner-section-2 {
   flex: 1;
   height: calc(100vh - 200px);
   overflow-y: auto;
+  transition: all 300ms ease;
 }
 
 .sourcing-inner-section-1::-webkit-scrollbar,
@@ -309,4 +311,13 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+}
+
+@media screen and (max-width: 1024px) {
+  .sourcing-inner-section-2 {
+    display: none;
+  }
+  .sourcing-inner-section-1 {
+    max-width: none;
+  }
 }

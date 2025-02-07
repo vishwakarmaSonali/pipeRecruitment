@@ -2,10 +2,6 @@ import React, { useState, useRef, useEffect } from "react";
 import { Menu, MenuItem, ListItemIcon, Typography } from "@mui/material";
 import { css } from "@emotion/react";
 import "./Sourcing.css";
-
-import LocationPin from "../../../assets/icons/sourcingIcons/locationpin.svg";
-import University from "../../../assets/icons/sourcingIcons/teacher.svg";
-import ProfileImage from "../../../assets/images/profileImage.svg";
 import ProfileAdd from "../../../assets/icons/sourcingIcons/profile-add.svg";
 import jobIcon from "../../../assets/icons/sourcingIcons/briefcase.svg";
 import FolderAdd from "../../../assets/icons/sourcingIcons/folder-add.svg";
@@ -13,9 +9,6 @@ import Download from "../../../assets/icons/sourcingIcons/download.svg";
 import { ReactComponent as Tick } from "../../../assets/icons/sourcingIcons/tick.svg";
 import FilterIcon from "../../../assets/icons/filter.svg";
 import { ReactComponent as DropArrow } from "../../../assets/icons/droparrow.svg";
-import LeftArrow from "../../../assets/icons/leftArrow.svg";
-import RightArrow from "../../../assets/icons/rightArrow.svg";
-import LinkedIn from "../../../assets/icons/sourcingIcons/linkedin.svg";
 import FilterModal from "../../../components/filterModal/FilterModal";
 import FolderModal from "../../../components/AddToFolderModals/AddModal";
 import hiddenTalent from "../../../assets/images/SourcingImages/1.png";
@@ -23,28 +16,13 @@ import refineSearch from "../../../assets/images/SourcingImages/2.png";
 import talentpipelines from "../../../assets/images/SourcingImages/3.png";
 import AddToFolderModal from "../../../components/AddToJobsModals/AddToJobs";
 import AddToJobsModal from "../../../components/AddToJobsModals/AddToJobs";
-import Sidebar from "../../../components/sidebar/Sidebar";
-import Header from "../../../components/Header/Header";
 import { sourcingHubInfo } from "./config";
 import Navbar from "../../../components/navbar/Navbar";
 import CandidateCard from "../../../components/sourcing/CandidateCard";
 import CandidateDetails from "../../../components/sourcing/CandidateDetails";
 import PaginationComponent from "../../../components/common/PaginationComponent";
+import CandidateDetailsDrawer from "../../../components/sourcing/CandidateDetailsDrawer";
 
-const skills = [
-  "UI Design",
-  "Wireframing",
-  "UX Design",
-  "Prototyping",
-  "Graphics",
-  "Typography",
-  "Color Theory",
-  "Illustration",
-  "Designing",
-  "Mapping",
-  "Animation",
-  "3D Modeling",
-];
 const candidates = [
   {
     id: 1,
@@ -471,12 +449,14 @@ const NoFiltersScreen = ({ onStartSearching }) => {
   );
 };
 const Sourcing = () => {
-  const [selectedCandidate, setSelectedCandidate] = useState(candidates[0]);
-  const [selectedCandidates, setSelectedCandidates] = useState([]); // Store selected candidates
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  const [selectedCandidate, setSelectedCandidate] = useState(
+    windowWidth < 1024 ? {} : candidates[0]
+  );
+  const [selectedCandidates, setSelectedCandidates] = useState([]);
   const [filtersApplied, setFiltersApplied] = useState(false);
   const [isJobModalOpen, setIsJobModalOpen] = useState(false);
   const totalItems = 23162;
-  const itemsPerPage = 100;
   const [currentPage, setCurrentPage] = useState(1);
 
   const [filters, setFilters] = useState({
@@ -487,17 +467,18 @@ const Sourcing = () => {
     industry: "",
     education: { major: "", school: "", degree: "" },
   });
-  const [isModalOpen, setIsModalOpen] = useState(false); // Manage filter modal state
-  const [isCandidateModalVisible, setIsCandidateModalVisible] = useState(false);
-  const [isSearchExpanded, setIsSearchExpanded] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const [candidateDrawerOpen, setCandidateDrawerOpen] = useState(false);
+
+  const toggleCandidateDrawer = (open) => {
+    setCandidateDrawerOpen(open);
+  };
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
   };
 
-  // const [addToFolderModalVisible, setAddToFolderModalVisible] = useState(false);
-  // Function to toggle modal visibility
   const toggleModal = () => {
     console.log("Modal toggle triggered");
     setIsModalOpen((prev) => !prev);
@@ -506,10 +487,7 @@ const Sourcing = () => {
     console.log("Modal job modal toggle triggered");
     setIsJobModalOpen((prev) => !prev);
   };
-  // Function to toggle the filter modal
-  const toggleCandidateModal = () => {
-    setIsCandidateModalVisible(!isCandidateModalVisible);
-  };
+
   // Function to handle applying filters
   const applyFilters = (newFilters) => {
     setFilters(newFilters);
@@ -547,11 +525,21 @@ const Sourcing = () => {
   };
   const handleCandidateSelectContainer = (candidate) => {
     setSelectedCandidate(candidate);
-    if (window.innerWidth >= 768 && window.innerWidth < 1024) {
-      console.log("called");
-      setIsCandidateModalVisible(true);
+    if (windowWidth < 1024) {
+      toggleCandidateDrawer(true);
     }
   };
+
+  useEffect(() => {
+    const handleResize = () => setWindowWidth(window.innerWidth);
+    window.addEventListener("resize", handleResize);
+
+    return () => window.removeEventListener("resize", handleResize);
+  }, [windowWidth]);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   return (
     <div className="sourcing-main-container">
@@ -669,34 +657,7 @@ const Sourcing = () => {
           </div>
         )}
       </div>
-      {/* Filter Modal */}
-      {isCandidateModalVisible && (
-        <div>
-          <div
-            className="fixed top-0 right-0 h-full w-full bg-black bg-opacity-50 z-40"
-            onClick={toggleCandidateModal}
-          ></div>
 
-          <div className="fixed top-0 right-0 h-full w-[80%] bg-white shadow-lg transform transition-transform duration-300 z-50">
-            <div className="p-[20px] flex flex-col h-full">
-              <div className="flex justify-between items-center pb-[32px]">
-                <h2 className="text-xxl font-ubuntu font-medium text-gray-800">
-                  Candidate Details
-                </h2>
-                <button
-                  onClick={toggleCandidateModal}
-                  className="text-customBlue hover:text-gray-900"
-                >
-                  ✕
-                </button>
-              </div>
-              {/* <div className="flex-1 overflow-autoscroll-width-none">
-                <CandidateDetails selectedCandidate={selectedCandidate} />
-              </div> */}
-            </div>
-          </div>
-        </div>
-      )}
       <FilterModal
         isOpen={isModalOpen}
         onClose={toggleModal}
@@ -707,6 +668,10 @@ const Sourcing = () => {
       <AddToJobsModal
         isOpen={isJobModalOpen}
         onClose={() => setIsJobModalOpen(false)}
+      />
+      <CandidateDetailsDrawer
+        visible={candidateDrawerOpen}
+        onClose={() => toggleCandidateDrawer(false)}
       />
     </div>
   );
