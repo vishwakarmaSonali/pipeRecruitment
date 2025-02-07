@@ -32,7 +32,7 @@ const sourcingReducer = (state = initialState, action) => {
       return {
         ...state,
         fetchMoreLoading: false,
-        totalCandidateData: [],
+        candidateData: [],
         totalCandidateData: 1,
         totalCandidateData: 0,
       };

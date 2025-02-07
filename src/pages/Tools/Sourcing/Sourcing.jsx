@@ -25,6 +25,7 @@ import CandidateDetailsDrawer from "../../../components/sourcing/CandidateDetail
 import { fetchCandidates } from "../../../actions/sourcingActions";
 import { useDispatch, useSelector } from "react-redux";
 import ShimmerEffectCandidateCard from "../../../components/sourcing/ShimmerEffectCandidateCard";
+import FilterDrawer from "../../../components/sourcing/FilterDrawer";
 
 const candidates = [
   {
@@ -106,6 +107,7 @@ const BulkActionView = ({
   isAllSelected,
   toggleJobModal,
   filters, // Receive filters prop
+  onClickFilter,
 }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
@@ -162,7 +164,7 @@ const BulkActionView = ({
       <p className="font-22-medium color-dark-black">Sourcing</p>
       <button
         className="text-white bg-buttonBLue px-[14px] py-[10px] rounded-[8px] flex items-center space-x-1 shadow-md hover:bg-opacity-80"
-        onClick={isBulkAction ? handleClick : toggleModal}
+        onClick={isBulkAction ? handleClick : onClickFilter}
       >
         <span className="font-ubuntu text-m">
           {isBulkAction
@@ -292,14 +294,22 @@ const Sourcing = () => {
     company: "",
     yearsOfExperience: { from: "", to: "" },
     industry: "",
+    radius: "",
+    skill: "",
     education: { major: "", school: "", degree: "" },
   });
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const [candidateDrawerOpen, setCandidateDrawerOpen] = useState(false);
 
+  const [filterDrawerOpen, setFilterDrawerOpen] = useState(false);
+
   const toggleCandidateDrawer = (open) => {
     setCandidateDrawerOpen(open);
+  };
+
+  const toggleFilterDrawer = (open) => {
+    setFilterDrawerOpen(open);
   };
 
   const handlePageChange = (page) => {
@@ -319,9 +329,10 @@ const Sourcing = () => {
 
   // Function to handle applying filters
   const applyFilters = (newFilters) => {
+    console.log(">>>>>>>>>>>>>>>>>>>>>newFilters", newFilters);
     setFilters(newFilters);
     setFiltersApplied(true);
-    setIsModalOpen(false);
+    toggleFilterDrawer(false);
   };
 
   // Function to reset filters
@@ -332,6 +343,7 @@ const Sourcing = () => {
       company: "",
       yearsOfExperience: { from: "", to: "" },
       industry: "",
+      radius: "",
       education: { major: "", school: "", degree: "" },
     });
     setFiltersApplied(false);
@@ -360,6 +372,26 @@ const Sourcing = () => {
     }
   };
 
+  const emptyComponent = () => {
+    return (
+      <div className="display-column" style={{ gap: 12, maxWidth: "400px" }}>
+        <p
+          className="font-20-medium color-dark-black"
+          style={{ fontWeight: 700, textAlign: "center" }}
+        >
+          No Result Found
+        </p>
+        <p
+          className="font-16-regular color-dark-black"
+          style={{ textAlign: "center" }}
+        >
+          Oops! No results match your filters. Try adjusting your criteria to
+          explore more options
+        </p>
+      </div>
+    );
+  };
+
   useEffect(() => {
     const handleResize = () => setWindowWidth(window.innerWidth);
     window.addEventListener("resize", handleResize);
@@ -373,8 +405,99 @@ const Sourcing = () => {
 
   useEffect(() => {
     setCurrentPage(1);
-    dispatch(fetchCandidates(null, { limit: perPageLimit }, 1));
-  }, [dispatch]);
+    let params = {};
+    params.limit = perPageLimit;
+
+    if (!!filters.jobTitle && !(filters?.jobTitleList?.length > 0)) {
+      params.title = filters?.jobTitle;
+    }
+
+    if (filters?.jobTitleList?.length > 0) {
+      params.title = filters?.jobTitleList?.join(", ");
+    }
+
+    if (!!filters.location && !(filters?.locationList?.length > 0)) {
+      params.location = filters?.location;
+    }
+
+    if (filters?.locationList?.length > 0) {
+      params.location = filters?.locationList?.join(", ");
+    }
+
+    if (!!filters?.radius) {
+      params.radius = filters?.radius;
+    }
+
+    if (!!filters?.radiusType) {
+      params.radiusUnit = filters?.radiusType;
+    }
+
+    if (!!filters?.company && !(filters?.companyList?.length > 0)) {
+      params.company = filters?.company;
+    }
+
+    if (filters?.companyList?.length > 0) {
+      params.company = filters?.companyList?.join(", ");
+    }
+
+    // if (!!filters?.experience?.from) {
+    //   params.company = filters?.experience?.from;
+    // }
+
+    // if (!!filters?.experience?.to) {
+    //   params.company = filters?.experience?.to;
+    // }
+
+    // if (!!filters?.yearsOfExperience?.from) {
+    //   params.company = filters?.yearsOfExperience?.from;
+    // }
+
+    // if (!!filters?.yearsOfExperience?.to) {
+    //   params.company = filters?.yearsOfExperience?.to;
+    // }
+
+    if (!!filters?.skill && !(filters?.skillList?.length > 0)) {
+      params.skill = filters?.skill;
+    }
+
+    if (filters?.skillList?.length > 0) {
+      params.skill = filters?.skillList?.join(", ");
+    }
+
+    if (filters?.industry) {
+      params.industry = filters?.industry;
+    }
+
+    if (filters?.industry) {
+      params.industry = filters?.industry;
+    }
+
+    if (!!filters?.major && !(filters?.majorList?.length > 0)) {
+      params.major = filters?.major;
+    }
+
+    if (!!filters?.degree && !(filters?.degreeList?.length > 0)) {
+      params.degree = filters?.degree;
+    }
+
+    if (!!filters?.school && !(filters?.schoolList?.length > 0)) {
+      params.school = filters?.school;
+    }
+
+    if (filters?.schoolList?.length > 0) {
+      params.school = filters?.schoolList?.join(", ");
+    }
+
+    if (filters?.degreeList?.length > 0) {
+      params.degree = filters?.degreeList?.join(", ");
+    }
+
+    if (filters?.majorList?.length > 0) {
+      params.major = filters?.majorList?.join(", ");
+    }
+
+    dispatch(fetchCandidates(null, params, 1));
+  }, [dispatch, filters]);
 
   useEffect(() => {
     setSelectedCandidate(candidateData[0]);
@@ -410,7 +533,9 @@ const Sourcing = () => {
                 justifyContent: "center",
               }}
             >
-              <NoFiltersScreen onStartSearching={toggleModal} />
+              <NoFiltersScreen
+                onStartSearching={() => toggleFilterDrawer(true)}
+              />
             </div>
             <p className="sourcing-info-div-auto font-ubuntu">
               Our platform uses trusted third-party data to offer a separate
@@ -437,84 +562,96 @@ const Sourcing = () => {
               isAllSelected={selectedCandidates.length === candidates.length}
               jobModalOpen={toggleJobModal}
               filters={filters} // Pass filters as a prop
+              onClickFilter={() => toggleFilterDrawer(true)}
             />
-            <div className="sourcing-inner-div">
-              <div className="sourcing-inner-section-1">
-                {fetchMoreLoading
-                  ? Array(3)
-                      .fill("")
-                      .map((_, index) => (
-                        <ShimmerEffectCandidateCard key={index} />
-                      ))
-                  : candidateData?.map((item) => {
-                      return (
-                        <CandidateCard
-                          selectedCandidates={selectedCandidates}
-                          data={item}
-                          selectCandidateClick={(e) => {
-                            e.stopPropagation();
-                            handleCandidateSelect(item?._id);
-                          }}
-                          selectedCandidateId={selectedCandidate?._id}
-                          onClick={() => handleCandidateSelectContainer(item)}
-                        />
-                      );
-                    })}
-              </div>
-              <div className="sourcing-inner-section-2">
-                <CandidateDetails
-                  data={selectedCandidate}
-                  loading={fetchMoreLoading}
-                />
-              </div>
-            </div>
-
-            <div className="sourcing-pagination-div">
-              <div
-                className="display-flex align-center"
-                style={{ gap: 6, flex: 0.5 }}
-              >
-                <div
-                  className={`candidate-card-checkbox`}
-                  onClick={handleSelectAll}
-                >
-                  {selectedCandidates?.length === candidates?.length && (
-                    <Tick />
-                  )}
+            {candidateData?.length > 0 ? (
+              <div className="sourcing-inner-div">
+                <div className="sourcing-inner-section-1">
+                  {fetchMoreLoading
+                    ? Array(3)
+                        .fill("")
+                        .map((_, index) => (
+                          <ShimmerEffectCandidateCard key={index} />
+                        ))
+                    : candidateData?.map((item) => {
+                        return (
+                          <CandidateCard
+                            selectedCandidates={selectedCandidates}
+                            data={item}
+                            selectCandidateClick={(e) => {
+                              e.stopPropagation();
+                              handleCandidateSelect(item?._id);
+                            }}
+                            selectedCandidateId={selectedCandidate?._id}
+                            onClick={() => handleCandidateSelectContainer(item)}
+                          />
+                        );
+                      })}
                 </div>
-                <p className="font-12-regular color-dark-black">
-                  {perPageLimit * (currentPage - 1)} -{" "}
-                  {perPageLimit * currentPage > totalCandidateData
-                    ? totalCandidateData
-                    : perPageLimit * currentPage}{" "}
-                  of {totalCandidateData}
-                </p>
+
+                <div className="sourcing-inner-section-2">
+                  <CandidateDetails
+                    data={selectedCandidate}
+                    loading={fetchMoreLoading}
+                  />
+                </div>
               </div>
-              <div
-                style={{
-                  flex: 1,
-                  display: "flex",
-                  justifyContent: "center",
-                }}
-              >
-                <PaginationComponent
-                  totalPages={totalCandidatePages}
-                  currentPage={currentPage}
-                  onPageChange={handlePageChange}
-                />
+            ) : (
+              <div className="flex-1 display-flex align-center justify-center">
+                {emptyComponent()}
               </div>
-              <div style={{ flex: 0.5 }} />
-            </div>
+            )}
+
+            {candidateData?.length > 0 && (
+              <div className="sourcing-pagination-div">
+                <div
+                  className="display-flex align-center"
+                  style={{ gap: 6, flex: 0.5 }}
+                >
+                  <div
+                    className={`candidate-card-checkbox`}
+                    onClick={handleSelectAll}
+                  >
+                    {selectedCandidates?.length === candidateData?.length && (
+                      <Tick />
+                    )}
+                  </div>
+                  <p className="font-12-regular color-dark-black">
+                    {perPageLimit * (currentPage - 1)} -{" "}
+                    {perPageLimit * currentPage > totalCandidateData
+                      ? totalCandidateData
+                      : perPageLimit * currentPage}{" "}
+                    of {totalCandidateData}
+                  </p>
+                </div>
+                {totalCandidatePages > 1 && (
+                  <div
+                    style={{
+                      flex: 1,
+                      display: "flex",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <PaginationComponent
+                      totalPages={totalCandidatePages}
+                      currentPage={currentPage}
+                      onPageChange={handlePageChange}
+                    />
+                  </div>
+                )}
+                <div style={{ flex: 0.5 }} />
+              </div>
+            )}
           </div>
         )}
       </div>
 
-      <FilterModal
-        isOpen={isModalOpen}
-        onClose={toggleModal}
+      <FilterDrawer
         onApply={applyFilters}
         onReset={resetFilters}
         filters={filters}
+        isOpen={filterDrawerOpen}
+        onClose={() => toggleFilterDrawer(false)}
       />
       <AddToJobsModal
         isOpen={isJobModalOpen}
