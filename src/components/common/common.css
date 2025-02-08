@@ -19,7 +19,7 @@
   z-index: 99;
 }
 
-.common-input-field {
+.common-input {
   width: 100%;
   height: 38px;
   border: 1px solid #f3f4f4;
@@ -35,7 +35,7 @@
   transition: border 300ms ease;
 }
 
-.common-input-field::placeholder {
+.common-input::placeholder {
   color: var(--grey);
 }
 
@@ -376,7 +376,7 @@
   border-radius: 8px;
 }
 
-.common-input {
+.common-input-field {
   min-height: 100%;
   background-color: transparent;
   flex: 1;
@@ -390,7 +390,7 @@
   color: var(--dark-black);
 }
 
-.common-input::placeholder {
+.common-input-field::placeholder {
   color: var(--grey);
 }
 

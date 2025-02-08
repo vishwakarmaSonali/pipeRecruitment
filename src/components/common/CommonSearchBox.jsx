@@ -10,7 +10,7 @@ const CommonSearchBox = ({ value, onChange }) => {
         value={value}
         onChange={onChange}
         placeholder="Search"
-        className="common-input"
+        className="common-input-field"
       />
     </div>
   );

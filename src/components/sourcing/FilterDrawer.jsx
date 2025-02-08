@@ -129,7 +129,7 @@ const FilterDrawer = ({ isOpen, onClose, onApply, onReset, filters }) => {
               <input
                 type="text"
                 placeholder="Enter title"
-                className="filter-input"
+                className="common-input"
                 value={localFilters.jobTitle || ""}
                 onChange={(e) => handleInputChange(e, "jobTitle")}
                 onKeyDown={(e) => handleKeyDown(e, "jobTitle")}
@@ -158,7 +158,7 @@ const FilterDrawer = ({ isOpen, onClose, onApply, onReset, filters }) => {
               <input
                 type="text"
                 placeholder="Enter location"
-                className="filter-input"
+                className="common-input"
                 value={localFilters.location || ""}
                 onChange={(e) => handleInputChange(e, "location")}
                 onKeyDown={(e) => handleKeyDown(e, "location")}
@@ -185,7 +185,7 @@ const FilterDrawer = ({ isOpen, onClose, onApply, onReset, filters }) => {
               <input
                 type="text"
                 placeholder="Enter distance"
-                className="filter-input"
+                className="common-input"
                 value={localFilters.radius || ""}
                 onChange={(e) => handleInputChange(e, "radius")}
                 onKeyDown={(e) => {
@@ -223,7 +223,7 @@ const FilterDrawer = ({ isOpen, onClose, onApply, onReset, filters }) => {
               <input
                 type="text"
                 placeholder="Enter company"
-                className="filter-input"
+                className="common-input"
                 value={localFilters.company || ""}
                 onChange={(e) => handleInputChange(e, "company")}
                 onKeyDown={(e) => handleKeyDown(e, "company")}
@@ -253,7 +253,7 @@ const FilterDrawer = ({ isOpen, onClose, onApply, onReset, filters }) => {
                 <input
                   type="text"
                   placeholder="From"
-                  className="filter-input"
+                  className="common-input"
                   value={experience.from}
                   onChange={(e) => handleExperienceChange(e, "from")}
                   onKeyDown={(e) => {
@@ -265,7 +265,7 @@ const FilterDrawer = ({ isOpen, onClose, onApply, onReset, filters }) => {
                 <input
                   type="text"
                   placeholder="To"
-                  className="filter-input"
+                  className="common-input"
                   value={experience.to}
                   onChange={(e) => handleExperienceChange(e, "to")}
                   onKeyDown={(e) => {
@@ -295,7 +295,7 @@ const FilterDrawer = ({ isOpen, onClose, onApply, onReset, filters }) => {
               <input
                 type="text"
                 placeholder="Enter skill"
-                className="filter-input"
+                className="common-input"
                 value={localFilters.skill || ""}
                 onChange={(e) => handleInputChange(e, "skill")}
                 onKeyDown={(e) => handleKeyDown(e, "skill")}
@@ -351,7 +351,7 @@ const FilterDrawer = ({ isOpen, onClose, onApply, onReset, filters }) => {
               <input
                 type="text"
                 placeholder="Enter Major"
-                className="filter-input"
+                className="common-input"
                 value={localFilters.major || ""}
                 onChange={(e) => handleInputChange(e, "major")}
                 onKeyDown={(e) => handleKeyDown(e, "major")}
@@ -374,7 +374,7 @@ const FilterDrawer = ({ isOpen, onClose, onApply, onReset, filters }) => {
               <input
                 type="text"
                 placeholder="Enter School"
-                className="filter-input"
+                className="common-input"
                 value={localFilters.school || ""}
                 onChange={(e) => handleInputChange(e, "school")}
                 onKeyDown={(e) => handleKeyDown(e, "school")}
@@ -397,7 +397,7 @@ const FilterDrawer = ({ isOpen, onClose, onApply, onReset, filters }) => {
               <input
                 type="text"
                 placeholder="Enter Degree"
-                className="filter-input"
+                className="common-input"
                 value={localFilters.degree || ""}
                 onChange={(e) => handleInputChange(e, "degree")}
                 onKeyDown={(e) => handleKeyDown(e, "degree")}

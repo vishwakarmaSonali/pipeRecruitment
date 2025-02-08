@@ -17,7 +17,7 @@ const CommonTextInput = ({
       placeholder={placeholder}
       onFocus={onFocus}
       onBlur={onBlur}
-      className={`common-input-field ${error && "error-common-input"}`}
+      className={`common-input ${error && "error-common-input"}`}
     />
   );
 };

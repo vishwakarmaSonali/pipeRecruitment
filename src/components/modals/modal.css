@@ -4,22 +4,28 @@
 
 @keyframes shake {
   0% {
-    transform: translateX(0);
+    transform: rotate(0deg);
   }
-  20% {
-    transform: translateX(-5px);
+  15% {
+    transform: rotate(1.5deg);
   }
-  40% {
-    transform: translateX(5px);
+  30% {
+    transform: rotate(-1.5deg);
+  }
+  45% {
+    transform: rotate(1deg);
   }
   60% {
-    transform: translateX(-5px);
+    transform: rotate(-1deg);
   }
-  80% {
-    transform: translateX(5px);
+  75% {
+    transform: rotate(0.5deg);
+  }
+  90% {
+    transform: rotate(-0.5deg);
   }
   100% {
-    transform: translateX(0);
+    transform: rotate(0deg);
   }
 }
 
