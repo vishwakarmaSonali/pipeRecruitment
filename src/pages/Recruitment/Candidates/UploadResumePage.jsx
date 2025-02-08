@@ -171,7 +171,7 @@ const UploadResumePage = () => {
                                 </p>
                               )}
                               {!!file?.file?.size && (
-                                <p className="font-12-ubuntu color-dark-black">
+                                <p className="font-12-regular color-dark-black">
                                   {(file?.file?.size / 1024).toFixed(2)} KB
                                 </p>
                               )}
@@ -210,10 +210,10 @@ const UploadResumePage = () => {
                     }}
                   >
                     <Upload />
-                    <p className="font-12-ubuntu color-dark-black">
+                    <p className="font-12-regular color-dark-black">
                       Select a file to upload or drag and drop it here
                     </p>
-                    <p className="font-12-ubuntu color-grey">
+                    <p className="font-12-regular color-grey">
                       Supported file types .pdf, .doc, .docx, .rtf (max 20MB)
                     </p>
                   </div>

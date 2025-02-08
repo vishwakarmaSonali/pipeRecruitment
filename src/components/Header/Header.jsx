@@ -7,7 +7,6 @@ import SearchIcon from "../../assets/icons/sourcingIcons/search-normal.svg";
 import Add from "../../assets/icons/add.svg";
 import MessagesIcon from "../../assets/icons/sourcingIcons/messages.svg";
 import NotificationIcon from "../../assets/icons/sourcingIcons/notification.svg";
-import ProfileImage from "../../assets/images/profileImage.svg";
 import CollapsibleDrawer from "../Drawer/CollapsibleDrawer";
 import { ReactComponent as Menubar } from "../../assets/icons/menuBar.svg";
 import { ReactComponent as DownArrow } from "../../assets/icons/droparrow.svg";
@@ -31,7 +30,7 @@ import { useLocation, Link } from "react-router-dom";
 import { useModal } from "../common/ModalProvider";
 import SavedFiltersModal from "../modals/SavedFiltersModal";
 
-const Header = ({ title,onFilterSelect }) => {
+const Header = ({ title, onFilterSelect }) => {
   const location = useLocation();
   const [searchQuery, setSearchQuery] = useState("");
   const [isSearchExpanded, setIsSearchExpanded] = useState(false);
@@ -67,40 +66,40 @@ const Header = ({ title,onFilterSelect }) => {
     }
     setdrawerOpen(open);
   };
-    // ✅ Close dropdown when clicking outside
-    useEffect(() => {
-      function handleClickOutside(event) {
-        if (
-          dropdownRef.current &&
-          !dropdownRef.current.contains(event.target) &&
-          buttonRef.current &&
-          !buttonRef.current.contains(event.target)
-        ) {
-          setIsDropdownOpen(false);
-        }
+  // ✅ Close dropdown when clicking outside
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target) &&
+        buttonRef.current &&
+        !buttonRef.current.contains(event.target)
+      ) {
+        setIsDropdownOpen(false);
       }
-      document.addEventListener("mousedown", handleClickOutside);
-      return () => document.removeEventListener("mousedown", handleClickOutside);
-    }, []);
-  
-    // ✅ Position the dropdown correctly
-    const handleDropdownOpen = () => {
-      if (buttonRef.current) {
-        const rect = buttonRef.current.getBoundingClientRect();
-        setDropdownPosition({
-          top: rect.bottom + window.scrollY + 4,
-          left: rect.left + window.scrollX,
-        });
-      }
-      setIsDropdownOpen((prev) => !prev);
-    };
-    const handleDropdownSelect = (filterName) => {
-      setSelectedCategory(filterName);
-      setIsDropdownOpen(false);
-      if (onFilterSelect) {
-        onFilterSelect(filterName); // Call the function passed from Candidates component
-      }
-    };
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  // ✅ Position the dropdown correctly
+  const handleDropdownOpen = () => {
+    if (buttonRef.current) {
+      const rect = buttonRef.current.getBoundingClientRect();
+      setDropdownPosition({
+        top: rect.bottom + window.scrollY + 4,
+        left: rect.left + window.scrollX,
+      });
+    }
+    setIsDropdownOpen((prev) => !prev);
+  };
+  const handleDropdownSelect = (filterName) => {
+    setSelectedCategory(filterName);
+    setIsDropdownOpen(false);
+    if (onFilterSelect) {
+      onFilterSelect(filterName); // Call the function passed from Candidates component
+    }
+  };
   useEffect(() => {
     setActiveLink(location.pathname);
   }, [location.pathname]);
@@ -121,7 +120,6 @@ const Header = ({ title,onFilterSelect }) => {
     setSearchQuery("");
   };
 
- 
   return (
     <div className="w-full  overflow-hidden sticky-header ">
       {isSearchExpanded ? (
@@ -153,8 +151,8 @@ const Header = ({ title,onFilterSelect }) => {
           <button className="hamburger-button" onClick={toggleDrawer(true)}>
             <Menubar />
           </button>
-        {/* ✅ Dropdown in Title */}
-        {title === "Candidates" ? (
+          {/* ✅ Dropdown in Title */}
+          {title === "Candidates" ? (
             <div className="relative inline-block">
               <button
                 ref={buttonRef}
@@ -183,9 +181,9 @@ const Header = ({ title,onFilterSelect }) => {
                   >
                     <div>
                       <div className="candidate-dropdown-div">
-                      <p className="candidate-dropdown-heading">Favourite</p>
-                     <InfoCircle />
-                        </div>
+                        <p className="candidate-dropdown-heading">Favourite</p>
+                        <InfoCircle />
+                      </div>
                       {categories.map((item) => (
                         <button
                           key={item.label}
@@ -202,49 +200,56 @@ const Header = ({ title,onFilterSelect }) => {
                     </div>
 
                     <div className="">
-                    <div className="candidate-dropdown-div">
-                      <p className="candidate-dropdown-heading">Created by me</p>
-                     <InfoCircle />
-                        </div>
-                        {savedFilters.length > 0 ? (
-                      (showAllFilters ? savedFilters : savedFilters.slice(0, 3)).map((filter) => (
-                        <button
-                          key={filter.id}
-                          className="candidate-dropdown-list"
-                          // onClick={() => {
-                          //   setSelectedCategory(filter.name);
-                          //   setIsDropdownOpen(false);
-                          // }}
-                          onClick={() => handleDropdownSelect(filter.name)}
-                        >
-                          <StarOutline />
-                          {filter.name} {/* Show filter name */}
-                        </button>
-                      ))
-                    ) : (
-                      <p className="candidate-dropdown-list text-gray-500">
-                        No saved filters
-                      </p>
-                    )}
+                      <div className="candidate-dropdown-div">
+                        <p className="candidate-dropdown-heading">
+                          Created by me
+                        </p>
+                        <InfoCircle />
+                      </div>
+                      {savedFilters.length > 0 ? (
+                        (showAllFilters
+                          ? savedFilters
+                          : savedFilters.slice(0, 3)
+                        ).map((filter) => (
+                          <button
+                            key={filter.id}
+                            className="candidate-dropdown-list"
+                            // onClick={() => {
+                            //   setSelectedCategory(filter.name);
+                            //   setIsDropdownOpen(false);
+                            // }}
+                            onClick={() => handleDropdownSelect(filter.name)}
+                          >
+                            <StarOutline />
+                            {filter.name} {/* Show filter name */}
+                          </button>
+                        ))
+                      ) : (
+                        <p className="candidate-dropdown-list text-gray-500">
+                          No saved filters
+                        </p>
+                      )}
 
-                    {/* ✅ Toggle Button to Show All Filters */}
-                    {savedFilters.length > 3 && (
-                      <button
-                        className="candidate-dropdown-list text-customBlue font-medium"
-                        onClick={() => setShowAllFilters((prev) => !prev)}
-                      >
-                        {showAllFilters ? "Show less" : "See all"}
-                      </button>
-                    )}
+                      {/* ✅ Toggle Button to Show All Filters */}
+                      {savedFilters.length > 3 && (
+                        <button
+                          className="candidate-dropdown-list text-customBlue font-medium"
+                          onClick={() => setShowAllFilters((prev) => !prev)}
+                        >
+                          {showAllFilters ? "Show less" : "See all"}
+                        </button>
+                      )}
                     </div>
                     <div className="">
-                    <div className="candidate-dropdown-div justify-between">
-                     <div className="flex items-center gap-[10px]">
-                     <p className="candidate-dropdown-heading">Shared with me</p>
-                     <InfoCircle />
-                      </div>
-                     <DownArrow  fill="customBlue"/>
+                      <div className="candidate-dropdown-div justify-between">
+                        <div className="flex items-center gap-[10px]">
+                          <p className="candidate-dropdown-heading">
+                            Shared with me
+                          </p>
+                          <InfoCircle />
                         </div>
+                        <DownArrow fill="customBlue" />
+                      </div>
                       {/* {createdByMe.map((item) => (
                         <button
                           key={item.label}
@@ -258,10 +263,15 @@ const Header = ({ title,onFilterSelect }) => {
                           {item.label}
                         </button>
                       ))} */}
-                 
                     </div>
                     <div className="border-t border-gray-200 ">
-                      <button className="candidate-dropdown-list"  onClick={ (event) => (setModalVisibility("savedFiltersModalVisible", true),setIsDropdownOpen(false))}>
+                      <button
+                        className="candidate-dropdown-list"
+                        onClick={(event) => (
+                          setModalVisibility("savedFiltersModalVisible", true),
+                          setIsDropdownOpen(false)
+                        )}
+                      >
                         Manage filters
                       </button>
                     </div>
@@ -303,9 +313,9 @@ const Header = ({ title,onFilterSelect }) => {
             <div className="header-icons">
               <img src={NotificationIcon} alt="NotificationIcon" />
             </div>
-            <div className="profile-div">
+            {/* <div className="profile-div">
               <img src={ProfileImage} alt="ProfileImage" />
-            </div>
+            </div> */}
           </div>
         </div>
       )}
@@ -429,9 +439,7 @@ const Header = ({ title,onFilterSelect }) => {
       </Drawer>
       <SavedFiltersModal
         visible={modals?.savedFiltersModalVisible}
-        onClose={() =>
-          setModalVisibility("savedFiltersModalVisible", false)
-        }
+        onClose={() => setModalVisibility("savedFiltersModalVisible", false)}
       />
     </div>
   );

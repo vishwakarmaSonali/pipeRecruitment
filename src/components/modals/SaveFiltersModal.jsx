@@ -10,10 +10,10 @@ import { saveFilterAsync } from "../../store/filterSlice"; // Import Redux thunk
 const SaveFiltersModal = ({ visible, onClose, selectedConditions }) => {
   const dispatch = useDispatch();
   const { modals, setModalVisibility } = useModal();
-  
+
   const [isShared, setIsShared] = useState(false);
   const [filterName, setFilterName] = useState("");
-  
+
   const { loading, error, filters } = useSelector((state) => state.filters); // Get filters from Redux
 
   // Handle Save Filter
@@ -24,14 +24,24 @@ const SaveFiltersModal = ({ visible, onClose, selectedConditions }) => {
     }
 
     // Prevent duplicate filter names
-    const isDuplicate = filters?.some((filter) => filter.name.toLowerCase() === filterName.toLowerCase());
+    const isDuplicate = filters?.some(
+      (filter) => filter.name.toLowerCase() === filterName.toLowerCase()
+    );
     if (isDuplicate) {
-      alert("A filter with this name already exists. Please use a different name.");
+      alert(
+        "A filter with this name already exists. Please use a different name."
+      );
       return;
     }
 
     // Dispatch Redux action to save filter
-    dispatch(saveFilterAsync({ name: filterName, conditions: selectedConditions, shared: isShared }));
+    dispatch(
+      saveFilterAsync({
+        name: filterName,
+        conditions: selectedConditions,
+        shared: isShared,
+      })
+    );
 
     // Reset state
     setFilterName("");
@@ -49,7 +59,9 @@ const SaveFiltersModal = ({ visible, onClose, selectedConditions }) => {
       contentClassName="modal-content"
       backdropClassName="custom-backdrop"
     >
-      <div className={`common-modal-container ${modals?.animatedModal && "shake"}`}>
+      <div
+        className={`common-modal-container ${modals?.animatedModal && "shake"}`}
+      >
         <div className="display-column-24">
           {/* Header Section */}
           <div className="display-column-8">
@@ -79,10 +91,14 @@ const SaveFiltersModal = ({ visible, onClose, selectedConditions }) => {
             {/* Display Selected Conditions */}
             {selectedConditions.length > 0 && (
               <div className="selected-conditions mt-2">
-                <p className="text-sm font-medium text-gray-600">Selected Conditions:</p>
+                <p className="text-sm font-medium text-gray-600">
+                  Selected Conditions:
+                </p>
                 <ul className="mt-1 bg-gray-100 p-2 rounded-lg text-sm">
                   {selectedConditions?.map((condition, index) => (
-                    <li key={index} className="py-1 text-gray-700">- {condition}</li>
+                    <li key={index} className="py-1 text-gray-700">
+                      - {condition}
+                    </li>
                   ))}
                 </ul>
               </div>

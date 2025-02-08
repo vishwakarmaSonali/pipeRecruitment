@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import "./index.css";
-import { profileImage } from "../../helpers/assets";
+import { profileImage, dummyUserImage } from "../../helpers/assets";
 import Tooltip from "@mui/material/Tooltip";
 import IconButton from "@mui/material/IconButton";
 import { ReactComponent as ProfileAdd } from "../../assets/icons/sourcingIcons/profile-add.svg";
@@ -8,6 +8,8 @@ import { ReactComponent as JobIcon } from "../../assets/icons/sourcingIcons/brie
 import { ReactComponent as FolderAdd } from "../../assets/icons/sourcingIcons/folder-add.svg";
 import { ReactComponent as Download } from "../../assets/icons/sourcingIcons/download.svg";
 import { skills } from "./CandidateCard";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 
 export const languages = ["English", "Mandarin", "Spanish"];
 
@@ -56,19 +58,78 @@ export const educationData = [
   },
 ];
 
-const CandidateDetails = ({ data }) => {
+const CandidateDetails = ({ data, loading }) => {
+  const [validImageUrl, setValidImageUrl] = useState(true);
+
+  if (loading) {
+    return (
+      <div className="candidate-details-card">
+        <div className="display-flex-justify align-center">
+          <div className="display-flex align-center" style={{ gap: 8 }}>
+            <div className="candidate-card-profile-img">
+              <Skeleton circle width={"100%"} height={"100%"} />
+            </div>
+            <div className="display-column" style={{ gap: 4 }}>
+              <Skeleton width={100} height={16} />
+              <Skeleton width={300} height={14} />
+            </div>
+          </div>
+          <div className="display-flex" style={{ gap: 12 }}>
+            <Skeleton width={20} height={20} />
+            <Skeleton width={20} height={20} />
+            <Skeleton width={20} height={20} />
+            <Skeleton width={20} height={20} />
+          </div>
+        </div>
+        <div className="display-column" style={{ gap: 10 }}>
+          <Skeleton width={100} height={16} />
+          <Skeleton width={"100%"} height={50} />
+        </div>
+        <div className="divider-line" />
+        <div className="display-column" style={{ gap: 10 }}>
+          <Skeleton width={100} height={16} />
+          <Skeleton width={"100%"} height={100} />
+        </div>
+        <div className="divider-line" />
+        <div className="display-flex" style={{ gap: 12 }}>
+          <div className="display-column flex-1" style={{ gap: 10 }}>
+            <Skeleton width={100} height={16} />
+            <Skeleton width={"100%"} height={200} />
+          </div>
+
+          <div className="display-column flex-1" style={{ gap: 10 }}>
+            <Skeleton width={100} height={16} />
+            <Skeleton width={"100%"} height={200} />
+          </div>
+        </div>
+      </div>
+    );
+  }
   return (
     <div className="candidate-details-card">
       <div className="display-flex-justify align-center">
         <div className="display-flex align-center" style={{ gap: 8 }}>
           <div className="candidate-card-profile-img">
-            <img src={profileImage} alt="Profile" className="common-img" />
+            <img
+              src={
+                !!data?.photo_url && validImageUrl
+                  ? data?.photo_url
+                  : dummyUserImage
+              }
+              alt="Profile"
+              className="common-img"
+              onError={() => setValidImageUrl(false)}
+            />
           </div>
           <div className="display-column" style={{ gap: 4 }}>
-            <p className="font-16-medium color-dark-black">Anna Junglas</p>
-            <p className="font-14-regular color-dark-black">
-              Sr. UI UX Designer at Google Inc.
-            </p>
+            {data?.first_name && (
+              <p className="font-16-medium color-dark-black">
+                {data?.first_name} {data?.last_name}
+              </p>
+            )}
+            {data?.title && (
+              <p className="font-14-regular color-dark-black">{data?.title}</p>
+            )}
           </div>
         </div>
         <div className="display-flex" style={{ gap: 12 }}>
@@ -114,32 +175,52 @@ const CandidateDetails = ({ data }) => {
           Personal Details
         </p>
         <div className="display-column" style={{ gap: 8 }}>
-          <div className="display-flex">
-            <p className="font-14-medium color-dark-black flex-1">Location:</p>
-            <p className="font-14-regular color-dark-black flex-1">
-              San Francisco, CA
-            </p>
-          </div>
-          <div className="display-flex">
-            <p className="font-14-medium color-dark-black flex-1">Email:</p>
-            <p className="font-14-regular color-dark-black flex-1">
-              joanna.chou@example.com
-            </p>
-          </div>
-          <div className="display-flex">
-            <p className="font-14-medium color-dark-black flex-1">
-              Phone Number:
-            </p>
-            <p className="font-14-regular color-dark-black flex-1">
-              +1-415-123-4567
-            </p>
-          </div>
-          <div className="display-flex">
-            <p className="font-14-medium color-dark-black flex-1">Linked In:</p>
-            <a href="#" className="font-14-regular color-dark-black flex-1">
-              linkedin.com/in/joannachou
-            </a>
-          </div>
+          {data?.location && (
+            <div className="display-flex">
+              <p className="font-14-medium color-dark-black flex-1">
+                Location:
+              </p>
+              <p className="font-14-regular color-dark-black flex-1">
+                {data?.location}
+              </p>
+            </div>
+          )}
+          {data?.email && (
+            <div className="display-flex">
+              <p className="font-14-medium color-dark-black flex-1">Email:</p>
+              <a
+                href={`mailto:${data?.email}`}
+                className="font-14-regular color-dark-black flex-1"
+                target="_blank"
+              >
+                {data?.email}
+              </a>
+            </div>
+          )}
+          {data?.phone && (
+            <div className="display-flex">
+              <p className="font-14-medium color-dark-black flex-1">
+                Phone Number:
+              </p>
+              <p className="font-14-regular color-dark-black flex-1">
+                {data?.phone}
+              </p>
+            </div>
+          )}
+          {data?.linkedin_url && (
+            <div className="display-flex">
+              <p className="font-14-medium color-dark-black flex-1">
+                Linked In:
+              </p>
+              <a
+                href={data?.linkedin_url}
+                className="font-14-regular color-dark-black flex-1"
+                target="_blank"
+              >
+                {data?.linkedin_url}
+              </a>
+            </div>
+          )}
           <div className="display-flex">
             <p className="font-14-medium color-dark-black flex-1">Languages:</p>
             <div
@@ -159,30 +240,39 @@ const CandidateDetails = ({ data }) => {
       </div>
       <div className="divider-line" />
       <div className="display-flex" style={{ gap: 12 }}>
-        <div className="display-column flex-1" style={{ gap: 10 }}>
-          <p className="font-16-medium color-dark-black text-uppercase ">
-            Experience
-          </p>
-          <div className="display-column" style={{ gap: 16 }}>
-            {experienceData?.map((item, index) => {
-              return (
-                <div key={index} className="display-column" style={{ gap: 8 }}>
-                  <p className="font-14-medium color-dark-black">
-                    {item?.position} at {item?.company}
-                  </p>
-                  {item?.location && (
-                    <p className="font-14-regular color-dark-black">
-                      {item?.location}
+        {data?.employment_history && (
+          <div className="display-column flex-1" style={{ gap: 10 }}>
+            <p className="font-16-medium color-dark-black text-uppercase ">
+              Experience
+            </p>
+            <div className="display-column" style={{ gap: 16 }}>
+              {data?.employment_history?.map((item, index) => {
+                return (
+                  <div
+                    key={index}
+                    className="display-column"
+                    style={{ gap: 8 }}
+                  >
+                    {item?.title && (
+                      <p className="font-14-medium color-dark-black">
+                        {item?.title} at {item?.organization_name}
+                      </p>
+                    )}
+                    {item?.location && (
+                      <p className="font-14-regular color-dark-black">
+                        {item?.location}
+                      </p>
+                    )}
+                    <p className="font-14-regular color-grey">
+                      {item?.start_date} -{" "}
+                      {item?.end_date ? item?.end_date : "Present"}
                     </p>
-                  )}
-                  <p className="font-14-regular color-grey">
-                    {item?.started} - {item?.ended}
-                  </p>
-                </div>
-              );
-            })}
+                  </div>
+                );
+              })}
+            </div>
           </div>
-        </div>
+        )}
         <div className="display-column flex-1" style={{ gap: 10 }}>
           <p className="font-16-medium color-dark-black text-uppercase">
             Education

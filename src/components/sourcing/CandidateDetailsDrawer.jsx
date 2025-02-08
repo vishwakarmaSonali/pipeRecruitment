@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import { Drawer } from "@mui/material";
-import { profileImage } from "../../helpers/assets";
+import { dummyUserImage, profileImage } from "../../helpers/assets";
 import { ReactComponent as CloseIcon } from "../../assets/icons/drawerClose.svg";
 import { ReactComponent as ProfileAdd } from "../../assets/icons/sourcingIcons/profile-add.svg";
 import { ReactComponent as JobIcon } from "../../assets/icons/sourcingIcons/briefcase.svg";
@@ -11,6 +11,7 @@ import { skills } from "./CandidateCard";
 import { educationData, experienceData, languages } from "./CandidateDetails";
 
 const CandidateDetailsDrawer = ({ visible, onClose, data }) => {
+  const [validImageUrl, setValidImageUrl] = useState(true);
   return (
     <Drawer anchor="right" open={visible} onClose={onClose}>
       <div
@@ -29,9 +30,22 @@ const CandidateDetailsDrawer = ({ visible, onClose, data }) => {
             <div className="display-flex-justify align-center">
               <div className="display-flex align-center" style={{ gap: 8 }}>
                 <div className="candidate-details-drawer-profile">
-                  <img src={profileImage} className="common-img" />
+                  <img
+                    src={
+                      !!data?.photo_url && validImageUrl
+                        ? data?.photo_url
+                        : dummyUserImage
+                    }
+                    alt="Profile"
+                    className="common-img"
+                    onError={() => setValidImageUrl(false)}
+                  />
                 </div>
-                <p className="font-20-medium">Joanna Chou</p>
+                {data?.first_name && (
+                  <p className="font-20-medium">
+                    {data?.first_name} {data?.last_name}
+                  </p>
+                )}
               </div>
               <div className="display-flex" style={{ gap: 12 }}>
                 <Tooltip title="Add to candidate">
@@ -79,41 +93,54 @@ const CandidateDetailsDrawer = ({ visible, onClose, data }) => {
               </p>
               <div className="divider-line" />
               <div className="display-column" style={{ gap: 8 }}>
-                <div className="display-flex">
-                  <p className="font-14-medium color-dark-black flex-1">
-                    Location:
-                  </p>
-                  <p className="font-14-regular color-dark-black flex-1">
-                    San Francisco, CA
-                  </p>
-                </div>
-                <div className="display-flex">
-                  <p className="font-14-medium color-dark-black flex-1">
-                    Email:
-                  </p>
-                  <p className="font-14-regular color-dark-black flex-1">
-                    joanna.chou@example.com
-                  </p>
-                </div>
-                <div className="display-flex">
-                  <p className="font-14-medium color-dark-black flex-1">
-                    Phone Number:
-                  </p>
-                  <p className="font-14-regular color-dark-black flex-1">
-                    +1-415-123-4567
-                  </p>
-                </div>
-                <div className="display-flex">
-                  <p className="font-14-medium color-dark-black flex-1">
-                    Linked In:
-                  </p>
-                  <a
-                    href="#"
-                    className="font-14-regular color-dark-black flex-1"
-                  >
-                    linkedin.com/in/joannachou
-                  </a>
-                </div>
+                {data?.location && (
+                  <div className="display-flex">
+                    <p className="font-14-medium color-dark-black flex-1">
+                      Location:
+                    </p>
+                    <p className="font-14-regular color-dark-black flex-1">
+                      {data?.location}
+                    </p>
+                  </div>
+                )}
+                {data?.email && (
+                  <div className="display-flex">
+                    <p className="font-14-medium color-dark-black flex-1">
+                      Email:
+                    </p>
+                    <a
+                      href={`mailto:${data?.email}`}
+                      className="font-14-regular color-dark-black flex-1"
+                      target="_blank"
+                    >
+                      {data?.email}
+                    </a>
+                  </div>
+                )}
+                {data?.phone && (
+                  <div className="display-flex">
+                    <p className="font-14-medium color-dark-black flex-1">
+                      Phone Number:
+                    </p>
+                    <p className="font-14-regular color-dark-black flex-1">
+                      {data?.phone}
+                    </p>
+                  </div>
+                )}
+                {data?.linkedin_url && (
+                  <div className="display-flex">
+                    <p className="font-14-medium color-dark-black flex-1">
+                      Linked In:
+                    </p>
+                    <a
+                      href={data?.linkedin_url}
+                      className="font-14-regular color-dark-black flex-1"
+                      target="_blank"
+                    >
+                      {data?.linkedin_url}
+                    </a>
+                  </div>
+                )}
                 <div className="display-flex">
                   <p className="font-14-medium color-dark-black flex-1">
                     Languages:
@@ -133,35 +160,40 @@ const CandidateDetailsDrawer = ({ visible, onClose, data }) => {
                 </div>
               </div>
             </div>
-            <div className="candidate-details-drawer-common-div">
-              <p className="font-16-medium color-dark-black text-uppercase">
-                Experience
-              </p>
-              <div className="divider-line" />
-              <div className="display-column" style={{ gap: 16 }}>
-                {experienceData?.map((item, index) => {
-                  return (
-                    <div
-                      key={index}
-                      className="display-column"
-                      style={{ gap: 8 }}
-                    >
-                      <p className="font-14-medium color-dark-black">
-                        {item?.position} at {item?.company}
-                      </p>
-                      {item?.location && (
-                        <p className="font-14-regular color-dark-black">
-                          {item?.location}
+            {data?.employment_history && (
+              <div className="candidate-details-drawer-common-div">
+                <p className="font-16-medium color-dark-black text-uppercase">
+                  Experience
+                </p>
+                <div className="divider-line" />
+                <div className="display-column" style={{ gap: 16 }}>
+                  {data?.employment_history?.map((item, index) => {
+                    return (
+                      <div
+                        key={index}
+                        className="display-column"
+                        style={{ gap: 8 }}
+                      >
+                        {item?.title && (
+                          <p className="font-14-medium color-dark-black">
+                            {item?.title} at {item?.organization_name}
+                          </p>
+                        )}
+                        {item?.location && (
+                          <p className="font-14-regular color-dark-black">
+                            {item?.location}
+                          </p>
+                        )}
+                        <p className="font-14-regular color-grey">
+                          {item?.start_date} -{" "}
+                          {item?.end_date ? item?.end_date : "Present"}
                         </p>
-                      )}
-                      <p className="font-14-regular color-grey">
-                        {item?.started} - {item?.ended}
-                      </p>
-                    </div>
-                  );
-                })}
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
-            </div>
+            )}
             <div className="candidate-details-drawer-common-div">
               <p className="font-16-medium color-dark-black text-uppercase">
                 Education
