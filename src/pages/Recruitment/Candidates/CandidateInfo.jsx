@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useCallback, useMemo } from "react";
 import "./Candidates.css";
-import Sidebar from "../../../components/sidebar/Sidebar";
-import Header from "../../../components/Header/Header";
+
 import { ReactComponent as ResumeIcon } from "./assets/resume.svg";
 import { ReactComponent as JobIcon } from "./assets/jobs.svg";
 import { ReactComponent as InboxIcon } from "./assets/inbox.svg";
@@ -12,59 +11,60 @@ import { ReactComponent as AttachmentIcon } from "./assets/attachment.svg";
 import { ReactComponent as LabelIcon } from "./assets/label.svg";
 import { ReactComponent as AddIcon } from "./assets/add.svg";
 import { ReactComponent as MoreIcon } from "./assets/more.svg";
+import { ReactComponent as SettingIcon } from "./assets/setting.svg";
+import { ReactComponent as AddJobIcon } from "./assets/addJob.svg";
+import { ReactComponent as AddFolderIcon } from "./assets/addFolder.svg";
+import { ReactComponent as MarkProfileIcon } from "./assets/profile-tick.svg";
+import { ReactComponent as DownloadIcon } from "./assets/download.svg";
+import { ReactComponent as ArchiveIcon } from "./assets/archive.svg";
 import { Avatar } from "@mui/material";
 import { getRandomColor } from "../../../helpers/utils";
-import { update } from "lodash";
+import { Menu } from "@mui/material";
+import Navbar from "../../../components/navbar/Navbar";
+import { commonStyle } from "../../../helpers/config";
 
 const candidateInfoTabs = [
   {
     id: 1,
     name: "Summary",
-    icon: <ResumeIcon />,
+    // icon: <ResumeIcon />,
     selected: true,
   },
   {
     id: 2,
     name: "Resume",
-    icon: <ResumeIcon />,
+    // icon: <ResumeIcon />,
     selected: false,
   },
   {
     id: 3,
     name: "Jobs",
-    icon: <JobIcon />,
+    // icon: <JobIcon />,
     count: "04",
     selected: false,
   },
   {
     id: 4,
     name: "Inbox",
-    icon: <InboxIcon />,
+    // icon: <InboxIcon />,
     selected: false,
   },
   {
     id: 5,
     name: "Calendar",
-    icon: <CalendarIcon />,
+    // icon: <CalendarIcon />,
     selected: false,
   },
   {
     id: 6,
     name: "Enrich User Profile",
-    icon: <PenIcon />,
+    // icon: <PenIcon />,
     selected: false,
   },
   {
     id: 7,
-    name: "Notes",
-    icon: <NoteIcon />,
-    count: "02",
-    selected: false,
-  },
-  {
-    id: 8,
     name: "Attachments",
-    icon: <AttachmentIcon />,
+    // icon: <AttachmentIcon />,
     count: "06",
     selected: false,
   },
@@ -85,6 +85,16 @@ const CandidateInfo = () => {
   const randomColor = getRandomColor();
   const [candidateTabs, setCandidateTabs] = useState(candidateInfoTabs);
   const [selectedCandidateTab, setSelectedCandidateTab] = useState("Summary");
+  const [anchorEl, setAnchorEl] = useState(null);
+  const open = Boolean(anchorEl);
+
+  const handleMenuClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
 
   const selectedTabHandler = (id) => {
     const updatedData = candidateTabs?.map((item) => {
@@ -100,11 +110,8 @@ const CandidateInfo = () => {
     setCandidateTabs(updatedData);
   };
   return (
-    <div
-      className="w-full h-screen overflow-hidden overscroll-none"
-      style={{ boxSizing: "border-box", display: "flex" }}
-    >
-      <Sidebar />
+    <div className="sourcing-main-container">
+      <Navbar />
       <div
         className="overflow-auto scroll-width-none "
         style={{
@@ -114,7 +121,6 @@ const CandidateInfo = () => {
           backgroundColor: "#fff",
         }}
       >
-        <Header />
         <div className="candidate-info-header">
           <div className="display-flex-justify align-center">
             <div className="display-flex" style={{ gap: 10 }}>
@@ -159,7 +165,7 @@ const CandidateInfo = () => {
                     }`}
                     onClick={() => selectedTabHandler(item?.id)}
                   >
-                    {React.cloneElement(
+                    {/* {React.cloneElement(
                       item?.icon,
                       item?.name !== "Attachments"
                         ? {
@@ -168,7 +174,7 @@ const CandidateInfo = () => {
                         : {
                             stroke: item?.selected ? "#151B23" : "#797979",
                           }
-                    )}
+                    )} */}
                     {item?.name}{" "}
                     {item?.count && (
                       <span className="candidate-info-tab-count">
@@ -179,9 +185,41 @@ const CandidateInfo = () => {
                 );
               })}
             </div>
-            <button>
-              <MoreIcon />
-            </button>
+            <div className="display-flex align-center" style={{ gap: 18 }}>
+              <button className="customize-btn">
+                Customize
+                <SettingIcon />
+              </button>
+              <button onClick={handleMenuClick}>
+                <MoreIcon />
+              </button>
+              <Menu
+                anchorEl={anchorEl}
+                open={open}
+                onClose={handleMenuClose}
+                PaperProps={{
+                  sx: commonStyle.sx,
+                }}
+              >
+                <div className="display-column">
+                  <button className="common-menu-item-btn">
+                    <AddJobIcon /> Add to Jobs
+                  </button>
+                  <button className="common-menu-item-btn">
+                    <AddFolderIcon /> Add to Folder
+                  </button>
+                  <button className="common-menu-item-btn">
+                    <MarkProfileIcon /> Mark as Employee
+                  </button>
+                  <button className="common-menu-item-btn">
+                    <DownloadIcon /> Download Resume
+                  </button>
+                  <button className="common-menu-item-btn">
+                    <ArchiveIcon /> Archive
+                  </button>
+                </div>
+              </Menu>
+            </div>
           </div>
         </div>
       </div>
