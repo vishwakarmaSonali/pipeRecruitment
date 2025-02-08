@@ -19,7 +19,7 @@
   z-index: 99;
 }
 
-.common-input {
+.common-input-field {
   width: 100%;
   height: 38px;
   border: 1px solid #f3f4f4;
@@ -35,7 +35,7 @@
   transition: border 300ms ease;
 }
 
-.common-input::placeholder {
+.common-input-field::placeholder {
   color: var(--grey);
 }
 
@@ -297,8 +297,17 @@
   display: flex;
   align-items: center;
   gap: 6px;
+}
+
+.normal-list-item-div {
+  padding: 12px;
   background-color: transparent;
+  cursor: pointer;
   transition: background-color 300ms ease;
+}
+
+.normal-list-item-div:hover {
+  background-color: #1761d80f;
 }
 
 .job-list-item-div:hover {
@@ -354,4 +363,51 @@
   background: #007bff;
   color: white;
   font-weight: bold;
+}
+
+.search-box-div {
+  min-height: 40px;
+  max-height: 40px;
+  padding: 0px 10px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background-color: #f3f4f4;
+  border-radius: 8px;
+}
+
+.common-input {
+  min-height: 100%;
+  background-color: transparent;
+  flex: 1;
+  border: none;
+  padding: 0px;
+  outline: none;
+  font-family: "Ubuntu";
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 16.09px;
+  color: var(--dark-black);
+}
+
+.common-input::placeholder {
+  color: var(--grey);
+}
+
+.jon-status-list-div {
+  padding: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.dropdown-checkbox {
+  width: 14px;
+  height: 14px;
+  border: 1px solid #151b23;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 4px;
+  cursor: pointer;
 }

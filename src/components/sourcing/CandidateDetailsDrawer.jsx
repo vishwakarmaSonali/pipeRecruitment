@@ -9,17 +9,37 @@ import { ReactComponent as Download } from "../../assets/icons/sourcingIcons/dow
 import Tooltip from "@mui/material/Tooltip";
 import { skills } from "./CandidateCard";
 import { educationData, experienceData, languages } from "./CandidateDetails";
+import { useModal } from "../common/ModalProvider";
 
-const CandidateDetailsDrawer = ({ visible, onClose, data }) => {
+const CandidateDetailsDrawer = ({
+  visible,
+  onClose,
+  data,
+  onClickAddJob,
+  onClickAddFolder,
+}) => {
   const [validImageUrl, setValidImageUrl] = useState(true);
+  const { modals, setModalVisibility } = useModal();
+
+  const handleBackdropClick = () => {
+    setModalVisibility("animatedModal", true);
+    setTimeout(() => {
+      setModalVisibility("animatedModal", false);
+    }, 600);
+  };
+
   return (
-    <Drawer anchor="right" open={visible} onClose={onClose}>
+    <Drawer anchor="right" open={visible} onClose={handleBackdropClick}>
       <div
         role="presentation"
         onKeyDown={onClose}
-        className="candidate-details-drawer"
+        className="candidate-details-drawer scroll-width-none"
       >
-        <div className="candidate-details-drawer-container">
+        <div
+          className={`candidate-details-drawer-container ${
+            modals?.animatedModal && "shake-rotate"
+          }`}
+        >
           <div className="display-flex-justify align-center position-sticy-drawer-header">
             <p className="font-24-medium color-dark-black">Candidate Details</p>
             <button onClick={onClose}>
@@ -53,12 +73,24 @@ const CandidateDetailsDrawer = ({ visible, onClose, data }) => {
                     <ProfileAdd />
                   </button>
                 </Tooltip>
-                <Tooltip title="Add to Job">
+                <Tooltip
+                  title="Add to Job"
+                  onClick={() => {
+                    onClose();
+                    onClickAddJob();
+                  }}
+                >
                   <button>
                     <JobIcon />
                   </button>
                 </Tooltip>
-                <Tooltip title="Add to Folder">
+                <Tooltip
+                  title="Add to Folder"
+                  onClick={() => {
+                    onClose();
+                    onClickAddFolder();
+                  }}
+                >
                   <button>
                     <FolderAdd />
                   </button>

@@ -10,6 +10,9 @@ export const ModalProvider = ({ children }) => {
     smartGenerateModalVisible: false,
     uploadResumeCandidateModalVisible: false,
     saveFiltersModalVisible: false,
+    addToJobsModalVisible: false,
+    addToFolderModalVisible: false,
+    createFolderModalVisible: false,
   });
 
   const isAnyModalOpen = useMemo(
