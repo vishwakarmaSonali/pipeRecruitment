@@ -37,12 +37,94 @@ th {
   opacity: 1;
 }
 
-.candidate-details-main-div {
-  border: 1px solid #d7d7d7;
+.candidate-details-main-container {
+  border: 1px solid rgba(215, 215, 215, 1);
+  background-color: var(--white);
   border-radius: 12px;
-  background-color: #ffffff;
   padding: 12px;
   display: flex;
   flex-direction: column;
   gap: 12px;
+  width: 100%;
+}
+
+.details-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+
+.add-details-btn,
+.edit-details-btn {
+  font-family: "Ubuntu";
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 13.79px;
+  color: #1761d8;
+  align-self: start;
+}
+
+.edit-details-btn {
+  display: none;
+  transition: display 300ms ease;
+}
+
+.save-btn {
+  background: green;
+}
+
+.edit-input {
+  padding: 4px;
+  font-size: 14px;
+  margin-right: 5px;
+}
+
+.detail-row:hover .edit-details-btn {
+  display: inline-block;
+}
+
+.text-uppercase {
+  text-transform: uppercase;
+}
+
+.w-h-26 {
+  width: 26px;
+  height: 26px;
+  border-radius: 100px;
+  background-color: var(--grey);
+  overflow: hidden;
+}
+
+.candidate-info-skill-item {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 6px;
+  border-radius: 6px;
+  background-color: #1761d81a;
+  font-family: "Ubuntu";
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 16.09px;
+  color: var(--dark-black);
+  gap: 6px;
+}
+
+.job-type-label {
+  padding: 5px 10px;
+  background-color: #1761d81f;
+  border-radius: 100px;
+  font-family: "Ubuntu";
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 13.79px;
+  text-align: center;
+  color: var(--dark-black);
 }
