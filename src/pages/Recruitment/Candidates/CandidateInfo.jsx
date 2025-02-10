@@ -29,6 +29,8 @@ import CandidateInfoSkills from "../../../components/candidate/CandidateInfoSkil
 import CandidateInfoExperience from "../../../components/candidate/CandidateInfoExperience";
 import CandidateInfoJobs from "../../../components/candidate/CandidateInfoJobs";
 import CandidateInfoHistory from "../../../components/candidate/CandidateInfoHistory";
+import CandidateInfoModal from "../../../components/modals/CandidateInfoModal";
+import { useModal } from "../../../components/common/ModalProvider";
 
 const candidateInfoTabs = [
   {
@@ -266,6 +268,7 @@ const historyData = [
 ];
 
 const CandidateInfo = () => {
+  const { modals, setModalVisibility } = useModal();
   const [candidateTabs, setCandidateTabs] = useState(candidateInfoTabs);
   const [selectedCandidateTab, setSelectedCandidateTab] = useState("Summary");
   const [anchorEl, setAnchorEl] = useState(null);
@@ -366,7 +369,12 @@ const CandidateInfo = () => {
             })}
           </div>
           <div className="display-flex align-center" style={{ gap: 18 }}>
-            <button className="customize-btn">
+            <button
+              className="customize-btn"
+              onClick={() =>
+                setModalVisibility("candidateInfoModalVisible", true)
+              }
+            >
               Customize
               <SettingIcon />
             </button>
@@ -478,6 +486,10 @@ const CandidateInfo = () => {
           </div>
         )}
       </div>
+      <CandidateInfoModal
+        visible={modals?.candidateInfoModalVisible}
+        onClose={() => setModalVisibility("candidateInfoModalVisible", false)}
+      />
     </div>
   );
 };

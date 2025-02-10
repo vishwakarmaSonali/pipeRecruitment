@@ -56,6 +56,21 @@
   transition: all 250ms ease;
 }
 
+.candidate-info-common-modal {
+  background-color: transparent;
+  max-height: 90%;
+  position: fixed; /* Fix position to ensure it stays centered */
+  width: auto;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%) !important; /* Center the modal */
+  margin: 0;
+  min-width: calc(100% - 120px) !important;
+  margin-right: auto;
+  margin-left: auto;
+  transition: all 250ms ease;
+}
+
 .common-modal-container {
   max-width: 400px;
   min-width: 400px;
@@ -67,12 +82,25 @@
   overflow: auto;
 }
 
+.candidate-info-modal-container {
+  width: 100%;
+  background-color: #fff;
+  border-radius: 14px;
+  box-sizing: border-box;
+  box-shadow: -1px 4px 18px 0px #0000002e;
+  position: relative;
+  min-height: calc(100vh - 80px);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
 .overflow-visible {
   overflow: visible;
 }
 
 .custom-backdrop {
-  background-color: #00000080;
+  background: rgba(0, 0, 0, 1);
   transition: opacity 0.3s ease-in-out;
 }
 
@@ -592,4 +620,37 @@ textarea,
   display: flex;
   align-items: center;
   gap: 8px;
+}
+
+.modal-backdrop.show {
+  opacity: 0.6;
+}
+
+.close-previous-next-btn-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  background-color: transparent;
+  position: absolute;
+  right: -35px;
+  top: 16px;
+  z-index: 999;
+}
+
+.modal-close-btn,
+.modal-next-btn,
+.modal-previous-btn {
+  transition: all 300ms ease;
+}
+
+.modal-close-btn:hover {
+  transform: scale(1.1);
+}
+
+.modal-next-btn:hover {
+  transform: translateX(5px);
+}
+
+.modal-previous-btn:hover {
+  transform: translateX(-5px);
 }

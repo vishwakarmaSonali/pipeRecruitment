@@ -13,6 +13,7 @@ export const ModalProvider = ({ children }) => {
     addToJobsModalVisible: false,
     addToFolderModalVisible: false,
     createFolderModalVisible: false,
+    candidateInfoModalVisible: false,
   });
 
   const isAnyModalOpen = useMemo(
