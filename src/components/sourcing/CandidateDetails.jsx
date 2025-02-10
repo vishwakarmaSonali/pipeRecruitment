@@ -58,7 +58,12 @@ export const educationData = [
   },
 ];
 
-const CandidateDetails = ({ data, loading }) => {
+const CandidateDetails = ({
+  data,
+  loading,
+  onClickAddJob,
+  onClickAddFolder,
+}) => {
   const [validImageUrl, setValidImageUrl] = useState(true);
 
   if (loading) {
@@ -139,11 +144,11 @@ const CandidateDetails = ({ data, loading }) => {
             </button>
           </Tooltip>
           <Tooltip title="Add to Job">
-            <button>
+            <button onClick={onClickAddJob}>
               <JobIcon />
             </button>
           </Tooltip>
-          <Tooltip title="Add to Folder">
+          <Tooltip title="Add to Folder" onClick={onClickAddFolder}>
             <button>
               <FolderAdd />
             </button>

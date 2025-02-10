@@ -1,12 +1,21 @@
 import React, { useState, useEffect, useRef } from "react";
 import "./index.css";
-import CustomDropdown from "../CustomDropdown/CustomDropdown";
 import { ReactComponent as CloseIcon } from "../../assets/icons/drawerClose.svg";
 import { Drawer } from "@mui/material";
+import CommonDropdown from "../common/CommonDropdown";
+import { useModal } from "../common/ModalProvider";
 
 const FilterDrawer = ({ isOpen, onClose, onApply, onReset, filters }) => {
+  const { modals, setModalVisibility } = useModal();
+
+  const handleBackdropClick = () => {
+    setModalVisibility("animatedModal", true);
+    setTimeout(() => {
+      setModalVisibility("animatedModal", false);
+    }, 600);
+  };
+
   const [localFilters, setLocalFilters] = useState(filters);
-  const [isVisible, setIsVisible] = useState(isOpen);
 
   const [radius, setRadius] = useState("");
   const [industry, setIndustry] = useState([]);
@@ -94,9 +103,17 @@ const FilterDrawer = ({ isOpen, onClose, onApply, onReset, filters }) => {
   };
 
   return (
-    <Drawer anchor="right" open={isOpen} onClose={onClose}>
-      <div role="presentation" className="candidate-details-drawer">
-        <div className="py-[20px] h-full display-column" style={{ gap: 20 }}>
+    <Drawer anchor="right" open={isOpen} onClose={handleBackdropClick}>
+      <div
+        role="presentation"
+        className={`candidate-details-drawer scroll-width-none`}
+      >
+        <div
+          className={`py-[20px] h-full display-column scroll-width-none ${
+            modals?.animatedModal && "shake-rotate"
+          }`}
+          style={{ gap: 20, overflow: "hidden" }}
+        >
           <div className="flex justify-between items-center">
             <h2 className="font-24-medium color-dark-black">Filters</h2>
             <button onClick={onClose}>
@@ -112,7 +129,7 @@ const FilterDrawer = ({ isOpen, onClose, onApply, onReset, filters }) => {
               <input
                 type="text"
                 placeholder="Enter title"
-                className="filter-input"
+                className="common-input"
                 value={localFilters.jobTitle || ""}
                 onChange={(e) => handleInputChange(e, "jobTitle")}
                 onKeyDown={(e) => handleKeyDown(e, "jobTitle")}
@@ -141,7 +158,7 @@ const FilterDrawer = ({ isOpen, onClose, onApply, onReset, filters }) => {
               <input
                 type="text"
                 placeholder="Enter location"
-                className="filter-input"
+                className="common-input"
                 value={localFilters.location || ""}
                 onChange={(e) => handleInputChange(e, "location")}
                 onKeyDown={(e) => handleKeyDown(e, "location")}
@@ -168,7 +185,7 @@ const FilterDrawer = ({ isOpen, onClose, onApply, onReset, filters }) => {
               <input
                 type="text"
                 placeholder="Enter distance"
-                className="filter-input"
+                className="common-input"
                 value={localFilters.radius || ""}
                 onChange={(e) => handleInputChange(e, "radius")}
                 onKeyDown={(e) => {
@@ -177,7 +194,7 @@ const FilterDrawer = ({ isOpen, onClose, onApply, onReset, filters }) => {
                   }
                 }}
               />
-              <CustomDropdown
+              <CommonDropdown
                 options={radiusOptions}
                 placeholder="Select Radius"
                 selectedValue={radius}
@@ -206,7 +223,7 @@ const FilterDrawer = ({ isOpen, onClose, onApply, onReset, filters }) => {
               <input
                 type="text"
                 placeholder="Enter company"
-                className="filter-input"
+                className="common-input"
                 value={localFilters.company || ""}
                 onChange={(e) => handleInputChange(e, "company")}
                 onKeyDown={(e) => handleKeyDown(e, "company")}
@@ -236,7 +253,7 @@ const FilterDrawer = ({ isOpen, onClose, onApply, onReset, filters }) => {
                 <input
                   type="text"
                   placeholder="From"
-                  className="filter-input"
+                  className="common-input"
                   value={experience.from}
                   onChange={(e) => handleExperienceChange(e, "from")}
                   onKeyDown={(e) => {
@@ -248,7 +265,7 @@ const FilterDrawer = ({ isOpen, onClose, onApply, onReset, filters }) => {
                 <input
                   type="text"
                   placeholder="To"
-                  className="filter-input"
+                  className="common-input"
                   value={experience.to}
                   onChange={(e) => handleExperienceChange(e, "to")}
                   onKeyDown={(e) => {
@@ -278,7 +295,7 @@ const FilterDrawer = ({ isOpen, onClose, onApply, onReset, filters }) => {
               <input
                 type="text"
                 placeholder="Enter skill"
-                className="filter-input"
+                className="common-input"
                 value={localFilters.skill || ""}
                 onChange={(e) => handleInputChange(e, "skill")}
                 onKeyDown={(e) => handleKeyDown(e, "skill")}
@@ -304,7 +321,7 @@ const FilterDrawer = ({ isOpen, onClose, onApply, onReset, filters }) => {
               <label className="font-12-regular color-dark-black">
                 Industry
               </label>
-              <CustomDropdown
+              <CommonDropdown
                 options={industryOptions}
                 placeholder="Select Industry"
                 selectedValue={industry}
@@ -334,7 +351,7 @@ const FilterDrawer = ({ isOpen, onClose, onApply, onReset, filters }) => {
               <input
                 type="text"
                 placeholder="Enter Major"
-                className="filter-input"
+                className="common-input"
                 value={localFilters.major || ""}
                 onChange={(e) => handleInputChange(e, "major")}
                 onKeyDown={(e) => handleKeyDown(e, "major")}
@@ -357,7 +374,7 @@ const FilterDrawer = ({ isOpen, onClose, onApply, onReset, filters }) => {
               <input
                 type="text"
                 placeholder="Enter School"
-                className="filter-input"
+                className="common-input"
                 value={localFilters.school || ""}
                 onChange={(e) => handleInputChange(e, "school")}
                 onKeyDown={(e) => handleKeyDown(e, "school")}
@@ -380,7 +397,7 @@ const FilterDrawer = ({ isOpen, onClose, onApply, onReset, filters }) => {
               <input
                 type="text"
                 placeholder="Enter Degree"
-                className="filter-input"
+                className="common-input"
                 value={localFilters.degree || ""}
                 onChange={(e) => handleInputChange(e, "degree")}
                 onKeyDown={(e) => handleKeyDown(e, "degree")}
@@ -406,7 +423,11 @@ const FilterDrawer = ({ isOpen, onClose, onApply, onReset, filters }) => {
           <div className="flex justify-between space-x-4">
             <button
               className="w-1/2 border border-buttonBLue text-buttonBLue  flex justify-center items-center py-[12px] max-h-[40px] rounded-[8px] btn-text"
-              onClick={onReset}
+              onClick={() => {
+                setRadius("");
+                setIndustry([]);
+                onReset();
+              }}
             >
               Reset
             </button>

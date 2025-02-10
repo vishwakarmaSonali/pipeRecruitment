@@ -189,3 +189,18 @@ export const resumeUploadedData = [
     },
   },
 ];
+
+export const commonStyle = {
+  sx: {
+    borderRadius: "12px",
+    boxShadow: "-1px 4px 18px 0px #0000002E",
+    width: "180px",
+    padding: "0px !important",
+    marginTop: "10px",
+    fontFamily: "'Ubuntu', sans-serif",
+    fontSize: "12px",
+    lineHeight: "13.79px",
+    color: "#151B23",
+    boxSizing: "border-box !important",
+  },
+};

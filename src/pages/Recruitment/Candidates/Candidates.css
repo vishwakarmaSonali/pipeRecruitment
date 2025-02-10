@@ -285,3 +285,47 @@
   line-height: 16.09px;
   color: #1761d8;
 }
+
+.customize-btn {
+  min-height: 36px;
+  max-height: 36px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 1px solid #1761d8;
+  font-family: "Ubuntu";
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 16.09px;
+  color: #1761d8;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.common-menu-item-btn {
+  padding: 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: "Ubuntu";
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 13.79px;
+  color: var(--dark-black);
+  background-color: transparent;
+  transition: background-color 300ms ease;
+}
+
+.common-menu-item-btn:hover {
+  background-color: rgba(23, 97, 216, 0.06);
+}
+
+.css-1toxriw-MuiList-root-MuiMenu-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  position: relative;
+  padding-bottom: 0px !important;
+  padding-top: 0px !important;
+  outline: 0;
+}

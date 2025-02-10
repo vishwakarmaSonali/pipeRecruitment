@@ -1,5 +1,7 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { ReactComponent as DropArrow } from "../../assets/icons/arrowDown.svg";
+import { useModal } from "./ModalProvider";
+import { ReactComponent as Tick } from "../../assets/icons/sourcingIcons/tick.svg";
 
 const CommonDropdown = ({
   options,
@@ -7,7 +9,11 @@ const CommonDropdown = ({
   selectedValue,
   onChange,
   optionKey,
+  type,
+  handleMultiSelectHandler,
 }) => {
+  const dropdownRef = useRef(null);
+
   const [isOpen, setIsOpen] = useState(false);
   const [selectedOption, setSelectedOption] = useState(
     selectedValue ? selectedValue[optionKey] : ""
@@ -15,6 +21,7 @@ const CommonDropdown = ({
   const [selectedColor, setSelectedColor] = useState(
     selectedValue?.color || ""
   ); // Track selected color
+  const [selectedJobStatuses, setSelectedJobStatuses] = useState([]);
 
   // Ensure selectedValue is correctly displayed
   useEffect(() => {
@@ -26,6 +33,23 @@ const CommonDropdown = ({
       setSelectedColor("");
     }
   }, [selectedValue, optionKey]);
+
+  // Handle outside click to close dropdown
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsOpen(false);
+      }
+    };
+
+    if (isOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isOpen]);
 
   const handleSelect = (option) => {
     if (option && optionKey in option) {
@@ -55,8 +79,43 @@ const CommonDropdown = ({
     );
   };
 
+  const jobStatusListItem = (item) => {
+    return (
+      <div
+        className="jon-status-list-div"
+        onClick={() => handleMultiSelectHandler(item)}
+      >
+        <div className="display-flex align-center" style={{ gap: 10 }}>
+          <div
+            style={{
+              width: 14,
+              height: 14,
+              borderRadius: "50%",
+              backgroundColor: item?.color,
+            }}
+          />
+          <span className="font-12-regular color-dark-black">{item?.type}</span>
+        </div>
+        <div className="dropdown-checkbox">{item?.selected && <Tick />}</div>
+      </div>
+    );
+  };
+
+  const normalListItem = (item) => {
+    const itemValue = item?.industryType || item?.type;
+    const selectedItem = itemValue === selectedOption;
+    return (
+      <div
+        className={`normal-list-item-div ${selectedItem && "bg-selected"}`}
+        onClick={() => handleSelect(item)}
+      >
+        <p className="font-12-regular color-dark-black">{itemValue}</p>
+      </div>
+    );
+  };
+
   return (
-    <div className="relative w-full">
+    <div className="relative w-full" ref={dropdownRef}>
       {/* Dropdown button */}
       <div className="common-dropdown" onClick={() => setIsOpen(!isOpen)}>
         <span
@@ -78,7 +137,14 @@ const CommonDropdown = ({
       {isOpen && (
         <div className="dropdown-container">
           {options.map((option, index) => {
-            return jobListItem(option);
+            switch (type) {
+              case "job":
+                return jobListItem(option);
+              case "jobStatus":
+                return jobStatusListItem(option);
+              default:
+                return normalListItem(option);
+            }
           })}
         </div>
       )}

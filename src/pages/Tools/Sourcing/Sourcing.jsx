@@ -5,17 +5,9 @@ import "./Sourcing.css";
 import ProfileAdd from "../../../assets/icons/sourcingIcons/profile-add.svg";
 import jobIcon from "../../../assets/icons/sourcingIcons/briefcase.svg";
 import FolderAdd from "../../../assets/icons/sourcingIcons/folder-add.svg";
-import Download from "../../../assets/icons/sourcingIcons/download.svg";
 import { ReactComponent as Tick } from "../../../assets/icons/sourcingIcons/tick.svg";
 import FilterIcon from "../../../assets/icons/filter.svg";
 import { ReactComponent as DropArrow } from "../../../assets/icons/droparrow.svg";
-import FilterModal from "../../../components/filterModal/FilterModal";
-import FolderModal from "../../../components/AddToFolderModals/AddModal";
-import hiddenTalent from "../../../assets/images/SourcingImages/1.png";
-import refineSearch from "../../../assets/images/SourcingImages/2.png";
-import talentpipelines from "../../../assets/images/SourcingImages/3.png";
-import AddToFolderModal from "../../../components/AddToJobsModals/AddToJobs";
-import AddToJobsModal from "../../../components/AddToJobsModals/AddToJobs";
 import { sourcingHubInfo } from "./config";
 import Navbar from "../../../components/navbar/Navbar";
 import CandidateCard from "../../../components/sourcing/CandidateCard";
@@ -26,6 +18,10 @@ import { fetchCandidates } from "../../../actions/sourcingActions";
 import { useDispatch, useSelector } from "react-redux";
 import ShimmerEffectCandidateCard from "../../../components/sourcing/ShimmerEffectCandidateCard";
 import FilterDrawer from "../../../components/sourcing/FilterDrawer";
+import { useModal } from "../../../components/common/ModalProvider";
+import AddToJobsModal from "../../../components/modals/AddToJobsModal";
+import AddToFolderModal from "../../../components/modals/AddToFolderModal";
+import CreateFolderModal from "../../../components/modals/CreateFolderModal";
 
 const candidates = [
   {
@@ -101,17 +97,15 @@ const candidates = [
 ];
 
 const BulkActionView = ({
-  toggleModal,
   isBulkAction,
-  onSelectAll,
-  isAllSelected,
-  toggleJobModal,
-  filters, // Receive filters prop
+  filters,
   onClickFilter,
+  onClickAddJob,
+  onClickFolder,
 }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
-  const [jobModalOpen, setJobModalOpen] = useState(false);
+
   const open = Boolean(anchorEl);
 
   // Function to calculate the number of applied filters
@@ -151,14 +145,7 @@ const BulkActionView = ({
   const handleClose = () => {
     setAnchorEl(null);
   };
-  const handleAddToFolderMenu = () => {
-    handleClose();
-    setModalOpen(true);
-  };
-  const handleAddToJobMenu = () => {
-    handleClose();
-    setJobModalOpen(true);
-  };
+
   return (
     <div className="sourcing-header-container">
       <p className="font-22-medium color-dark-black">Sourcing</p>
@@ -206,7 +193,12 @@ const BulkActionView = ({
             Add to candidate
           </Typography>
         </MenuItem>
-        <MenuItem onClick={handleAddToJobMenu}>
+        <MenuItem
+          onClick={() => {
+            handleClose();
+            onClickAddJob();
+          }}
+        >
           <ListItemIcon>
             <img src={jobIcon} alt="Add to jobs" />
           </ListItemIcon>
@@ -216,7 +208,12 @@ const BulkActionView = ({
             Add to jobs
           </Typography>
         </MenuItem>
-        <MenuItem onClick={handleAddToFolderMenu}>
+        <MenuItem
+          onClick={() => {
+            handleClose();
+            onClickFolder();
+          }}
+        >
           <ListItemIcon>
             <img src={FolderAdd} alt="Add to folder" />
           </ListItemIcon>
@@ -227,15 +224,6 @@ const BulkActionView = ({
           </Typography>
         </MenuItem>
       </Menu>
-      {modalOpen && (
-        <FolderModal isOpen={modalOpen} onClose={() => setModalOpen(false)} />
-      )}
-      {jobModalOpen && (
-        <AddToJobsModal
-          isOpen={jobModalOpen}
-          onClose={() => setJobModalOpen(false)}
-        />
-      )}
     </div>
   );
 };
@@ -278,6 +266,7 @@ const Sourcing = () => {
     candidateData,
   } = useSelector((state) => state.sourcing);
 
+  const { modals, setModalVisibility } = useModal();
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [selectedCandidate, setSelectedCandidate] = useState(
     windowWidth < 1024 ? {} : candidateData[0]
@@ -321,10 +310,6 @@ const Sourcing = () => {
   const toggleModal = () => {
     console.log("Modal toggle triggered");
     setIsModalOpen((prev) => !prev);
-  };
-  const toggleJobModal = () => {
-    console.log("Modal job modal toggle triggered");
-    setIsJobModalOpen((prev) => !prev);
   };
 
   // Function to handle applying filters
@@ -557,10 +542,15 @@ const Sourcing = () => {
           >
             <BulkActionView
               toggleModal={toggleModal}
-              isBulkAction={selectedCandidates.length > 1}
+              isBulkAction={selectedCandidates.length > 0}
               onSelectAll={handleSelectAll}
+              onClickAddJob={() =>
+                setModalVisibility("addToJobsModalVisible", true)
+              }
+              onClickFolder={() =>
+                setModalVisibility("addToFolderModalVisible", true)
+              }
               isAllSelected={selectedCandidates.length === candidates.length}
-              jobModalOpen={toggleJobModal}
               filters={filters} // Pass filters as a prop
               onClickFilter={() => toggleFilterDrawer(true)}
             />
@@ -593,6 +583,12 @@ const Sourcing = () => {
                   <CandidateDetails
                     data={selectedCandidate}
                     loading={fetchMoreLoading}
+                    onClickAddJob={() =>
+                      setModalVisibility("addToJobsModalVisible", true)
+                    }
+                    onClickAddFolder={() =>
+                      setModalVisibility("addToFolderModalVisible", true)
+                    }
                   />
                 </div>
               </div>
@@ -653,14 +649,27 @@ const Sourcing = () => {
         isOpen={filterDrawerOpen}
         onClose={() => toggleFilterDrawer(false)}
       />
-      <AddToJobsModal
-        isOpen={isJobModalOpen}
-        onClose={() => setIsJobModalOpen(false)}
-      />
+
       <CandidateDetailsDrawer
         visible={candidateDrawerOpen}
         onClose={() => toggleCandidateDrawer(false)}
         data={selectedCandidate}
+        onClickAddJob={() => setModalVisibility("addToJobsModalVisible", true)}
+        onClickAddFolder={() =>
+          setModalVisibility("addToFolderModalVisible", true)
+        }
+      />
+      <AddToJobsModal
+        visible={modals?.addToJobsModalVisible}
+        onClose={() => setModalVisibility("addToJobsModalVisible", false)}
+      />
+      <AddToFolderModal
+        visible={modals?.addToFolderModalVisible}
+        onClose={() => setModalVisibility("addToFolderModalVisible", false)}
+      />
+      <CreateFolderModal
+        visible={modals?.createFolderModalVisible}
+        onClose={() => setModalVisibility("createFolderModalVisible", false)}
       />
     </div>
   );

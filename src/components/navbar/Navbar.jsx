@@ -10,7 +10,14 @@ import { ReactComponent as Add } from "../../assets/icons/addIcon.svg";
 import { ReactComponent as MessagesIcon } from "../../assets/icons/messages.svg";
 import { ReactComponent as MenuBar } from "../../assets/icons/nav-menu.svg";
 import { ReactComponent as NotificationIcon } from "../../assets/icons/sourcingIcons/notification.svg";
-import { Drawer } from "@mui/material";
+import { ReactComponent as ProfileIcon } from "./assets/profile.svg";
+import { ReactComponent as AdminIcon } from "./assets/admin.svg";
+import { ReactComponent as SettingIcon } from "./assets/setting.svg";
+import { ReactComponent as GiftIcon } from "./assets/gift.svg";
+import { ReactComponent as HelpIcon } from "./assets/help.svg";
+import { ReactComponent as LogoutIcon } from "./assets/logout.svg";
+import { Drawer, Menu } from "@mui/material";
+import { commonStyle } from "../../helpers/config";
 
 const Navbar = () => {
   const location = useLocation();
@@ -18,6 +25,16 @@ const Navbar = () => {
   const [showSearch, setShowSearch] = useState(false);
   const [searchValue, setSearchValue] = useState("");
   const [drawerOpen, setdrawerOpen] = useState(false);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const open = Boolean(anchorEl);
+
+  const handleMenuClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
 
   const toggleDrawer = (open) => (event) => {
     if (
@@ -129,9 +146,38 @@ const Navbar = () => {
             <MenuBar />
           </button>
         </div>
-        <div className="nav-profile hidden-tab">
+        <btn className="nav-profile hidden-tab" onClick={handleMenuClick}>
           <img src={profileImage} className="common-img" />
-        </div>
+        </btn>
+        <Menu
+          anchorEl={anchorEl}
+          open={open}
+          onClose={handleMenuClose}
+          PaperProps={{
+            sx: commonStyle.sx,
+          }}
+        >
+          <div className="display-column">
+            <button className="common-menu-item-btn">
+              <ProfileIcon /> Account
+            </button>
+            <button className="common-menu-item-btn">
+              <AdminIcon /> Administration
+            </button>
+            <button className="common-menu-item-btn">
+              <SettingIcon /> Customization
+            </button>
+            <button className="common-menu-item-btn">
+              <GiftIcon /> What’s New
+            </button>
+            <button className="common-menu-item-btn">
+              <HelpIcon /> Help
+            </button>
+            <button className="common-menu-item-btn">
+              <LogoutIcon /> Log Out
+            </button>
+          </div>
+        </Menu>
       </div>
       <Drawer anchor="right" open={drawerOpen} onClose={toggleDrawer(false)}>
         <div
