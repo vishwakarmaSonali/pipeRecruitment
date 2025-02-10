@@ -29,7 +29,7 @@ const CreateCandidateFormModal = ({ visible, onClose }) => {
     setModalVisibility("animatedModal", true);
     setTimeout(() => {
       setModalVisibility("animatedModal", false);
-    }, 200);
+    }, 600);
   };
 
   const handleChange = (value) => {

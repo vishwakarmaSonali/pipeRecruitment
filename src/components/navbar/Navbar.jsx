@@ -146,9 +146,15 @@ const Navbar = () => {
             <MenuBar />
           </button>
         </div>
-        <btn className="nav-profile hidden-tab" onClick={handleMenuClick}>
+        <button
+          className="nav-profile hidden-tab"
+          aria-controls={open ? "basic-menu" : undefined}
+          aria-haspopup="true"
+          aria-expanded={open ? "true" : undefined}
+          onClick={handleMenuClick}
+        >
           <img src={profileImage} className="common-img" />
-        </btn>
+        </button>
         <Menu
           anchorEl={anchorEl}
           open={open}
@@ -156,6 +162,9 @@ const Navbar = () => {
           PaperProps={{
             sx: commonStyle.sx,
           }}
+          aria-controls={open ? "basic-menu" : undefined}
+          aria-haspopup="true"
+          aria-expanded={open ? "true" : undefined}
         >
           <div className="display-column">
             <button className="common-menu-item-btn">
