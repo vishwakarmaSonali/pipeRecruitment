@@ -283,6 +283,23 @@
   transition: border-bottom 300ms ease, color 300ms ease;
 }
 
+.candidate-customization-tab-btn {
+  display: flex;
+  padding: 8px 20px;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  min-height: 34px;
+  font-family: "Ubuntu";
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 16.09px;
+  color: #797979;
+  border-bottom: 1px solid transparent;
+  box-sizing: border-box;
+  transition: border-bottom 300ms ease, color 300ms ease;
+}
+
 .active-info-tab {
   border-bottom: 1px solid var(--dark-black);
   color: var(--dark-black);
@@ -356,4 +373,100 @@
   width: 100%;
   break-inside: avoid;
   margin-bottom: 12px;
+}
+
+.candidate-customization-header {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--white);
+}
+
+.padding-16 {
+  padding: 16px;
+}
+
+.candidate-customization-tab-main {
+  display: flex;
+  gap: 20px;
+  border-bottom: 1px solid #797979;
+  width: max-content;
+}
+
+.candidate-customization-container {
+  flex: 1;
+  padding: 10px 36px;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  overflow-y: auto;
+}
+
+.customize-summary-field-ul {
+  list-style-type: disc;
+  padding: 0px;
+  margin-left: 26px;
+}
+
+.candidate-customization-inner-container {
+  display: flex;
+  gap: 26px;
+  max-width: 1190px;
+  width: 100%;
+  margin: 0px auto;
+}
+
+.category-main-container {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  overflow-y: auto;
+}
+
+.candidate-customization-category-item {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.customize-category-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  background-color: var(--white);
+  transition: background-color 300ms ease;
+}
+
+.customize-field-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 12px;
+}
+.customize-category-item:hover {
+  background-color: #f3f4f4;
+}
+
+.customize-category-input {
+  padding: 0px;
+  min-height: 100%;
+  background-color: transparent;
+  border: none;
+  outline: none;
+  font-family: "Ubuntu";
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 16.09px;
+  letter-spacing: 0%;
+  color: var(--grey);
+  transition: color 300ms ease;
+}
+
+.selected-customize-category-input {
+  color: var(--dark-black) !important;
+}
+
+.selected-category-item {
+  background-color: #1761d80f !important;
 }

@@ -158,6 +158,23 @@
   box-sizing: border-box;
 }
 
+.common-add-btn {
+  padding: 10px 14px;
+  border-radius: 8px;
+  background-color: var(--blue);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  height: 36px;
+  font-size: 14px;
+  line-height: 16.09px;
+  font-family: "Ubuntu";
+  font-weight: 400;
+  color: var(--white);
+  box-sizing: border-box;
+}
+
 .cancel-btn {
   padding: 10px 14px;
   min-width: 120px;
