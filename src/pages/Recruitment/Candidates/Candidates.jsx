@@ -18,6 +18,8 @@ import { ReactComponent as MergeDuplicateIcon } from "../../../assets/icons/merg
 import { ReactComponent as ArchiveIcon } from "../../../assets/icons/archive.svg";
 import { ReactComponent as DownloadIcon } from "../../../assets/icons/sourcingIcons/download.svg";
 import { ReactComponent as DocumentSign } from "../../../assets/icons/candidates/edit-2.svg";
+import { ReactComponent as ExportIcon } from "../../../assets/icons/export.svg";
+import { ReactComponent as ColumnIcon } from "../../../assets/icons/columns.svg";
 import close from "../../../assets/icons/close.svg";
 import SettingIcon from "../../../assets/icons/setting-2.svg";
 import LeftArrow from "../../../assets/icons/leftArrow.svg";
@@ -38,6 +40,9 @@ import EditColumnModal from "../../../components/modals/EditColumns";
 import { candidates } from "../../../helpers/dataCandidates";
 import { updateFilterAsync } from "../../../store/filterSlice";
 import { useDispatch } from "react-redux";
+import Navbar from "../../../components/navbar/Navbar";
+import ColumnSelector from "../../../components/ColumnSelector";
+import CandidateFilterDrawer from "../../../components/candidate/CandidateFilterModal"
 
 const Candidates = ({ isDrawerOpen }) => {
   const dispatch = useDispatch();
@@ -47,7 +52,20 @@ const Candidates = ({ isDrawerOpen }) => {
   const selectedColumns = useSelector((state) => state.columns.selected); // Get selected columns from Redux
   const savedFilters = useSelector((state) => state.filters.filters); // Get saved filters from Redux
   const [isFilterSaved, setIsFilterSaved] = useState(false);
-
+  const [isColumnSelectorOpen, setIsColumnSelectorOpen] = useState(false);
+    const [filterDrawerOpen, setFilterDrawerOpen] = useState(false);
+      const [filtersApplied, setFiltersApplied] = useState(false);
+    
+    const [filters, setFilters] = useState({
+        jobTitle: "",
+        location: "",
+        company: "",
+        yearsOfExperience: { from: "", to: "" },
+        industry: "",
+        radius: "",
+        skill: "",
+        education: { major: "", school: "", degree: "" },
+    });
   const bulkMenuItems = [
     {
       label: "Add to jobs",
@@ -98,41 +116,89 @@ const Candidates = ({ isDrawerOpen }) => {
       onClick: () => console.log("Export"),
     },
   ];
- // Settings menu items
- const settingsMenuItems = isFilterSaved
- ? [
-     { label: "Update filter", onClick: () => (updateFilter(),handleSettingsClose()) },
-     { label: "Save as new filter",onClick: () => (setModalVisibility("saveFiltersModalVisible", true), handleSettingsClose()) },
-     { label: "Discard changes", onClick: () => (discardChanges(),handleSettingsClose()) },
-     { label: "Clear all filters", onClick: () => (clearAllFilters(),handleSettingsClose()) },
-   ]
- : [
-     { label: "Save filter", onClick: () => (setModalVisibility("saveFiltersModalVisible", true), handleSettingsClose()) },
-     { label: "Clear all filters", onClick: () => (clearAllFilters(),handleSettingsClose()) },
-   ];
- // 🔍 Map formatted column names to actual data keys
- const columnMapping = {
-  "Candidate Name": "candidate_name",
-  "Candidate First Name": "candidate_first_name",
-  "Candidate Last Name": "candidate_last_name",
-  "Reference Id": "reference_id",
-  "Location": "location",
-  "Gender": "gender",
-  "Diploma": "diploma",
-  "University": "university",
-  "Current Company": "current_company",
-  "Current Position": "current_position",
-  "Email": "email",
-  "Birthdate": "birthDate",
-  "Candidate Address": "candidate_address",
-  "Employment Status": "employment_status",
-  "Contact Number": "phone",
-  "Hired Date": "hired_date",
-  "Start Date": "start_date",
-  "ATS score": "ats_score",
-  "Created Date": "created_at",
-  "Created By": "created_by",
-};
+  const toggleFilterDrawer = (open) => {
+  
+    setFilterDrawerOpen(open);
+  };
+  const applyFilters = (newFilters) => {
+    console.log(">>>>>>>>>>>>>>>>>>>>>newFilters", newFilters);
+    setFilters(newFilters);
+    setFiltersApplied(true);
+    toggleFilterDrawer(false);
+  };
+
+  // Function to reset filters
+  const resetFilters = () => {
+    setFilters({
+      jobTitle: "",
+      location: "",
+      company: "",
+      yearsOfExperience: { from: "", to: "" },
+      industry: "",
+      radius: "",
+      education: { major: "", school: "", degree: "" },
+    });
+    setFiltersApplied(false);
+  };
+  // Settings menu items
+  const settingsMenuItems = isFilterSaved
+    ? [
+        {
+          label: "Update filter",
+          onClick: () => (updateFilter(), handleSettingsClose()),
+        },
+        {
+          label: "Save as new filter",
+          onClick: () => (
+            setModalVisibility("saveFiltersModalVisible", true),
+            handleSettingsClose()
+          ),
+        },
+        {
+          label: "Discard changes",
+          onClick: () => (discardChanges(), handleSettingsClose()),
+        },
+        {
+          label: "Clear all filters",
+          onClick: () => (clearAllFilters(), handleSettingsClose()),
+        },
+      ]
+    : [
+        {
+          label: "Save filter",
+          onClick: () => (
+            setModalVisibility("saveFiltersModalVisible", true),
+            handleSettingsClose()
+          ),
+        },
+        {
+          label: "Clear all filters",
+          onClick: () => (clearAllFilters(), handleSettingsClose()),
+        },
+      ];
+  // 🔍 Map formatted column names to actual data keys
+  const columnMapping = {
+    "Candidate Name": "candidate_name",
+    "Candidate First Name": "candidate_first_name",
+    "Candidate Last Name": "candidate_last_name",
+    "Reference Id": "reference_id",
+    Location: "location",
+    Gender: "gender",
+    Diploma: "diploma",
+    University: "university",
+    "Current Company": "current_company",
+    "Current Position": "current_position",
+    Email: "email",
+    Birthdate: "birthDate",
+    "Candidate Address": "candidate_address",
+    "Employment Status": "employment_status",
+    "Contact Number": "phone",
+    "Hired Date": "hired_date",
+    "Start Date": "start_date",
+    "ATS score": "ats_score",
+    "Created Date": "created_at",
+    "Created By": "created_by",
+  };
   // 🔍 Searchable Menu Items
   const initialSearchableItems = [
     {
@@ -187,17 +253,19 @@ const Candidates = ({ isDrawerOpen }) => {
   const openFilterMenu = Boolean(anchorFilterMenuEl);
   const [isFilter, setIsFilter] = useState(false);
   const [selectedSearchableOption, setSelectedSearchableOption] = useState("");
-  const [originalConditions, setOriginalConditions] = useState([])
+  const [originalConditions, setOriginalConditions] = useState([]);
   const [conditions, setConditions] = useState([]); // Store multiple conditions
 
-  useEffect(() => {
-    if (conditions.length === 0) {
-      setSearchableMenuItems([...initialSearchableItems]); // Restore all items when no filters remain
-    }
-  }, [conditions]);
+  // useEffect(() => {
+  //   if (conditions.length === 0) {
+  //     setSearchableMenuItems([...initialSearchableItems]); // Restore all items when no filters remain
+  //   }
+  // }, [conditions]);
 
   const applySavedFilter = (filterName) => {
-    const selectedFilter = savedFilters.find(filter => filter.name === filterName);
+    const selectedFilter = savedFilters.find(
+      (filter) => filter.name === filterName
+    );
     if (selectedFilter) {
       setConditions(selectedFilter.conditions);
       setOriginalConditions([...selectedFilter.conditions]);
@@ -208,7 +276,7 @@ const Candidates = ({ isDrawerOpen }) => {
 
   useEffect(() => {
     if (modals?.savedFiltersModalVisible) {
-      const selectedFilter = savedFilters.find(filter => filter.isSelected);
+      const selectedFilter = savedFilters.find((filter) => filter.isSelected);
       if (selectedFilter) {
         setConditions(selectedFilter.conditions);
         setOriginalConditions([...selectedFilter.conditions]);
@@ -218,22 +286,21 @@ const Candidates = ({ isDrawerOpen }) => {
     }
   }, [modals?.savedFiltersModalVisible, savedFilters]);
 
-// Function to clear all filters
-const clearAllFilters = () => {
-  setConditions([]);
-  setIsFilterSaved(false);
-  setSelectedCategory("Candidates");
-};
+  // Function to clear all filters
+  const clearAllFilters = () => {
+    setConditions([]);
+    setIsFilterSaved(false);
+    setSelectedCategory("Candidates");
+  };
   // Function to update filter
   const updateFilter = () => {
     if (!isFilterSaved) return;
     dispatch(updateFilterAsync({ name: selectedCategory, conditions }));
   };
- // 🔍 Filter Candidates based on Search Query
- const filteredCandidates = candidateList.filter((candidate) =>
-  candidate?.candidate_name?.toLowerCase().includes(searchQuery.toLowerCase())
-);
-  
+  // 🔍 Filter Candidates based on Search Query
+  const filteredCandidates = candidateList.filter((candidate) =>
+    candidate?.candidate_name?.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   const handleSeacrchableMenuOpen = (event) => {
     setAnchorAddConditionEl(event.currentTarget);
@@ -284,35 +351,35 @@ const clearAllFilters = () => {
   };
 
   // ❌ Remove a condition and restore it to the searchable menu
-  const removeCondition = (index) => {
-    setConditions((prevConditions) => {
-      if (prevConditions.length === 0) return prevConditions;
+  // const removeCondition = (index) => {
+  //   setConditions((prevConditions) => {
+  //     if (prevConditions.length === 0) return prevConditions;
 
-      // Extract label from the condition being removed
-      const removedConditionLabel = prevConditions[index].split(" ")[0];
+  //     // Extract label from the condition being removed
+  //     const removedConditionLabel = prevConditions[index].split(" ")[0];
 
-      // Remove the condition from the list
-      const updatedConditions = prevConditions.filter((_, i) => i !== index);
+  //     // Remove the condition from the list
+  //     const updatedConditions = prevConditions.filter((_, i) => i !== index);
 
-      setSearchableMenuItems((prevItems) => {
-        // Ensure the removed condition is added back only if it’s not already present
-        const itemToRestore = initialSearchableItems.find(
-          (item) => item.label === removedConditionLabel
-        );
+  //     setSearchableMenuItems((prevItems) => {
+  //       // Ensure the removed condition is added back only if it’s not already present
+  //       const itemToRestore = initialSearchableItems.find(
+  //         (item) => item.label === removedConditionLabel
+  //       );
 
-        if (
-          itemToRestore &&
-          !prevItems.some((item) => item.label === removedConditionLabel)
-        ) {
-          return [...prevItems, itemToRestore];
-        }
+  //       if (
+  //         itemToRestore &&
+  //         !prevItems.some((item) => item.label === removedConditionLabel)
+  //       ) {
+  //         return [...prevItems, itemToRestore];
+  //       }
 
-        return prevItems;
-      });
+  //       return prevItems;
+  //     });
 
-      return updatedConditions;
-    });
-  };
+  //     return updatedConditions;
+  //   });
+  // };
 
   // ✅ Handle Candidate Selection
   const handleCandidateSelection = (id) => {
@@ -497,31 +564,45 @@ const clearAllFilters = () => {
       </div>
     );
   };
-  const handleApplyFilter = () => {};
-  const getInitials = (name) => {
-    if (!name) return "";
-    const nameParts = name.split(" ");
-    const initials = nameParts
-      .map((part) => part[0].toUpperCase()) // Take the first letter of each part
-      .join(""); // Combine them
-    return initials.substring(0, 2); // Limit to 2 initials
+
+  // const getInitials = (name) => {
+  //   if (!name) return "";
+  //   const nameParts = name.split(" ");
+  //   const initials = nameParts
+  //     .map((part) => part[0].toUpperCase()) // Take the first letter of each part
+  //     .join(""); // Combine them
+  //   return initials.substring(0, 2); // Limit to 2 initials
+  // };
+  // Function to generate a random color
+  const getRandomColor = () => {
+    const colors = [
+      "#FF5733",
+      "#33FF57",
+      "#3357FF",
+      "#FF33A8",
+      "#FFD700",
+      "#8A2BE2",
+      "#20B2AA",
+    ];
+    return colors[Math.floor(Math.random() * colors.length)];
   };
+
   return (
     <div
       className="w-full h-screen bg-white overflow-hidden overscroll-none"
-      style={{ boxSizing: "border-box", display: "flex" }}
+      style={{ boxSizing: "border-box" }}
     >
-      <Sidebar />
+      <Navbar />
       <div
         className="overflow-auto scroll-width-none bg-grey-90"
         style={{ flex: 1, display: "flex", flexDirection: "column" }}
       >
-        <Header title={"Candidates"} onFilterSelect={applySavedFilter} />
+        {/* <Header title={"Candidates"} onFilterSelect={applySavedFilter} /> */}
 
         {/* Tabs Section */}
 
         <div className="flex items-center justify-between p-[17px]">
-          <div className="flex space-x-6 border-b border-customGray">
+          {/* <div className="flex space-x-6 border-b border-customGray">
             <button
               className={`flex items-center space-x-2 py-2 px-3 text-sm font-medium ${
                 activeTab === "candidates"
@@ -585,8 +666,10 @@ const clearAllFilters = () => {
                 Sourcing
               </span>
             </button>
-          </div>
-
+          </div> */}
+          <span className="font-ubuntu font-medium text-custom-large">
+            Candidates
+          </span>
           {/* Action Buttons */}
           <div className="flex space-x-2">
             {/* ✅ Dynamically Change Button */}
@@ -613,18 +696,33 @@ const clearAllFilters = () => {
 
             <button
               className="buttons text-white bg-buttonBLue"
-              onClick={() => setIsFilter(!isFilter)}
+              onClick={() => toggleFilterDrawer(true)}
             >
               Filter <FilterIcon />
             </button>
+            <button
+              className="buttons text-white bg-buttonBLue"
+              onClick={(event) => (
+                // setModalVisibility("editColumnModalVisible", true),
+                setIsColumnSelectorOpen(true),
+                handleClose()
+              )}
+            >
+              Columns <ColumnIcon />
+            </button>
+            <button
+              className="buttons border-1 border-blue-600 text-buttonBLue"
+              onClick={() => setIsFilter(!isFilter)}
+            >
+              Export <ExportIcon />
+            </button>
 
-            <button className="buttons border-1 border-blue-600 text-buttonBLue ">
-              Refresh
+            <button className="buttons border-1 border-blue-600 text-buttonBLue  min-w-[44px] ">
               <RefreshIcon />
             </button>
-            <button className="text-gray-700 pl-[8px]" onClick={handleClick}>
+            {/* <button className="text-gray-700 pl-[8px]" onClick={handleClick}>
               <ThreeDots />
-            </button>
+            </button> */}
           </div>
         </div>
 
@@ -633,32 +731,32 @@ const clearAllFilters = () => {
           <div className="flex items-center justify-between p-[10px]">
             {/* Display Applied Filters */}
             <div className="flex items-center gap-2 flex-wrap">
-        {conditions.length > 0 && (
+              {/* {conditions.length > 0 && (
                 <div className=" flex flex-wrap gap-2">
-              {conditions.map((condition, index) => (
+                  {conditions.map((condition, index) => (
                     <span
                       key={index}
                       className="border border-customGray text-customBlue px-3 py-1 rounded-lg text-sm flex items-center"
                     >
-                  {condition}
+                      {condition}
                       <button
                         className="ml-2 text-red-500 hover:text-red-700"
                         onClick={() => removeCondition(index)}
                       >
                         <img src={close} height={8} width={8} alt="close" />
                       </button>
-                </span>
-              ))}
-          </div>
-        )}
-              <div onClick={handleSeacrchableMenuOpen}>
+                    </span>
+                  ))}
+                </div>
+              )} */}
+              {/* <div onClick={handleSeacrchableMenuOpen}>
                 <span className="text-buttonBLue font-ubuntu text-sm cursor-pointer">
                   + Add condition
                 </span>
-              </div>
+              </div> */}
             </div>
             <div className="flex items-center justify-center gap-[8px]">
-              <button
+              {/* <button
                 className={`buttons border-1  text-buttonBLue cursor-pointer ${
                   conditions.length > 0
                     ? "text-buttonBLue border-buttonBLue"
@@ -668,7 +766,7 @@ const clearAllFilters = () => {
                 disabled={conditions.length > 0}
               >
                 Apply filter
-              </button>
+              </button> */}
               <button
                 className="buttons border-1 min-w-[44px] border-buttonBLue justify-center text-buttonBLue"
                 onClick={handleClickSetting}
@@ -682,14 +780,14 @@ const clearAllFilters = () => {
         {/* Table Wrapper with Horizontal Scroll */}
 
         <div className="overflow-x-auto px-[10px] scroll-width-none bg-white shadow-md ">
-        <table className="min-w-full divide-y divide-gray-200">
+          <table className="min-w-full divide-y divide-gray-200">
             {/* Table Header */}
-            <thead className="sticky top-0 bg-white z-[50]">
+            <thead className="sticky top-0 bg-white z-[50px]">
               <tr className="text-left text-gray-600 font-semibold">
                 {/* Checkbox Column for Selecting All */}
                 <th className="th-title sticky top-0 bg-blueBg z-[50]">
                   <div
-                    className={`w-[20px] h-[20px] border border-customBlue bg-white rounded-[6px] flex items-center justify-center cursor-pointer`}
+                    className={`w-[20px] h-[20px] border-1 border-customBlue bg-white rounded-[6px] flex items-center justify-center cursor-pointer`}
                     onClick={() =>
                       setSelectedCandidates(
                         selectedCandidates.length === filteredCandidates.length
@@ -706,7 +804,10 @@ const clearAllFilters = () => {
 
                 {/* ✅ Dynamically Generate Column Headers from selectedColumns */}
                 {selectedColumns.map((columnName) => (
-                  <th key={columnName} className="th-title bg-blueBg max-w-60 min-w-40">
+                  <th
+                    key={columnName}
+                    className="th-title p-0 bg-blueBg max-w-[240px] min-w-[230px]"
+                  >
                     {columnName}
                   </th>
                 ))}
@@ -718,9 +819,9 @@ const clearAllFilters = () => {
               {filteredCandidates.map((candidate) => (
                 <tr key={candidate.id} className="hover:bg-gray-50">
                   {/* Checkbox Column for Selecting Candidates */}
-                  <td className="px-2">
+                  <td className="pr-0">
                     <div
-                      className={`w-[20px] h-[20px] border border-customBlue bg-white rounded-[6px] flex items-center justify-center cursor-pointer`}
+                      className={`w-[20px] h-[20px] border-1 m-0  border-customBlue bg-white rounded-[6px] flex items-center justify-center cursor-pointer`}
                       onClick={() =>
                         setSelectedCandidates((prev) =>
                           prev.includes(candidate.id)
@@ -739,8 +840,23 @@ const clearAllFilters = () => {
                   {selectedColumns.map((columnName) => {
                     const key = columnMapping[columnName]; // Get actual key from mapping
                     return (
-                      <td key={key} className="td-text">
-                        {candidate[key] || "-"} {/* Handle missing data */}
+                      <td key={key} className="td-text px-1">
+                        {columnName === "Candidate Name" ? (
+                          <div className="flex items-center gap-2">
+                            {/* Display Initials */}
+                            <div
+                              className="w-[28px] h-[28px] flex items-center justify-center rounded-full bg-customBlue text-white font-bold text-sm"
+                              style={{ backgroundColor: getRandomColor() }}
+                            >
+                              {candidate.candidate_first_name?.charAt(0)}
+                              {candidate.candidate_last_name?.charAt(0)}
+                            </div>
+                            {/* Display Candidate Name */}
+                            <span>{candidate[key] || "-"}</span>
+                          </div>
+                        ) : (
+                          candidate[key] || "-"
+                        )}
                       </td>
                     );
                   })}
@@ -789,12 +905,12 @@ const clearAllFilters = () => {
         menuItems={bulkMenuItems}
       />
       {/* menu for three dots menu */}
-      <GlobalMenu
+      {/* <GlobalMenu
         anchorEl={anchorEl}
         open={open}
         onClose={handleClose}
         menuItems={threeDotsMenuItems}
-      />
+      /> */}
       <GlobalMenu
         anchorEl={anchorSettingEl}
         open={openSetting}
@@ -808,6 +924,12 @@ const clearAllFilters = () => {
         onClose={handleSearchableMenuClose}
         menuItems={searchableMenuItems} // Pass dynamic items
       />
+        <ColumnSelector 
+        isOpen={isColumnSelectorOpen} 
+        onClose={() => setIsColumnSelectorOpen(false)} 
+        selectedColumns={selectedColumns} 
+        // setSelectedColumns={setSelectedColumns} 
+      />
 
       {/* 🔹 Filter Menu */}
       <FilterMenu
@@ -816,6 +938,13 @@ const clearAllFilters = () => {
         onClose={() => setAnchorFilterMenuEl(null)}
         selectedOption={selectedSearchableOption}
         onApply={handleFilterApply} // Use modified handleApply
+      />
+        <CandidateFilterDrawer
+        // onApply={applyFilters}
+        // onReset={resetFilters}
+        filters={filters}
+        isOpen={filterDrawerOpen}
+        onClose={() => toggleFilterDrawer(false)}
       />
     </div>
   );

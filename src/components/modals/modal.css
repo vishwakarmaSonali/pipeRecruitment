@@ -475,7 +475,7 @@ textarea,
   color: customBlue;
 }
 .checkbox-list {
-  @apply mb-[12px];
+  @apply mb-[12px] 
 }
 .column-option {
   display: flex;

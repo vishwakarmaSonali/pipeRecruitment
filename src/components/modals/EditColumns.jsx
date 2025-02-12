@@ -195,7 +195,7 @@ const DraggableItem = ({ column, removeColumn }) => {
               <div className="checkbox-list">
                 {filteredColumns.map((column) => (
                   <div key={column} className="column-option flex items-center gap-2 cursor-pointer" onClick={() => handleCheckboxChange(column)}>
-                    <div className={`w-[20px] h-[20px] border border-customBlue bg-white rounded-[6px] flex items-center justify-center`}>
+                    <div className={`w-[20px] h-[20px] border-1 border-customBlue bg-white rounded-[6px] flex items-center justify-center`}>
                       {checkedColumns.includes(column) && <img src={Tick} alt="Selected" />}
                     </div>
                     {column}

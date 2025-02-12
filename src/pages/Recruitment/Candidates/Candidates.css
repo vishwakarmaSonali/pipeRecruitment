@@ -32,7 +32,7 @@
     @apply px-[14px] py-[10px] max-h-[36px] text-m font-ubuntu rounded-[8px] flex items-center gap-1 
 } */
 .th-title {
-  @apply px-2 py-3 font-ubuntu font-medium text-m text-customBlue justify-center text-left ml-10 max-w-full;
+  @apply px-2 py-3 font-ubuntu font-medium text-m text-customBlue justify-center text-left ml-10 max-w-[380px];
 }
 .td-text {
   @apply px-2 py-3 font-ubuntu font-normal text-m text-customBlue max-w-full text-left;

@@ -1,36 +1,34 @@
 import { useState, useEffect, useRef } from "react";
 import { ReactComponent as DropArrow } from "../../assets/icons/droparrow.svg";
+import Tick from "../../assets/icons/sourcingIcons/tick.svg";
 
-const CustomDropdown = ({ options, placeholder, selectedValue, onChange, optionKey }) => {
+const CustomDropdown = ({ options, placeholder, selectedValues, onChange, optionKey, multiSelect = false, showCheckbox = false }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedOption, setSelectedOption] = useState(placeholder);
-  const [selectedColor, setSelectedColor] = useState("");
-  const [selectedStatuses, setSelectedStatuses] = useState([]);
-
+  const [inputValue, setInputValue] = useState("");
+  const [filteredOptions, setFilteredOptions] = useState(options);
   const dropdownRef = useRef(null);
 
   useEffect(() => {
-    if (selectedValue && typeof selectedValue === "object") {
-      setSelectedOption(selectedValue[optionKey] || placeholder);
-      setSelectedColor(selectedValue.color || "");
+    if (!multiSelect && selectedValues) {
+      setInputValue(selectedValues[optionKey] || "");
     } else {
-      setSelectedOption(placeholder);
-      setSelectedColor("");
+      setInputValue("");
     }
-  }, [selectedValue, optionKey, placeholder]);
+  }, [selectedValues, multiSelect, optionKey]);
 
   const handleSelect = (option) => {
-    if (option && optionKey in option) {
-      setSelectedOption(option[optionKey]); // Update displayed text
-      setSelectedColor(option.color || ""); // Update color if exists
-      onChange(option); // Pass the entire object back to parent component
+    if (multiSelect) {
+      const updatedSelection = selectedValues.includes(option)
+        ? selectedValues.filter(item => item !== option)
+        : [...selectedValues, option];
+      onChange(updatedSelection);
     } else {
-      console.error("Invalid option selected:", option);
+      onChange(option);
+      setInputValue(option[optionKey]);
+      setIsOpen(false);
     }
-    setIsOpen(false);
   };
 
-  // Handle outside click to close dropdown
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -46,29 +44,28 @@ const CustomDropdown = ({ options, placeholder, selectedValue, onChange, optionK
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [isOpen]);
-  
-  const toggleStatus = (status) => {
-    setSelectedStatuses((prev) =>
-      prev.some((s) => s.id === status.id)
-        ? prev.filter((s) => s.id !== status.id) // Remove if already selected
-        : [...prev, status] // Add if not selected
+
+  const handleInputChange = (e) => {
+    const value = e.target.value;
+    setInputValue(value);
+    setIsOpen(true);
+    setFilteredOptions(
+      options.filter(option => option[optionKey].toLowerCase().includes(value.toLowerCase()))
     );
   };
 
-
   return (
     <div className="relative w-full" ref={dropdownRef}>
-      {/* Dropdown button */}
-      <div
-        className="w-full px-[12px] py-[12px] border flex justify-between items-center cursor-pointer bg-white max-h-[38px] leading-[14px] border-customGrey1 rounded-[8px] text-sm font-ubuntu text-customBlue placeholder:text-borderGrey"
-        onClick={() => setIsOpen(!isOpen)}
-      >
-        <div className="flex items-center gap-2">
-          {selectedColor && (
-            <div className="w-4 h-4 rounded-full" style={{ backgroundColor: selectedColor }}></div>
-          )}
-          <span className="text-gray-700">{selectedOption}</span>
-        </div>
+      <div className="w-full px-3 py-2 border flex justify-between items-center bg-white border-customGrey1 rounded-md text-sm text-customBlue placeholder:text-borderGrey">
+        <input
+          type="text"
+          className="flex-1 outline-none border-none bg-transparent"
+          value={inputValue}
+          onChange={handleInputChange}
+          placeholder={placeholder}
+          onFocus={() => setIsOpen(true)}
+          readOnly={!multiSelect} 
+        />
         <DropArrow
           width={14}
           height={14}
@@ -77,25 +74,46 @@ const CustomDropdown = ({ options, placeholder, selectedValue, onChange, optionK
         />
       </div>
 
-      {/* Dropdown options */}
       {isOpen && (
-        <ul
-          className="absolute left-0 w-full bg-white border border-borderGrey rounded-lg shadow-lg mt-2 max-h-40 overflow-auto z-50 text-sm font-ubuntu text-customBlue"
-          style={{ zIndex: 9999 }}
-        >
-          {options.map((option, index) => (
-            <li
-              key={index}
-              onClick={() => handleSelect(option)}
-              className="px-4 py-2 flex items-center gap-2 hover:bg-customGrey1 cursor-pointer"
-            >
-              {option?.color && (
-                <div className="w-4 h-4 rounded-full" style={{ backgroundColor: option.color }}></div>
-              )}
-              <span>{option[optionKey] || option}</span>
-            </li>
-          ))}
+        <ul className="absolute left-0 w-full bg-white border border-borderGrey rounded-lg shadow-lg mt-2 max-h-40 overflow-auto z-50 text-sm">
+          {filteredOptions.length > 0 ? (
+            filteredOptions.map((option, index) => (
+              <li
+                key={index}
+                onClick={() => handleSelect(option)}
+                className="px-4 py-2 flex items-center gap-2 hover:bg-customGrey1 cursor-pointer"
+              >
+                {showCheckbox && multiSelect && (
+                  <div
+                    className={`w-[20px] h-[20px] border border-customBlue bg-white rounded-[6px] flex items-center justify-center cursor-pointer`}
+                    onClick={() => handleSelect(option)}
+                  >
+                    {selectedValues.includes(option) ? <img src={Tick} alt="Selected" /> : null}
+                  </div>
+                )}
+                <span>{option[optionKey]}</span>
+              </li>
+            ))
+          ) : (
+            <li className="px-4 py-2 text-center text-customGray font-ubuntu">No results found</li>
+          )}
         </ul>
+      )}
+
+      {selectedValues?.length > 0 && (
+        <div className="inputItemsDiv mt-2">
+          {selectedValues.map((val, index) => (
+            <div key={index} className="inputed-item">
+              {val[optionKey]}
+              <button
+                className="ml-2 text-customBlue"
+                onClick={() => onChange(selectedValues.filter(item => item !== val))}
+              >
+                ✕
+              </button>
+            </div>
+          ))}
+        </div>
       )}
     </div>
   );

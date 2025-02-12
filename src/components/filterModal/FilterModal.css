@@ -18,10 +18,10 @@
   @apply font-ubuntu text-sm font-normal text-customBlue;
 }
 .filter-input {
-  @apply bg-white w-full  px-[12px] py-[12px] border max-h-[38px] leading-[14px] border-customGrey1 rounded-[8px] text-sm font-ubuntu text-customBlue placeholder:text-customGray focus:outline-none focus:ring-0;
+  @apply bg-white  flex   px-[12px] py-[12px] border max-h-[38px] leading-[14px] border-customGrey1 rounded-[8px] text-sm font-ubuntu text-customBlue placeholder:text-customGray focus:outline-none focus:ring-0;
 }
 .inputItemsDiv {
-  @apply flex flex-wrap gap-[6px];
+  @apply flex flex-wrap gap-[6px] mt-[6px];
 }
 .inputed-item {
   @apply bg-white border text-gray-700 text-sm max-h-[30px] p-[8px] rounded-[8px] flex items-center;
@@ -77,4 +77,47 @@
 /* Ensure the dropdown has smooth rounded corners when expanded */
 .custom-dropdown option:last-child {
   border-bottom: none;
+}
+
+/* date picker css */
+
+.date-picker-container {
+  width: 100%;
+  position: relative;
+}
+
+.custom-datepicker {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+  background-color: #f8f9fa;
+  cursor: pointer;
+  text-align: left;
+}
+
+/* Custom styles for the DatePicker calendar */
+.custom-calendar {
+  width: 100% !important;
+  min-width: unset !important;
+}
+
+/* Ensure the popper container matches the input width */
+.popper-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+/* Ensuring the DatePicker's popper matches the width */
+.custom-calendar-popper {
+  width: 100% !important;
+  min-width: unset !important;
+}
+
+.custom-datepicker:focus {
+  outline: none;
+  border-color: #4a90e2;
+  background-color: #ffffff;
 }
