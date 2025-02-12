@@ -1,0 +1,58 @@
+import React, { useState } from "react";
+import Modal from "react-bootstrap/Modal";
+import { useModal } from "../common/ModalProvider";
+import { ReactComponent as CloseIcon } from "../../assets/icons/closeModal.svg";
+import CommonSearchBox from "../common/CommonSearchBox";
+import { ReactComponent as FolderIcon } from "../../assets/icons/addFolder.svg";
+import { ReactComponent as Folder } from "../../assets/icons/folderIcon.svg";
+import CancelButton from "../common/CancelButton";
+import DeleteButton from "../common/DeleteButton";
+
+const CommonDeleteModal = ({
+  visible,
+  onClose,
+  onClickDelete,
+  title,
+  description,
+  isLoading,
+}) => {
+  const { modals, setModalVisibility } = useModal();
+
+  const handleBackdropClick = () => {
+    setModalVisibility("animatedModal", true);
+    setTimeout(() => {
+      setModalVisibility("animatedModal", false);
+    }, 600);
+  };
+  return (
+    <Modal
+      show={visible}
+      onHide={handleBackdropClick}
+      dialogClassName={`common-modal`}
+      contentClassName="modal-content"
+      backdropClassName="custom-backdrop"
+    >
+      <div
+        className={`common-modal-container overflow-visible ${
+          modals?.animatedModal && "shake"
+        }`}
+      >
+        <div className="display-column" style={{ gap: 24 }}>
+          <div className="display-flex-justify align-center">
+            <p className="font-16-medium color-dark-black">{title}</p>
+            <button onClick={onClose}>
+              <CloseIcon />
+            </button>
+          </div>
+          <p className="font-12-regular color-dark-black">{description}</p>
+          <div className="display-flex justify-center" style={{ gap: 8 }}>
+            <CancelButton onClick={onClose} disabled={isLoading} />
+            <DeleteButton onClick={onClickDelete} />
+          </div>
+        </div>
+      </div>
+    </Modal>
+  );
+};
+
+export default CommonDeleteModal;
