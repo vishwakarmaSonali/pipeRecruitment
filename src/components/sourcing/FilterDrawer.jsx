@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import "./index.css";
+import "../filterModal/FilterModal.css";
 import { ReactComponent as CloseIcon } from "../../assets/icons/drawerClose.svg";
 import { Drawer } from "@mui/material";
 import CommonDropdown from "../common/CommonDropdown";

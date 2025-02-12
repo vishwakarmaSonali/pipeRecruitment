@@ -19,6 +19,7 @@ import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
 import { store, persistor } from "./store/store";
 import CandidateInfo from "./pages/Recruitment/Candidates/CandidateInfo";
+import CandidateCustomization from "./pages/Recruitment/Candidates/CandidateCustomization";
 
 const router = createBrowserRouter([
   {
@@ -52,6 +53,10 @@ const router = createBrowserRouter([
   {
     path: "/candidate/candidate-info",
     element: <CandidateInfo />,
+  },
+  {
+    path: "/candidate-customization",
+    element: <CandidateCustomization />,
   },
 ]);
 

@@ -72,8 +72,8 @@ th {
 }
 
 .edit-details-btn {
-  display: none;
-  transition: display 300ms ease;
+  opacity: 0;
+  transition: opacity 350ms ease;
 }
 
 .save-btn {
@@ -87,7 +87,7 @@ th {
 }
 
 .detail-row:hover .edit-details-btn {
-  display: inline-block;
+  opacity: 1;
 }
 
 .text-uppercase {

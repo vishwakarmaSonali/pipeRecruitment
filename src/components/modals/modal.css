@@ -59,7 +59,7 @@
 .candidate-info-common-modal {
   background-color: transparent;
   max-height: 90%;
-  position: fixed; /* Fix position to ensure it stays centered */
+  position: fixed;
   width: auto;
   left: 50%;
   top: 50%;
@@ -68,6 +68,7 @@
   min-width: calc(100% - 120px) !important;
   margin-right: auto;
   margin-left: auto;
+  /* overflow: hidden; */
   transition: all 250ms ease;
 }
 
@@ -89,6 +90,7 @@
   box-sizing: border-box;
   box-shadow: -1px 4px 18px 0px #0000002e;
   position: relative;
+  max-height: calc(100vh - 80px);
   min-height: calc(100vh - 80px);
   display: flex;
   flex-direction: column;
@@ -653,4 +655,25 @@ textarea,
 
 .modal-previous-btn:hover {
   transform: translateX(-5px);
+}
+
+.candidate-info-modal-section-2 {
+  border: 1px solid #d7d7d7;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.candidate-info-modal-inner-section-1 {
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.candidate-info-feedback-container {
+  padding: 12px;
+  display: flex;
+  gap: 12px;
 }
