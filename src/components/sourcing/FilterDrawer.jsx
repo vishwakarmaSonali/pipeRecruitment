@@ -3,13 +3,22 @@ import "./index.css";
 import "../filterModal/FilterModal.css";
 import { ReactComponent as CloseIcon } from "../../assets/icons/drawerClose.svg";
 import { Drawer } from "@mui/material";
-
+import CustomDropdown from "../CustomDropdown/CustomDropdown";
+import TitleSearchDropdown from "../AutocompleteDropdowns/TitleSearchDropDown";
+import LocationSearchDropdown from "../AutocompleteDropdowns/LocationSearchDropDown";
+import SkillSearchDropdown from "../AutocompleteDropdowns/SkillDropdown";
+import OrganizationSearchDropdown from "../AutocompleteDropdowns/OrganizationSearchDropDown";
 const FilterDrawer = ({ isOpen, onClose, onApply, onReset, filters }) => {
   const [localFilters, setLocalFilters] = useState(filters);
   const [isVisible, setIsVisible] = useState(isOpen);
 
   const [radius, setRadius] = useState("");
   const [industry, setIndustry] = useState([]);
+  const [selectedTitles, setSelectedTitles] = useState([]); // Ensure it's an array
+  const [selectedLocations, setSelectedLocations] = useState([]); // Ensure it's an array
+  const [selectedSkills, setSelectedSkills] = useState([]);
+  const [selectedOrganizations, setSelectedOrganizations] = useState([]); // Ensure it's an array
+console.log("onApply>>>>>>",onApply);
 
   const radiusOptions = [
     { id: 1, type: "Kilometer" },
@@ -70,14 +79,31 @@ const FilterDrawer = ({ isOpen, onClose, onApply, onReset, filters }) => {
     setIndustry(industry.filter((_, i) => i !== index));
   };
   const handleApplyFilters = () => {
+    console.log("selectedTitlesselectedTitles",selectedTitles,"locationslocations",selectedLocations);
+    
     onApply({
       ...localFilters,
       radiusType: radius?.type || "",
       industry: industry?.industryType || "",
+      titles: selectedTitles,
+      location: selectedLocations,
+    skills:selectedSkills,
+      organizations: selectedOrganizations ,
       experience,
     });
   };
 
+  const handleResetFilters = () => {
+    setSelectedTitles([]); // Reset titles
+    setSelectedLocations([]); // Reset locations
+    setSelectedOrganizations([]); // Reset organizations
+    setSelectedSkills([]); // Reset skills
+    setIndustry([]); // Reset industry selection
+    setExperience({ from: "", to: "" }); // Reset experience input
+    setRadius(""); // Reset radius
+    setLocalFilters({}); // Clear local filters state
+    onReset(); // Call parent reset function
+  };
   useEffect(() => {
     setLocalFilters(filters);
   }, [filters]);
@@ -95,7 +121,7 @@ const FilterDrawer = ({ isOpen, onClose, onApply, onReset, filters }) => {
 
   return (
     <Drawer anchor="right" open={isOpen} onClose={onClose}>
-      <div role="presentation" className="candidate-details-drawer">
+      <div role="presentation" className="candidate-details-drawer w-[460px]">
         <div className="py-[20px] h-full display-column" style={{ gap: 20 }}>
           <div className="flex justify-between items-center">
             <h2 className="font-24-medium color-dark-black">Filters</h2>
@@ -109,58 +135,21 @@ const FilterDrawer = ({ isOpen, onClose, onApply, onReset, filters }) => {
               <label className="font-12-regular color-dark-black">
                 Job Title
               </label>
-              <input
-                type="text"
-                placeholder="Enter title"
-                className="filter-input"
-                value={localFilters.jobTitle || ""}
-                onChange={(e) => handleInputChange(e, "jobTitle")}
-                onKeyDown={(e) => handleKeyDown(e, "jobTitle")}
-              />
-              {localFilters.jobTitleList?.length > 0 && (
-                <div className="inputItemsDiv">
-                  {localFilters.jobTitleList.map((title, index) => (
-                    <div key={index} className="inputed-item">
-                      {title}
-                      <button
-                        className="ml-2 text-customBlue"
-                        onClick={() => removeItem("jobTitle", index)}
-                      >
-                        ✕
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              )}
+              <TitleSearchDropdown
+              selectedTitles={selectedTitles} 
+              setSelectedTitles={setSelectedTitles} 
+            />
             </div>
 
             <div className="display-column-6 ">
               <label className="font-12-regular color-dark-black">
                 Location
               </label>
-              <input
-                type="text"
-                placeholder="Enter location"
-                className="filter-input"
-                value={localFilters.location || ""}
-                onChange={(e) => handleInputChange(e, "location")}
-                onKeyDown={(e) => handleKeyDown(e, "location")}
-              />
-              {localFilters.locationList?.length > 0 && (
-                <div className="inputItemsDiv">
-                  {localFilters.locationList?.map((loc, index) => (
-                    <div key={index} className="inputed-item">
-                      {loc}
-                      <button
-                        className="ml-2 text-customBlue"
-                        onClick={() => removeItem("location", index)}
-                      >
-                        ✕
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              )}
+              <LocationSearchDropdown
+              selectedLocations={selectedLocations} 
+              setSelectedLocations={setSelectedLocations} 
+              placeholder={"Preferred Location"}
+            />
             </div>
 
             <div className="display-column-6 ">
@@ -203,29 +192,10 @@ const FilterDrawer = ({ isOpen, onClose, onApply, onReset, filters }) => {
               <label className="font-12-regular color-dark-black">
                 Company
               </label>
-              <input
-                type="text"
-                placeholder="Enter company"
-                className="filter-input"
-                value={localFilters.company || ""}
-                onChange={(e) => handleInputChange(e, "company")}
-                onKeyDown={(e) => handleKeyDown(e, "company")}
-              />
-              {localFilters.companyList?.length > 0 && (
-                <div className="inputItemsDiv">
-                  {localFilters.companyList?.map((companyItem, index) => (
-                    <div key={index} className="inputed-item">
-                      {companyItem}
-                      <button
-                        className="ml-2 text-customBlue"
-                        onClick={() => removeItem("company", index)}
-                      >
-                        ✕
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              )}
+              <OrganizationSearchDropdown
+              selectedOrganizations={selectedOrganizations} 
+              setSelectedOrganizations={setSelectedOrganizations} 
+            />
             </div>
 
             <div className="display-column-6 ">
@@ -275,29 +245,10 @@ const FilterDrawer = ({ isOpen, onClose, onApply, onReset, filters }) => {
 
             <div className="display-column-6 ">
               <label className="font-12-regular color-dark-black">Skills</label>
-              <input
-                type="text"
-                placeholder="Enter skill"
-                className="filter-input"
-                value={localFilters.skill || ""}
-                onChange={(e) => handleInputChange(e, "skill")}
-                onKeyDown={(e) => handleKeyDown(e, "skill")}
-              />
-              {localFilters.skillList?.length > 0 && (
-                <div className="inputItemsDiv">
-                  {localFilters.skillList?.map((skill, index) => (
-                    <div key={index} className="inputed-item">
-                      {skill}
-                      <button
-                        className="ml-2 text-customBlue"
-                        onClick={() => removeItem("skill", index)}
-                      >
-                        ✕
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              )}
+              <SkillSearchDropdown
+              selectedSkills={selectedSkills} 
+              setSelectedSkills={setSelectedSkills} 
+            />
             </div>
 
             <div className="display-column-6 ">
@@ -406,7 +357,7 @@ const FilterDrawer = ({ isOpen, onClose, onApply, onReset, filters }) => {
           <div className="flex justify-between space-x-4">
             <button
               className="w-1/2 border border-buttonBLue text-buttonBLue  flex justify-center items-center py-[12px] max-h-[40px] rounded-[8px] btn-text"
-              onClick={onReset}
+              onClick={handleResetFilters}
             >
               Reset
             </button>

@@ -5,9 +5,17 @@ import { ReactComponent as CloseIcon } from "../../assets/icons/drawerClose.svg"
 import { Drawer } from "@mui/material";
 import Tick from "../../assets/icons/sourcingIcons/tick.svg";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+// import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs"; // Ensure correct date handling
+import CustomCalendar from "../DatePicker/CustomDatePicker";
+import "react-datepicker/dist/react-datepicker.css";
+import DatePicker from "react-datepicker";
+import { format } from "date-fns";
+import axios from "axios";
+import SkillSearchDropdown from "../AutocompleteDropdowns/SkillDropdown";
+import LocationSearchDropdown from "../AutocompleteDropdowns/LocationSearchDropDown";
+
 const CandidateFilterDrawer = ({
   isOpen,
   onClose,
@@ -15,6 +23,7 @@ const CandidateFilterDrawer = ({
   onReset,
   filters,
 }) => {
+  const today = new Date();
   const [localFilters, setLocalFilters] = useState(filters || {});
   const [checkedColumns, setCheckedColumns] = useState([]);
   const [radius, setRadius] = useState(null);
@@ -29,8 +38,16 @@ const CandidateFilterDrawer = ({
   const [selectedFrequencies, setSelectedFrequencies] = useState([]);
   const [selectedLabels, setSelectedLabels] = useState([]);
   const [selectedSources, setSelectedSources] = useState([]);
-  const [lastContactedDate, setLastContactedDate] = useState(null);
-  const datePickerRef = useRef(null);
+  const [lastContactedDate, setLastContactedDate] = useState(format(today, "yyyy-MM-dd"));
+  const [lastUpdatedDate, setLastUpdatedDate] = useState(format(today, "yyyy-MM-dd"));
+  const [showContactedCalendar, setShowContactedCalendar] = useState(false);
+  const [showUpdatedCalendar, setShowUpdatedCalendar] = useState(false);
+  const [selectedDate, setSelectedDate] = useState(format(today, "yyyy-MM-dd"));
+  const [selectedSkills, setSelectedSkills] = useState([]);
+  const [skillQuery, setSkillQuery] = useState("");
+  const [skillSuggestions, setSkillSuggestions] = useState([]);
+  const [showSkillDropdown, setShowSkillDropdown] = useState(false);
+  const [selectedLocations, setSelectedLocations] = useState([]); // Ensure it's an array
 
   const radiusOptions = [
     { id: 1, type: "Kilometer" },
@@ -101,6 +118,14 @@ const CandidateFilterDrawer = ({
 
   const handleNationalityChange = (selectedItem) => {
     setNationality(selectedItem);
+  };
+  const handleLastContactedDateSelect = (date) => {
+    setLastContactedDate(date); 
+    setShowContactedCalendar(false)
+  };
+  const handleLastUpdatedDateSelect = (date) => {
+    setLastUpdatedDate(date); 
+    setShowUpdatedCalendar(false)
   };
 
   useEffect(() => {
@@ -187,7 +212,7 @@ const CandidateFilterDrawer = ({
 
   return (
     <Drawer anchor="right" open={isOpen} onClose={onClose}>
-      <div role="presentation" className="candidate-details-drawer">
+      <div role="presentation" className="candidate-details-drawer w-[460px]">
         <div className="py-[20px] h-full display-column" style={{ gap: 20 }}>
           <div className="flex justify-between items-center">
             <h2 className="font-24-medium color-dark-black">Filters</h2>
@@ -321,29 +346,11 @@ const CandidateFilterDrawer = ({
                   )}
                 </div>
               )}
-              <input
-                type="text"
-                placeholder="Skills"
-                className="filter-input"
-                value={localFilters.skill || ""}
-                onChange={(e) => handleInputChange(e, "skill")}
-                onKeyDown={(e) => handleKeyDown(e, "skill")}
-              />
-              {localFilters.skillList?.length > 0 && (
-                <div className="inputItemsDiv">
-                  {localFilters.skillList?.map((skill, index) => (
-                    <div key={index} className="inputed-item">
-                      {skill}
-                      <button
-                        className="ml-2 text-customBlue"
-                        onClick={() => removeItem("skill", index)}
-                      >
-                        ✕
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              )}
+                 <SkillSearchDropdown
+              selectedSkills={selectedSkills} 
+              setSelectedSkills={setSelectedSkills} 
+            />
+           
               <input
                 type="text"
                 placeholder="University/Institution"
@@ -440,31 +447,11 @@ const CandidateFilterDrawer = ({
               <label className="font-12-regular color-dark-black">
                 Job-Related
               </label>
-              <input
-                type="text"
-                placeholder="Preferred Location"
-                className="filter-input"
-                value={localFilters.preferredLocation || ""}
-                onChange={(e) => handleInputChange(e, "preferredLocation")}
-                onKeyDown={(e) => handleKeyDown(e, "preferredLocation")}
-              />
-              {localFilters.preferredLocationList?.length > 0 && (
-                <div className="inputItemsDiv">
-                  {localFilters.preferredLocationList?.map(
-                    (location, index) => (
-                      <div key={index} className="inputed-item">
-                        {location}
-                        <button
-                          className="ml-2 text-customBlue"
-                          onClick={() => removeItem("location", index)}
-                        >
-                          ✕
-                        </button>
-                      </div>
-                    )
-                  )}
-                </div>
-              )}
+                <LocationSearchDropdown 
+              selectedLocations={selectedLocations} 
+              setSelectedLocations={setSelectedLocations} 
+              placeholder={"Preferred Location"}
+            />
 
               <CustomDropdown
                 options={domainOptions} // List of available domain options
@@ -595,50 +582,41 @@ const CandidateFilterDrawer = ({
             </div>
             <div className="display-column-6 pb-3 border-b ">
               <label className="font-12-regular color-dark-black">Date</label>
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <DatePicker
-                  value={lastContactedDate}
-                  onChange={(newValue) => setLastContactedDate(newValue)}
-                  renderInput={(params) => (
-                    <input
-                    type="text"
-                    placeholder="Last Contacted"
-                    className="filter-input"
-                    value={lastContactedDate ? lastContactedDate.toLocaleDateString() : ""}
-                    readOnly
-                    onClick={() => datePickerRef.current.setOpen(true)} // Open DatePicker on Click
-                  />
-                  )}
-                  slotProps={{
-                    textField: { fullWidth: true },
-                  }}
-                />
-              </LocalizationProvider>
-            
-            <div className="date-picker-container">
+              <input
+                type="text"
+                placeholder="Last Contacted"
+                // className="filter-input"
+                className="filter-input"
+                value={
+                  lastContactedDate
+                    ? format(lastContactedDate, "yyyy-MM-dd")
+                    : ""
+                }
+                onFocus={() => setShowContactedCalendar(true)}
+                readOnly
+              />
 
-</div>
+              {showContactedCalendar && (
+                <div className=" z-10 bg-white mt-1">
+                  <CustomCalendar onDateSelect={handleLastContactedDateSelect} />
+                </div>
+              )}
+              <div className="date-picker-container"></div>
               <input
                 type="text"
                 placeholder="Last Updated"
                 className="filter-input"
-                value={localFilters.school || ""}
-                onChange={(e) => handleInputChange(e, "school")}
-                onKeyDown={(e) => handleKeyDown(e, "school")}
+                value={
+                  lastUpdatedDate
+                    ? format(lastUpdatedDate, "yyyy-MM-dd")
+                    : ""
+                }
+                onFocus={() => setShowUpdatedCalendar(true)}
+                readOnly
               />
-              {localFilters.schoolList?.length > 0 && (
-                <div className="inputItemsDiv">
-                  {localFilters.schoolList?.map((schoolsDataItem, index) => (
-                    <div key={index} className="inputed-item">
-                      {schoolsDataItem}
-                      <button
-                        className="ml-2 text-customBlue"
-                        onClick={() => removeItem("school", index)}
-                      >
-                        ✕
-                      </button>
-                    </div>
-                  ))}
+               {showUpdatedCalendar && (
+                <div className=" z-10 bg-white mt-1">
+                  <CustomCalendar onDateSelect={handleLastUpdatedDateSelect} />
                 </div>
               )}
             </div>
@@ -668,6 +646,8 @@ const CandidateFilterDrawer = ({
             </div>
           </div>
 
+          {/* <CustomCalendar onDateSelect={handleDateSelection} selectedDate={lastContactedDate} /> */}
+
           <div className="flex justify-between space-x-4">
             <button
               className="w-1/2 border border-buttonBLue text-buttonBLue  flex justify-center items-center py-[12px] max-h-[40px] rounded-[8px] btn-text"
@@ -683,8 +663,7 @@ const CandidateFilterDrawer = ({
             </button>
           </div>
         </div>
-          {/* Hidden DatePicker Component */}
-
+        {/* Hidden DatePicker Component */}
       </div>
     </Drawer>
   );

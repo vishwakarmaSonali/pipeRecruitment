@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "./index.css";
 import { ReactComponent as Logo } from "../../assets/icons/logo.svg";
 import { Link, useLocation } from "react-router-dom";
@@ -21,6 +21,7 @@ import { commonStyle } from "../../helpers/config";
 
 const Navbar = () => {
   const location = useLocation();
+  const inputRef = useRef(null);
   const [activeLink, setActiveLink] = useState("/");
   const [showSearch, setShowSearch] = useState(false);
   const [searchValue, setSearchValue] = useState("");
@@ -66,7 +67,7 @@ const Navbar = () => {
           Users
           <DropDown />
         </Link>
-        <Link to="#" className="nav-common-link-text">
+        <Link to="/candidates" className="nav-common-link-text">
           Candidates
           <DropDown />
         </Link>
@@ -106,44 +107,43 @@ const Navbar = () => {
 
       <div className="display-flex align-center" style={{ gap: 10 }}>
         <div className="display-flex " style={{ gap: 6 }}>
-          {showSearch ? (
-            <div className="search-input-div-nav">
-              <SearchIcon />
-              <input
-                type="text"
-                placeholder="Search"
-                className="search-input-nav"
-                autoFocus
-                value={searchValue}
-                onChange={(e) => {
-                  setSearchValue(e.target.value);
-                }}
-                onBlur={() => setShowSearch(false)}
-              />
-            </div>
-          ) : (
-            <button
-              className="common-nav-btn"
-              onClick={() => setShowSearch(true)}
-            >
-              <SearchIcon />
-            </button>
-          )}
-          <button className="common-nav-btn">
-            <Add />
-          </button>
-          <button className="common-nav-btn">
-            <MessagesIcon />
-          </button>
-          <button className="common-nav-btn">
-            <NotificationIcon />
+          <button
+            className="search-input-div-nav"
+            disabled={showSearch}
+            onClick={() => {
+              setShowSearch(true);
+              setTimeout(() => inputRef.current?.focus(), 10);
+            }}
+          >
+            <SearchIcon width={16} height={16} />
+            <input
+              type="text"
+              ref={inputRef}
+              placeholder="Search"
+              className={`search-input-nav ${
+                showSearch ? "nav-search-visible" : ""
+              }`}
+              autoFocus
+              value={searchValue}
+              onChange={(e) => setSearchValue(e.target.value)}
+              onBlur={() => setShowSearch(false)}
+            />
           </button>
 
+          <button className="common-nav-btn">
+            <Add width={16} height={16} />
+          </button>
+          <button className="common-nav-btn">
+            <MessagesIcon width={16} height={16} />
+          </button>
+          <button className="common-nav-btn">
+            <NotificationIcon width={16} height={16} />
+          </button>
           <button
             className="common-nav-btn display-none tab-visible"
             onClick={toggleDrawer(true)}
           >
-            <MenuBar />
+            <MenuBar width={16} height={16} />
           </button>
         </div>
         <button

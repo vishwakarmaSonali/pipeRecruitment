@@ -7,6 +7,8 @@ import {
 } from "./actionsType";
 
 export const fetchCandidates = (token, filters, page) => {
+  console.log("filtersssssss>>>>>",filters);
+  
   return async (dispatch) => {
     dispatch({ type: SEARCH_CANDIDATE_REQUEST });
     try {
@@ -23,6 +25,7 @@ export const fetchCandidates = (token, filters, page) => {
         `${BASE_URL}${candidateSearchApiEndPoint}`,
         config
       );
+      console.log("responseresponseresponseresponse", response);
 
       dispatch({
         type: SEARCH_CANDIDATE_SUCCESS,

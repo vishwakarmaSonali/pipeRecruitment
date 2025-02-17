@@ -275,11 +275,11 @@ const Sourcing = () => {
   const [filtersApplied, setFiltersApplied] = useState(false);
   const [isJobModalOpen, setIsJobModalOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const perPageLimit = 10;
+  const perPageLimit = 100;
 
   const [filters, setFilters] = useState({
     jobTitle: "",
-    location: "",
+    locations: "",
     company: "",
     yearsOfExperience: { from: "", to: "" },
     industry: "",
@@ -324,13 +324,20 @@ const Sourcing = () => {
   const resetFilters = () => {
     setFilters({
       jobTitle: "",
+      titles: [], // Clear selected job titles
       location: "",
+      locations: [], // Clear selected locations
       company: "",
+      companies: [], // Clear selected companies
+      skills: [], // Clear selected skills
+      organizations: [], // Clear selected organizations
       yearsOfExperience: { from: "", to: "" },
       industry: "",
       radius: "",
+      radiusType: "",
       education: { major: "", school: "", degree: "" },
     });
+  
     setFiltersApplied(false);
   };
 
@@ -389,26 +396,22 @@ const Sourcing = () => {
   }, []);
 
   useEffect(() => {
+
     setCurrentPage(1);
     let params = {};
     params.limit = perPageLimit;
 
-    if (!!filters.jobTitle && !(filters?.jobTitleList?.length > 0)) {
-      params.title = filters?.jobTitle;
+  
+    if(filters?.titles?.length>0){
+      params.title = filters.titles.join(", ");
     }
 
-    if (filters?.jobTitleList?.length > 0) {
-      params.title = filters?.jobTitleList?.join(", ");
+    if (filters?.locations?.length > 0) {
+      params.location = filters.locations.map(loc => `'${loc}'`).join(", ");
     }
-
-    if (!!filters.location && !(filters?.locationList?.length > 0)) {
-      params.location = filters?.location;
-    }
-
-    if (filters?.locationList?.length > 0) {
-      params.location = filters?.locationList?.join(", ");
-    }
-
+    
+  
+// if(filters?.)
     if (!!filters?.radius) {
       params.radius = filters?.radius;
     }
@@ -417,13 +420,13 @@ const Sourcing = () => {
       params.radiusUnit = filters?.radiusType;
     }
 
-    if (!!filters?.company && !(filters?.companyList?.length > 0)) {
-      params.company = filters?.company;
+    if (filters?.organizations?.length>0) {
+      params.company = filters?.organizations.join("");
     }
 
-    if (filters?.companyList?.length > 0) {
-      params.company = filters?.companyList?.join(", ");
-    }
+    // if (filters?.companyList?.length > 0) {
+    //   params.company = filters?.companyList?.join(", ");
+    // }
 
     // if (!!filters?.experience?.from) {
     //   params.company = filters?.experience?.from;

@@ -114,6 +114,23 @@ const CommonDropdown = ({
     );
   };
 
+  const fieldFormatListItem = (item) => {
+    const itemValue = item?.type;
+    const selectedItem = itemValue === selectedOption;
+    return (
+      <div
+        className={`normal-list-item-div display-flex align-item ${
+          selectedItem && "bg-selected"
+        }`}
+        style={{ gap: 10 }}
+        onClick={() => handleSelect(item)}
+      >
+        {item?.icon}
+        <p className="font-12-regular color-dark-black">{itemValue}</p>
+      </div>
+    );
+  };
+
   return (
     <div className="relative w-full" ref={dropdownRef}>
       {/* Dropdown button */}
@@ -142,6 +159,8 @@ const CommonDropdown = ({
                 return jobListItem(option);
               case "jobStatus":
                 return jobStatusListItem(option);
+              case "fieldFormat":
+                return fieldFormatListItem(option);
               default:
                 return normalListItem(option);
             }

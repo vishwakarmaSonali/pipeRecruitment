@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import "./Candidates.css";
 import { useSelector } from "react-redux"; // Import Redux selector
-
+import { useNavigate } from "react-router-dom";
 import { ReactComponent as CandidatesIcon } from "../../../assets/icons/candidates/candidateFilled.svg";
 import { ReactComponent as Folder } from "../../../assets/icons/candidates/folderCandidates.svg";
 import { ReactComponent as SourcingIcon } from "../../../assets/icons/candidates/document-cloud.svg";
@@ -43,9 +43,12 @@ import { useDispatch } from "react-redux";
 import Navbar from "../../../components/navbar/Navbar";
 import ColumnSelector from "../../../components/ColumnSelector";
 import CandidateFilterDrawer from "../../../components/candidate/CandidateFilterModal"
+import CreateCandidatesMenu from "./CreateCandidatesMenu";
+import CreateCandidateMenu from "./CreateCandidatesMenu";
 
 const Candidates = ({ isDrawerOpen }) => {
   const dispatch = useDispatch();
+  const navigate = useNavigate()
   const [candidateList, setCandidateList] = useState(candidates);
   const [selectedCandidates, setSelectedCandidates] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("Candidates");
@@ -55,7 +58,8 @@ const Candidates = ({ isDrawerOpen }) => {
   const [isColumnSelectorOpen, setIsColumnSelectorOpen] = useState(false);
     const [filterDrawerOpen, setFilterDrawerOpen] = useState(false);
       const [filtersApplied, setFiltersApplied] = useState(false);
-    
+      const [isMenuOpen, setIsMenuOpen] = useState(false);
+
     const [filters, setFilters] = useState({
         jobTitle: "",
         location: "",
@@ -139,6 +143,15 @@ const Candidates = ({ isDrawerOpen }) => {
       education: { major: "", school: "", degree: "" },
     });
     setFiltersApplied(false);
+  };
+  const [anchorCreateCandidtaeEl, setAnchorCreateCandidtaeEl] = useState(null);
+
+  const handleOpenMenu = (event) => {
+    setAnchorCreateCandidtaeEl(event.currentTarget);
+  };
+
+  const handleCloseMenu = () => {
+    setAnchorCreateCandidtaeEl(null);
   };
   // Settings menu items
   const settingsMenuItems = isFilterSaved
@@ -576,13 +589,14 @@ const Candidates = ({ isDrawerOpen }) => {
   // Function to generate a random color
   const getRandomColor = () => {
     const colors = [
-      "#FF5733",
-      "#33FF57",
-      "#3357FF",
-      "#FF33A8",
-      "#FFD700",
-      "#8A2BE2",
-      "#20B2AA",
+      "#D4C158",
+      "#8282D8",
+      "#9BCD6A",
+      "#D458A0",
+      "#CDA26A",
+      "#38658E",
+      "#6D58D4",
+      "#CD6ABC"
     ];
     return colors[Math.floor(Math.random() * colors.length)];
   };
@@ -683,8 +697,10 @@ const Candidates = ({ isDrawerOpen }) => {
             ) : (
               <button
                 className="buttons  text-white  bg-buttonBLue"
+                // onClick={handleOpenMenu}
+
                 onClick={() =>
-                  setModalVisibility("createCandidateModalVisible", true)
+                 navigate("/candidate/create-candidate-form")
                 }
               >
                 Create Candidate
@@ -701,7 +717,7 @@ const Candidates = ({ isDrawerOpen }) => {
               Filter <FilterIcon />
             </button>
             <button
-              className="buttons text-white bg-buttonBLue"
+              className="buttons border-1 border-blue-600 text-buttonBLue min-w-[40px]"
               onClick={(event) => (
                 // setModalVisibility("editColumnModalVisible", true),
                 setIsColumnSelectorOpen(true),
@@ -711,13 +727,13 @@ const Candidates = ({ isDrawerOpen }) => {
               Columns <ColumnIcon />
             </button>
             <button
-              className="buttons border-1 border-blue-600 text-buttonBLue"
+              className="buttons border-1 border-blue-600 text-buttonBLue min-w-[40px]"
               onClick={() => setIsFilter(!isFilter)}
             >
-              Export <ExportIcon />
+               <ExportIcon />
             </button>
 
-            <button className="buttons border-1 border-blue-600 text-buttonBLue  min-w-[44px] ">
+            <button className="buttons border-1 border-blue-600 text-buttonBLue  min-w-[40px] ">
               <RefreshIcon />
             </button>
             {/* <button className="text-gray-700 pl-[8px]" onClick={handleClick}>
@@ -768,7 +784,7 @@ const Candidates = ({ isDrawerOpen }) => {
                 Apply filter
               </button> */}
               <button
-                className="buttons border-1 min-w-[44px] border-buttonBLue justify-center text-buttonBLue"
+                className="buttons border-1 min-w-[40px] border-buttonBLue justify-center text-buttonBLue"
                 onClick={handleClickSetting}
                 style={{ borderColor: "#1761D8" }} // Use your exact blue color code
               >
@@ -779,7 +795,7 @@ const Candidates = ({ isDrawerOpen }) => {
         )}
         {/* Table Wrapper with Horizontal Scroll */}
 
-        <div className="overflow-x-auto px-[10px] scroll-width-none bg-white shadow-md ">
+        <div className="overflow-x-auto overflow-y-auto px-[10px] scroll-width-none bg-white shadow-md ">
           <table className="min-w-full divide-y divide-gray-200">
             {/* Table Header */}
             <thead className="sticky top-0 bg-white z-[50px]">
@@ -946,7 +962,8 @@ const Candidates = ({ isDrawerOpen }) => {
         isOpen={filterDrawerOpen}
         onClose={() => toggleFilterDrawer(false)}
       />
-    </div>
+      <CreateCandidateMenu anchorEl={anchorCreateCandidtaeEl} open={Boolean(anchorCreateCandidtaeEl)} onClose={handleCloseMenu} />
+      </div>
   );
 };
 

@@ -158,6 +158,23 @@
   box-sizing: border-box;
 }
 
+.common-delete-btn {
+  padding: 10px 12px;
+  min-width: 120px;
+  border-radius: 8px;
+  background-color: #e03636;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 36px;
+  font-size: 14px;
+  line-height: 16.09px;
+  font-family: "Ubuntu";
+  font-weight: 400;
+  color: var(--white);
+  box-sizing: border-box;
+}
+
 .common-add-btn {
   padding: 10px 14px;
   border-radius: 8px;
@@ -173,6 +190,35 @@
   font-weight: 400;
   color: var(--white);
   box-sizing: border-box;
+  transition: background-color 300ms ease;
+}
+
+.common-cancel-btn {
+  padding: 10px 12px;
+  min-width: 120px;
+  border-radius: 8px;
+  border: 1px solid #1761d8;
+  background-color: transparent;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 36px;
+  font-size: 14px;
+  line-height: 16.09px;
+  font-family: "Ubuntu";
+  font-weight: 400;
+  color: #1761d8;
+  box-sizing: border-box;
+  transition: border 300ms ease, color 300ms ease;
+}
+
+.disable-cancel-btn {
+  color: #797979;
+  border: 1px solid #797979;
+}
+
+.disable-add-btn {
+  background-color: #797979;
 }
 
 .cancel-btn {

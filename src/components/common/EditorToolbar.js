@@ -28,12 +28,12 @@ function redoChange() {
   this.quill.history.redo();
 }
 
-// Add sizes to whitelist and register them
+// Register font sizes
 const Size = Quill.import("formats/size");
 Size.whitelist = ["extra-small", "small", "medium", "large"];
 Quill.register(Size, true);
 
-// Modules object for setting up the Quill editor
+// Quill Editor Modules
 export const modules = (props) => ({
   toolbar: {
     container: "#" + props,
@@ -49,14 +49,17 @@ export const modules = (props) => ({
   },
 });
 
+// Quill Editor Formats
 export const formats = [
-  { header: [1, 2, 3, 4, 5, 6, false] },
   "bold",
   "italic",
   "underline",
   "list",
   "bullet",
+  "align",
   "link",
+  "undo",
+  "redo",
 ];
 
 export const QuillToolbar = (props) => {
@@ -65,23 +68,24 @@ export const QuillToolbar = (props) => {
       {props.toolbarId !== undefined && (
         <div id={props.toolbarId}>
           <span className="ql-formats">
-            <select className="ql-header">
-              <option value="1">Heading 1</option>
-              <option value="2">Heading 2</option>
-              <option value="3">Heading 3</option>
-              <option value="4">Heading 4</option>
-              <option value="5">Heading 5</option>
-              <option value="6">Heading 6</option>
-              <option value="" selected>
-                Normal
-              </option>
-            </select>
+            {/* Text Formatting */}
             <button className="ql-bold" />
             <button className="ql-italic" />
             <button className="ql-underline" />
+
+            {/* List Formatting */}
             <button className="ql-list" value="ordered" />
             <button className="ql-list" value="bullet" />
+
+            {/* Text Alignment */}
+            <button className="ql-align" value="justify" />
+            <button className="ql-align" value="center" />
+            <button className="ql-align" value="right" />
+
+            {/* Insert Link */}
             <button className="ql-link" />
+
+            {/* Undo & Redo */}
             <button className="ql-undo">
               <CustomUndo />
             </button>
@@ -94,4 +98,5 @@ export const QuillToolbar = (props) => {
     </>
   );
 };
+
 export default QuillToolbar;
