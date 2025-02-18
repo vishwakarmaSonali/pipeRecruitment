@@ -71,6 +71,7 @@
 .editor-main-div {
   border: 1px solid #d7d7d7;
   border-radius: 8px;
+  width: 100%;
   /* overflow: hidden; */
 }
 
@@ -473,4 +474,62 @@
   align-items: center;
   border-radius: 4px;
   cursor: pointer;
+}
+
+
+/* Style the select dropdown */
+.ql-align {
+  appearance: none; /* Hide default browser styling */
+  background: transparent;
+  border: none;
+  font-size: 14px;
+  color: #333;
+  /* padding: 5px 10px; */
+  cursor: pointer;
+}
+
+/* Style the dropdown container */
+.ql-align-dropdown {
+  display: flex;
+  align-items: center;
+  width: 50px;
+  gap: 5px;
+  border: 1px solid #ccc;
+  padding: 5px;
+  border-radius: 4px;
+  background: red;
+  cursor: pointer;
+  transition: background 0.2s ease-in-out;
+}
+
+/* Change background when hovering */
+.ql-align-dropdown:hover {
+  background: red;
+}
+
+/* Apply styles when select is active */
+.ql-align:focus {
+  outline: none;
+  border-color: #1761d8;
+}
+
+/* Hide the default dropdown arrow */
+.ql-align::-ms-expand {
+  display: none;
+  background: #007bff;
+}
+
+/* Style the dropdown arrow */
+.ql-align-dropdown svg {
+  width: 20px;
+  height: 14px;
+  fill: #333;
+}
+
+/* Option styling (Not fully supported in all browsers) */
+.ql-align option {
+  background: red;
+  color: #333;
+  font-size: 14px;
+  padding: 5px;
 }

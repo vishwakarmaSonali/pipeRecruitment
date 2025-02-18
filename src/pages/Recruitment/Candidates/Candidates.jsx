@@ -607,7 +607,7 @@ const Candidates = ({ isDrawerOpen }) => {
     >
       <Navbar />
       <div
-        className="overflow-auto scroll-width-none bg-grey-90"
+        className=" bg-grey-90"
         style={{ flex: 1, display: "flex", flexDirection: "column" }}
       >
         {/* <Header title={"Candidates"} onFilterSelect={applySavedFilter} /> */}
@@ -740,8 +740,8 @@ const Candidates = ({ isDrawerOpen }) => {
             </button> */}
           </div>
         </div>
+        <div className="flex-1 bg-grey-90 flex flex-col overflow-hidden">
 
-        {/* filter div */}
         {isFilter && (
           <div className="flex items-center justify-between p-[10px]">
             {/* Display Applied Filters */}
@@ -794,8 +794,8 @@ const Candidates = ({ isDrawerOpen }) => {
         )}
         {/* Table Wrapper with Horizontal Scroll */}
 
-        <div className="overflow-x-auto overflow-y-auto px-[10px] scroll-width-none bg-white shadow-md ">
-          <table className="min-w-full divide-y divide-gray-200">
+        <div className="overflow-auto px-[10px] bg-white shadow-md flex-grow h-[calc(100vh)]">
+        <table className="min-w-full divide-y divide-gray-200">
             {/* Table Header */}
             <thead className="sticky top-0 bg-white z-[50px]">
               <tr className="text-left text-gray-600 font-semibold">
@@ -830,8 +830,9 @@ const Candidates = ({ isDrawerOpen }) => {
             </thead>
 
             {/* ✅ Table Body */}
-            <tbody className="divide-y divide-gray-200">
+            <tbody className="divide-y overflow-auto divide-gray-200">
               {filteredCandidates.map((candidate) => (
+
                 <tr key={candidate.id} className="hover:bg-gray-50">
                   {/* Checkbox Column for Selecting Candidates */}
                   <td className="pr-0">
@@ -880,6 +881,8 @@ const Candidates = ({ isDrawerOpen }) => {
             </tbody>
           </table>
         </div>
+</div>
+        {/* filter div */}
       </div>
       <PaginationFooter />
       {/* Menu for Bulk Actions */}

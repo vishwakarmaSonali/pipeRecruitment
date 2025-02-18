@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect,useState } from "react";
 import ReactQuill, { Quill } from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { ReactComponent as BoldIcon } from "../../assets/icons/text-bold.svg";
@@ -12,7 +12,7 @@ import { ReactComponent as RedoIcon } from "../../assets/icons/redo.svg";
 import { ReactComponent as HeadingIcon } from "../../assets/icons/heading.svg";
 import ReactDOMServer from "react-dom/server";
 import "./common.css";
-import EditorToolbar, { modules, formats } from "./EditorToolbar";
+import QuillToolbar, { modules, formats } from "./EditorToolbar";
 
 // Add custom icons to Quill
 const icons = Quill.import("ui/icons");
@@ -34,16 +34,25 @@ icons["list"]["bullet"] = ReactDOMServer.renderToStaticMarkup(
   <UnorderListIcon stroke="#151B23" />
 );
 const HtmlViewComponent = ({ value, onChange }) => {
+  const quillRef = useRef(null);
+
+  useEffect(() => {
+    if (quillRef.current) {
+      console.log("Quill Editor instance assigned:", quillRef.current);
+    }
+  }, []);
+
   return (
     <div className="editor-main-div">
-      <EditorToolbar toolbarId={"t1"} />
+      <QuillToolbar toolbarId="t1" quillRef={quillRef} />
       <ReactQuill
+        ref={quillRef}
         theme="snow"
         value={value}
         onChange={onChange}
-        placeholder={"Add Description"}
+        placeholder="Add Description"
         modules={modules("t1")}
-        // formats={formats}
+        formats={formats}
       />
     </div>
   );

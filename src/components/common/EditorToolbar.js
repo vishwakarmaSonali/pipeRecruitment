@@ -1,26 +1,17 @@
-import React from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Quill } from "react-quill";
+import { ReactComponent as TextSizeIcon } from "../../assets/icons/text-size-icon.svg";
+import { ReactComponent as UndoIcon } from "../../assets/icons/undo.svg";
+import { ReactComponent as RedoIcon } from "../../assets/icons/redo.svg";
+import { ReactComponent as AlignIcon } from "../../assets/icons/align-icon.svg"; // Add your align icon
+import { ReactComponent as DropArrow } from "../../assets/icons/dropdown.svg"; // Add dropdown arrow icon
 
-const CustomUndo = () => (
-  <svg viewBox="0 0 18 18">
-    <polygon className="ql-fill ql-stroke" points="6 10 4 12 2 10 6 10" />
-    <path
-      className="ql-stroke"
-      d="M8.09,13.91A4.6,4.6,0,0,0,9,14,5,5,0,1,0,4,9"
-    />
-  </svg>
-);
+// ✅ Register font sizes properly
+const Size = Quill.import("formats/size");
+Size.whitelist = ["small", "normal", "large", "huge"];
+Quill.register(Size, true);
 
-const CustomRedo = () => (
-  <svg viewBox="0 0 18 18">
-    <polygon className="ql-fill ql-stroke" points="12 10 14 12 16 10 12 10" />
-    <path
-      className="ql-stroke"
-      d="M9.91,13.91A4.6,4.6,0,0,1,9,14a5,5,0,1,1,5-5"
-    />
-  </svg>
-);
-
+// ✅ Undo / Redo Handlers
 function undoChange() {
   this.quill.history.undo();
 }
@@ -28,15 +19,10 @@ function redoChange() {
   this.quill.history.redo();
 }
 
-// Register font sizes
-const Size = Quill.import("formats/size");
-Size.whitelist = ["extra-small", "small", "medium", "large"];
-Quill.register(Size, true);
-
-// Quill Editor Modules
-export const modules = (props) => ({
+// ✅ Define & Export Quill Modules
+export const modules = (toolbarId) => ({
   toolbar: {
-    container: "#" + props,
+    container: `#${toolbarId}`,
     handlers: {
       undo: undoChange,
       redo: redoChange,
@@ -49,7 +35,7 @@ export const modules = (props) => ({
   },
 });
 
-// Quill Editor Formats
+// ✅ Define & Export Quill Formats
 export const formats = [
   "bold",
   "italic",
@@ -58,39 +44,111 @@ export const formats = [
   "bullet",
   "align",
   "link",
+  "size",
+  "indent",
   "undo",
   "redo",
 ];
 
-export const QuillToolbar = (props) => {
+export const QuillToolbar = ({ toolbarId, quillRef }) => {
+  const [selectedSize, setSelectedSize] = useState("normal");
+  const [showDropdown, setShowDropdown] = useState(false);
+  const dropdownRef = useRef(null);
+
+  const sizeOptions = [
+    { value: "small", label: "Small" },
+    { value: "normal", label: "Normal" },
+    { value: "large", label: "Large" },
+    { value: "huge", label: "Huge" },
+  ];
+
+  // ✅ Close dropdown when clicking outside
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setShowDropdown(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  // ✅ Apply text size change using Quill API
+  const handleSizeChange = (size) => {
+    setSelectedSize(size);
+
+    if (quillRef?.current) {
+      const editor = quillRef.current.getEditor(); // ✅ Get Quill editor instance
+      if (editor) {
+        editor.format("size", size);
+      }
+    }
+
+    setShowDropdown(false);
+  };
+
   return (
     <>
-      {props.toolbarId !== undefined && (
-        <div id={props.toolbarId}>
+      {toolbarId && (
+        <div id={toolbarId} className="quill-toolbar">
           <span className="ql-formats">
-            {/* Text Formatting */}
-            <button className="ql-bold" />
-            <button className="ql-italic" />
-            <button className="ql-underline" />
+            {/* 🔹 Text Size Dropdown */}
+            <div className="relative" ref={dropdownRef}>
+              <button
+                className="text-size-button"
+                onClick={() => setShowDropdown(!showDropdown)}
+              >
+                <TextSizeIcon />
+              </button>
+              {showDropdown && (
+                <div className="dropdown-menu">
+                  {sizeOptions.map((option) => (
+                    <button
+                      key={option.value}
+                      className={`dropdown-item ${
+                        selectedSize === option.value ? "active" : ""
+                      }`}
+                      onClick={() => handleSizeChange(option.value)}
+                    >
+                      {option.label}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
 
-            {/* List Formatting */}
-            <button className="ql-list" value="ordered" />
-            <button className="ql-list" value="bullet" />
+            {/* 🔹 Text Formatting */}
+            <button className="ql-bold">B</button>
+            <button className="ql-italic">I</button>
+            <button className="ql-underline">U</button>
 
-            {/* Text Alignment */}
-            <button className="ql-align" value="justify" />
-            <button className="ql-align" value="center" />
-            <button className="ql-align" value="right" />
+            {/* 🔹 List Formatting */}
+            <button className="ql-list" value="ordered">1.</button>
+            <button className="ql-list" value="bullet">•</button>
 
-            {/* Insert Link */}
-            <button className="ql-link" />
+            {/* 🔹 Text Alignment Dropdown (With Arrow) */}
+            <div className="flex items-center">
+              
+              <select className="ql-align">
+                <option value="">Left</option>
+                <option value="center">Center</option>
+                <option value="right">Right</option>
+                <option value="justify">Justify</option>
+              </select>
+              <DropArrow />
+            </div>
 
-            {/* Undo & Redo */}
+            {/* 🔹 Insert Link */}
+            <button className="ql-link">🔗</button>
+
+            {/* 🔹 Undo & Redo */}
             <button className="ql-undo">
-              <CustomUndo />
+              <UndoIcon />
             </button>
             <button className="ql-redo">
-              <CustomRedo />
+              <RedoIcon />
             </button>
           </span>
         </div>

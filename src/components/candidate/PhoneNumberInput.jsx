@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
+import { ReactComponent as DropArrow } from "../../assets/icons/arrowDown.svg";
 
 const countryList = [
   { code: "US", name: "United States", dialCode: "+1", flag: "🇺🇸" },
@@ -41,26 +42,18 @@ const PhoneNumberInput = () => {
           onClick={() => setShowDropdown(!showDropdown)}
           ref={dropdownRef}
         >
-          <span className="mr-2 text-lg">{selectedCountry.flag}</span>
-          <svg
-            className="w-4 h-4 text-gray-600"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-          </svg>
+          <span className="mr-2  text-customBlue font-ubuntu">{selectedCountry.flag}</span>
+       <DropArrow />
         </div>
 
         {/* Dial Code */}
-        <span className="ml-2 text-gray-600">{selectedCountry.dialCode}</span>
+        <span className="ml-2 text-sm text-customBlue font-ubuntu">{`(${selectedCountry.dialCode})`}</span>
 
         {/* Phone Number Input */}
         <input
           type="tel"
           placeholder="Phone Number"
-          className="ml-2 w-full outline-none border-none"
+          className="ml-2 w-full outline-none border-none text-sm text-customBlue font-ubuntu"
           value={phoneNumber}
           onChange={(e) => setPhoneNumber(e.target.value)}
         />
