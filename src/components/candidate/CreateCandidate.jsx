@@ -7,6 +7,7 @@ import ReactQuill from "react-quill";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/material.css";
 import { ReactComponent as GallaryEdit } from "../../assets/icons/gallery-edit.svg";
+import { ReactComponent as Calendar2 } from "../../assets/icons/calendar-2.svg";
 
 import { profileImage } from "../../helpers/assets";
 import StyledDropdownInput from "./StyledDropdownInput";
@@ -14,6 +15,23 @@ import DropdownWithInput from "./StyledDropdownInput";
 import CustomCalendar from "../DatePicker/CustomDatePicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { format } from "date-fns";
+import CustomDropdown from "../CustomDropdown/CustomDropdown";
+import LocationSearchDropdown from "../AutocompleteDropdowns/LocationSearchDropDown";
+import NationalitySearchDropdown from "../AutocompleteDropdowns/NationalitySearchDropDown";
+import PhoneNumberInput from "./PhoneNumberInput";
+const genderOptions = [
+  { id: 1, label: "Female" },
+  { id: 2, label: "Male" },
+  { id: 3, label: "Others" },
+];
+const nationalityOptions = [
+  { id: 1, nationality: "American" },
+  { id: 2, nationality: "Canadian" },
+  { id: 3, nationality: "British" },
+  { id: 4, nationality: "Australian" },
+  { id: 5, nationality: "Indian" },
+];
+
 const CreateCandidateForm = () => {
   const today = new Date();
   const [description, setDescription] = useState("");
@@ -26,9 +44,18 @@ const CreateCandidateForm = () => {
   const [lastUpdatedDate, setLastUpdatedDate] = useState(
     format(today, "yyyy-MM-dd")
   );
+  const [selectedLocations, setSelectedLocations] = useState([]); // Ensure it's an array
+  const [selectedNationality, setSelectedNationlity] = useState([]); // Ensure it's an array
+
   const [showContactedCalendar, setShowContactedCalendar] = useState(false);
   const [showUpdatedCalendar, setShowUpdatedCalendar] = useState(false);
   const [selectedDate, setSelectedDate] = useState(format(today, "yyyy-MM-dd"));
+  const [selectedGender, setSelectedGender] = useState([]);
+  const [nationality, setNationality] = useState(null);
+
+  const handleNationalityChange = (selectedItem) => {
+    setNationality(selectedItem);
+  };
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -58,71 +85,6 @@ const CreateCandidateForm = () => {
         style={{ flex: 1, display: "flex", flexDirection: "column" }}
       >
         <div className="flex items-center justify-between p-[17px]">
-          {/* <div className="flex space-x-6 border-b border-customGray">
-            <button
-              className={`flex items-center space-x-2 py-2 px-3 text-sm font-medium ${
-                activeTab === "candidates"
-                  ? "text-black border-b border-black"
-                  : "text-gray-500"
-              }`}
-              onClick={() => setActiveTab("candidates")}
-            >
-              <CandidatesIcon
-                fill={activeTab === "candidates" ? "customBlue" : "#797979"}
-              />
-              <span
-                className={`tab-title-text ${
-                  activeTab === "candidates"
-                    ? "text-customBlue"
-                    : "text-customGray"
-                }`}
-              >
-                Candidates
-              </span>
-            </button>
-
-            <button
-              className={`flex items-center space-x-2 py-2 px-3 text-sm font-medium ${
-                activeTab === "folder"
-                  ? "text-black border-b border-black"
-                  : "text-gray-500"
-              }`}
-              onClick={() => setActiveTab("folder")}
-            >
-              <Folder
-                fill={activeTab === "folder" ? "customBlue" : "#797979"}
-              />
-              <span
-                className={`tab-title-text ${
-                  activeTab === "folder" ? "text-customBlue" : "text-customGray"
-                }`}
-              >
-                Folder
-              </span>
-            </button>
-
-            <button
-              className={`flex items-center space-x-2 py-2 px-3 text-sm font-medium ${
-                activeTab === "sourcing"
-                  ? "text-black border-b border-black"
-                  : "text-gray-500"
-              }`}
-              onClick={() => setActiveTab("sourcing")}
-            >
-              <SourcingIcon
-                fill={activeTab === "sourcing" ? "customBlue" : "#797979"}
-              />
-              <span
-                className={`tab-title-text ${
-                  activeTab === "sourcing"
-                    ? "text-customBlue"
-                    : "text-customGray"
-                }`}
-              >
-                Sourcing
-              </span>
-            </button>
-          </div> */}
           <span className="font-ubuntu font-medium text-custom-large">
             Create Candidate
           </span>
@@ -137,9 +99,12 @@ const CreateCandidateForm = () => {
           </div>
         </div>
         <div className="main-container-candidateForm">
+          {/* Candidate details block starts */}
           <div className="flex justify-between ">
             <div className=" bg-red-900 flex flex-1 max-w-[350px]">
-              <span className="items-start">candidate details</span>
+              <span className="items-start font-ubuntu text-xl font-medium">
+                Candidate details
+              </span>
             </div>
             <div className="flex flex-1 flex-col items-center">
               {/* profile image picker */}
@@ -163,34 +128,44 @@ const CreateCandidateForm = () => {
                 />
               </div>
               <div className="w-full">
-              <div className="display-flex gap-[10px] mt-[12px]">
+                <div className="display-flex gap-[10px] mt-[10px]">
                   <div className="flex-1">
                     <DropdownWithInput />
                   </div>
-                  <div className="flex-1">
-
-                  <input placeholder="last Name" className="outline-none" />
+                  <div className="flex-1 border-1 rounded-[8px]">
+                    <input placeholder="Last Name" className="filter-input" />
                   </div>
                 </div>
-                <div className="display-flex gap-[10px] mt-[12px]">
+                <div className="display-flex gap-[10px] mt-[10px]">
                   <div className="flex-1">
-                    <input placeholder="Gender" className=" outline-none" />
+                    <CustomDropdown
+                      options={genderOptions}
+                      placeholder="Gender"
+                      selectedValues={selectedGender}
+                      onChange={setSelectedGender}
+                      optionKey="label"
+                    />
                   </div>
                   <div className="flex-1">
-                    <input
-                      placeholder="Date of Birth"
-                      className=" outline-none"
-                      value={
-                        lastContactedDate
-                          ? format(lastContactedDate, "yyyy-MM-dd")
-                          : ""
-                      }
-                      onFocus={() => setShowUpdatedCalendar(true)}
-                      readOnly
-                    />
+                    <div className="flex items-center border-1 rounded-[8px]">
+                      <input
+                        placeholder="Date of Birth"
+                        className=" outline-none border-none padding-0 margin-0"
+                        value={
+                          lastUpdatedDate
+                            ? format(lastUpdatedDate, "yyyy-MM-dd")
+                            : ""
+                        }
+                        onFocus={() => setShowUpdatedCalendar(true)}
+                        readOnly
+                      />
+                      <div className="mr-3">
+                        <Calendar2 />
+                      </div>
+                    </div>
 
                     {showUpdatedCalendar && (
-                      <div className="absolute z-10 bg-white mt-1">
+                      <div className="absolute z-10 flex-1 w-full bg-white mt-1">
                         <CustomCalendar
                           onDateSelect={handleLastUpdatedDateSelect}
                         />
@@ -199,19 +174,71 @@ const CreateCandidateForm = () => {
                   </div>
                 </div>
 
-                <div className="display-flex gap-[10px] mt-[12px]">
-                  <input
-                    placeholder="Add to Folder"
-                    className=" outline-none flex-1"
-                  />
-                  <input
-                    placeholder="Add to Jobs"
-                    className=" outline-none flex-1"
-                  />
+                <div className="display-flex gap-[10px] mt-[10px]">
+                  <div className="flex-1">
+                    <LocationSearchDropdown
+                      selectedLocations={selectedLocations}
+                      setSelectedLocations={setSelectedLocations}
+                      placeholder={"Location"}
+                    />
+                  </div>
+                  <div className="flex-1">
+                    {/* <CustomDropdown
+                  options={nationalityOptions}
+                  placeholder="Select Nationality"
+                  selectedValue={nationality}
+                  onChange={handleNationalityChange}
+                  optionKey="nationality"
+                /> */}
+                    <NationalitySearchDropdown
+                      selectedNationalities={selectedNationality}
+                      setSelectedNationalities={setSelectedNationlity}
+                      placeholder={"Nationality"}
+                      multipleSelect={false}
+                    />
+                  </div>
+                </div>
+                <div className="display-flex gap-[10px] mt-[10px]">
+                  <div className="flex-1 border-1 rounded-[8px]">
+                    <input
+                      placeholder="Add to Folder"
+                      className="filter-input "
+                    />
+                  </div>
+                  <div className="flex-1 border-1 rounded-[8px]">
+                    <input
+                      placeholder="Add to Jobs"
+                      className="filter-input flex-1 border-1 rounded-[8px]"
+                    />
+                  </div>
                 </div>
               </div>
             </div>
           </div>
+          {/* Candidate details block ends */}
+          {/* Contact details block starts */}
+          <div className="flex justify-between mt-[26px]">
+            <div className=" bg-red-900 flex flex-1 max-w-[350px]">
+              <span className="items-start font-ubuntu text-xl font-medium">
+                Contact details
+              </span>
+            </div>
+            <div className="flex flex-1 flex-col items-center">
+            
+              <div className="w-full">
+                <div className="display-flex gap-[10px] mt-[10px]">
+                  <div className="flex-1">
+                  <PhoneNumberInput />
+                  </div>
+                  <div className="flex-1 border-1 rounded-[8px]">
+                    <input placeholder="Email Id" className="filter-input" type="email" />
+                  </div>
+                </div>
+              
+              </div>
+            </div>
+          </div>
+          {/* Contact details block ends */}
         </div>
       </div>
     </div>

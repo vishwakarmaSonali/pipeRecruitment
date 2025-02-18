@@ -18,7 +18,7 @@
   @apply font-ubuntu text-sm font-normal text-customBlue;
 }
 .filter-input {
-  @apply bg-white  flex   px-[12px] py-[12px] border max-h-[38px] leading-[14px] border-customGrey1 rounded-[8px] text-sm font-ubuntu text-customBlue placeholder:text-customGray focus:outline-none focus:ring-0;
+  @apply bg-white  flex px-2 py-3 border h-[38px] leading-[14px] border-customGrey1 rounded-[8px] text-sm font-ubuntu text-customBlue placeholder:text-customGray focus:outline-none focus:ring-0;
 }
 .inputItemsDiv {
   @apply flex flex-wrap gap-[6px] mt-[6px];

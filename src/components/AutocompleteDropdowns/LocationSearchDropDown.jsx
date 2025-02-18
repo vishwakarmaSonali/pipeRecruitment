@@ -56,8 +56,9 @@ const LocationSearchDropdown = ({ selectedLocations = [], setSelectedLocations ,
   };
 
   return (
-    <div className="relative">
-      <input
+    <div className="relative w-full min-h-[38px]">
+     <div className="border-1 rounded-[8px]">
+     <input
         type="text"
         placeholder={placeholder}
         className="filter-input"
@@ -66,9 +67,10 @@ const LocationSearchDropdown = ({ selectedLocations = [], setSelectedLocations ,
         onFocus={() => setShowLocationDropdown(true)}
       />
 
+     </div>
       {/* Location Suggestions Dropdown */}
       {showLocationDropdown && locationSuggestions.length > 0 && (
-            <div className=" left-0 w-[405px] flex flex-col  bg-white border border-borderGrey rounded-lg shadow-lg min-h-40 max-h-[460px] overflow-auto z-50 text-sm">
+            <div className="absolute left-0 z-50 flex flex-col  bg-white border border-borderGrey rounded-lg shadow-lg min-h-40 flex-1 w-full overflow-auto text-sm">
           {locationSuggestions.map((location, index) => (
             <div
               key={index}

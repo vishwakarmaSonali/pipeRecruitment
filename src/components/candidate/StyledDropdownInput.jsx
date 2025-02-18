@@ -7,7 +7,7 @@ const DropdownWithInput = () => {
 
   return (
     <div className="relative w-[100%]">
-      <div className="flex items-center border border-gray-300 rounded-lg px-2  box-border bg-white shadow-sm">
+      <div className="flex items-center border border-gray-300 rounded-lg px-2  box-border bg-white font-ubuntu text-sm text-customBlue">
         {/* Dropdown Section */}
         <div 
           className="relative cursor-pointer flex items-center"
@@ -29,17 +29,17 @@ const DropdownWithInput = () => {
         <input
           type="text"
           placeholder="First Name"
-          className="ml-2 flex-1 outline-none border-none"
+          className="ml-2 flex-1 outline-none border-none font-ubuntu text-sm text-customBlue"
         />
       </div>
 
       {/* Dropdown Options */}
       {isOpen && (
-        <div className="absolute left-0 mt-2 w-full bg-white border border-gray-300 rounded-lg shadow-lg">
+        <div className="absolute z-50 left-0 mt-2 w-full bg-white border border-gray-300 rounded-lg ">
           {options.map((option) => (
             <div
               key={option}
-              className="p-2 hover:bg-gray-100 cursor-pointer"
+              className="p-2 hover:bg-gray-100 cursor-pointer font-ubuntu text-sm text-customBlue"
               onClick={() => {
                 setSelected(option);
                 setIsOpen(false);

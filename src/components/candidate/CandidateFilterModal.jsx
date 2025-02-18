@@ -9,6 +9,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import { format } from "date-fns";
 import SkillSearchDropdown from "../AutocompleteDropdowns/SkillDropdown";
 import LocationSearchDropdown from "../AutocompleteDropdowns/LocationSearchDropDown";
+import NationalitySearchDropdown from "../AutocompleteDropdowns/NationalitySearchDropDown";
 
 const CandidateFilterDrawer = ({
   isOpen,
@@ -259,14 +260,16 @@ const CandidateFilterDrawer = ({
               <label className="font-12-regular color-dark-black">
                 Basic Information
               </label>
-              <input
+            <div className="border-1 rounded-[8px]">
+            <input
                 type="text"
                 placeholder="Candidate Name"
-                className="filter-input"
+                className="filter-input border-1"
                 value={localFilters.candidateName || ""}
                 onChange={(e) => handleInputChange(e, "candidateName")}
                 onKeyDown={(e) => handleKeyDown(e, "candidateName")}
               />
+            </div>
               <CustomDropdown
                 options={languageOptions} // List of available options
                 placeholder="Select Languages" // Placeholder text
@@ -278,19 +281,26 @@ const CandidateFilterDrawer = ({
               />
 
               <div>
-                <CustomDropdown
+                {/* <CustomDropdown
                   options={nationalityOptions}
                   placeholder="Select Nationality"
                   selectedValue={nationality}
                   onChange={handleNationalityChange}
                   optionKey="nationality"
-                />
+                /> */}
+                <NationalitySearchDropdown 
+                 selectedNationalities={nationality} 
+                 setSelectedNationalities={handleNationalityChange} 
+                 placeholder={"Nationality"}
+                 multipleSelect={true}
+                 />
               </div>
             </div>
             <div className="display-column-6">
               <label className="font-12-regular color-dark-black">
                 Experience & Qualifications
               </label>
+              <div className="border-1 rounded-[8px]">
               <input
                 type="text"
                 placeholder="Enter company"
@@ -299,6 +309,7 @@ const CandidateFilterDrawer = ({
                 onChange={(e) => handleInputChange(e, "company")}
                 onKeyDown={(e) => handleKeyDown(e, "company")}
               />
+              </div>
               {localFilters.companyList?.length > 0 && (
                 <div className="inputItemsDiv">
                   {localFilters.companyList?.map((companyItem, index) => (
@@ -314,6 +325,7 @@ const CandidateFilterDrawer = ({
                   ))}
                 </div>
               )}
+ <div className="border-1 rounded-[8px]">
 
               <input
                 type="text"
@@ -323,6 +335,7 @@ const CandidateFilterDrawer = ({
                 onChange={(e) => handleInputChange(e, "educationLevel")}
                 onKeyDown={(e) => handleKeyDown(e, "educationLevel")}
               />
+ </div>
               {localFilters.educationLevelList?.length > 0 && (
                 <div className="inputItemsDiv">
                   {localFilters.educationLevelList?.map(
@@ -344,7 +357,8 @@ const CandidateFilterDrawer = ({
               selectedSkills={selectedSkills} 
               setSelectedSkills={setSelectedSkills} 
             />
-           
+            <div className="border-1 rounded-[8px]">
+
               <input
                 type="text"
                 placeholder="University/Institution"
@@ -353,6 +367,7 @@ const CandidateFilterDrawer = ({
                 onChange={(e) => handleInputChange(e, "school")}
                 onKeyDown={(e) => handleKeyDown(e, "school")}
               />
+            </div>
               {localFilters.schoolList?.length > 0 && (
                 <div className="inputItemsDiv">
                   {localFilters.schoolList?.map((schoolsDataItem, index) => (
@@ -368,6 +383,8 @@ const CandidateFilterDrawer = ({
                   ))}
                 </div>
               )}
+               <div className="border-1 rounded-[8px]">
+
               <input
                 type="text"
                 placeholder="Degree"
@@ -376,6 +393,7 @@ const CandidateFilterDrawer = ({
                 onChange={(e) => handleInputChange(e, "degree")}
                 onKeyDown={(e) => handleKeyDown(e, "degree")}
               />
+               </div>
               {localFilters.degreeList?.length > 0 && (
                 <div className="inputItemsDiv">
                   {localFilters.degreeList?.map((degreesItem, index) => (
@@ -398,6 +416,7 @@ const CandidateFilterDrawer = ({
                 Years of Experience
               </label>
               <div className="flex space-x-2">
+              <div className="border-1 rounded-[8px]">
                 <input
                   type="text"
                   placeholder="From"
@@ -410,6 +429,9 @@ const CandidateFilterDrawer = ({
                     }
                   }}
                 />
+                </div>
+                <div className="border-1 rounded-[8px]">
+
                 <input
                   type="text"
                   placeholder="To"
@@ -422,6 +444,7 @@ const CandidateFilterDrawer = ({
                     }
                   }}
                 />
+                </div>
               </div>
               {experience.from && experience.to && (
                 <div className="inputItemsDiv">
@@ -461,6 +484,7 @@ const CandidateFilterDrawer = ({
               <label className="font-12-regular color-dark-black">
                 Education
               </label>
+              <div className="border-1 rounded-[8px]">
               <input
                 type="text"
                 placeholder="Enter Major"
@@ -469,6 +493,7 @@ const CandidateFilterDrawer = ({
                 onChange={(e) => handleInputChange(e, "major")}
                 onKeyDown={(e) => handleKeyDown(e, "major")}
               />
+              </div>
               {localFilters.majorList?.length > 0 && (
                 <div className="inputItemsDiv">
                   {localFilters.majorList?.map((majorItem, index) => (
@@ -484,6 +509,8 @@ const CandidateFilterDrawer = ({
                   ))}
                 </div>
               )}
+               <div className="border-1 rounded-[8px]">
+
               <input
                 type="text"
                 placeholder="Enter School"
@@ -492,6 +519,7 @@ const CandidateFilterDrawer = ({
                 onChange={(e) => handleInputChange(e, "school")}
                 onKeyDown={(e) => handleKeyDown(e, "school")}
               />
+               </div>
               {localFilters.schoolList?.length > 0 && (
                 <div className="inputItemsDiv">
                   {localFilters.schoolList?.map((schoolsDataItem, index) => (
@@ -507,6 +535,8 @@ const CandidateFilterDrawer = ({
                   ))}
                 </div>
               )}
+               <div className="border-1 rounded-[8px]">
+
               <input
                 type="text"
                 placeholder="Enter Degree"
@@ -515,6 +545,7 @@ const CandidateFilterDrawer = ({
                 onChange={(e) => handleInputChange(e, "degree")}
                 onKeyDown={(e) => handleKeyDown(e, "degree")}
               />
+               </div>
               {localFilters.degreeList?.length > 0 && (
                 <div className="inputItemsDiv">
                   {localFilters.degreeList?.map((degreesItem, index) => (
@@ -536,6 +567,7 @@ const CandidateFilterDrawer = ({
                 Expected Salary
               </label>
               <div className="flex items-center space-x-2">
+              <div className="border-1 rounded-[8px] flex-1">
                 <input
                   type="text"
                   placeholder="Enter Major"
@@ -544,6 +576,8 @@ const CandidateFilterDrawer = ({
                   onChange={(e) => handleInputChange(e, "major")}
                   onKeyDown={(e) => handleKeyDown(e, "major")}
                 />
+                </div>
+                <div className="border-1 rounded-[8px] flex-1">
                 <input
                   type="text"
                   placeholder="Enter Major"
@@ -552,9 +586,11 @@ const CandidateFilterDrawer = ({
                   onChange={(e) => handleInputChange(e, "major")}
                   onKeyDown={(e) => handleKeyDown(e, "major")}
                 />
+                </div>
               </div>
 
               <div className="flex items-center space-x-2">
+              <div className="border-1 rounded-[8px] flex-1">
                 <input
                   type="text"
                   placeholder="Enter Major"
@@ -563,6 +599,8 @@ const CandidateFilterDrawer = ({
                   onChange={(e) => handleInputChange(e, "major")}
                   onKeyDown={(e) => handleKeyDown(e, "major")}
                 />
+                </div>
+                <div className="flex-1">
                 <CustomDropdown
                   options={frequencyOptions} // List of available frequencies
                   placeholder="Select Frequency" // Placeholder text
@@ -572,10 +610,13 @@ const CandidateFilterDrawer = ({
                   multiSelect={false} // Enable multiple selections
                   showCheckbox={false} // Show checkboxes for selection
                 />
+                </div>
               </div>
             </div>
             <div className="display-column-6 pb-3 border-b ">
               <label className="font-12-regular color-dark-black">Date</label>
+              <div className="border-1 rounded-[8px]">
+
               <input
                 type="text"
                 placeholder="Last Contacted"
@@ -589,13 +630,15 @@ const CandidateFilterDrawer = ({
                 onFocus={() => setShowContactedCalendar(true)}
                 readOnly
               />
-
+</div>
               {showContactedCalendar && (
                 <div className=" z-10 bg-white mt-1">
                   <CustomCalendar onDateSelect={handleLastContactedDateSelect} />
                 </div>
               )}
               <div className="date-picker-container"></div>
+              <div className="border-1 rounded-[8px] flex-1">
+
               <input
                 type="text"
                 placeholder="Last Updated"
@@ -608,6 +651,7 @@ const CandidateFilterDrawer = ({
                 onFocus={() => setShowUpdatedCalendar(true)}
                 readOnly
               />
+              </div>
                {showUpdatedCalendar && (
                 <div className=" z-10 bg-white mt-1">
                   <CustomCalendar onDateSelect={handleLastUpdatedDateSelect} />
