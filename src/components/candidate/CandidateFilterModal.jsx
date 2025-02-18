@@ -4,15 +4,9 @@ import CustomDropdown from "../CustomDropdown/CustomDropdown";
 import { ReactComponent as CloseIcon } from "../../assets/icons/drawerClose.svg";
 import { Drawer } from "@mui/material";
 import Tick from "../../assets/icons/sourcingIcons/tick.svg";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-// import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import dayjs from "dayjs"; // Ensure correct date handling
 import CustomCalendar from "../DatePicker/CustomDatePicker";
 import "react-datepicker/dist/react-datepicker.css";
-import DatePicker from "react-datepicker";
 import { format } from "date-fns";
-import axios from "axios";
 import SkillSearchDropdown from "../AutocompleteDropdowns/SkillDropdown";
 import LocationSearchDropdown from "../AutocompleteDropdowns/LocationSearchDropDown";
 

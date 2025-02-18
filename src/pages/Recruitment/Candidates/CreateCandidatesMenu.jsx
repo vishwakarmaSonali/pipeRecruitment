@@ -4,12 +4,13 @@ import { ReactComponent as ClipboardIcon } from "../../../assets/icons/clipboard
 import { ReactComponent as ExportIcon } from "../../../assets/icons/exportIcon.svg";
 import { ReactComponent as BulkUploadIcon } from "../../../assets/icons/document-upload.svg";
 import { css } from "@emotion/react";
-
+import { useNavigate } from "react-router-dom";
 const menuItemStyle = css`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   padding: 10px;
+  border: 1px solid #ccc;
   width: 100%;
   &:hover {
     background-color: #f0f0f0;
@@ -17,6 +18,7 @@ const menuItemStyle = css`
 `;
 
 const CreateCandidateMenu = ({ anchorEl, open, onClose }) => {
+    const navigate = useNavigate()
   return (
     <Menu
       anchorEl={anchorEl}
@@ -35,9 +37,9 @@ const CreateCandidateMenu = ({ anchorEl, open, onClose }) => {
       }}
     >
       {/* Manually Add Candidate */}
-      <MenuItem onClick={() => {}} css={menuItemStyle}>
+      <MenuItem onClick={() => {navigate("/candidate/create-candidate-form")}} css={menuItemStyle}>
        <Box display="flex" alignItems="flex-start" width="100%">
-        <ListItemIcon sx={{ minWidth: "20px", marginTop:"2px" }}>
+        <ListItemIcon sx={{ maxWidth: "20px", marginTop:"2px" }}>
             <ClipboardIcon />
           </ListItemIcon>
           <Box display="flex" flexDirection="column">
@@ -54,7 +56,7 @@ const CreateCandidateMenu = ({ anchorEl, open, onClose }) => {
       </MenuItem>
 
       {/* Upload Resumes */}
-      <MenuItem onClick={() => {}} css={menuItemStyle}>
+      <MenuItem onClick={() => { }} css={menuItemStyle}>
        <Box display="flex" alignItems="flex-start" width="100%">
         <ListItemIcon sx={{ minWidth: "20px", marginTop:"2px" }}>
             <ExportIcon />

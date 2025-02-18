@@ -153,3 +153,177 @@ th {
   flex-direction: column;
   gap: 20px;
 }
+
+.buttons {
+  @apply px-[10px] py-[10px] max-h-[36px] text-m font-ubuntu rounded-[8px] flex items-center gap-1  justify-center;
+}
+
+/* create candidate form  */
+.main-container-candidateForm {
+@apply items-center justify-between min-w-[1200px];
+  margin-left: 120px;
+  margin-right: 120px;
+  font-family: "Ubuntu", sans-serif;
+  /* display: block; */
+  flex: 1;
+  align-items: center;
+}
+.candidate-upload-img-div {
+  min-width: 100px;
+  height: 100px;
+  border-radius: 100px;
+  border: 1px solid #797979;
+  background-color: #d7d7d7;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+
+.section-title {
+  font-size: 18px;
+  font-weight: bold;
+  border-bottom: 2px solid #1976d2;
+  padding-bottom: 5px;
+  margin-top: 20px;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-top: 10px;
+}
+
+input,
+select,
+textarea {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  width: 100%;
+}
+
+.editor-container {
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 10px;
+}
+
+.toolbar {
+  display: flex;
+  gap: 8px;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 5px;
+  margin-bottom: 10px;
+}
+
+.toolbar-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  padding: 5px;
+}
+
+.toolbar-btn.bold {
+  font-weight: bold;
+}
+
+.toolbar-btn.italic {
+  font-style: italic;
+}
+
+.toolbar-btn.underline {
+  text-decoration: underline;
+}
+
+textarea {
+  height: 80px;
+  resize: none;
+}
+
+.add-btn {
+  background-color: transparent;
+  color: #1976d2;
+  border: none;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.add-section {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+/* Outer Container */
+.form-container {
+
+  padding: 20px;
+  font-family: Arial, sans-serif;
+}
+
+/* Grid Layout */
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+/* Input Group Wrapper */
+.input-group {
+  /* width: 100%; */
+}
+
+/* Common Input Styling */
+.form-input {
+  /* width: 100%; */
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 14px;
+  background: white;
+}
+
+/* Custom Input with Dropdown */
+.custom-input {
+  display: flex;
+  align-items: center;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 10px;
+  background: white;
+  height: 45px;
+  width: 100%;
+}
+
+/* Dropdown Select */
+.custom-select {
+  border: none;
+  background: transparent;
+  padding: 0 10px;
+  outline: none;
+  font-size: 14px;
+  color: #333;
+  cursor: pointer;
+  width: 90px;
+}
+
+/* Text Input Inside Dropdown */
+.custom-text {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-size: 14px;
+  color: #333;
+  padding-left: 10px;
+}
+
+/* Date Input Styling */
+.form-input[type="date"] {
+  position: relative;
+  cursor: pointer;
+}

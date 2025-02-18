@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import "./Candidates.css";
 import { useSelector } from "react-redux"; // Import Redux selector
-import { useNavigate } from "react-router-dom";
+
 import { ReactComponent as CandidatesIcon } from "../../../assets/icons/candidates/candidateFilled.svg";
 import { ReactComponent as Folder } from "../../../assets/icons/candidates/folderCandidates.svg";
 import { ReactComponent as SourcingIcon } from "../../../assets/icons/candidates/document-cloud.svg";
@@ -48,7 +48,6 @@ import CreateCandidateMenu from "./CreateCandidatesMenu";
 
 const Candidates = ({ isDrawerOpen }) => {
   const dispatch = useDispatch();
-  const navigate = useNavigate()
   const [candidateList, setCandidateList] = useState(candidates);
   const [selectedCandidates, setSelectedCandidates] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("Candidates");
@@ -697,11 +696,11 @@ const Candidates = ({ isDrawerOpen }) => {
             ) : (
               <button
                 className="buttons  text-white  bg-buttonBLue"
-                // onClick={handleOpenMenu}
+                onClick={handleOpenMenu}
 
-                onClick={() =>
-                 navigate("/candidate/create-candidate-form")
-                }
+                // onClick={() =>
+                //   setModalVisibility("createCandidateModalVisible", true)
+                // }
               >
                 Create Candidate
                 <Plus stroke="#ffffff" />
