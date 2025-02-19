@@ -70,6 +70,11 @@ const CandidateCustomization = () => {
   const [newCategoryId, setNewCategoryId] = useState(null);
   const inputRefs = useRef({});
   const [errorMessages, setErrorMessages] = useState({});
+  const [addFieldDrawerOpen, setAddFieldDrawerOpen] = useState(false);
+
+  const toggleAddFieldDrawer = (open) => {
+    setAddFieldDrawerOpen(open);
+  };
 
   const handleCategoryMenuClick = (event, item) => {
     setAnchorEl(event.currentTarget);
@@ -490,7 +495,10 @@ const CandidateCustomization = () => {
                   <p className="font-14-medium color-dark-black">
                     Fields - {selectedCategory?.name}
                   </p>
-                  <CommonAddButton title={"Add Field"} />
+                  <CommonAddButton
+                    title={"Add Field"}
+                    onClick={() => toggleAddFieldDrawer(true)}
+                  />
                 </div>
                 <div>
                   {selectedCategory?.fields?.length > 0 ? (
@@ -601,7 +609,10 @@ const CandidateCustomization = () => {
         }}
         onClickDelete={deleteCategory}
       />
-      <AddFieldDrawer visible={false} />
+      <AddFieldDrawer
+        visible={addFieldDrawerOpen}
+        onClose={() => toggleAddFieldDrawer(false)}
+      />
     </div>
   );
 };

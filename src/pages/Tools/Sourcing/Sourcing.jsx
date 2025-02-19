@@ -337,7 +337,7 @@ const Sourcing = () => {
       radiusType: "",
       education: { major: "", school: "", degree: "" },
     });
-  
+
     setFiltersApplied(false);
   };
 
@@ -396,22 +396,19 @@ const Sourcing = () => {
   }, []);
 
   useEffect(() => {
-
     setCurrentPage(1);
     let params = {};
     params.limit = perPageLimit;
 
-  
-    if(filters?.titles?.length>0){
+    if (filters?.titles?.length > 0) {
       params.title = filters.titles.join(", ");
     }
 
     if (filters?.locations?.length > 0) {
-      params.location = filters.locations.map(loc => `'${loc}'`).join(", ");
+      params.location = filters.locations.map((loc) => `'${loc}'`).join(", ");
     }
-    
-  
-// if(filters?.)
+
+    // if(filters?.)
     if (!!filters?.radius) {
       params.radius = filters?.radius;
     }
@@ -420,7 +417,7 @@ const Sourcing = () => {
       params.radiusUnit = filters?.radiusType;
     }
 
-    if (filters?.organizations?.length>0) {
+    if (filters?.organizations?.length > 0) {
       params.company = filters?.organizations.join("");
     }
 

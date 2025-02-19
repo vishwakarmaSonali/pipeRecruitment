@@ -1,4 +1,5 @@
 import React from "react";
+import CommonLoader from "./CommonLoader";
 
 const CommonButton = ({ title, onClick, isLoading, disabled, btnStyle }) => {
   return (
@@ -8,7 +9,7 @@ const CommonButton = ({ title, onClick, isLoading, disabled, btnStyle }) => {
       style={btnStyle}
       onClick={onClick}
     >
-      {title}
+      {isLoading ? <CommonLoader /> : title}
     </button>
   );
 };

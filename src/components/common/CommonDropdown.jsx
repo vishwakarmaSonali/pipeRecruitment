@@ -61,10 +61,11 @@ const CommonDropdown = ({
     setIsOpen(false);
   };
 
-  const jobListItem = (item) => {
+  const jobListItem = (item, index) => {
     const selectedItem = item?.value === selectedOption;
     return (
       <div
+        key={index}
         className={`job-list-item-div ${selectedItem && "bg-selected"}`}
         onClick={() => handleSelect(item)}
       >
@@ -79,9 +80,10 @@ const CommonDropdown = ({
     );
   };
 
-  const jobStatusListItem = (item) => {
+  const jobStatusListItem = (item, index) => {
     return (
       <div
+        key={index}
         className="jon-status-list-div"
         onClick={() => handleMultiSelectHandler(item)}
       >
@@ -101,11 +103,12 @@ const CommonDropdown = ({
     );
   };
 
-  const normalListItem = (item) => {
+  const normalListItem = (item, index) => {
     const itemValue = item?.industryType || item?.type;
     const selectedItem = itemValue === selectedOption;
     return (
       <div
+        key={index}
         className={`normal-list-item-div ${selectedItem && "bg-selected"}`}
         onClick={() => handleSelect(item)}
       >
@@ -114,11 +117,12 @@ const CommonDropdown = ({
     );
   };
 
-  const fieldFormatListItem = (item) => {
+  const fieldFormatListItem = (item, index) => {
     const itemValue = item?.type;
     const selectedItem = itemValue === selectedOption;
     return (
       <div
+        key={index}
         className={`normal-list-item-div display-flex align-item ${
           selectedItem && "bg-selected"
         }`}
@@ -156,13 +160,13 @@ const CommonDropdown = ({
           {options.map((option, index) => {
             switch (type) {
               case "job":
-                return jobListItem(option);
+                return jobListItem(option, index);
               case "jobStatus":
-                return jobStatusListItem(option);
+                return jobStatusListItem(option, index);
               case "fieldFormat":
-                return fieldFormatListItem(option);
+                return fieldFormatListItem(option, index);
               default:
-                return normalListItem(option);
+                return normalListItem(option, index);
             }
           })}
         </div>

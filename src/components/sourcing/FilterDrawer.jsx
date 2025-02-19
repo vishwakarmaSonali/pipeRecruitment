@@ -19,7 +19,7 @@ const FilterDrawer = ({ isOpen, onClose, onApply, onReset, filters }) => {
   const [selectedLocations, setSelectedLocations] = useState([]); // Ensure it's an array
   const [selectedSkills, setSelectedSkills] = useState([]);
   const [selectedOrganizations, setSelectedOrganizations] = useState([]); // Ensure it's an array
-console.log("onApply>>>>>>",onApply);
+  console.log("onApply>>>>>>", onApply);
 
   const radiusOptions = [
     { id: 1, type: "Kilometer" },
@@ -80,16 +80,21 @@ console.log("onApply>>>>>>",onApply);
     setIndustry(industry.filter((_, i) => i !== index));
   };
   const handleApplyFilters = () => {
-    console.log("selectedTitlesselectedTitles",selectedTitles,"locationslocations",selectedLocations);
-    
+    console.log(
+      "selectedTitlesselectedTitles",
+      selectedTitles,
+      "locationslocations",
+      selectedLocations
+    );
+
     onApply({
       ...localFilters,
       radiusType: radius?.type || "",
       industry: industry?.industryType || "",
       titles: selectedTitles,
       location: selectedLocations,
-    skills:selectedSkills,
-      organizations: selectedOrganizations ,
+      skills: selectedSkills,
+      organizations: selectedOrganizations,
       experience,
     });
   };
@@ -122,7 +127,7 @@ console.log("onApply>>>>>>",onApply);
 
   return (
     <Drawer anchor="right" open={isOpen} onClose={onClose}>
-      <div role="presentation" className="candidate-details-drawer w-[460px]">
+      <div role="presentation" className="candidate-details-drawer">
         <div className="py-[20px] h-full display-column" style={{ gap: 20 }}>
           <div className="flex justify-between items-center">
             <h2 className="font-24-medium color-dark-black">Filters</h2>
@@ -137,11 +142,11 @@ console.log("onApply>>>>>>",onApply);
                 Job Title
               </label>
               <div className="rounded-[8px]">
-              <TitleSearchDropdown
-              selectedTitles={selectedTitles} 
-              setSelectedTitles={setSelectedTitles} 
-            />
-            </div>
+                <TitleSearchDropdown
+                  selectedTitles={selectedTitles}
+                  setSelectedTitles={setSelectedTitles}
+                />
+              </div>
             </div>
 
             <div className="display-column-6 ">
@@ -149,28 +154,28 @@ console.log("onApply>>>>>>",onApply);
                 Location
               </label>
               <LocationSearchDropdown
-              selectedLocations={selectedLocations} 
-              setSelectedLocations={setSelectedLocations} 
-              placeholder={"Preferred Location"}
-            />
+                selectedLocations={selectedLocations}
+                setSelectedLocations={setSelectedLocations}
+                placeholder={"Preferred Location"}
+              />
             </div>
 
             <div className="display-column-6 ">
               <label className="font-12-regular color-dark-black">Radius</label>
               <div className="border-1 rounded-[8px]">
-              <input
-                type="text"
-                placeholder="Enter distance"
-                className="filter-input"
-                value={localFilters.radius || ""}
-                onChange={(e) => handleInputChange(e, "radius")}
-                onKeyDown={(e) => {
-                  if (!/^[0-9]$/.test(e.key) && e.key !== "Backspace") {
-                    e.preventDefault();
-                  }
-                }}
-              />
-               </div>
+                <input
+                  type="text"
+                  placeholder="Enter distance"
+                  className="filter-input"
+                  value={localFilters.radius || ""}
+                  onChange={(e) => handleInputChange(e, "radius")}
+                  onKeyDown={(e) => {
+                    if (!/^[0-9]$/.test(e.key) && e.key !== "Backspace") {
+                      e.preventDefault();
+                    }
+                  }}
+                />
+              </div>
               <CommonDropdown
                 options={radiusOptions}
                 placeholder="Select Radius"
@@ -198,11 +203,11 @@ console.log("onApply>>>>>>",onApply);
                 Company
               </label>
               <div className="rounded-[8px]">
-              <OrganizationSearchDropdown
-              selectedOrganizations={selectedOrganizations} 
-              setSelectedOrganizations={setSelectedOrganizations} 
-            />
-            </div>
+                <OrganizationSearchDropdown
+                  selectedOrganizations={selectedOrganizations}
+                  setSelectedOrganizations={setSelectedOrganizations}
+                />
+              </div>
             </div>
 
             <div className="display-column-6 ">
@@ -211,33 +216,32 @@ console.log("onApply>>>>>>",onApply);
               </label>
               <div className="flex space-x-2">
                 <div className="border-1 rounded-[8px] flex-1">
-                  
-                <input
-                  type="text"
-                  placeholder="From"
-                  className="filter-input"
-                  value={experience.from}
-                  onChange={(e) => handleExperienceChange(e, "from")}
-                  onKeyDown={(e) => {
-                    if (!/^[0-9]$/.test(e.key) && e.key !== "Backspace") {
-                      e.preventDefault();
-                    }
-                  }}
-                />
+                  <input
+                    type="text"
+                    placeholder="From"
+                    className="filter-input"
+                    value={experience.from}
+                    onChange={(e) => handleExperienceChange(e, "from")}
+                    onKeyDown={(e) => {
+                      if (!/^[0-9]$/.test(e.key) && e.key !== "Backspace") {
+                        e.preventDefault();
+                      }
+                    }}
+                  />
                 </div>
                 <div className="border-1 rounded-[8px] flex-1">
-                <input
-                  type="text"
-                  placeholder="To"
-                  className="filter-input"
-                  value={experience.to}
-                  onChange={(e) => handleExperienceChange(e, "to")}
-                  onKeyDown={(e) => {
-                    if (!/^[0-9]$/.test(e.key) && e.key !== "Backspace") {
-                      e.preventDefault();
-                    }
-                  }}
-                />
+                  <input
+                    type="text"
+                    placeholder="To"
+                    className="filter-input"
+                    value={experience.to}
+                    onChange={(e) => handleExperienceChange(e, "to")}
+                    onKeyDown={(e) => {
+                      if (!/^[0-9]$/.test(e.key) && e.key !== "Backspace") {
+                        e.preventDefault();
+                      }
+                    }}
+                  />
                 </div>
               </div>
               {experience.from && experience.to && (
@@ -258,11 +262,11 @@ console.log("onApply>>>>>>",onApply);
             <div className="display-column-6 ">
               <label className="font-12-regular color-dark-black">Skills</label>
               <div className="border-1 rounded-[8px]">
-              <SkillSearchDropdown
-              selectedSkills={selectedSkills} 
-              setSelectedSkills={setSelectedSkills} 
-            />
-            </div>
+                <SkillSearchDropdown
+                  selectedSkills={selectedSkills}
+                  setSelectedSkills={setSelectedSkills}
+                />
+              </div>
             </div>
 
             <div className="display-column-6 ">
@@ -297,14 +301,14 @@ console.log("onApply>>>>>>",onApply);
                 Education
               </label>
               <div className="border-1 rounded-[8px]">
-              <input
-                type="text"
-                placeholder="Enter Major"
-                className="filter-input"
-                value={localFilters.major || ""}
-                onChange={(e) => handleInputChange(e, "major")}
-                onKeyDown={(e) => handleKeyDown(e, "major")}
-              />
+                <input
+                  type="text"
+                  placeholder="Enter Major"
+                  className="filter-input"
+                  value={localFilters.major || ""}
+                  onChange={(e) => handleInputChange(e, "major")}
+                  onKeyDown={(e) => handleKeyDown(e, "major")}
+                />
               </div>
               {localFilters.majorList?.length > 0 && (
                 <div className="inputItemsDiv">
@@ -321,17 +325,16 @@ console.log("onApply>>>>>>",onApply);
                   ))}
                 </div>
               )}
-               <div className="border-1 rounded-[8px]">
-
-              <input
-                type="text"
-                placeholder="Enter School"
-                className="filter-input"
-                value={localFilters.school || ""}
-                onChange={(e) => handleInputChange(e, "school")}
-                onKeyDown={(e) => handleKeyDown(e, "school")}
-              />
-               </div>
+              <div className="border-1 rounded-[8px]">
+                <input
+                  type="text"
+                  placeholder="Enter School"
+                  className="filter-input"
+                  value={localFilters.school || ""}
+                  onChange={(e) => handleInputChange(e, "school")}
+                  onKeyDown={(e) => handleKeyDown(e, "school")}
+                />
+              </div>
               {localFilters.schoolList?.length > 0 && (
                 <div className="inputItemsDiv">
                   {localFilters.schoolList?.map((schoolsDataItem, index) => (
@@ -347,17 +350,16 @@ console.log("onApply>>>>>>",onApply);
                   ))}
                 </div>
               )}
-               <div className="border-1 rounded-[8px]">
-                
-              <input
-                type="text"
-                placeholder="Enter Degree"
-                className="filter-input"
-                value={localFilters.degree || ""}
-                onChange={(e) => handleInputChange(e, "degree")}
-                onKeyDown={(e) => handleKeyDown(e, "degree")}
-              />
-               </div>
+              <div className="border-1 rounded-[8px]">
+                <input
+                  type="text"
+                  placeholder="Enter Degree"
+                  className="filter-input"
+                  value={localFilters.degree || ""}
+                  onChange={(e) => handleInputChange(e, "degree")}
+                  onKeyDown={(e) => handleKeyDown(e, "degree")}
+                />
+              </div>
               {localFilters.degreeList?.length > 0 && (
                 <div className="inputItemsDiv">
                   {localFilters.degreeList?.map((degreesItem, index) => (

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./index.css";
 import { ReactComponent as CloseIcon } from "../../assets/icons/drawerClose.svg";
 import { Drawer } from "@mui/material";
@@ -15,6 +15,7 @@ import { ReactComponent as ToggleIcon } from "../../assets/icons/toggle.svg";
 import { ReactComponent as DropdownIcon } from "../../assets/icons/dropdown.svg";
 import CommonTextInput from "../common/CommonTextInput";
 import CommonTextArea from "../common/CommonTextArea";
+import CommonLoader from "../common/CommonLoader";
 
 const fieldFormatList = [
   { id: 1, type: "Short Text", icon: <ShortTextIcon /> },
@@ -31,6 +32,18 @@ const AddFieldDrawer = ({ visible, onClose }) => {
   const [fieldFormat, setFieldFormat] = useState("");
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
+  const [nameError, setNameError] = useState("");
+  const [saveBtnDisable, setSaveBtnDisable] = useState(true);
+
+  const resetData = () => {
+    setName("");
+    setFieldFormat("");
+  };
+
+  const onCloseDrawer = () => {
+    resetData();
+    onClose();
+  };
 
   const handleBackdropClick = () => {
     setModalVisibility("animatedModal", true);
@@ -38,11 +51,18 @@ const AddFieldDrawer = ({ visible, onClose }) => {
       setModalVisibility("animatedModal", false);
     }, 600);
   };
+
+  useEffect(() => {
+    if (name?.length > 2 && !!fieldFormat?.type) {
+      setSaveBtnDisable(false);
+    } else {
+      setSaveBtnDisable(true);
+    }
+  }, [name, fieldFormat]);
   return (
-    <Drawer anchor="right" open={visible} onClose={handleBackdropClick}>
+    <Drawer anchor="right" open={visible} onClose={onCloseDrawer}>
       <div
         role="presentation"
-        onKeyDown={onClose}
         className="category-add-fields-drawer scroll-width-none"
       >
         <div
@@ -52,7 +72,7 @@ const AddFieldDrawer = ({ visible, onClose }) => {
         >
           <div className="display-flex-justify align-center">
             <p className="font-24-medium color-dark-black">Add Field</p>
-            <button onClick={onClose}>
+            <button onClick={onCloseDrawer}>
               <CloseIcon />
             </button>
           </div>
@@ -62,6 +82,7 @@ const AddFieldDrawer = ({ visible, onClose }) => {
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder={"Name"}
+              error={nameError}
             />
             <CommonDropdown
               options={fieldFormatList}
@@ -79,8 +100,13 @@ const AddFieldDrawer = ({ visible, onClose }) => {
             />
           </div>
           <div className="display-flex" style={{ gap: 8 }}>
-            <CancelButton btnStyle={{ flex: 1 }} />
-            <CommonButton title={"Save"} btnStyle={{ flex: 1 }} />
+            <CancelButton btnStyle={{ flex: 1 }} onClick={onCloseDrawer} />
+            <CommonButton
+              disabled={saveBtnDisable}
+              isLoading={false}
+              title={"Save"}
+              btnStyle={{ flex: 1 }}
+            />
           </div>
         </div>
       </div>
