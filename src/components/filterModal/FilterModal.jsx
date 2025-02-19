@@ -147,7 +147,7 @@ const FilterModal = ({ isOpen, onClose, onApply, onReset, filters }) => {
         <div className="p-[20px] flex flex-col h-full">
           {/* Modal Header */}
           <div className="flex justify-between items-center">
-            <h2 className="filter-heading">Filters</h2>
+            <h2 className="filter-heading">Filtersdfsdsds</h2>
             <button
               onClick={onClose}
               className="text-customBlue hover:text-gray-900"
@@ -160,6 +160,7 @@ const FilterModal = ({ isOpen, onClose, onApply, onReset, filters }) => {
           <div className="flex-1 overflow-auto pb-[6px] scroll-width-none mt-[32px] space-y-[6px]">
             <div>
               <label className="filter-title">Job Title</label>
+              <div className="border-1 rounded-[8px]">
               <input
                 type="text"
                 placeholder="Enter title"
@@ -168,6 +169,7 @@ const FilterModal = ({ isOpen, onClose, onApply, onReset, filters }) => {
                 onChange={(e) => handleInputChange(e, "jobTitle")}
                 onKeyDown={(e) => handleKeyDown(e, "jobTitle")}
               />
+              </div>
               {localFilters.jobTitleList?.length > 0 && (
                 <div className="inputItemsDiv">
                   {localFilters.jobTitleList.map((title, index) => (

@@ -3,10 +3,9 @@ import Modal from "react-bootstrap/Modal";
 import { useModal } from "../common/ModalProvider";
 import { ReactComponent as CloseIcon } from "../../assets/icons/closeModal.svg";
 import { ReactComponent as LabelClose } from "../../assets/icons/labelClose.svg";
-import { ReactComponent as AddIcon } from "../../assets/icons/addBlueIcon.svg";
+import { ReactComponent as TickCircle } from "../../assets/icons/tick-circle.svg";
 import CommonSearchBox from "../common/CommonSearchBox";
 import CommonDropdown from "../common/CommonDropdown";
-import { Add } from "@mui/icons-material";
 
 const jobStatusOptions = [
   { id: 1, type: "Active", color: "#98D4DF", selected: false },
@@ -53,6 +52,7 @@ const AddToJobsModal = ({ visible, onClose }) => {
   const [searchValue, setSearchValue] = useState("");
   const [selectedJobStatus, setSelectedJobStatus] = useState([]);
   const [jobStatusData, setJobStatusData] = useState(jobStatusOptions);
+  const [selectedCompanies, setSelectedCompanies] = useState([]); // Allow multiple selection
 
   const handleMultiSelectHandler = (item) => {
     const updatedData = jobStatusData?.map((data) => {
@@ -90,6 +90,14 @@ const AddToJobsModal = ({ visible, onClose }) => {
       setModalVisibility("animatedModal", false);
     }, 600);
   };
+ // ✅ Toggle Company Selection (Allow multiple)
+ const toggleCompanySelection = (company) => {
+  setSelectedCompanies((prev) =>
+    prev.some((c) => c.name === company.name)
+      ? prev.filter((c) => c.name !== company.name) // Remove if already selected
+      : [...prev, company] // Add if not selected
+  );
+};
   return (
     <Modal
       show={visible}
@@ -156,7 +164,7 @@ const AddToJobsModal = ({ visible, onClose }) => {
             >
               {companies?.map((item, index) => {
                 return (
-                  <div key={index} className="job-compony-list-item">
+                  <div key={index} className="job-compony-list-item" onClick={() => toggleCompanySelection(item)}>
                     <div
                       className="display-flex align-center"
                       style={{ gap: 6 }}
@@ -182,7 +190,7 @@ const AddToJobsModal = ({ visible, onClose }) => {
                         style={{ backgroundColor: "#98D4DF" }}
                       />
                       <button>
-                        <AddIcon />
+                      {selectedCompanies.some((c) => c.name === item.name) &&  <TickCircle />}
                       </button>
                     </div>
                   </div>

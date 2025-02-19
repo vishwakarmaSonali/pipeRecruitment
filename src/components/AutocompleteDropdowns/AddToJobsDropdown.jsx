@@ -1,9 +1,11 @@
 import React, { useState } from "react";
-import AddToJobsModal from "../AddToJobsModals/AddToJobs";
-import CloseIcon from "../../assets/icons/close.svg";
-import SearchIcon from "../../assets/icons/sourcingIcons/search-normal.svg";
+import { ReactComponent as CloseIcon } from "../../assets/icons/closeModal.svg";
+import { ReactComponent as LabelClose } from "../../assets/icons/labelClose.svg";
+import { ReactComponent as TickCircle } from "../../assets/icons/tick-circle.svg";
 import { ReactComponent as DropArrow } from "../../assets/icons/droparrow.svg";
-import { ReactComponent as PlusIcon } from "../../assets/icons/plus.svg";
+import CommonSearchBox from "../common/CommonSearchBox";
+import CommonDropdown from "../common/CommonDropdown";
+
 const jobStatusOptions = [
   { id: 1, type: "Active", color: "#98D4DF" },
   { id: 2, type: "In-active", color: "#F2AFAF" },
@@ -45,159 +47,142 @@ const companies = [
 ];
 const AddToJobsDropdown = ({ placeholder }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
- const [searchQuery, setSearchQuery] = useState("");
-  const [selectedStatuses, setSelectedStatuses] = useState([]);
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [searchValue, setSearchValue] = useState("");
+  const [selectedJobStatus, setSelectedJobStatus] = useState([]);
+  const [jobStatusData, setJobStatusData] = useState(jobStatusOptions);
+  const [selectedCompanies, setSelectedCompanies] = useState([]); // Allow multiple selection
 
-
-  const toggleStatus = (status) => {
-    setSelectedStatuses(
-      (prev) =>
-        prev.some((s) => s.id === status.id)
-          ? prev.filter((s) => s.id !== status.id) // Remove if already selected
-          : [...prev, status] // Add if not selected
-    );
+  const handleMultiSelectHandler = (item) => {
+    const updatedData = jobStatusData?.map((data) => {
+      if (data?.id === item?.id) {
+        return { ...data, selected: !item?.selected };
+      } else {
+        return { ...data };
+      }
+    });
+    const filterData = updatedData?.filter((filter) => filter?.selected);
+    setSelectedJobStatus(filterData);
+    setJobStatusData(updatedData);
   };
+
+  const removeStatusHandler = (item) => {
+    const updateData = jobStatusData?.map((data) => {
+      if (data?.id === item?.id) {
+        return { ...data, selected: false };
+      } else {
+        return { ...data };
+      }
+    });
+
+    const updateSelectedJobStatus = selectedJobStatus.filter(
+      (filter) => filter?.id !== item?.id
+    );
+
+    setSelectedJobStatus(updateSelectedJobStatus);
+    setJobStatusData(updateData);
+  };
+
+ // ✅ Toggle Company Selection (Allow multiple)
+ const toggleCompanySelection = (company) => {
+  setSelectedCompanies((prev) =>
+    prev.some((c) => c.name === company.name)
+      ? prev.filter((c) => c.name !== company.name) // Remove if already selected
+      : [...prev, company] // Add if not selected
+  );
+};
   return (
     <div className="relative w-full">
       {/* Dropdown Input */}
       <div
         className="w-full px-[12px] py-[10px] border flex justify-between items-center cursor-pointer bg-white border-customGrey1 rounded-[8px] text-sm font-ubuntu text-customBlue"
-        onClick={() => setIsModalOpen(true)}
+        onClick={() => setIsModalOpen(!isModalOpen)}
       >
         <span className="text-gray-600">{placeholder}</span>
         <DropArrow className="w-[14px] h-[14px]" />
       </div>
 
       {/* Open Modal */}
-      {isModalOpen &&(
-        <div className="absolute left-0 w-full bg-white border border-borderGrey rounded-lg shadow-lg mt-2 z-50 px-[12px] py-[12px]">
-         {/* Header */}
-       
- 
-         {/* Search Bar */}
-         <div className="flex items-center border-1 rounded-[8px] px-2">
-           <img src={SearchIcon} alt="Search" className=" text-gray-500" />
-           <input
-             type="text"
-             placeholder="Search"
-             className="outline-none border-none text-m text-customBlue font-ubuntu "
-             value={searchQuery}
-             onChange={(e) => setSearchQuery(e.target.value)}
-           />
-         </div>
- 
-         {/* Job Status Multi-Select Dropdown */}
-         <div className="mt-[10px] relative">
-           <div
-             className="w-full px-[12px] py-[10px] border flex justify-between items-center cursor-pointer bg-white border-customGrey1 rounded-[8px] text-sm font-ubuntu text-customBlue"
-             onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-           >
-             <div className="flex flex-wrap items-center gap-2">
-               {selectedStatuses.length > 0 ? (
-                 selectedStatuses.map((status) => (
-                   <div
-                     key={status.id}
-                     className="flex items-center bg-gray-200 px-2 py-1 rounded-lg"
-                   >
-                     <div
-                       className="w-3 h-3 rounded-full"
-                       style={{ backgroundColor: status.color }}
-                     ></div>
-                     <span className="ml-2">{status.type}</span>
-                     <button
-                       className="ml-2 text-red-500 font-bold"
-                       onClick={(e) => {
-                         e.stopPropagation();
-                         toggleStatus(status);
-                       }}
-                     >
-                       ✕
-                     </button>
-                   </div>
-                 ))
-               ) : (
-                 <span className="text-gray-500">Select Job Status</span>
-               )}
-             </div>
-             <DropArrow
-               fill={"customBlue"}
-               className={`w-[14px] h-[14px] transition-transform ${
-                 isDropdownOpen ? "rotate-180" : ""
-               }`}
-             />
-           </div>
- 
-           {/* Dropdown Items */}
-           {isDropdownOpen && (
-             <ul className=" left-0 w-full bg-white border border-borderGrey rounded-lg shadow-lg mt-2 flex-1 overflow-auto z-50 text-sm font-ubuntu text-customBlue">
-               {jobStatusOptions.map((status) => (
-                 <li
-                   key={status.id}
-                   onClick={() => toggleStatus(status)}
-                   className="px-4 py-2 flex items-center gap-2 hover:bg-gray-100 cursor-pointer"
-                 >
-                   <div
-                     className="w-3 h-3 rounded-full"
-                     style={{ backgroundColor: status.color }}
-                   ></div>
-                   <span>{status.type}</span>
-                   <input
-                     type="checkbox"
-                     checked={selectedStatuses.some((s) => s.id === status.id)}
-                     readOnly
-                     className="ml-auto w-4 h-4"
-                   />
-                 </li>
-               ))}
-             </ul>
-           )}
-         </div>
- 
-         {/* Company List */}
-         {companies.length > 0 ? (
-           <ul className="mt-4 max-h-[300px] overflow-auto scroll-width-none">
-             {companies
-               .filter((company) =>
-                 company.name.toLowerCase().includes(searchQuery.toLowerCase())
-               )
-               .map((company, index) => (
-                 <li
-                   key={index}
-                //    onClick={onClose}
-                   className="flex items-center justify-between space-x-3 px-2 py-[8.5px] mb-[10px] hover:bg-gray-100 rounded-md cursor-pointer"
-                 >
-                   <div className="flex items-center  space-x-3">
-                     <div
-                       className={`w-10 h-10 flex items-center justify-center text-white font-bold rounded-full ${company.color}`}
-                     >
-                       {company.initials}
-                     </div>
-                     <div>
-                       <p className="font-semibold">{company.name}</p>
-                       <p className="text-gray-500 text-sm">
-                         {company.location}
-                       </p>
-                     </div>
-                   </div>
-                   <div className="flex items-center space-x-2">
-                     <div
-                       className={`w-3 h-3 rounded-full ${company.color}`}
-                       style={{ backgroundColor: company?.color }}
-                     ></div>
-                     {/* <PlusIcon stroke="#1761D8" /> */}
-                   </div>
-                 </li>
-               ))}
-           </ul>
-         ) : (
-           <div className="bg-red-900 items-center flex mt-[24px]">
-             <span className="font-ubuntu font-customBlue text-l text-center text-wrap">
-               No jobs created yet! Start creating jobs to add candidates.
-             </span>
-           </div>
-         )}
-       </div>
+      {isModalOpen && (
+        <div className="absolute top-full left-0 w-full z-50 mt-2 p-4 bg-white rounded-lg shadow-lg border border-gray-300">
+        <div className="display-column" style={{ gap: 10 }}>
+          <CommonSearchBox
+            value={searchValue}
+            onChange={(e) => setSearchValue(e.target.value)}
+          />
+          <CommonDropdown
+            options={jobStatusData}
+            placeholder="Job Status"
+            selectedValue={""}
+            optionKey="type"
+            type={"jobStatus"}
+            handleMultiSelectHandler={handleMultiSelectHandler}
+          />
+          <div
+            className="display-flex"
+            style={{ gap: 6, flexWrap: "wrap" }}
+          >
+            {selectedJobStatus?.map((item) => {
+              return (
+                <div className="selected-job-status-label">
+                  <div
+                    style={{
+                      width: 14,
+                      height: 14,
+                      borderRadius: 100,
+                      backgroundColor: item?.color,
+                    }}
+                  />
+                  <span className="font-12-regular color-dark-black">
+                    {item?.type}
+                  </span>
+                  <button onClick={() => removeStatusHandler(item)}>
+                    <LabelClose />
+                  </button>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+        <div
+          className="display-column"
+          style={{ gap: 10, maxHeight: 256, overflowY: "auto" }}
+        >
+          {companies?.map((item, index) => {
+            return (
+              <div key={index} className="job-compony-list-item" onClick={() => toggleCompanySelection(item)}>
+                <div
+                  className="display-flex align-center"
+                  style={{ gap: 6 }}
+                >
+                  <div className="w-h-32">
+                    <span>{item?.initials}</span>
+                  </div>
+                  <div className="display-column" style={{ gap: 4 }}>
+                    <p className="font-14-medium color-dark-black">
+                      {item?.name}
+                    </p>
+                    <p className="font-10-regular color-dark-black">
+                      {item?.location}
+                    </p>
+                  </div>
+                </div>
+                <div
+                  className="display-flex align-center"
+                  style={{ gap: 8 }}
+                >
+                  <div
+                    className="w-h-14"
+                    style={{ backgroundColor: "#98D4DF" }}
+                  />
+                  <button>
+                  {selectedCompanies.some((c) => c.name === item.name) &&  <TickCircle />}
+                  </button>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
       )}
     </div>
   );

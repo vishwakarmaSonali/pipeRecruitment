@@ -135,10 +135,12 @@ console.log("onApply>>>>>>",onApply);
               <label className="font-12-regular color-dark-black">
                 Job Title
               </label>
+              <div className="border-1 rounded-[8px]">
               <TitleSearchDropdown
               selectedTitles={selectedTitles} 
               setSelectedTitles={setSelectedTitles} 
             />
+            </div>
             </div>
 
             <div className="display-column-6 ">
@@ -154,6 +156,7 @@ console.log("onApply>>>>>>",onApply);
 
             <div className="display-column-6 ">
               <label className="font-12-regular color-dark-black">Radius</label>
+              <div className="border-1 rounded-[8px]">
               <input
                 type="text"
                 placeholder="Enter distance"
@@ -166,6 +169,7 @@ console.log("onApply>>>>>>",onApply);
                   }
                 }}
               />
+               </div>
               <CustomDropdown
                 options={radiusOptions}
                 placeholder="Select Radius"
@@ -192,10 +196,12 @@ console.log("onApply>>>>>>",onApply);
               <label className="font-12-regular color-dark-black">
                 Company
               </label>
+              <div className="border-1 rounded-[8px]">
               <OrganizationSearchDropdown
               selectedOrganizations={selectedOrganizations} 
               setSelectedOrganizations={setSelectedOrganizations} 
             />
+            </div>
             </div>
 
             <div className="display-column-6 ">
@@ -203,6 +209,8 @@ console.log("onApply>>>>>>",onApply);
                 Years of Experience
               </label>
               <div className="flex space-x-2">
+                <div className="border-1 rounded-[8px] flex-1">
+                  
                 <input
                   type="text"
                   placeholder="From"
@@ -215,6 +223,8 @@ console.log("onApply>>>>>>",onApply);
                     }
                   }}
                 />
+                </div>
+                <div className="border-1 rounded-[8px] flex-1">
                 <input
                   type="text"
                   placeholder="To"
@@ -227,6 +237,7 @@ console.log("onApply>>>>>>",onApply);
                     }
                   }}
                 />
+                </div>
               </div>
               {experience.from && experience.to && (
                 <div className="inputItemsDiv">
@@ -245,10 +256,12 @@ console.log("onApply>>>>>>",onApply);
 
             <div className="display-column-6 ">
               <label className="font-12-regular color-dark-black">Skills</label>
+              <div className="border-1 rounded-[8px]">
               <SkillSearchDropdown
               selectedSkills={selectedSkills} 
               setSelectedSkills={setSelectedSkills} 
             />
+            </div>
             </div>
 
             <div className="display-column-6 ">
@@ -282,6 +295,7 @@ console.log("onApply>>>>>>",onApply);
               <label className="font-12-regular color-dark-black">
                 Education
               </label>
+              <div className="border-1 rounded-[8px]">
               <input
                 type="text"
                 placeholder="Enter Major"
@@ -290,6 +304,7 @@ console.log("onApply>>>>>>",onApply);
                 onChange={(e) => handleInputChange(e, "major")}
                 onKeyDown={(e) => handleKeyDown(e, "major")}
               />
+              </div>
               {localFilters.majorList?.length > 0 && (
                 <div className="inputItemsDiv">
                   {localFilters.majorList?.map((majorItem, index) => (
@@ -305,6 +320,8 @@ console.log("onApply>>>>>>",onApply);
                   ))}
                 </div>
               )}
+               <div className="border-1 rounded-[8px]">
+
               <input
                 type="text"
                 placeholder="Enter School"
@@ -313,6 +330,7 @@ console.log("onApply>>>>>>",onApply);
                 onChange={(e) => handleInputChange(e, "school")}
                 onKeyDown={(e) => handleKeyDown(e, "school")}
               />
+               </div>
               {localFilters.schoolList?.length > 0 && (
                 <div className="inputItemsDiv">
                   {localFilters.schoolList?.map((schoolsDataItem, index) => (
@@ -328,6 +346,8 @@ console.log("onApply>>>>>>",onApply);
                   ))}
                 </div>
               )}
+               <div className="border-1 rounded-[8px]">
+                
               <input
                 type="text"
                 placeholder="Enter Degree"
@@ -336,6 +356,7 @@ console.log("onApply>>>>>>",onApply);
                 onChange={(e) => handleInputChange(e, "degree")}
                 onKeyDown={(e) => handleKeyDown(e, "degree")}
               />
+               </div>
               {localFilters.degreeList?.length > 0 && (
                 <div className="inputItemsDiv">
                   {localFilters.degreeList?.map((degreesItem, index) => (

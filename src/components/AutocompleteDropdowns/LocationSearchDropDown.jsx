@@ -13,7 +13,7 @@ const LocationSearchDropdown = ({ selectedLocations = [], setSelectedLocations ,
       const fetchLocations = async () => {
         try {
           const response = await axios.get(
-            `http://3.110.81.44/api/candidate_profiles/suggest/location?query=${locationQuery}`
+            `http://3.110.81.44/api/candidate-profiles/suggest/location?query=${locationQuery}`
           );
           console.log("Location API Response:", response?.data?.suggestions);
           

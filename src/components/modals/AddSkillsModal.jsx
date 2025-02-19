@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import Modal from "react-bootstrap/Modal";
+import "./modal.css";
 import { useModal } from "../common/ModalProvider";
 import { ReactComponent as CloseIcon } from "../../assets/icons/closeModal.svg";
 import CommonButton from "../common/CommonButton";
@@ -38,7 +39,7 @@ const AddSkillModal = ({ visible, onClose }) => {
       contentClassName="modal-content"
       backdropClassName="custom-backdrop"
     >
-     <div className="fixed inset-0 bg-gray-900 bg-opacity-50 flex justify-center items-center ">
+     <div className="fixed inset-0 bg-gray-100 bg-opacity-10 flex justify-center items-center ">
       <div className="bg-white p-[14px] rounded-lg shadow-lg min-w-[400px]">
         <h2 className="text-lg font-semibold mb-4">Add Skill</h2>
 
@@ -76,7 +77,7 @@ const AddSkillModal = ({ visible, onClose }) => {
         </div>
 
         {/* Buttons */}
-        <div className="flex justify-between mt-4">
+        <div className="flex justify-center gap-2 mt-4">
           <button
             onClick={() => handleBackdropClick(false)}
             className="border border-blue-500 text-blue-500 px-4 py-2 rounded-lg"
@@ -85,7 +86,7 @@ const AddSkillModal = ({ visible, onClose }) => {
           </button>
           <button
             onClick={handleAddTag}
-            className="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700"
+            className="bg-buttonBLue text-white px-4 py-2 rounded-lg hover:bg-gray-700"
           >
             Add
           </button>

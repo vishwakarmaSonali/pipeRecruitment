@@ -12,7 +12,7 @@ const OrganizationSearchDropdown = ({ selectedOrganizations = [], setSelectedOrg
       const fetchOrganizations = async () => {
         try {
           const response = await axios.get(
-            `http://3.110.81.44/api/candidate_profiles/suggest/organization?query=${organizationQuery}`
+            `http://3.110.81.44/api/candidate-profiles/suggest/organization?query=${organizationQuery}`
           );
           console.log("Organization API Response:", response?.data?.suggestions);
 

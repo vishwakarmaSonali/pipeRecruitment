@@ -26,6 +26,8 @@ import TagManager from "../common/TagList";
 import CurrencyInput from "../common/CurrencyInput";
 import CurrencySelector from "../common/CurrencyInput";
 import AddToJobsDropdown from "../AutocompleteDropdowns/AddToJobsDropdown";
+import LanguageListManager from "./LanguageListManager";
+import SocialLinksManager from "./SocialLinksManager";
 const genderOptions = [
   { id: 1, label: "Female" },
   { id: 2, label: "Male" },
@@ -386,7 +388,7 @@ const CreateCandidateForm = () => {
               </span>
             </div>
             <div className="flex flex-1 ">
-              <TagManager />
+              <LanguageListManager />
             </div>
           </div>
           {/* Languages block ends */}
@@ -398,7 +400,7 @@ const CreateCandidateForm = () => {
               </span>
             </div>
             <div className="flex flex-1 ">
-              <TagManager />
+            <SocialLinksManager />
             </div>
           </div>
           {/* Social links block ends */}

@@ -12,7 +12,7 @@ const SkillSearchDropdown = ({ selectedSkills = [], setSelectedSkills }) => {
       const fetchSkills = async () => {
         try {
           const response = await axios.get(
-            `http://3.110.81.44/api/candidate_profiles/suggest/skills?query=${skillQuery}`
+            `http://3.110.81.44/api/candidate-profiles/suggest/skills?query=${skillQuery}`
           );
           console.log("Skill API Response:", response?.data?.suggestions);
           

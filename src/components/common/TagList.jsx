@@ -33,7 +33,7 @@ const TagManager = () => {
   return (
     <div className="">
       {/* Tag List */}
-      <div className="flex flex-wrap gap-2 mb-4">
+      <div className="flex flex-wrap gap-2 mb-1">
         {tags.map((tag, index) => (
           <div
             key={index}
