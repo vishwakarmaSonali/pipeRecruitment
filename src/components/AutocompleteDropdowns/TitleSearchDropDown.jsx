@@ -60,7 +60,7 @@ const TitleSearchDropdown = ({ selectedTitles = [], setSelectedTitles }) => {
       <input
         type="text"
         placeholder="Job Title"
-        className="filter-input"
+        className="filter-input border"
         value={titleQuery}
         onChange={(e) => setTitleQuery(e.target.value)}
         onFocus={() => setShowTitleDropdown(true)}

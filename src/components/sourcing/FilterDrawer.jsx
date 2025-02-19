@@ -8,6 +8,7 @@ import TitleSearchDropdown from "../AutocompleteDropdowns/TitleSearchDropDown";
 import LocationSearchDropdown from "../AutocompleteDropdowns/LocationSearchDropDown";
 import SkillSearchDropdown from "../AutocompleteDropdowns/SkillDropdown";
 import OrganizationSearchDropdown from "../AutocompleteDropdowns/OrganizationSearchDropDown";
+import CommonDropdown from "../common/CommonDropdown";
 const FilterDrawer = ({ isOpen, onClose, onApply, onReset, filters }) => {
   const [localFilters, setLocalFilters] = useState(filters);
   const [isVisible, setIsVisible] = useState(isOpen);
@@ -135,7 +136,7 @@ console.log("onApply>>>>>>",onApply);
               <label className="font-12-regular color-dark-black">
                 Job Title
               </label>
-              <div className="border-1 rounded-[8px]">
+              <div className="rounded-[8px]">
               <TitleSearchDropdown
               selectedTitles={selectedTitles} 
               setSelectedTitles={setSelectedTitles} 
@@ -170,7 +171,7 @@ console.log("onApply>>>>>>",onApply);
                 }}
               />
                </div>
-              <CustomDropdown
+              <CommonDropdown
                 options={radiusOptions}
                 placeholder="Select Radius"
                 selectedValue={radius}
@@ -196,7 +197,7 @@ console.log("onApply>>>>>>",onApply);
               <label className="font-12-regular color-dark-black">
                 Company
               </label>
-              <div className="border-1 rounded-[8px]">
+              <div className="rounded-[8px]">
               <OrganizationSearchDropdown
               selectedOrganizations={selectedOrganizations} 
               setSelectedOrganizations={setSelectedOrganizations} 
@@ -268,7 +269,7 @@ console.log("onApply>>>>>>",onApply);
               <label className="font-12-regular color-dark-black">
                 Industry
               </label>
-              <CustomDropdown
+              <CommonDropdown
                 options={industryOptions}
                 placeholder="Select Industry"
                 selectedValue={industry}

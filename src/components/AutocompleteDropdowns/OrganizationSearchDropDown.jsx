@@ -59,7 +59,7 @@ const OrganizationSearchDropdown = ({ selectedOrganizations = [], setSelectedOrg
       <input
         type="text"
         placeholder="Enter Company"
-        className="filter-input"
+        className="filter-input border"
         value={organizationQuery}
         onChange={(e) => setOrganizationQuery(e.target.value)}
         onFocus={() => setShowOrganizationDropdown(true)}
