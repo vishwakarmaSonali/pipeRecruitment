@@ -106,7 +106,7 @@ const Navbar = () => {
       </div>
 
       <div className="display-flex align-center" style={{ gap: 10 }}>
-        <div className="display-flex " style={{ gap: 6 }}>
+        <div className="display-flex" style={{ gap: 6 }}>
           <button
             className="search-input-div-nav"
             disabled={showSearch}

@@ -160,7 +160,7 @@ th {
 
 /* create candidate form  */
 .main-container-candidateForm {
-@apply items-center justify-between min-w-[1200px];
+  @apply items-center justify-between min-w-[1200px];
   margin-left: 120px;
   margin-right: 120px;
   font-family: "Ubuntu", sans-serif;
@@ -182,7 +182,6 @@ th {
   overflow: hidden;
 }
 
-
 .section-title {
   font-size: 18px;
   font-weight: bold;
@@ -196,16 +195,6 @@ th {
   grid-template-columns: repeat(3, 1fr);
   gap: 10px;
   margin-top: 10px;
-}
-
-input,
-select,
-textarea {
-  padding: 12px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  width: 100%;
-  height: 38px;
 }
 
 .editor-container {
