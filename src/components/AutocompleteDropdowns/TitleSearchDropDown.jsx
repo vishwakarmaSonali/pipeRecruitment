@@ -68,7 +68,7 @@ const TitleSearchDropdown = ({ selectedTitles = [], setSelectedTitles }) => {
 
       {/* Title Suggestions Dropdown */}
       {showTitleDropdown && titleSuggestions.length > 0 && (
-            <div className=" left-0 w-[405px] flex flex-col  bg-white border border-borderGrey rounded-lg shadow-lg min-h-40 max-h-[460px] overflow-auto z-50 text-sm">
+            <div className=" left-0 w-[405px] flex flex-col  bg-white border border-borderGrey rounded-lg shadow-sm max-h-[460px] overflow-auto z-50 text-sm">
           {titleSuggestions.map((title, index) => (
             <div
               key={index}

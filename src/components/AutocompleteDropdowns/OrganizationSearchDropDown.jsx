@@ -67,7 +67,7 @@ const OrganizationSearchDropdown = ({ selectedOrganizations = [], setSelectedOrg
 
       {/* Organization Suggestions Dropdown */}
       {showOrganizationDropdown && organizationSuggestions.length > 0 && (
-            <div className=" left-0 w-[405px] flex flex-col  bg-white border border-borderGrey rounded-lg shadow-lg min-h-40 max-h-[460px] overflow-auto z-50 text-sm">
+            <div className=" left-0 w-[405px] flex flex-col  bg-white border border-borderGrey rounded-lg shadow-md  max-h-[460px] overflow-auto z-50 text-sm">
           {organizationSuggestions.map((organization, index) => (
             <div
               key={index}
