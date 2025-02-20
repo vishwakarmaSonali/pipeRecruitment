@@ -1,4 +1,13 @@
 import React, { useState, useEffect } from "react";
+import {
+  blueDesign,
+  designStudio,
+  even,
+  general,
+  nord,
+  techwave,
+  uptech,
+} from "./assets";
 
 export const usePersistentState = (key, defaultValue) => {
   const [state, setState] = useState(() => {
@@ -207,6 +216,119 @@ export const commonStyle = {
     },
   },
 };
+
+export const comapnyListing = [
+  {
+    id: 1,
+    name: "General",
+    logo: general,
+    position: null,
+  },
+  {
+    id: 2,
+    name: "UpTech",
+    logo: uptech,
+    position: "UI Designer",
+  },
+  {
+    id: 3,
+    name: "DesignScape Studios",
+    logo: designStudio,
+    position: "UI UX Designer",
+  },
+  {
+    id: 4,
+    name: "NordSoft Solutions",
+    logo: nord,
+    position: "UI UX Designer",
+  },
+  {
+    id: 5,
+    name: "Even Solutions",
+    logo: even,
+    position: "UI UX Designer",
+  },
+  {
+    id: 6,
+    name: "BlueDesign Studio",
+    logo: blueDesign,
+    position: "UI Designer",
+  },
+  {
+    id: 7,
+    name: "TechWave",
+    logo: techwave,
+    position: "UI Designer",
+  },
+];
+
+export const jobData = [
+  {
+    id: 1,
+    jobName: "DesignScape Studios",
+    type: "Client Interview",
+  },
+  {
+    id: 2,
+    jobName: "UpTech",
+    type: "New Candidate",
+  },
+  {
+    id: 3,
+    jobName: "NordSoft Solutions",
+    type: "New Candidate",
+  },
+  {
+    id: 4,
+    jobName: "Even Solutions",
+    type: "New Candidate",
+  },
+  {
+    id: 5,
+    jobName: "Passion Infotech",
+    type: "Client Interview",
+  },
+  {
+    id: 6,
+    jobName: "BlueDesign Studio",
+    type: "Assignment",
+  },
+  {
+    id: 7,
+    jobName: "TechWave",
+    type: "New Candidate",
+  },
+];
+
+export const experienceData = [
+  {
+    id: 1,
+    position: "UI/UX Designer",
+    company: "DesignScape Studios",
+    location: "Mumbai, India",
+    startDate: "March 2021",
+    endDate: "Present",
+  },
+  {
+    id: 2,
+    position: "Junior UI/UX Designer",
+    company: "PixelCraft Solutions",
+    location: "Bangalore, India",
+    startDate: "July 2019",
+    endDate: "February 2021",
+  },
+];
+
+export const educationData = [
+  {
+    id: 1,
+    degree: "Bachelor of Design (B.Des)",
+    course: "Visual Communication",
+    collage: "National Institute of Design (NID), Ahmedabad",
+    startDate: "September 2015",
+    endDate: "May 2019",
+  },
+];
 
 export const defaultCategoryData = [
   {

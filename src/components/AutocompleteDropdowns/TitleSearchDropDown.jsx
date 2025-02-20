@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import "../../components/filterModal/FilterModal.css"
+import "../../components/filterModal/FilterModal.css";
 
 const TitleSearchDropdown = ({ selectedTitles = [], setSelectedTitles }) => {
   const [titleQuery, setTitleQuery] = useState("");
@@ -68,7 +68,7 @@ const TitleSearchDropdown = ({ selectedTitles = [], setSelectedTitles }) => {
 
       {/* Title Suggestions Dropdown */}
       {showTitleDropdown && titleSuggestions.length > 0 && (
-            <div className=" left-0 w-[405px] flex flex-col  bg-white border border-borderGrey rounded-lg shadow-sm max-h-[460px] overflow-auto z-50 text-sm">
+        <div className="flex flex-col  bg-white border border-borderGrey rounded-lg shadow-sm max-h-[460px] overflow-auto z-50 text-sm">
           {titleSuggestions.map((title, index) => (
             <div
               key={index}

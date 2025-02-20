@@ -34,8 +34,7 @@ const CandidateCard = ({
 }) => {
   const [skillsShowAll, setSkillsShowAll] = useState(false);
   const [validImageUrl, setValidImageUrl] = useState(true);
-  console.log("datadatadatadata",data);
-  
+
   return (
     <div
       key={data?._id}

@@ -46,6 +46,8 @@ th {
   flex-direction: column;
   gap: 12px;
   width: 100%;
+  z-index: 9999;
+  transition: all 400ms ease;
 }
 
 .details-container {
@@ -59,10 +61,10 @@ th {
   justify-content: space-between;
   align-items: center;
   gap: 8px;
+  padding: 6px 0px;
 }
 
-.add-details-btn,
-.edit-details-btn {
+.add-details-btn {
   font-family: "Ubuntu";
   font-weight: 400;
   font-size: 12px;
@@ -76,18 +78,13 @@ th {
   transition: opacity 350ms ease;
 }
 
-.save-btn {
-  background: green;
-}
-
-.edit-input {
-  padding: 4px;
-  font-size: 14px;
-  margin-right: 5px;
-}
-
-.detail-row:hover .edit-details-btn {
+.detail-row:hover .edit-details-btn,
+.candidate-experince-item:hover .edit-details-btn {
   opacity: 1;
+}
+
+.candidate-experince-item {
+  cursor: default;
 }
 
 .text-uppercase {
@@ -251,4 +248,18 @@ textarea {
 }
 .filter-input {
   @apply bg-white  flex px-2 py-3 border-none h-[38px] leading-[14px] border-customGrey1 rounded-[8px] text-sm font-ubuntu text-customBlue placeholder:text-customGray focus:outline-none focus:ring-0;
+}
+
+.flex-2 {
+  flex: 2.5;
+}
+
+.arrow-icon-btn-collpase {
+  rotate: 180deg;
+  transition: rotate 300ms ease;
+}
+
+.arrow-icon-btn {
+  rotate: 0deg;
+  transition: rotate 300ms ease;
 }

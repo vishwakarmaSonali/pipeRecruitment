@@ -15,53 +15,70 @@ import { ReactComponent as ArchiveIcon } from "../../pages/Recruitment/Candidate
 import { ReactComponent as ModalClose } from "../../pages/Recruitment/Candidates/assets/modalClose.svg";
 import { ReactComponent as ModalPrevious } from "../../pages/Recruitment/Candidates/assets/modalPrevious.svg";
 import { ReactComponent as ModalNext } from "../../pages/Recruitment/Candidates/assets/modalNext.svg";
-import { commonStyle } from "../../helpers/config";
+import {
+  comapnyListing,
+  commonStyle,
+  educationData,
+  experienceData,
+  jobData,
+} from "../../helpers/config";
 import CandidateDetails from "../candidate/CandidateDetails";
 import CandidateInfoSkills from "../candidate/CandidateInfoSkills";
+import CompanyDropdown from "../common/CompanyDropdown";
+import CandidateLog from "../candidate/CandidateLog";
+import AddCommonCandidateInfo from "../candidate/AddCommonCandidateInfo";
+import CandidateInfoJobs from "../candidate/CandidateInfoJobs";
+import CandidateInfoExperience from "../candidate/CandidateInfoExperience";
 
 const candidateInfoTabs = [
   {
     id: 1,
     name: "Summary",
-    // icon: <ResumeIcon />,
+
     selected: true,
   },
   {
     id: 2,
     name: "Resume",
-    // icon: <ResumeIcon />,
+
     selected: false,
   },
   {
     id: 3,
     name: "Jobs",
-    // icon: <JobIcon />,
+
     count: "04",
     selected: false,
   },
   {
     id: 4,
     name: "Inbox",
-    // icon: <InboxIcon />,
+
     selected: false,
   },
   {
     id: 5,
     name: "Calendar",
-    // icon: <CalendarIcon />,
+
     selected: false,
   },
   {
     id: 6,
     name: "Enrich User Profile",
-    // icon: <PenIcon />,
+
     selected: false,
   },
   {
     id: 7,
     name: "Attachments",
-    // icon: <AttachmentIcon />,
+
     count: "06",
+    selected: false,
+  },
+  {
+    id: 8,
+    name: "History",
+
     selected: false,
   },
 ];
@@ -77,14 +94,73 @@ const labelData = [
   },
 ];
 
+const candidateDetailsFields = [
+  {
+    name: "First Name",
+    type: "text",
+    options: [],
+    order: 1,
+    _id: "67b48df94adfdce1eb0b4313",
+  },
+  {
+    name: "Last Name",
+    type: "text",
+    options: [],
+    order: 2,
+    _id: "67b48df94adfdce1eb0b4314",
+  },
+  {
+    name: "Candidate Reference",
+    options: [],
+    order: 3,
+    _id: "67b48df94adfdce1eb0b4315",
+  },
+  {
+    name: "Gender",
+    type: "select",
+    options: ["Male", "Female", "Other"],
+    order: 4,
+    _id: "67b48df94adfdce1eb0b4316",
+  },
+  {
+    name: "Date of Birth",
+    type: "date",
+    options: [],
+    order: 5,
+    _id: "67b48df94adfdce1eb0b4317",
+  },
+  {
+    name: "location",
+    type: "text",
+    options: [],
+    order: 6,
+    _id: "67b48df94adfdce1eb0b4318",
+  },
+  {
+    name: "nationality",
+    type: "text",
+    options: [],
+    order: 7,
+    _id: "67b48df94adfdce1eb0b4319",
+  },
+  {
+    name: "Languages",
+    type: "text",
+    options: [],
+    order: 8,
+    _id: "67b48df94adfdce1eb0b4319",
+  },
+];
+
 const candidateDetailsData = {
+  "First Name": "Priya",
+  "Last Name": "Sharma",
   "Candidate Reference": "P5L9B",
   Gender: "Female",
-  "Candidate Location": "Mumbai, India",
   "Date of Birth": "September 14, 1990",
-  "Candidate Address": "Mumbai, India",
-  "Candidate Email Id": "priya.s@designscape.com",
-  "Candidate Phone": "+91-98765-43210",
+  Location: "Mumbai, India",
+  Nationality: "Indian",
+  Languages: ["English", "Hindi"],
 };
 
 const aditionalInfoData = {
@@ -245,7 +321,6 @@ const CandidateInfoModal = ({ visible, onClose }) => {
       dialogClassName={`candidate-info-common-modal`}
       contentClassName="modal-content"
       backdropClassName="custom-backdrop"
-      centered
     >
       <div
         className={`candidate-info-modal-container ${
@@ -373,6 +448,17 @@ const CandidateInfoModal = ({ visible, onClose }) => {
               details={aditionalInfoData}
               label={"Additional Information"}
             />
+            <CandidateLog />
+            <AddCommonCandidateInfo label={"Folders"} />
+            <CandidateInfoJobs data={jobData} />
+            <CandidateInfoExperience
+              label={"Education Details"}
+              data={educationData}
+            />
+            <CandidateInfoExperience
+              label={"Experience Details"}
+              data={experienceData}
+            />
           </div>
           <div
             className="candidate-info-modal-section-2 flex-1 "
@@ -383,6 +469,7 @@ const CandidateInfoModal = ({ visible, onClose }) => {
             }}
           >
             <div className="candidate-info-modal-inner-section-1">
+              <CompanyDropdown options={comapnyListing} />
               <input
                 type="text"
                 placeholder="Write a note"

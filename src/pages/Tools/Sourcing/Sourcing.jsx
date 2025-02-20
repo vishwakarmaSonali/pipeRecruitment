@@ -275,6 +275,9 @@ const Sourcing = () => {
   const [filtersApplied, setFiltersApplied] = useState(false);
   const [isJobModalOpen, setIsJobModalOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
+  const [resultsPerPage, setResultsPerPage] = useState(20);
+  const dropdownRef = useRef(null);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const perPageLimit = 100;
 
   const [filters, setFilters] = useState({
@@ -305,6 +308,11 @@ const Sourcing = () => {
     setSelectedCandidates([]);
     setCurrentPage(page);
     dispatch(fetchCandidates(null, candidateFilters, page));
+  };
+
+  const handleResultsChange = (value) => {
+    setResultsPerPage(value);
+    setIsDropdownOpen(false);
   };
 
   const toggleModal = () => {
@@ -398,8 +406,7 @@ const Sourcing = () => {
   useEffect(() => {
     setCurrentPage(1);
     let params = {};
-    params.limit = perPageLimit;
-
+    params.limit = resultsPerPage;
     if (filters?.titles?.length > 0) {
       params.title = filters.titles.join(", ");
     }
@@ -408,7 +415,6 @@ const Sourcing = () => {
       params.location = filters.locations.map((loc) => `'${loc}'`).join(", ");
     }
 
-    // if(filters?.)
     if (!!filters?.radius) {
       params.radius = filters?.radius;
     }
@@ -421,25 +427,17 @@ const Sourcing = () => {
       params.company = filters?.organizations.join("");
     }
 
-    // if (filters?.companyList?.length > 0) {
-    //   params.company = filters?.companyList?.join(", ");
-    // }
+    if (filters?.companyList?.length > 0) {
+      params.company = filters?.companyList?.join(", ");
+    }
 
-    // if (!!filters?.experience?.from) {
-    //   params.company = filters?.experience?.from;
-    // }
+    if (!!filters?.experience?.from) {
+      params.years_of_experience_from = filters?.experience?.from;
+    }
 
-    // if (!!filters?.experience?.to) {
-    //   params.company = filters?.experience?.to;
-    // }
-
-    // if (!!filters?.yearsOfExperience?.from) {
-    //   params.company = filters?.yearsOfExperience?.from;
-    // }
-
-    // if (!!filters?.yearsOfExperience?.to) {
-    //   params.company = filters?.yearsOfExperience?.to;
-    // }
+    if (!!filters?.experience?.to) {
+      params.years_of_experience_to = filters?.experience?.to;
+    }
 
     if (!!filters?.skill && !(filters?.skillList?.length > 0)) {
       params.skill = filters?.skill;
@@ -447,10 +445,6 @@ const Sourcing = () => {
 
     if (filters?.skillList?.length > 0) {
       params.skill = filters?.skillList?.join(", ");
-    }
-
-    if (filters?.industry) {
-      params.industry = filters?.industry;
     }
 
     if (filters?.industry) {
@@ -482,7 +476,7 @@ const Sourcing = () => {
     }
 
     dispatch(fetchCandidates(null, params, 1));
-  }, [dispatch, filters]);
+  }, [dispatch, filters, resultsPerPage]);
 
   useEffect(() => {
     setSelectedCandidate(candidateData[0]);
@@ -613,10 +607,10 @@ const Sourcing = () => {
                     )}
                   </div>
                   <p className="font-12-regular color-dark-black">
-                    {perPageLimit * (currentPage - 1)} -{" "}
-                    {perPageLimit * currentPage > totalCandidateData
+                    {resultsPerPage * (currentPage - 1)} -{" "}
+                    {resultsPerPage * currentPage > totalCandidateData
                       ? totalCandidateData
-                      : perPageLimit * currentPage}{" "}
+                      : resultsPerPage * currentPage}{" "}
                     of {totalCandidateData}
                   </p>
                 </div>
@@ -635,7 +629,39 @@ const Sourcing = () => {
                     />
                   </div>
                 )}
-                <div style={{ flex: 0.5 }} />
+                <div
+                  className="relative flex items-center space-x-2 justify-end w-1/4"
+                  ref={dropdownRef}
+                >
+                  <span className="font-12-regular color-grey">
+                    Results per page
+                  </span>
+                  <button
+                    className="border border-customGray rounded-md px-2 py-1 gap-1 text-sm font-ubuntu focus:outline-none focus:ring-0 relative items-center flex"
+                    onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                  >
+                    {resultsPerPage}
+                    <DropArrow fill="customBlue" />
+                  </button>
+
+                  {isDropdownOpen && (
+                    <div className="absolute bottom-full mb-2 right-0 w-16 text-sm font-ubuntu bg-white shadow-lg rounded-lg overflow-hidden z-50">
+                      {[10, 20, 30, 40, 50, 60, 70, 80, 90, 100].map(
+                        (option) => (
+                          <button
+                            key={option}
+                            className={`block w-full text-center px-4 py-2 text-customBlue hover:bg-gray-100 ${
+                              option === resultsPerPage && "bg-gray-100"
+                            }`}
+                            onClick={() => handleResultsChange(option)}
+                          >
+                            {option}
+                          </button>
+                        )
+                      )}
+                    </div>
+                  )}
+                </div>
               </div>
             )}
           </div>
