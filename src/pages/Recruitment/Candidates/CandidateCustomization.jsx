@@ -28,6 +28,11 @@ import {
 } from "../../../actions/customizationActions";
 import CommonDeleteModal from "../../../components/modals/CommonDeleteModal";
 import AddFieldDrawer from "../../../components/candidate/AddFieldDrawer";
+import { ReactComponent as CancelIcon } from "./assets/cancel.svg";
+import { ReactComponent as RightIcon } from "./assets/right.svg";
+import { ReactComponent as LableIcon } from "./assets/label.svg";
+import { ReactComponent as AddCircleIcon } from "./assets/add-circle.svg";
+import { HexColorPicker } from "react-colorful";
 
 const candidateCustomizationsTabs = [
   {
@@ -40,11 +45,11 @@ const candidateCustomizationsTabs = [
     name: "Labels",
     selected: false,
   },
-  {
-    id: 3,
-    name: "Domains",
-    selected: false,
-  },
+  // {
+  //   id: 3,
+  //   name: "Domains",
+  //   selected: false,
+  // },
 ];
 
 const CandidateCustomization = () => {
@@ -71,6 +76,57 @@ const CandidateCustomization = () => {
   const inputRefs = useRef({});
   const [errorMessages, setErrorMessages] = useState({});
   const [addFieldDrawerOpen, setAddFieldDrawerOpen] = useState(false);
+  const [addLabelBtnDisable, setAddLabelBtnDisable] = useState(false);
+  const [labels, setLabels] = useState([]);
+  const [editingIndex, setEditingIndex] = useState(null);
+  const [tempLabel, setTempLabel] = useState(null);
+  const [defaultColorList, setDefaultColorList] = useState([]);
+  const [colorPickerVisible, setColorPickerVisible] = useState(false);
+  const [originalLabel, setOriginalLabel] = useState(null);
+  const [deleteLabelIndex, setDeleteLabelIndex] = useState(null);
+
+  const addLabel = () => {
+    const newLabel = { name: "Label Name", color: "#000000" };
+    setLabels([...labels, newLabel]);
+    setEditingIndex(labels.length);
+    setTempLabel(newLabel);
+    setOriginalLabel(newLabel);
+  };
+
+  const editLabel = (index) => {
+    setEditingIndex(index);
+    setTempLabel({ ...labels[index] });
+    setOriginalLabel({ ...labels[index] });
+  };
+
+  const saveLabel = () => {
+    const isDuplicate = labels.some(
+      (label, index) => label.name === tempLabel.name && index !== editingIndex
+    );
+
+    if (isDuplicate) {
+      alert("Label with this name already exists!");
+      return;
+    }
+
+    const updatedLabels = [...labels];
+    updatedLabels[editingIndex] = tempLabel;
+    setLabels(updatedLabels);
+    setEditingIndex(null);
+    setColorPickerVisible(false);
+  };
+
+  const cancelEdit = () => {
+    setTempLabel(originalLabel);
+    setEditingIndex(null);
+    setColorPickerVisible(false);
+  };
+
+  const deleteLabel = (index) => {
+    setLabels(labels.filter((_, i) => i !== index));
+    setEditingIndex(null);
+    setModalVisibility("labelDeleteModalVisible", false);
+  };
 
   const toggleAddFieldDrawer = (open) => {
     setAddFieldDrawerOpen(open);
@@ -268,6 +324,14 @@ const CandidateCustomization = () => {
     }));
   };
 
+  useEffect(() => {
+    const filterColor = labels?.map((item) => item?.color);
+
+    const uniqueColors = [...new Set(filterColor)];
+
+    setDefaultColorList(uniqueColors);
+  }, [labels]);
+
   return (
     <div className="candidate-info-main-container">
       <Navbar />
@@ -291,314 +355,489 @@ const CandidateCustomization = () => {
           })}
         </div>
       </div>
-      <div className="candidate-customization-container">
-        <p className="font-16-medium color-dark-black">
-          {selectedCandidateTab}
-        </p>
-        <div className="display-column" style={{ gap: 10 }}>
-          <p className="font-14-regular color-grey">
-            Define and manage custom fields to tailor candidate profiles with
-            specific information relevant to your hiring needs.
+      {selectedCandidateTab === "Summary Fields" && (
+        <div className="candidate-customization-container">
+          <p className="font-16-medium color-dark-black">
+            {selectedCandidateTab}
           </p>
-          <ul className="font-14-regular color-grey customize-summary-field-ul">
-            <li>
-              Changes made here will be reflected across all users in your
-              account.
-            </li>
-            <li>
-              Default categories and fields cannot be deleted but can be hidden
-              if not needed.
-            </li>
-          </ul>
-        </div>
-        <div className="candidate-customization-inner-container">
-          <div className="category-main-container flex-1">
-            <div className="display-flex-justify align-center">
-              <p className="font-14-medium color-dark-black">Categories</p>
-              <CommonAddButton
-                title={"Add Category"}
-                onClick={handleAddCategory}
-                disable={addCategoryBtnDisable}
-              />
-            </div>
-            <div>
-              <DragDropContext onDragEnd={onDragEnd}>
-                <Droppable droppableId="column">
-                  {(provided) => (
-                    <div
-                      ref={provided.innerRef}
-                      {...provided.droppableProps}
-                      className="candidate-customization-category-item"
-                    >
-                      {categories?.map((item, index) => (
-                        <Draggable
-                          key={item?.id}
-                          draggableId={item.id?.toString()}
-                          index={index}
-                        >
-                          {(provided) => (
-                            <>
-                              <div
-                                ref={provided.innerRef}
-                                {...provided.draggableProps}
-                                className={`customize-category-item ${
-                                  item?.selected && "selected-category-item"
-                                }`}
-                                onClick={() => {
-                                  if (!!item?.fields) {
-                                    selectedCustomizationCategoryHandler(item);
-                                  }
-                                }}
-                              >
+          <div className="display-column" style={{ gap: 10 }}>
+            <p className="font-14-regular color-grey">
+              Define and manage custom fields to tailor candidate profiles with
+              specific information relevant to your hiring needs.
+            </p>
+            <ul className="font-14-regular color-grey customize-summary-field-ul">
+              <li>
+                Changes made here will be reflected across all users in your
+                account.
+              </li>
+              <li>
+                Default categories and fields cannot be deleted but can be
+                hidden if not needed.
+              </li>
+            </ul>
+          </div>
+          <div className="candidate-customization-inner-container">
+            <div className="category-main-container flex-1">
+              <div className="display-flex-justify align-center">
+                <p className="font-14-medium color-dark-black">Categories</p>
+                <CommonAddButton
+                  title={"Add Category"}
+                  onClick={handleAddCategory}
+                  disable={addCategoryBtnDisable}
+                />
+              </div>
+              <div>
+                <DragDropContext onDragEnd={onDragEnd}>
+                  <Droppable droppableId="column">
+                    {(provided) => (
+                      <div
+                        ref={provided.innerRef}
+                        {...provided.droppableProps}
+                        className="candidate-customization-category-item"
+                      >
+                        {categories?.map((item, index) => (
+                          <Draggable
+                            key={item?.id}
+                            draggableId={item.id?.toString()}
+                            index={index}
+                          >
+                            {(provided) => (
+                              <>
                                 <div
-                                  className="display-flex align-center "
-                                  style={{ gap: 8, flex: 1 }}
+                                  ref={provided.innerRef}
+                                  {...provided.draggableProps}
+                                  className={`customize-category-item ${
+                                    item?.selected && "selected-category-item"
+                                  }`}
+                                  onClick={() => {
+                                    if (!!item?.fields) {
+                                      selectedCustomizationCategoryHandler(
+                                        item
+                                      );
+                                    }
+                                  }}
                                 >
-                                  <div {...provided.dragHandleProps}>
-                                    <DraggableIcon
-                                      fill={
-                                        item?.selected ? "#151B23" : "#797979"
-                                      }
-                                    />
-                                  </div>
-                                  {!!item?.fields && (
-                                    <button className="display-flex align-center justify-center">
-                                      <ArrowRight
+                                  <div
+                                    className="display-flex align-center "
+                                    style={{ gap: 8, flex: 1 }}
+                                  >
+                                    <div {...provided.dragHandleProps}>
+                                      <DraggableIcon
                                         fill={
                                           item?.selected ? "#151B23" : "#797979"
                                         }
                                       />
-                                    </button>
-                                  )}
-
-                                  <input
-                                    ref={(el) =>
-                                      (inputRefs.current[item.id] = el)
-                                    }
-                                    type="text"
-                                    value={item?.name}
-                                    onChange={(e) =>
-                                      handleCategoryNameChange(
-                                        item?.id,
-                                        e.target.value
-                                      )
-                                    }
-                                    onBlur={() =>
-                                      saveCategoryName(item.id, item?.name)
-                                    }
-                                    onKeyDown={(e) => {
-                                      if (e.key === "Enter") {
-                                        saveCategoryName(item.id, item?.name);
-                                      }
-                                    }}
-                                    disabled={!item?.editable}
-                                    className={`customize-category-input ${
-                                      item?.selected &&
-                                      "selected-customize-category-input"
-                                    }`}
-                                  />
-                                </div>
-                                <div
-                                  className="display-flex align-center"
-                                  style={{ gap: 8 }}
-                                >
-                                  {!item?.custom && (
-                                    <LockIcon
-                                      stroke={
-                                        item?.selected ? "#151B23" : "#797979"
-                                      }
-                                    />
-                                  )}
-                                  <button
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      handleCategoryMenuClick(e, item);
-                                    }}
-                                  >
-                                    <MoreIcon
-                                      stroke={
-                                        item?.selected ? "#151B23" : "#797979"
-                                      }
-                                    />
-                                  </button>
-                                </div>
-                              </div>
-                              {errorMessages[item.id] && (
-                                <p className="font-12-regular color-error">
-                                  {errorMessages[item.id]}
-                                </p>
-                              )}
-                            </>
-                          )}
-                        </Draggable>
-                      ))}
-                      {provided.placeholder}
-                      <Menu
-                        anchorEl={anchorEl}
-                        open={openMenu1}
-                        onClose={handleCategoryMenuClose}
-                        PaperProps={{
-                          sx: commonStyle.sx,
-                        }}
-                        transformOrigin={{
-                          vertical: "top",
-                          horizontal: "right",
-                        }}
-                        anchorOrigin={{
-                          vertical: "bottom",
-                          horizontal: "right",
-                        }}
-                      >
-                        <div className="display-column">
-                          <button className="common-menu-item-btn">
-                            <HideIcon /> Hide
-                          </button>
-
-                          {selectedItem?.custom && (
-                            <>
-                              <button
-                                className="common-menu-item-btn"
-                                onClick={() => {
-                                  handleCategoryMenuClose();
-                                  editCategoryHandler();
-                                }}
-                              >
-                                <EditIcon /> Edit
-                              </button>
-
-                              <button
-                                className="common-menu-item-btn"
-                                onClick={() => {
-                                  setModalVisibility(
-                                    "categoryDeleteModalVisible",
-                                    true
-                                  );
-                                  handleCategoryMenuClose();
-                                }}
-                              >
-                                <DeleteIcon /> Delete
-                              </button>
-                            </>
-                          )}
-                        </div>
-                      </Menu>
-                    </div>
-                  )}
-                </Droppable>
-              </DragDropContext>
-            </div>
-          </div>
-          <div className="flex-1">
-            {!!selectedCategory?.fields && (
-              <div className="category-main-container">
-                <div className="display-flex-justify align-center">
-                  <p className="font-14-medium color-dark-black">
-                    Fields - {selectedCategory?.name}
-                  </p>
-                  <CommonAddButton
-                    title={"Add Field"}
-                    onClick={() => toggleAddFieldDrawer(true)}
-                  />
-                </div>
-                <div>
-                  {selectedCategory?.fields?.length > 0 ? (
-                    <DragDropContext onDragEnd={onDragEndFields}>
-                      <Droppable droppableId="fields">
-                        {(provided) => (
-                          <div
-                            ref={provided.innerRef}
-                            {...provided.droppableProps}
-                            className="display-column"
-                          >
-                            {selectedCategory?.fields?.map((item, index) => (
-                              <Draggable
-                                key={item?.id}
-                                draggableId={item.id?.toLocaleString()}
-                                index={index}
-                              >
-                                {(provided) => (
-                                  <div
-                                    ref={provided.innerRef}
-                                    {...provided.draggableProps}
-                                    className={`customize-field-item`}
-                                  >
-                                    <div
-                                      className="display-flex align-center "
-                                      style={{ gap: 8 }}
-                                    >
-                                      <div {...provided.dragHandleProps}>
-                                        <DraggableIcon fill={"#151B23"} />
-                                      </div>
-                                      <p className="font-12-regular color-dark-black">
-                                        {item?.name}
-                                      </p>
                                     </div>
-                                    <div
-                                      className="display-flex align-center"
-                                      style={{ gap: 8 }}
-                                    >
-                                      {!item?.custom && (
-                                        <LockIcon stroke={"#797979"} />
-                                      )}
-                                      <button
-                                        onClick={(e) => {
-                                          e.stopPropagation();
-                                          handleFieldMenuClick(e, item);
+                                    {!!item?.fields && (
+                                      <button className="display-flex align-center justify-center">
+                                        <ArrowRight
+                                          fill={
+                                            item?.selected
+                                              ? "#151B23"
+                                              : "#797979"
+                                          }
+                                        />
+                                      </button>
+                                    )}
+
+                                    {item?.editable ? (
+                                      <input
+                                        ref={(el) =>
+                                          (inputRefs.current[item.id] = el)
+                                        }
+                                        type="text"
+                                        value={item?.name}
+                                        onChange={(e) =>
+                                          handleCategoryNameChange(
+                                            item?.id,
+                                            e.target.value
+                                          )
+                                        }
+                                        onBlur={() =>
+                                          saveCategoryName(item.id, item?.name)
+                                        }
+                                        onKeyDown={(e) => {
+                                          if (e.key === "Enter") {
+                                            saveCategoryName(
+                                              item.id,
+                                              item?.name
+                                            );
+                                          }
+                                        }}
+                                        className={`customize-category-input ${
+                                          item?.selected &&
+                                          "selected-customize-category-input"
+                                        }`}
+                                      />
+                                    ) : (
+                                      <div
+                                        className="flex-1"
+                                        style={{
+                                          cursor: "pointer",
                                         }}
                                       >
-                                        <MoreIcon stroke={"#797979"} />
-                                      </button>
-                                    </div>
+                                        <span className="font-14-regular color-grey ">
+                                          {item?.name}
+                                        </span>
+                                      </div>
+                                    )}
                                   </div>
+                                  <div
+                                    className="display-flex align-center"
+                                    style={{ gap: 8 }}
+                                  >
+                                    {!item?.custom && (
+                                      <LockIcon
+                                        stroke={
+                                          item?.selected ? "#151B23" : "#797979"
+                                        }
+                                      />
+                                    )}
+                                    <button
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        handleCategoryMenuClick(e, item);
+                                      }}
+                                    >
+                                      <MoreIcon
+                                        stroke={
+                                          item?.selected ? "#151B23" : "#797979"
+                                        }
+                                      />
+                                    </button>
+                                  </div>
+                                </div>
+                                {errorMessages[item.id] && (
+                                  <p className="font-12-regular color-error">
+                                    {errorMessages[item.id]}
+                                  </p>
                                 )}
-                              </Draggable>
-                            ))}
-                            {provided.placeholder}
-                            <Menu
-                              anchorEl={anchorE2}
-                              open={openMenu2}
-                              onClose={handleFieldMenuClose}
-                              PaperProps={{
-                                sx: commonStyle.sx,
-                              }}
-                              transformOrigin={{
-                                vertical: "top",
-                                horizontal: "right",
-                              }}
-                              anchorOrigin={{
-                                vertical: "bottom",
-                                horizontal: "right",
-                              }}
-                            >
-                              <div className="display-column">
-                                <button className="common-menu-item-btn">
-                                  <HideIcon /> Hide
-                                </button>
-                                <button className="common-menu-item-btn">
+                              </>
+                            )}
+                          </Draggable>
+                        ))}
+                        {provided.placeholder}
+                        <Menu
+                          anchorEl={anchorEl}
+                          open={openMenu1}
+                          onClose={handleCategoryMenuClose}
+                          PaperProps={{
+                            sx: commonStyle.sx,
+                          }}
+                          transformOrigin={{
+                            vertical: "top",
+                            horizontal: "right",
+                          }}
+                          anchorOrigin={{
+                            vertical: "bottom",
+                            horizontal: "right",
+                          }}
+                        >
+                          <div className="display-column">
+                            <button className="common-menu-item-btn">
+                              <HideIcon /> Hide
+                            </button>
+
+                            {selectedItem?.custom && (
+                              <>
+                                <button
+                                  className="common-menu-item-btn"
+                                  onClick={() => {
+                                    handleCategoryMenuClose();
+                                    editCategoryHandler();
+                                  }}
+                                >
                                   <EditIcon /> Edit
                                 </button>
-                                {selectedFieldItem?.custom && (
+
+                                <button
+                                  className="common-menu-item-btn"
+                                  onClick={() => {
+                                    setModalVisibility(
+                                      "categoryDeleteModalVisible",
+                                      true
+                                    );
+                                    handleCategoryMenuClose();
+                                  }}
+                                >
+                                  <DeleteIcon /> Delete
+                                </button>
+                              </>
+                            )}
+                          </div>
+                        </Menu>
+                      </div>
+                    )}
+                  </Droppable>
+                </DragDropContext>
+              </div>
+            </div>
+            <div className="flex-1">
+              {!!selectedCategory?.fields && (
+                <div className="category-main-container">
+                  <div className="display-flex-justify align-center">
+                    <p className="font-14-medium color-dark-black">
+                      Fields - {selectedCategory?.name}
+                    </p>
+                    <CommonAddButton
+                      title={"Add Field"}
+                      onClick={() => toggleAddFieldDrawer(true)}
+                    />
+                  </div>
+                  <div>
+                    {selectedCategory?.fields?.length > 0 ? (
+                      <DragDropContext onDragEnd={onDragEndFields}>
+                        <Droppable droppableId="fields">
+                          {(provided) => (
+                            <div
+                              ref={provided.innerRef}
+                              {...provided.droppableProps}
+                              className="display-column"
+                            >
+                              {selectedCategory?.fields?.map((item, index) => (
+                                <Draggable
+                                  key={item?.id}
+                                  draggableId={item.id?.toLocaleString()}
+                                  index={index}
+                                >
+                                  {(provided) => (
+                                    <div
+                                      ref={provided.innerRef}
+                                      {...provided.draggableProps}
+                                      className={`customize-field-item`}
+                                    >
+                                      <div
+                                        className="display-flex align-center "
+                                        style={{ gap: 8 }}
+                                      >
+                                        <div {...provided.dragHandleProps}>
+                                          <DraggableIcon fill={"#151B23"} />
+                                        </div>
+                                        <p className="font-12-regular color-dark-black">
+                                          {item?.name}
+                                        </p>
+                                      </div>
+                                      <div
+                                        className="display-flex align-center"
+                                        style={{ gap: 8 }}
+                                      >
+                                        {!item?.custom && (
+                                          <LockIcon stroke={"#797979"} />
+                                        )}
+                                        <button
+                                          onClick={(e) => {
+                                            e.stopPropagation();
+                                            handleFieldMenuClick(e, item);
+                                          }}
+                                        >
+                                          <MoreIcon stroke={"#797979"} />
+                                        </button>
+                                      </div>
+                                    </div>
+                                  )}
+                                </Draggable>
+                              ))}
+                              {provided.placeholder}
+                              <Menu
+                                anchorEl={anchorE2}
+                                open={openMenu2}
+                                onClose={handleFieldMenuClose}
+                                PaperProps={{
+                                  sx: commonStyle.sx,
+                                }}
+                                transformOrigin={{
+                                  vertical: "top",
+                                  horizontal: "right",
+                                }}
+                                anchorOrigin={{
+                                  vertical: "bottom",
+                                  horizontal: "right",
+                                }}
+                              >
+                                <div className="display-column">
                                   <button className="common-menu-item-btn">
-                                    <DeleteIcon /> Delete
+                                    <HideIcon /> Hide
                                   </button>
-                                )}
-                              </div>
-                            </Menu>
+                                  <button className="common-menu-item-btn">
+                                    <EditIcon /> Edit
+                                  </button>
+                                  {selectedFieldItem?.custom && (
+                                    <button className="common-menu-item-btn">
+                                      <DeleteIcon /> Delete
+                                    </button>
+                                  )}
+                                </div>
+                              </Menu>
+                            </div>
+                          )}
+                        </Droppable>
+                      </DragDropContext>
+                    ) : (
+                      <p className="font-14-regular color-grey">
+                        No fields exists within category
+                      </p>
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {selectedCandidateTab === "Labels" && (
+        <div className="candidate-customization-container">
+          <p className="font-16-medium color-dark-black">
+            {selectedCandidateTab}
+          </p>
+          <div className="display-column" style={{ gap: 10 }}>
+            <p className="font-14-regular color-grey">
+              Create and manage candidate labels to organize and classify
+              profiles for easy filtering and categorization.
+            </p>
+            <ul className="font-14-regular color-grey customize-summary-field-ul">
+              <li>
+                Changes made here will be reflected across all users in your
+                account.
+              </li>
+            </ul>
+          </div>
+          <div className="label-main-container">
+            <div style={{ alignSelf: "flex-start" }}>
+              <CommonAddButton
+                title={"Add Label"}
+                disable={editingIndex !== null}
+                onClick={addLabel}
+              />
+            </div>
+            {labels?.length > 0 ? (
+              <div>
+                {labels.map((label, index) => (
+                  <div key={index} className="mb-4">
+                    <div
+                      className={`customize-label-item ${
+                        editingIndex === index && "selected-category-item"
+                      }`}
+                    >
+                      <div className="flex items-center gap-2 flex-1">
+                        <LableIcon
+                          fill={
+                            editingIndex === index
+                              ? tempLabel?.color
+                              : label.color
+                          }
+                        />
+                        {editingIndex === index ? (
+                          <input
+                            type="text"
+                            value={tempLabel.name}
+                            onChange={(e) =>
+                              setTempLabel({
+                                ...tempLabel,
+                                name: e.target.value,
+                              })
+                            }
+                            className={`customize-category-input ${
+                              editingIndex === index &&
+                              "selected-customize-category-input"
+                            }`}
+                            autoFocus
+                            onFocus={(e) =>
+                              setTimeout(() => {
+                                e.target.select();
+                                e.target.focus();
+                              }, 0)
+                            }
+                          />
+                        ) : (
+                          <span className="font-14-regular color-grey">
+                            {label.name}
+                          </span>
+                        )}
+                      </div>
+                      <div className="flex items-center" style={{ gap: 8 }}>
+                        {editingIndex === index ? (
+                          <>
+                            <CancelIcon
+                              className="cursor-pointer"
+                              onClick={cancelEdit}
+                            />
+                            <RightIcon
+                              className=" cursor-pointer"
+                              onClick={saveLabel}
+                            />
+                          </>
+                        ) : (
+                          <>
+                            <EditIcon
+                              className="cursor-pointer"
+                              onClick={() => editLabel(index)}
+                            />
+                            <DeleteIcon
+                              className="cursor-pointer"
+                              onClick={() => {
+                                setDeleteLabelIndex(index);
+                                setModalVisibility(
+                                  "labelDeleteModalVisible",
+                                  true
+                                );
+                              }}
+                            />
+                          </>
+                        )}
+                      </div>
+                    </div>
+
+                    {editingIndex === index && (
+                      <div className="select-label-color-div">
+                        <p className="font-14-regular color-grey">
+                          Select Label Color
+                        </p>
+                        <div className="default-color-div">
+                          {defaultColorList?.map((item, idx) => (
+                            <button
+                              className={`default-color-btn ${
+                                item === tempLabel.color
+                                  ? "selected-color-btn"
+                                  : ""
+                              }`}
+                              key={idx}
+                              onClick={() =>
+                                setTempLabel({ ...tempLabel, color: item })
+                              }
+                            >
+                              <LableIcon width={36} height={36} fill={item} />
+                            </button>
+                          ))}
+                          <button onClick={() => setColorPickerVisible(true)}>
+                            <AddCircleIcon />
+                          </button>
+                        </div>
+                        {colorPickerVisible && (
+                          <div style={{ alignSelf: "center" }}>
+                            <HexColorPicker
+                              color={tempLabel.color}
+                              onChange={(color) =>
+                                setTempLabel({ ...tempLabel, color })
+                              }
+                            />
                           </div>
                         )}
-                      </Droppable>
-                    </DragDropContext>
-                  ) : (
-                    <p className="font-14-regular color-grey">
-                      No fields exists within category
-                    </p>
-                  )}
-                </div>
+                      </div>
+                    )}
+                  </div>
+                ))}
               </div>
+            ) : (
+              <p className="font-14-regular color-grey">
+                No labels added yet. Start by creating labels to categorize and
+                organize your candidates.
+              </p>
             )}
           </div>
         </div>
-      </div>
+      )}
+
       <CommonDeleteModal
         visible={modals?.categoryDeleteModalVisible}
         title={"Delete Category"}
@@ -608,6 +847,19 @@ const CandidateCustomization = () => {
           setSelectedItem(null);
         }}
         onClickDelete={deleteCategory}
+      />
+
+      <CommonDeleteModal
+        visible={modals?.labelDeleteModalVisible}
+        title={"Delete Label"}
+        description={
+          "Are you sure you want to delete this label? Any used instances will be also removed."
+        }
+        onClose={() => {
+          setModalVisibility("labelDeleteModalVisible", false);
+          setDeleteLabelIndex(null);
+        }}
+        onClickDelete={() => deleteLabel(deleteLabelIndex)}
       />
       <AddFieldDrawer
         visible={addFieldDrawerOpen}

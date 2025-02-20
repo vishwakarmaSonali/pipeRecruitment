@@ -38,13 +38,20 @@ const CommonDeleteModal = ({
         }`}
       >
         <div className="display-column" style={{ gap: 24 }}>
-          <div className="display-flex-justify align-center">
-            <p className="font-16-medium color-dark-black">{title}</p>
-            <button onClick={onClose}>
+          <div
+            className="display-column"
+            style={{ gap: 8, alignItems: "center" }}
+          >
+            <div className="display-flex-justify align-center">
+              <p className="font-16-medium color-dark-black ">{title}</p>
+              {/* <button onClick={onClose}>
               <CloseIcon />
-            </button>
+            </button> */}
+            </div>
+            <p className="font-12-regular color-dark-black text-center">
+              {description}
+            </p>
           </div>
-          <p className="font-12-regular color-dark-black">{description}</p>
           <div className="display-flex justify-center" style={{ gap: 8 }}>
             <CancelButton onClick={onClose} disabled={isLoading} />
             <DeleteButton onClick={onClickDelete} />

@@ -15,6 +15,7 @@ export const ModalProvider = ({ children }) => {
     createFolderModalVisible: false,
     candidateInfoModalVisible: false,
     categoryDeleteModalVisible: false,
+    labelDeleteModalVisible: false,
   });
 
   const isAnyModalOpen = useMemo(

@@ -1,4 +1,5 @@
 import React from "react";
+import CommonLoader from "./CommonLoader";
 
 const DeleteButton = ({ onClick, disabled, btnStyle, isLoading }) => {
   return (
@@ -8,7 +9,7 @@ const DeleteButton = ({ onClick, disabled, btnStyle, isLoading }) => {
       style={btnStyle}
       onClick={onClick}
     >
-      Delete
+      {isLoading ? <CommonLoader /> : "Delete"}
     </button>
   );
 };
