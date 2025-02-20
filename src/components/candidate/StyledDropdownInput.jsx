@@ -7,7 +7,7 @@ const DropdownWithInput = () => {
 
   return (
     <div className="relative w-[100%]">
-      <div className="flex items-center border border-gray-300 rounded-lg px-2  box-border bg-white font-ubuntu text-sm text-customBlue">
+      <div className="flex items-center border h-[38px] border-gray-300 rounded-lg px-2  box-border bg-white font-ubuntu text-sm text-customBlue">
         {/* Dropdown Section */}
         <div 
           className="relative cursor-pointer flex items-center"

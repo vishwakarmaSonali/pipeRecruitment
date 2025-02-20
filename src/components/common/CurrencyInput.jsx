@@ -21,9 +21,9 @@ const CurrencySelector = ({ label, selectedCurrency, setSelectedCurrency, salary
   return (
     <div className="relative ">
       {/* Input Field with Currency Selector */}
-      <div className="flex items-center border border-gray-300 px-2 rounded-md cursor-pointer bg-white">
+      <div className="flex items-center border border-gray-300 px-2 rounded-md cursor-pointer bg-white py-3 border-none h-[38px]">
         <div className="flex items-center cursor-pointer" onClick={() => setShowDropdown(!showDropdown)}>
-          <span className="mx-1 text-m text-customBlue font-ubuntu">{selectedCurrency.symbol}</span>
+          <span className="mx-1 text-sm text-customBlue font-ubuntu">{selectedCurrency.symbol}</span>
           <DropArrow
           width={14}
           height={14}
@@ -33,7 +33,7 @@ const CurrencySelector = ({ label, selectedCurrency, setSelectedCurrency, salary
         </div>
         <input
           type="text"
-          className=" flex-1 outline-none border-none text-m text-customBlue font-ubuntu"
+          className=" flex-1 outline-none border-none text-sm text-customBlue font-ubuntu ml-1"
           placeholder={label}
           value={salary}
           onChange={(e) => setSalary(e.target.value)}

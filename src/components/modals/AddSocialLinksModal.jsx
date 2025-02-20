@@ -180,7 +180,7 @@ const AddSocialLinksModal = ({ visible, onClose, onAddLanguages }) => {
         </div>
 
         <div className="display-flex" style={{ gap: 8, justifyContent: "center", marginTop: "24px" }}>
-          <CancelButton />
+          <CancelButton onClick={() => setModalVisibility("addSocialLinksModalVisible", false)}/>
           <CommonButton title={"Add"} onClick={handleAddClick} />
         </div>
       </div>

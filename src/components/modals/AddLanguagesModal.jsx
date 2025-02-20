@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import Modal from "react-bootstrap/Modal";
 import { useModal } from "../common/ModalProvider";
+import "./modal.css";
 import { ReactComponent as CloseIcon } from "../../assets/icons/closeModal.svg";
 import { ReactComponent as LabelClose } from "../../assets/icons/labelClose.svg";
 import { ReactComponent as TickCircle } from "../../assets/icons/tick-circle.svg";
@@ -187,9 +188,10 @@ const AddLanguages = ({ visible, onClose,onAddLanguages }) => {
   const handleAddClick = () => {
     onAddLanguages(selectedMultiLanguages); // Send selected languages to parent
     setSelectedMultiLanguages([]); // Clear selection after adding
+    setModalVisibility("addLanguageModalVisible", false);
   };
   const handleBackdropClick = () => {
-    setModalVisibility("AddLanguageModalVisible", false);
+    setModalVisibility("addLanguageModalVisible", false);
    
   };
 
@@ -218,7 +220,7 @@ const AddLanguages = ({ visible, onClose,onAddLanguages }) => {
     
         </div>
         <div className="display-flex" style={{ gap: 8 ,justifyContent:'center',marginTop:"24px"}}>
-            <CancelButton  />
+            <CancelButton onClick={()=>setModalVisibility("addLanguageModalVisible", false)} />
             <CommonButton title={"Add"} onClick={handleAddClick}  />
           </div>
       </div>

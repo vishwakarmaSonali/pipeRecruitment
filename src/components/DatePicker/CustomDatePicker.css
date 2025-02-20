@@ -1,5 +1,5 @@
 .calendar {
-    width: 390px;
+    width: 100%;
     background-color: white;
     padding: 16px;
     box-shadow: 0px 4px 12px 0px #0000001A;
@@ -36,8 +36,10 @@
     display: flex;
     height: 38px;
     gap: 15px;
+    justify-content: space-between;
     align-items: center;
     @apply font-ubuntu;
+
   }
   
   .day,
