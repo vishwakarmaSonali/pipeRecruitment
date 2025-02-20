@@ -27,7 +27,7 @@ const CandidateLog = () => {
               <p className="font-14-medium color-dark-black flex-1">
                 Created date:
               </p>
-              <p className="font-14-regular color-dark-black flex-1">
+              <p className="font-14-regular color-dark-black flex-2">
                 December 28, 2024 • 1:56 PM
               </p>
             </div>
@@ -35,7 +35,7 @@ const CandidateLog = () => {
               <p className="font-14-medium color-dark-black flex-1">
                 Last updated:
               </p>
-              <p className="font-14-regular color-dark-black flex-1">
+              <p className="font-14-regular color-dark-black flex-2">
                 December 28, 2024 • 1:56 PM
               </p>
             </div>
@@ -44,7 +44,7 @@ const CandidateLog = () => {
                 Created by:
               </p>
               <div
-                className="display-flex flex-1 align-center"
+                className="display-flex flex-2 align-center"
                 style={{ gap: 6 }}
               >
                 <div className="w-h-26">
@@ -57,7 +57,7 @@ const CandidateLog = () => {
             </div>
             <div className="detail-row">
               <p className="font-14-medium color-dark-black flex-1">Source:</p>
-              <p className="font-14-regular color-dark-black flex-1">
+              <p className="font-14-regular color-dark-black flex-2">
                 Scrapped from Sourcing
               </p>
             </div>

@@ -147,7 +147,7 @@ const CandidateInfoExperience = ({ label, data }) => {
           <div className="divider-line" />
           <div className="display-column" style={{ gap: 16 }}>
             {data?.map((item) => {
-              if (label === "Experience") {
+              if (label === "Experience Details") {
                 return renderExperience(item);
               } else {
                 return renderEducation(item);
