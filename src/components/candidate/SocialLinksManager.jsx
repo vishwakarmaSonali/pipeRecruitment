@@ -20,20 +20,20 @@ const SocialLinksManager = () => {
   return (
     <div className="">
       {/* Selected Social Links List */}
-      <div className="flex flex-col gap-2 mb-2">
+      <div className="flex flex-row gap-2 mb-2">
         {selectedSocialLinks.map((link, index) => (
           <div
             key={index}
-            className="flex items-center justify-between border border-customBlue p-2 rounded-md"
+            className="flex items-center justify-between border border-customBlue p-2 rounded-md space-x-1"
           >
             {/* ✅ Show Icon & Name */}
-            <div className="flex items-center gap-2">
+            <div className="flex items-center ">
               <img src={link.icon}  className="w-5 h-5" />
-              <span className="text-customBlue">{link.name}</span>
+              
             </div>
 
             {/* ✅ Show Entered URL */}
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1">
               <a
                 href={link.url}
                 target="_blank"
@@ -58,7 +58,7 @@ const SocialLinksManager = () => {
         onClick={() => setModalVisibility("addSocialLinksModalVisible", true)}
         className="text-buttonBLue font-ubuntu text-sm"
       >
-        + Add Social Link
+        + Add
       </button>
 
       {/* Social Link Selection Modal */}

@@ -56,7 +56,7 @@ const CustomDropdown = ({ options, placeholder, selectedValues, onChange, option
 
   return (
     <div className="relative w-full" ref={dropdownRef}>
-      <div className="w-full pr-2 border min-h-[38px] flex justify-between items-center bg-white border-customGrey1 rounded-[8px] text-m text-customBlue placeholder:text-borderGrey">
+      <div className="w-full px-2 border min-h-[38px] flex justify-between items-center bg-white border-customGrey1 rounded-[8px] text-sm text-customBlue placeholder:text-borderGrey">
         <input
           type="text"
           className="flex-1 outline-none border-none bg-transparent"

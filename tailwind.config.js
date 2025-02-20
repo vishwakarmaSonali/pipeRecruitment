@@ -55,7 +55,8 @@ module.exports = {
       buttonBLue:"#1761D8",
       buttonBlueOpacity:"#1761D80F",
       red:"#E03636",
-      green:'#46A13C'
+      green:'#46A13C',
+      disableGrey:'#D7D7D7'
     },
   },
   screens: {

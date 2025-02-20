@@ -28,6 +28,8 @@ import CurrencySelector from "../common/CurrencyInput";
 import AddToJobsDropdown from "../AutocompleteDropdowns/AddToJobsDropdown";
 import LanguageListManager from "./LanguageListManager";
 import SocialLinksManager from "./SocialLinksManager";
+import EducationDetailsManager from "./EducationDetailsManager";
+import ExperienceDetailsManager from "./ExperienceDetailsManager";
 const genderOptions = [
   { id: 1, label: "Female" },
   { id: 2, label: "Male" },
@@ -42,9 +44,12 @@ const nationalityOptions = [
 ];
 const frequencyOptions = [
   { id: 1, frequency: "Hourly" },
-  { id: 2, frequency: "Weekly" },
-  { id: 3, frequency: "Monthly" },
-  { id: 4, frequency: "Anually" },
+  { id: 2, frequency: "Daily" },
+  { id: 3, frequency: "Weekly" },
+  { id: 4, frequency: "Bi-weekly" },
+  { id: 5, frequency: "Semi-Monthly" },
+  { id: 6, frequency: "Quaterly" },
+  { id: 7, frequency: "Anually" },
 ];
 const CreateCandidateForm = () => {
   const today = new Date();
@@ -177,11 +182,11 @@ const CreateCandidateForm = () => {
                       optionKey="label"
                     />
                   </div>
-                  <div className="flex-1">
-                    <div className="flex items-center border-1 rounded-[8px]">
+                  <div className="flex-1 relative">
+                    <div className="flex items-center border-1 rounded-[8px] h-[38px] px-2">
                       <input
                         placeholder="Date of Birth"
-                        className=" outline-none border-none padding-0 margin-0"
+                        className=" outline-none border-none padding-0 margin-0 text-sm font-ubuntu"
                         value={
                           lastUpdatedDate
                             ? format(lastUpdatedDate, "yyyy-MM-dd")
@@ -190,13 +195,13 @@ const CreateCandidateForm = () => {
                         onFocus={() => setShowUpdatedCalendar(true)}
                         readOnly
                       />
-                      <div className="mr-3">
+                      <div className="mr-2">
                         <Calendar2 />
                       </div>
                     </div>
 
                     {showUpdatedCalendar && (
-                      <div className="absolute z-10 flex-1 w-full bg-white mt-1">
+                      <div className="absolute w-[100%] z-10 bg-white mt-1">
                         <CustomCalendar
                           onDateSelect={handleLastUpdatedDateSelect}
                         />
@@ -282,7 +287,6 @@ const CreateCandidateForm = () => {
           <div className="flex justify-between mt-[26px]">
             <div className=" flex flex-1 max-w-[350px]">
               <span className="items-start font-ubuntu text-xl font-medium">
-                Candidate description
               </span>
             </div>
             <div className="flex flex-1  flex-col items-center">
@@ -412,7 +416,7 @@ const CreateCandidateForm = () => {
               </span>
             </div>
             <div className="flex flex-1 ">
-              <TagManager />
+              <ExperienceDetailsManager />
             </div>
           </div>
           {/* Experience details block ends */}
@@ -424,7 +428,7 @@ const CreateCandidateForm = () => {
               </span>
             </div>
             <div className="flex flex-1 ">
-              <TagManager />
+              <EducationDetailsManager />
             </div>
           </div>
           {/* Education details block ends */}
