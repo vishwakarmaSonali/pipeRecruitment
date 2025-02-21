@@ -2,8 +2,7 @@ import React, { useState } from "react";
 import { useModal } from "../common/ModalProvider";
 import AddLanguages from "../modals/AddLanguagesModal";
 
-const LanguageListManager = () => {
-  const [selectedLanguages, setSelectedLanguages] = useState([]); // ✅ Store selected languages
+const LanguageListManager = ({ selectedLanguages, setSelectedLanguages }) => {
   const { modals, setModalVisibility } = useModal();
 
   // ✅ Function to add selected languages when "Add" is clicked in the modal

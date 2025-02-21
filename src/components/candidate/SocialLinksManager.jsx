@@ -2,8 +2,7 @@ import React, { useState } from "react";
 import { useModal } from "../common/ModalProvider";
 import AddSocialLinksModal from "../modals/AddSocialLinksModal";
 
-const SocialLinksManager = () => {
-  const [selectedSocialLinks, setSelectedSocialLinks] = useState([]); // ✅ Store added links
+const SocialLinksManager = ({selectedSocialLinks,setSelectedSocialLinks}) => {
   const { modals, setModalVisibility } = useModal();
 
   // ✅ Function to handle adding new social links
@@ -38,7 +37,7 @@ const SocialLinksManager = () => {
                 href={link.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-blue-600 underline"
+                className="ml-2 font-ubuntu text-m text-customBlue"
               >
                 {link.url}
               </a>

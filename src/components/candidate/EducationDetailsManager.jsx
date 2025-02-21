@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import { useModal } from "../common/ModalProvider";
 import AddEducationDetailsModal from "../modals/AddEducationDetailsModal";
 
-const EducationDetailsManager = () => {
-  const [educationDetails, setEducationDetails] = useState([]); // ✅ Store education entries
+const EducationDetailsManager = ({educationDetails, setEducationDetails}) => {
+  
   const { modals, setModalVisibility } = useModal();
 
   // ✅ Function to handle adding education details
@@ -35,8 +35,8 @@ const EducationDetailsManager = () => {
                 {edu.university}
               </p>
               <p className="font-ubuntu text-m text-customGray">
-                {edu.startDate} -{" "}
-                {edu.endDate === "Currently Working" ? "Present" : edu.endDate}
+                {edu.startDate?.month} {edu.startDate?.year} -{"  "}
+                {edu.endDate?.month} {edu.endDate?.year}
               </p>
             </div>
 

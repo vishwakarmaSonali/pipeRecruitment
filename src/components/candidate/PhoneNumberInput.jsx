@@ -8,10 +8,10 @@ const countryList = [
   { code: "CA", name: "Canada", dialCode: "+1", flag: "🇨🇦" },
 ];
 
-const PhoneNumberInput = () => {
-  const [selectedCountry, setSelectedCountry] = useState(countryList[0]); // Default: USA
+const PhoneNumberInput = ({ selectedCountry, setSelectedCountry, phoneNumber, setPhoneNumber }) => {
+  // const [selectedCountry, setSelectedCountry] = useState(countryList[0]); // Default: USA
   const [showDropdown, setShowDropdown] = useState(false);
-  const [phoneNumber, setPhoneNumber] = useState("");
+  // const [phoneNumber, setPhoneNumber] = useState("");
 
   const dropdownRef = useRef(null);
 

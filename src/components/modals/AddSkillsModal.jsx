@@ -6,28 +6,27 @@ import { ReactComponent as CloseIcon } from "../../assets/icons/closeModal.svg";
 import CommonButton from "../common/CommonButton";
 import CommonTextInput from "../common/CommonTextInput";
 
-const AddSkillModal = ({ visible, onClose }) => {
+const AddSkillModal = ({ visible, onClose,setTags, tags }) => {
   const { modals, setModalVisibility } = useModal();
-      const [tags, setTags] = useState([
-          { name: "UI Design", score: "08" },
-          { name: "UX Design", score: "09" },
-          { name: "Figma", score: "09" },
-          { name: "Sketch", score: "05" },
-        ]);
+    
  const [newSkill, setNewSkill] = useState("");
       const [newScore, setNewScore] = useState("");
             const [showModal, setShowModal] = useState(false);
       
+
+  // Handle backdrop click
   const handleBackdropClick = () => {
-    setModalVisibility("AddSkillModalVisible", false)
-    
+    setModalVisibility("AddSkillModalVisible", false);
+    onClose();
   };
+
+  // Handle Add Skill
   const handleAddTag = () => {
     if (newSkill.trim() !== "" && newScore.trim() !== "") {
-      setTags([...tags, { name: newSkill, score: newScore }]);
+      setTags([...tags, { name: newSkill, score: newScore }]); // ✅ Update tags list in TagManager
       setNewSkill(""); // Reset input fields
       setNewScore("");
-      handleBackdropClick(false); // Close modal
+      handleBackdropClick(); // Close modal
     }
   };
 

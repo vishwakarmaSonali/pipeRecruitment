@@ -70,7 +70,7 @@ const CustomDropdown = ({ options, placeholder, selectedValues, onChange, option
           width={14}
           height={14}
           fill="customBlue"
-          className={`w-5 h-5 transition-transform ${isOpen ? "rotate-180" : "rotate-0"}`}
+          className={` transition-transform ${isOpen ? "rotate-180" : "rotate-0"}`}
         />
       </div>
 

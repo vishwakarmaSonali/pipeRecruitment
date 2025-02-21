@@ -42,6 +42,7 @@ const AddExperienceDetailsModal = ({
         ? `${endDate.month} ${endDate.year}`
         : "",
     };
+    console.log("experienceDataexperienceData", experienceData);
 
     onAddExperience(experienceData);
 

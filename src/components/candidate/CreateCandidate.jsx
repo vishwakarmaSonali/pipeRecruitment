@@ -60,9 +60,7 @@ const CreateCandidateForm = () => {
   const [selectedTitle, setSelectedTitle] = useState("None");
   const [firstName, setFirstName] = useState(""); // New state for First Name
   const [lastName, setLastName] = useState(""); // New state for First Name
-  const [dateofbirth, setDateofbirth] = useState(
-    format(today, "yyyy-MM-dd")
-  );
+  const [dateofbirth, setDateofbirth] = useState(format(today, "yyyy-MM-dd"));
   const [lastContactedDate, setLastContactedDate] = useState(
     format(today, "yyyy-MM-dd")
   );
@@ -71,12 +69,18 @@ const CreateCandidateForm = () => {
     format(today, "yyyy-MM-dd")
   );
   const [selectedLocations, setSelectedLocations] = useState([]); // Ensure it's an array
+  const [selectedCountry, setSelectedCountry] = useState({
+    code: "US",
+    name: "United States",
+    dialCode: "+1",
+    flag: "🇺🇸",
+  });
 
   const [showContactedCalendar, setShowContactedCalendar] = useState(false);
   const [showUpdatedCalendar, setShowUpdatedCalendar] = useState(false);
   const [selectedDate, setSelectedDate] = useState(today);
   const [showCalendar, setShowCalendar] = useState(false);
-    const [selectedGender, setSelectedGender] = useState([]);
+  const [selectedGender, setSelectedGender] = useState([]);
   const [nationality, setNationality] = useState([]);
   const [frequency, setFrequency] = useState(null);
   const [currentSalaryCurrency, setCurrentSalaryCurrency] = useState({
@@ -102,13 +106,17 @@ const CreateCandidateForm = () => {
   const [selectedFolder, setSelectedFolder] = useState([]);
   const [skills, setSkills] = useState([]);
   const [languages, setLanguages] = useState([]);
+  const [eduDetails, setEduDetails] = useState([]);
   const [socialLinks, setSocialLinks] = useState([]);
   const [experience, setExperience] = useState([]);
   const [education, setEducation] = useState([]);
   const [phoneNumber, setPhoneNumber] = useState("");
   const [email, setEmail] = useState("");
   const [selectedNationality, setSelectedNationality] = useState([]);
-
+  const [selectedJobs, setSelectedJobs] = useState([]); // Store selected jobs
+  const [yearsOfExp, setYearsOfExp] = useState("");
+  const [highestQualification, setHighestQualification] = useState("");
+  const [currentEmployer, setCurrentEmployer] = useState("");
   const handleNationalityChange = (selectedItem) => {
     setNationality(selectedItem);
   };
@@ -142,22 +150,29 @@ const CreateCandidateForm = () => {
       firstName, // ✅ Log first name
       lastName,
       selectedGender,
-      dateofbirth
+      dateofbirth,
       // lastUpdatedDate,
-      // selectedLocations,
-      // selectedNationality,
-      // frequency,
-      // currentSalaryCurrency,
-      // expectedSalaryCurrency,
-      // currentSalary,
-      // expectedSalary,
+      selectedLocations,
+      selectedNationality,
+      selectedJobs,
+      nationality,
+      phoneNumber: `${selectedCountry.dialCode} ${phoneNumber}`,
+      country: selectedCountry.name,
+      frequency,
+      currentSalaryCurrency,
+      expectedSalaryCurrency,
+      yearsOfExp,
+      highestQualification,
+      currentEmployer,
+      currentSalary,
+      expectedSalary,
       // selectedJob,
       // selectedFolder,
-      // skills,
-      // languages,
-      // socialLinks,
-      // experience,
-      // education,
+      skills,
+      languages,
+      socialLinks,
+      experience,
+      education,
       // phoneNumber,
       // email,
       // description,
@@ -308,7 +323,6 @@ const CreateCandidateForm = () => {
                   optionKey="nationality"
                 /> */}
                     <NationalitySearchDropdown
-                      s
                       selectedNationalities={selectedNationality}
                       setSelectedNationalities={setSelectedNationality}
                       placeholder={"Nationality"}
@@ -332,7 +346,11 @@ const CreateCandidateForm = () => {
                       placeholder="Add to Jobs"
                       className="filter-input flex-1 border rounded-[8px]"
                     /> */}
-                    <AddToJobsDropdown placeholder={"Add to jobs"} />
+                    <AddToJobsDropdown
+                      placeholder={"Add to jobs"}
+                      selectedJobs={selectedJobs}
+                      setSelectedJobs={setSelectedJobs}
+                    />
                   </div>
                 </div>
               </div>
@@ -351,8 +369,10 @@ const CreateCandidateForm = () => {
                 <div className="display-flex gap-[10px] mt-[10px]">
                   <div className="flex-1">
                     <PhoneNumberInput
-                      value={phoneNumber}
-                      onChange={setPhoneNumber}
+                      selectedCountry={selectedCountry}
+                      setSelectedCountry={setSelectedCountry}
+                      phoneNumber={phoneNumber}
+                      setPhoneNumber={setPhoneNumber}
                     />
                   </div>
                   <div className="flex-1 border-1 rounded-[8px]">
@@ -392,7 +412,7 @@ const CreateCandidateForm = () => {
               </span>
             </div>
             <div className="flex flex-1 ">
-              <TagManager selectedTags={skills} setSelectedTags={setSkills} />
+              <TagManager tags={skills} setTags={setSkills} />
             </div>
           </div>
           {/* Skills block ends */}
@@ -411,6 +431,8 @@ const CreateCandidateForm = () => {
                       placeholder="Years of Experience"
                       className="filter-input"
                       type="number"
+                      value={yearsOfExp}
+                      onChange={(e) => setYearsOfExp(e.target.value)}
                     />
                   </div>
                   <div className="flex-1 border-1 rounded-[8px]">
@@ -418,6 +440,8 @@ const CreateCandidateForm = () => {
                       placeholder="Highest Qualification"
                       className="filter-input"
                       type="text"
+                      value={highestQualification}
+                      onChange={(e) => setHighestQualification(e.target.value)}
                     />
                   </div>
                 </div>
@@ -434,6 +458,8 @@ const CreateCandidateForm = () => {
                       placeholder="Current Employer"
                       className="filter-input"
                       type="text"
+                      value={currentEmployer}
+                      onChange={(e) => setCurrentEmployer(e.target.value)}
                     />
                   </div>
                 </div>
@@ -481,7 +507,7 @@ const CreateCandidateForm = () => {
             <div className="flex flex-1 ">
               <LanguageListManager
                 selectedLanguages={languages}
-                setLanguages={setLanguages}
+                setSelectedLanguages={setLanguages}
               />
             </div>
           </div>
@@ -495,8 +521,8 @@ const CreateCandidateForm = () => {
             </div>
             <div className="flex flex-1 ">
               <SocialLinksManager
-                socialLinks={socialLinks}
-                setSocialLinks={setSocialLinks}
+                selectedSocialLinks={socialLinks}
+                setSelectedSocialLinks={setSocialLinks}
               />
             </div>
           </div>
@@ -509,7 +535,7 @@ const CreateCandidateForm = () => {
               </span>
             </div>
             <div className="flex flex-1 ">
-              <ExperienceDetailsManager />
+              <ExperienceDetailsManager setExperienceDetails={setExperience} experienceDetails={experience}/>
             </div>
           </div>
           {/* Experience details block ends */}
@@ -521,7 +547,7 @@ const CreateCandidateForm = () => {
               </span>
             </div>
             <div className="flex flex-1 ">
-              <EducationDetailsManager />
+              <EducationDetailsManager educationDetails={education} setEducationDetails={setEducation} />
             </div>
           </div>
           {/* Education details block ends */}
@@ -532,3 +558,4 @@ const CreateCandidateForm = () => {
 };
 
 export default CreateCandidateForm;
+ 

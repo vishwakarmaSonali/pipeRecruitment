@@ -2,8 +2,7 @@ import React, { useState } from "react";
 import { useModal } from "../common/ModalProvider";
 import AddExperienceDetailsModal from "../modals/AddExperienceDetailsModal";
 
-const ExperienceDetailsManager = () => {
-  const [experienceDetails, setExperienceDetails] = useState([]); // ✅ Store experience entries
+const ExperienceDetailsManager = ({experienceDetails,setExperienceDetails}) => {
   const { modals, setModalVisibility } = useModal();
 
   // ✅ Function to handle adding experience details

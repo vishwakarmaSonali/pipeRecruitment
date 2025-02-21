@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import "../../components/filterModal/FilterModal.css";
 
@@ -11,18 +11,26 @@ const NationalitySearchDropdown = ({
   const [nationalityQuery, setNationalityQuery] = useState("");
   const [nationalitySuggestions, setNationalitySuggestions] = useState([]);
   const [showNationalityDropdown, setShowNationalityDropdown] = useState(false);
-console.log("selectedNationalitiesselectedNationalitiesselectedNationalities",selectedNationalities);
+  const debounceTimeout = useRef(null);
+  const disableFetch = useRef(false); // Prevent API call on selection
 
-  // Fetch location suggestions from API
+  // Fetch nationality suggestions from API (debounced)
   useEffect(() => {
+    if (disableFetch.current) {
+      disableFetch.current = false;
+      return;
+    }
+
     if (nationalityQuery.length > 1) {
-      const fetchLocations = async () => {
+      clearTimeout(debounceTimeout.current);
+      
+      debounceTimeout.current = setTimeout(async () => {
         try {
           const response = await axios.get(
             `http://3.110.81.44/api/candidate-profiles/suggest/location?query=${nationalityQuery}`
           );
-          console.log("Location API Response:", response?.data?.suggestions);
-          
+          console.log("Nationality API Response:", response?.data?.suggestions);
+
           const suggestions = Array.isArray(response?.data?.suggestions)
             ? response.data.suggestions
             : [];
@@ -30,82 +38,83 @@ console.log("selectedNationalitiesselectedNationalitiesselectedNationalities",se
           setNationalitySuggestions(suggestions);
           setShowNationalityDropdown(true);
         } catch (error) {
-          console.error("Error fetching locations:", error);
+          console.error("Error fetching nationalities:", error);
           setNationalitySuggestions([]);
         }
-      };
-
-      fetchLocations();
+      }, 500);
     } else {
       setNationalitySuggestions([]);
       setShowNationalityDropdown(false);
     }
+
+    return () => clearTimeout(debounceTimeout.current);
   }, [nationalityQuery]);
 
-  // Handle location selection
-  const handleSelectLocation = (location) => {
-    if (!Array.isArray(selectedNationalities)) {
-      setSelectedNationalities([]); 
-    }
+  // Handle nationality selection
+  const handleSelectNationality = (nationality) => {
+    disableFetch.current = true; // Prevent API call after selection
 
     if (multipleSelect) {
-      // Multiple selection enabled: add to the list
-      if (!selectedNationalities.includes(location)) {
-        setSelectedNationalities([...selectedNationalities, location]);
+      if (!selectedNationalities.includes(nationality)) {
+        setSelectedNationalities([...selectedNationalities, nationality]);
       }
     } else {
-      // Single selection: replace existing value
-      setSelectedNationalities([location]);
-      setNationalityQuery(location);
+      setSelectedNationalities([nationality]);
+      setNationalityQuery(nationality); // Ensure input updates
     }
 
     setShowNationalityDropdown(false);
   };
 
-  // Remove selected location (only for multiple selection)
-  const removeNationality = (index) => {
-    setSelectedNationalities(selectedNationalities.filter((_, i) => i !== index));
+  // Handle clearing input
+  const clearNationality = () => {
+    setSelectedNationalities([]);
+    setNationalityQuery("");
+    setShowNationalityDropdown(false);
   };
 
   return (
     <div className="relative w-full min-h-[38px]">
-      <div className="border border-customGrey1 rounded-[8px] ">
-        {/* Conditionally show either input or selected value */}
+      <div className="border border-customGrey1 rounded-[8px] flex items-center">
         <input
           type="text"
           placeholder={placeholder}
           className="filter-input w-full"
-          value={multipleSelect ? nationalityQuery : selectedNationalities[0] || nationalityQuery}
+          value={multipleSelect ? nationalityQuery : nationalityQuery || selectedNationalities[0] || ""}
           onChange={(e) => setNationalityQuery(e.target.value)}
           onFocus={() => setShowNationalityDropdown(true)}
-          readOnly={!multipleSelect} // Prevent typing if single select
         />
+        {!multipleSelect && selectedNationalities.length > 0 && (
+          <button className="ml-2 text-customBlue" onClick={clearNationality}>
+            ✕
+          </button>
+        )}
       </div>
 
-      {/* Location Suggestions Dropdown */}
+      {/* Nationality Suggestions Dropdown */}
       {showNationalityDropdown && nationalitySuggestions.length > 0 && (
-        <div className="absolute left-0  disply-flex flex-1 w-full mt-1 flex-col bg-white border border-borderGrey rounded-[8px] min-h-40 max-h-[460px] overflow-auto z-50 text-sm">
-          {nationalitySuggestions.map((location, index) => (
+        <div className="absolute left-0 w-full mt-1 flex flex-col bg-white border border-borderGrey rounded-[8px] max-h-[460px] overflow-auto z-50 text-sm">
+          {nationalitySuggestions.map((nationality, index) => (
             <div
               key={index}
-              className="px-2 py-2 flex gap-2 hover:bg-customGrey1 cursor-pointer"
-              onClick={() => handleSelectLocation(location)}
+              className="px-2 py-2 hover:bg-customGrey1 cursor-pointer"
+              onClick={() => handleSelectNationality(nationality)}
             >
-              {location}
+              {nationality}
             </div>
           ))}
         </div>
       )}
 
-      {/* Selected Locations List (Only for Multiple Select) */}
-      {multipleSelect && Array.isArray(selectedNationalities) && selectedNationalities.length > 0 && (
+      {/* Selected Nationalities List (Only for Multiple Selection) */}
+      {multipleSelect && selectedNationalities.length > 0 && (
         <div className="inputItemsDiv mt-2 flex flex-wrap">
-          {selectedNationalities.map((location, index) => (
+          {selectedNationalities.map((nationality, index) => (
             <div key={index} className="inputed-item flex items-center px-2 py-1 border rounded-md">
-              {location}
+              {nationality}
               <button
                 className="ml-2 text-red-500 hover:text-red-700"
-                onClick={() => removeNationality(index)}
+                onClick={() => setSelectedNationalities(selectedNationalities.filter((_, i) => i !== index))}
               >
                 ✕
               </button>

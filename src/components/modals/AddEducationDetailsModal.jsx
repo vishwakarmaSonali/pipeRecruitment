@@ -22,11 +22,13 @@ const AddEducationDetailsModal = ({
   const [edit, setEdit] = useState(false);
 
   const handleAddClick = () => {
-    if (!degree || !major || !university) return; // Prevent empty fields
+    if (!degree || !major || !university|| !startDate || !endDate) return; // Prevent empty fields
     onAddEducation({ degree, major, university, startDate, endDate }); // Send data to parent
     setDegree(""); // Clear input fields
     setMajor("");
     setUniversity("");
+    setStartDate({ month: "", year: "" })
+    setEndDate({ month: "", year: "" })
     onClose();
   };
 

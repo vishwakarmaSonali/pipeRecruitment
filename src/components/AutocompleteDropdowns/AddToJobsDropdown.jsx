@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { ReactComponent as CloseIcon } from "../../assets/icons/closeModal.svg";
 import { ReactComponent as LabelClose } from "../../assets/icons/labelClose.svg";
 import { ReactComponent as TickCircle } from "../../assets/icons/tick-circle.svg";
@@ -45,53 +45,55 @@ const companies = [
     initials: "NORD",
   },
 ];
-const AddToJobsDropdown = ({ placeholder }) => {
+
+const AddToJobsDropdown = ({ placeholder, selectedJobs, setSelectedJobs }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [searchValue, setSearchValue] = useState("");
   const [selectedJobStatus, setSelectedJobStatus] = useState([]);
   const [jobStatusData, setJobStatusData] = useState(jobStatusOptions);
-  const [selectedCompanies, setSelectedCompanies] = useState([]); // Allow multiple selection
+  // const [selectedCompanies, setS] = useState([]);
+  const dropdownRef = useRef(null);
 
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsModalOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  // ✅ Toggle Job Status Selection
   const handleMultiSelectHandler = (item) => {
-    const updatedData = jobStatusData?.map((data) => {
-      if (data?.id === item?.id) {
-        return { ...data, selected: !item?.selected };
-      } else {
-        return { ...data };
-      }
-    });
-    const filterData = updatedData?.filter((filter) => filter?.selected);
-    setSelectedJobStatus(filterData);
-    setJobStatusData(updatedData);
-  };
-
-  const removeStatusHandler = (item) => {
-    const updateData = jobStatusData?.map((data) => {
-      if (data?.id === item?.id) {
-        return { ...data, selected: false };
-      } else {
-        return { ...data };
-      }
-    });
-
-    const updateSelectedJobStatus = selectedJobStatus.filter(
-      (filter) => filter?.id !== item?.id
+    const updatedData = jobStatusData.map((data) =>
+      data.id === item.id ? { ...data, selected: !data.selected } : data
     );
-
-    setSelectedJobStatus(updateSelectedJobStatus);
-    setJobStatusData(updateData);
+    setJobStatusData(updatedData);
+    setSelectedJobStatus(updatedData.filter((job) => job.selected));
   };
 
- // ✅ Toggle Company Selection (Allow multiple)
- const toggleCompanySelection = (company) => {
-  setSelectedCompanies((prev) =>
-    prev.some((c) => c.name === company.name)
-      ? prev.filter((c) => c.name !== company.name) // Remove if already selected
-      : [...prev, company] // Add if not selected
-  );
-};
+  // ✅ Remove Job Status Selection
+  const removeStatusHandler = (item) => {
+    const updatedData = jobStatusData.map((data) =>
+      data.id === item.id ? { ...data, selected: false } : data
+    );
+    setJobStatusData(updatedData);
+    setSelectedJobStatus(selectedJobStatus.filter((status) => status.id !== item.id));
+  };
+
+  // ✅ Toggle Company Selection (Allow multiple)
+  const toggleCompanySelection = (company) => {
+    setSelectedJobs((prev) =>
+      prev.some((c) => c.name === company.name)
+        ? prev.filter((c) => c.name !== company.name) // Remove if already selected
+        : [...prev, company] // Add if not selected
+    );
+  };
+
   return (
-    <div className="relative w-full">
+    <div className="relative w-full" ref={dropdownRef}>
       {/* Dropdown Input */}
       <div
         className="w-full px-[12px] py-[10px] border flex justify-between items-center cursor-pointer bg-white border-customGrey1 rounded-[8px] text-sm font-ubuntu text-customBlue"
@@ -101,7 +103,22 @@ const AddToJobsDropdown = ({ placeholder }) => {
         <DropArrow className="w-[14px] h-[14px]" />
       </div>
 
-      {/* Open Modal */}
+      {/* Selected Items Display */}
+      {(selectedJobs.length > 0) && (
+        <div className="mt-2 flex flex-wrap gap-2">
+         
+          {selectedJobs.map((company, index) => (
+            <div key={index} className="flex items-center px-2 py-1 border rounded-md text-sm">
+              <span>{company.name}</span>
+              <button className="ml-2 text-red-500" onClick={() => toggleCompanySelection(company)}>
+                ✕
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Dropdown Modal */}
       {isModalOpen && (
         <div className="absolute top-full left-0 w-full z-50 mt-2 p-4 bg-white rounded-lg shadow-lg border border-gray-300">
         <div className="display-column" style={{ gap: 10 }}>
@@ -109,14 +126,14 @@ const AddToJobsDropdown = ({ placeholder }) => {
             value={searchValue}
             onChange={(e) => setSearchValue(e.target.value)}
           />
-          <CommonDropdown
-            options={jobStatusData}
-            placeholder="Job Status"
-            selectedValue={""}
-            optionKey="type"
-            type={"jobStatus"}
-            handleMultiSelectHandler={handleMultiSelectHandler}
-          />
+            <CommonDropdown
+              options={jobStatusData}
+              placeholder="Job Status"
+              selectedValue={""}
+              optionKey="type"
+              type={"jobStatus"}
+              handleMultiSelectHandler={handleMultiSelectHandler}
+            />
           <div
             className="display-flex"
             style={{ gap: 6, flexWrap: "wrap" }}
@@ -139,9 +156,8 @@ const AddToJobsDropdown = ({ placeholder }) => {
                     <LabelClose />
                   </button>
                 </div>
-              );
-            })}
-          </div>
+              )})}
+            </div>
         </div>
         <div
           className="display-column"
@@ -156,7 +172,7 @@ const AddToJobsDropdown = ({ placeholder }) => {
                 >
                   <div className="w-h-32">
                     <span>{item?.initials}</span>
-                  </div>
+                    </div>
                   <div className="display-column" style={{ gap: 4 }}>
                     <p className="font-14-medium color-dark-black">
                       {item?.name}
@@ -175,14 +191,14 @@ const AddToJobsDropdown = ({ placeholder }) => {
                     style={{ backgroundColor: "#98D4DF" }}
                   />
                   <button>
-                  {selectedCompanies.some((c) => c.name === item.name) &&  <TickCircle />}
+                  {selectedJobs.some((c) => c.name === item.name) &&  <TickCircle />}
                   </button>
-                </div>
+            </div>
               </div>
             );
           })}
+          </div>
         </div>
-      </div>
       )}
     </div>
   );
