@@ -29,6 +29,61 @@ import CandidateLog from "../candidate/CandidateLog";
 import AddCommonCandidateInfo from "../candidate/AddCommonCandidateInfo";
 import CandidateInfoJobs from "../candidate/CandidateInfoJobs";
 import CandidateInfoExperience from "../candidate/CandidateInfoExperience";
+import CandidateDescription from "../candidate/CandidateDescription";
+import ProfessionalDetails from "../candidate/ProfessionalDetails";
+
+const skillData = [
+  {
+    id: 1,
+    name: "UI Design",
+    rating: "08",
+  },
+  {
+    id: 2,
+    name: "UX Design",
+    rating: "09",
+  },
+  {
+    id: 3,
+    name: "Figma",
+    rating: "09",
+  },
+  {
+    id: 4,
+    name: "Sketch",
+    rating: "05",
+  },
+  {
+    id: 5,
+    name: "InVision",
+    rating: "06",
+  },
+  {
+    id: 6,
+    name: "Wireframe",
+    rating: "08",
+  },
+  {
+    id: 7,
+    name: "Prototype",
+    rating: "07",
+  },
+  {
+    id: 8,
+    name: "Web Design",
+    rating: "09",
+  },
+  {
+    id: 9,
+    name: "Mobile Design",
+    rating: "08",
+  },
+  {
+    id: 10,
+    name: "Responsive Design",
+    rating: "10",
+  },
+];
 
 const candidateInfoTabs = [
   {
@@ -163,6 +218,39 @@ const candidateDetailsData = {
   Languages: ["English", "Hindi"],
 };
 
+const placementDetails = {
+  "Employment Status": "Hired",
+  "Hired Date": "January 10, 2025 • 1:56 PM",
+  "Start Date": "March 1, 2025",
+  "Probation End Date": "May 1, 2025",
+  "Left Date": "April 21, 2025",
+};
+
+const contactDetails = {
+  "Phone Number": "(+91) 98765-43210",
+  "Email Id": "priya.s@designscape.com",
+  "Social Links": {
+    linkedin_url: "http://www.linkedin.com/in/himanshu-singh-861209b8",
+    twitter_url: null,
+    github_url: null,
+    facebook_url: null,
+  },
+};
+
+const professionalDetails = {
+  Skills: skillData,
+  Domain: "Technology & IT",
+  "Years of Experience": "2 years",
+  "Highest Qualification": "Bachelor of Design (B.Des)",
+  "Current Job Title": "UI/UX Designer",
+  "Current Employer": "DesignScape Studios",
+  "Current Salary": "₹ 50,0000",
+  "Expected Salary": "₹ 64,0000",
+  "Notice Period": null,
+  "GDPR Consent": false,
+  "Email Consent": false,
+};
+
 const aditionalInfoData = {
   Languages: "English, Hindi",
   "Candidate Department": "Design",
@@ -173,59 +261,6 @@ const aditionalInfoData = {
   "Notice Period": "1-month",
   Nationalities: "Indian",
 };
-
-const skillData = [
-  {
-    id: 1,
-    name: "UI Design",
-    rating: "08",
-  },
-  {
-    id: 2,
-    name: "UX Design",
-    rating: "09",
-  },
-  {
-    id: 3,
-    name: "Figma",
-    rating: "09",
-  },
-  {
-    id: 4,
-    name: "Sketch",
-    rating: "05",
-  },
-  {
-    id: 5,
-    name: "InVision",
-    rating: "06",
-  },
-  {
-    id: 6,
-    name: "Wireframe",
-    rating: "08",
-  },
-  {
-    id: 7,
-    name: "Prototype",
-    rating: "07",
-  },
-  {
-    id: 8,
-    name: "Web Design",
-    rating: "09",
-  },
-  {
-    id: 9,
-    name: "Mobile Design",
-    rating: "08",
-  },
-  {
-    id: 10,
-    name: "Responsive Design",
-    rating: "10",
-  },
-];
 
 const feedBackData = [
   {
@@ -439,26 +474,34 @@ const CandidateInfoModal = ({ visible, onClose }) => {
             className="flex-1 display-column"
             style={{ gap: 12, overflowY: "auto", marginBottom: "10px" }}
           >
-            <CandidateDetails
+            <ProfessionalDetails
               details={candidateDetailsData}
               label={"Candidate Details"}
             />
-            <CandidateInfoSkills skillData={skillData} />
-            <CandidateDetails
-              details={aditionalInfoData}
-              label={"Additional Information"}
+            <ProfessionalDetails
+              label={"Contact Details"}
+              details={contactDetails}
             />
-            <CandidateLog />
-            <AddCommonCandidateInfo label={"Folders"} />
-            <CandidateInfoJobs data={jobData} />
-            <CandidateInfoExperience
-              label={"Education Details"}
-              data={educationData}
+            <CandidateDescription label={"Candidate Description"} />
+            <ProfessionalDetails
+              label={"Professional Details"}
+              details={professionalDetails}
+            />
+            <CandidateDetails
+              label={"Placement Details"}
+              details={placementDetails}
             />
             <CandidateInfoExperience
               label={"Experience Details"}
               data={experienceData}
             />
+            <CandidateInfoExperience
+              label={"Education Details"}
+              data={educationData}
+            />
+            <CandidateInfoJobs label={"Jobs"} data={jobData} />
+            <AddCommonCandidateInfo label={"Folders"} />
+            <CandidateLog />
           </div>
           <div
             className="candidate-info-modal-section-2 flex-1 "

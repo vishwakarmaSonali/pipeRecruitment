@@ -106,6 +106,10 @@
   flex: 1;
 }
 
+.selected-item-common-bg {
+  background-color: #1761d81a;
+}
+
 .candidate-details-drawer {
   max-width: 460px;
   width: 100%;

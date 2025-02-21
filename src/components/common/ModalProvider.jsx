@@ -16,6 +16,8 @@ export const ModalProvider = ({ children }) => {
     candidateInfoModalVisible: false,
     categoryDeleteModalVisible: false,
     labelDeleteModalVisible: false,
+    AddEducationModalVisible: false,
+    AddExperienceModalVisible: false,
   });
 
   const isAnyModalOpen = useMemo(

@@ -2,11 +2,11 @@ import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import "../../components/filterModal/FilterModal.css";
 
-const LocationSearchDropdown = ({ 
-  selectedLocations = [], 
-  setSelectedLocations, 
-  placeholder, 
-  multipleSelect = false 
+const LocationSearchDropdown = ({
+  selectedLocations = [],
+  setSelectedLocations,
+  placeholder,
+  multipleSelect = false,
 }) => {
   const [locationQuery, setLocationQuery] = useState("");
   const [locationSuggestions, setLocationSuggestions] = useState([]);
@@ -66,7 +66,7 @@ const LocationSearchDropdown = ({
       setSelectedLocations([location]); // Store as a single selection
       setLocationQuery(location); // Show selected item in input
     }
-    
+
     setShowLocationDropdown(false); // Close dropdown after selection
   };
 
@@ -84,7 +84,11 @@ const LocationSearchDropdown = ({
           type="text"
           placeholder={placeholder}
           className="filter-input flex-1"
-          value={multipleSelect ? locationQuery : selectedLocations[0] || locationQuery}
+          value={
+            multipleSelect
+              ? locationQuery
+              : selectedLocations[0] || locationQuery
+          }
           onChange={(e) => setLocationQuery(e.target.value)}
           onFocus={() => setShowLocationDropdown(true)}
           readOnly={!multipleSelect && selectedLocations.length > 0} // Prevent typing when single selection is active
@@ -96,9 +100,8 @@ const LocationSearchDropdown = ({
         )}
       </div>
 
-      {/* Location Suggestions Dropdown */}
       {showLocationDropdown && locationSuggestions.length > 0 && (
-        <div 
+        <div
           className="absolute left-0 z-50 flex flex-col bg-white border border-borderGrey rounded-lg shadow-lg w-full overflow-auto text-sm"
           onMouseDown={(e) => e.preventDefault()} // Prevent input blur when clicking dropdown
         >
@@ -114,7 +117,6 @@ const LocationSearchDropdown = ({
         </div>
       )}
 
-      {/* Selected Locations List (only for multiple selection) */}
       {multipleSelect && selectedLocations.length > 0 && (
         <div className="inputItemsDiv mt-2 flex flex-wrap">
           {selectedLocations.map((location, index) => (
@@ -122,7 +124,11 @@ const LocationSearchDropdown = ({
               {location}
               <button
                 className="ml-2 text-customBlue"
-                onClick={() => setSelectedLocations(selectedLocations.filter((_, i) => i !== index))}
+                onClick={() =>
+                  setSelectedLocations(
+                    selectedLocations.filter((_, i) => i !== index)
+                  )
+                }
               >
                 ✕
               </button>

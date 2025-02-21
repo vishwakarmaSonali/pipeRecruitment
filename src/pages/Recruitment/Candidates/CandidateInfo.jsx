@@ -423,7 +423,7 @@ const CandidateInfo = () => {
           </div>
         </div>
       </div>
-      <div className="candidate-info-inner-container">
+      {/* <div className="candidate-info-inner-container">
         {selectedCandidateTab === "Summary" && (
           <div className="candidate-info-summary-container">
             <div className="min-width-45 flex-1">
@@ -485,7 +485,7 @@ const CandidateInfo = () => {
             </div>
           </div>
         )}
-      </div>
+      </div> */}
       <CandidateInfoModal
         visible={modals?.candidateInfoModalVisible}
         onClose={() => setModalVisibility("candidateInfoModalVisible", false)}

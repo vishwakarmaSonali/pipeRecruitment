@@ -4,14 +4,14 @@ import { Avatar } from "@mui/material";
 import { getRandomColor } from "../../helpers/utils";
 import { ReactComponent as ArrowIcon } from "../../assets/icons/arrowDown.svg";
 
-const CandidateInfoJobs = ({ data }) => {
+const CandidateInfoJobs = ({ label, data }) => {
   const [collapse, setCollapse] = useState(true);
   return (
     <div className="candidate-details-main-container">
       <div className="display-flex-justify align-center">
         <div className="display-flex align-center" style={{ gap: 12 }}>
           <h3 className="font-16-medium color-dark-black text-uppercase">
-            {"Jobs"}
+            {label}
           </h3>
           <button
             className={`${

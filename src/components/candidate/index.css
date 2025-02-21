@@ -46,7 +46,7 @@ th {
   flex-direction: column;
   gap: 12px;
   width: 100%;
-  z-index: 9999;
+  z-index: 1;
   transition: all 400ms ease;
 }
 
@@ -263,6 +263,14 @@ textarea {
   rotate: 0deg;
   transition: rotate 300ms ease;
 }
-.resumeContainers{
-  @apply bg-white p-[20px] rounded-[12px] border border-disableGrey w-full max-w-2xl
+.resumeContainers {
+  @apply bg-white p-[20px] rounded-[12px] border border-disableGrey w-full max-w-2xl;
+}
+.social-link-item {
+  padding: 8px;
+  border: 1px solid #d7d7d7;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-radius: 6px;
 }

@@ -25,11 +25,11 @@ const MonthYearPicker = ({
   label,
   isCheckedDisable,
   onSelect,
-  initialMonth = "January",
-  initialYear = new Date().getFullYear(),
+  month,
+  year,
 }) => {
-  const [selectedMonth, setSelectedMonth] = useState(initialMonth);
-  const [selectedYear, setSelectedYear] = useState(initialYear);
+  const [selectedMonth, setSelectedMonth] = useState(month);
+  const [selectedYear, setSelectedYear] = useState(year);
   const [isMonthOpen, setIsMonthOpen] = useState(false);
   const [isYearOpen, setIsYearOpen] = useState(false);
   const monthRef = useRef(null);
@@ -49,6 +49,11 @@ const MonthYearPicker = ({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  useEffect(() => {
+    setSelectedMonth(month);
+    setSelectedYear(year);
+  }, [month, year]);
+
   return (
     <div className="flex flex-col space-y-1">
       {/* Label */}
@@ -58,7 +63,7 @@ const MonthYearPicker = ({
         {/* Month Picker */}
         <div className="relative w-1/2">
           <div
-            className={`flex items-center justify-between border rounded-lg px-3 py-2 cursor-pointer text-customBlue font-ubuntu text-sm ${
+            className={`common-date-select-div cursor-pointer ${
               isCheckedDisable
                 ? "border-disableGrey border-1 bg-customGrey1"
                 : ""
@@ -69,7 +74,13 @@ const MonthYearPicker = ({
                 : setIsMonthOpen(!isMonthOpen)
             }
           >
-            <span>{selectedMonth}</span>
+            <span
+              className={`font-12-regular ${
+                !!selectedMonth ? "color-dark-blak" : "color-grey"
+              }`}
+            >
+              {!!selectedMonth ? selectedMonth : "Month"}
+            </span>
             <CalendarIcon />
           </div>
 
@@ -86,7 +97,9 @@ const MonthYearPicker = ({
                     setIsMonthOpen(false);
                     onSelect({ month, year: selectedYear });
                   }}
-                  className="px-3 py-2 hover:bg-gray-100 cursor-pointer text-customBlue font-ubuntu text-sm "
+                  className={`px-3 py-2 hover:bg-gray-100 cursor-pointer font-12-regular color-dark-black ${
+                    month === selectedMonth && "selected-item-common-bg"
+                  }`}
                 >
                   {month}
                 </div>
@@ -98,7 +111,7 @@ const MonthYearPicker = ({
         {/* Year Picker */}
         <div className="relative w-1/2">
           <div
-            className={`flex items-center justify-between border rounded-lg px-3 py-2 cursor-pointer text-customBlue font-ubuntu text-sm ${
+            className={`common-date-select-div cursor-pointer ${
               isCheckedDisable
                 ? "border-disableGrey border-1 bg-customGrey1"
                 : ""
@@ -109,7 +122,13 @@ const MonthYearPicker = ({
                 : setIsYearOpen(!isYearOpen)
             }
           >
-            <span>{selectedYear}</span>
+            <span
+              className={`font-12-regular ${
+                !!selectedYear ? "color-dark-blak" : "color-grey"
+              }`}
+            >
+              {!!selectedYear ? selectedYear : "Year"}
+            </span>
             <CalendarIcon />
           </div>
 
@@ -126,7 +145,9 @@ const MonthYearPicker = ({
                     setIsYearOpen(false);
                     onSelect({ month: selectedMonth, year });
                   }}
-                  className="px-3 py-2 hover:bg-gray-100 cursor-pointer text-customBlue font-ubuntu text-sm "
+                  className={`px-3 py-2 hover:bg-gray-100 cursor-pointer font-12-regular color-dark-black ${
+                    year === selectedYear && "selected-item-common-bg"
+                  }`}
                 >
                   {year}
                 </div>

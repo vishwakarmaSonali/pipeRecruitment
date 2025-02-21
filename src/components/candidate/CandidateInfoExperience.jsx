@@ -5,14 +5,37 @@ import { commonStyle } from "../../helpers/config";
 import { Menu } from "@mui/material";
 import { ReactComponent as EditIcon } from "../../assets/icons/edit.svg";
 import { ReactComponent as ArrowIcon } from "../../assets/icons/arrowDown.svg";
+import AddEducationDetailsModal from "../modals/AddEducationDetailsModal";
+import { useModal } from "../common/ModalProvider";
+import AddExperienceDetailsModal from "../modals/AddExperienceDetailsModal";
 
 const CandidateInfoExperience = ({ label, data }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [collapse, setCollapse] = useState(true);
+  const { modals, setModalVisibility } = useModal();
   const open = Boolean(anchorEl);
   const handleMenuClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
+  const [educationDetails, setEducationDetails] = useState([]);
+  const [experienceDetails, setExperienceDetails] = useState([]);
+
+  const [selectedEducationDetails, setSelectedEducationDetails] =
+    useState(null);
+  const [selectedExperienceDetails, setSelectedExperienceDetails] =
+    useState(null);
+
+  const handleAddEducation = (details) => {
+    setEducationDetails((prevDetails) => [...prevDetails, details]);
+    setModalVisibility("AddEducationModalVisible", false);
+  };
+
+  const handleAddExperience = (details) => {
+    setExperienceDetails((prevDetails) => [...prevDetails, details]);
+    console.log("Updated Experience Details:", experienceDetails);
+    setModalVisibility("AddExperienceModalVisible", false);
+  };
+
   const handleMenuClose = () => {
     setAnchorEl(null);
   };
@@ -28,38 +51,18 @@ const CandidateInfoExperience = ({ label, data }) => {
           <p className="font-14-medium color-dark-black">
             {item?.position} at {item?.company}
           </p>
-          <button className="edit-details-btn">
+          <button
+            className="edit-details-btn"
+            onClick={(e) => {
+              e.stopPropagation();
+              setSelectedExperienceDetails(item);
+              setTimeout(() => {
+                setModalVisibility("AddExperienceModalVisible", true);
+              }, 300);
+            }}
+          >
             <EditIcon />
           </button>
-          {/* <button
-            aria-controls={open ? "basic-menu" : undefined}
-            aria-haspopup="true"
-            aria-expanded={open ? "true" : undefined}
-            onClick={handleMenuClick}
-          >
-            <MoreIcon width={14} height={14} />
-          </button> */}
-          {/* <Menu
-            anchorEl={anchorEl}
-            open={open}
-            onClose={handleMenuClose}
-            PaperProps={{
-              sx: commonStyle.sx,
-            }}
-            transformOrigin={{
-              vertical: "top",
-              horizontal: "right",
-            }}
-            anchorOrigin={{
-              vertical: "bottom",
-              horizontal: "right",
-            }}
-          >
-            <div className="display-column">
-              <button className="common-menu-item-btn">Edit</button>
-              <button className="common-menu-item-btn">Delete</button>
-            </div>
-          </Menu> */}
         </div>
         <div className="display-flex-justify align-center">
           <p className="font-14-regular color-dark-black">{item?.location}</p>
@@ -82,7 +85,15 @@ const CandidateInfoExperience = ({ label, data }) => {
           <p className="font-14-medium color-dark-black">
             {item?.degree} at {item?.course}
           </p>
-          <button className="edit-details-btn">
+          <button
+            className="edit-details-btn"
+            onClick={() => {
+              setSelectedEducationDetails(item);
+              setTimeout(() => {
+                setModalVisibility("AddEducationModalVisible", true);
+              }, 300);
+            }}
+          >
             <EditIcon />
           </button>
           {/* <button
@@ -140,7 +151,19 @@ const CandidateInfoExperience = ({ label, data }) => {
             <ArrowIcon />
           </button>
         </div>
-        <button className="add-details-btn">+ Add</button>
+        <button
+          className="add-details-btn"
+          onClick={(e) => {
+            e.stopPropagation();
+            if (label === "Experience Details") {
+              setModalVisibility("AddExperienceModalVisible", true);
+            } else {
+              setModalVisibility("AddEducationModalVisible", true);
+            }
+          }}
+        >
+          + Add
+        </button>
       </div>
       {collapse && (
         <>
@@ -156,6 +179,21 @@ const CandidateInfoExperience = ({ label, data }) => {
           </div>
         </>
       )}
+      <AddEducationDetailsModal
+        visible={modals?.AddEducationModalVisible}
+        onClose={() => {
+          setModalVisibility("AddEducationModalVisible", false);
+          setSelectedEducationDetails(null);
+        }}
+        onAddEducation={handleAddEducation}
+        selectedEducationData={selectedEducationDetails}
+      />
+      <AddExperienceDetailsModal
+        visible={modals?.AddExperienceModalVisible}
+        onClose={() => setModalVisibility("AddExperienceModalVisible", false)}
+        onAddExperience={handleAddExperience}
+        selectedExperienceData={selectedExperienceDetails}
+      />
     </div>
   );
 };

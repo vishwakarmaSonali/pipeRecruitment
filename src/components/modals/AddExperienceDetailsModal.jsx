@@ -1,12 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Modal from "react-bootstrap/Modal";
 import { useModal } from "../common/ModalProvider";
-import { ReactComponent as CloseIcon } from "../../assets/icons/closeModal.svg";
-import { ReactComponent as LabelClose } from "../../assets/icons/labelClose.svg";
-import { ReactComponent as TickCircle } from "../../assets/icons/tick-circle.svg";
-import CommonSearchBox from "../common/CommonSearchBox";
-import CommonDropdown from "../common/CommonDropdown";
-import SearchDropdown from "../common/SearchDropDown";
+
 import CancelButton from "../common/CancelButton";
 import CommonButton from "../common/CommonButton";
 import CommonTextInput from "../common/CommonTextInput";
@@ -16,60 +11,84 @@ import MonthYearPicker from "../MonthYearView";
 
 const checkboxOptions = ["Currently working at this role"];
 
-const AddExperienceDetailsModal = ({ visible, onClose, onAddExperience }) => {
+const AddExperienceDetailsModal = ({
+  visible,
+  onClose,
+  onAddExperience,
+  selectedExperienceData,
+}) => {
   const { modals, setModalVisibility } = useModal();
   const [position, setPosition] = useState("");
   const [company, setCompany] = useState("");
   const [selectedLocations, setSelectedLocations] = useState([]);
   const [checked, setChecked] = useState(false);
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
+  const [startDate, setStartDate] = useState({ month: "", year: "" });
+  const [endDate, setEndDate] = useState({ month: "", year: "" });
+  const [modalAnimation, setModalAnimation] = useState(false);
+  const [edit, setEdit] = useState(false);
 
-  // ✅ Function to handle form submission
   const handleAddClick = () => {
-      console.log(
-       
-        "position, company,",
-        position,
-        company,
-        "selectedLocations",selectedLocations,startDate,"startDate"
-      );
     if (!position || !company || selectedLocations.length === 0 || !startDate)
       return;
 
     const experienceData = {
-        position,
-        company,
-        location: selectedLocations,
-        startDate: startDate ? `${startDate.month} ${startDate.year}` : "", // ✅ Ensure correct format
-        endDate: checked ? "Present" : endDate ? `${endDate.month} ${endDate.year}` : "",
-      };
-console.log("experienceDataexperienceData",experienceData);
+      position,
+      company,
+      location: selectedLocations,
+      startDate: startDate ? `${startDate.month} ${startDate.year}` : "", // ✅ Ensure correct format
+      endDate: checked
+        ? "Present"
+        : endDate
+        ? `${endDate.month} ${endDate.year}`
+        : "",
+    };
 
     onAddExperience(experienceData);
 
-    // ✅ Reset fields after adding
-    setPosition("");
-    setCompany("");
-    setSelectedLocations([]);
-    setStartDate(null);
-    setEndDate(null);
-    setChecked(false);
-
-    setModalVisibility("AddExperienceDetailModalVisible", false);
+    resetData();
   };
 
   const handleBackdropClick = () => {
-    setModalVisibility("AddExperienceDetailModalVisible", false);
+    setModalAnimation(true);
+    setTimeout(() => {
+      setModalAnimation(false);
+    }, 600);
   };
 
-  const handleStartDateChange = (selectedDate) => {
-    console.log("Selected Date:", selectedDate); // { month: "September", year: 2015 }
+  const resetData = () => {
+    setPosition("");
+    setCompany("");
+    setSelectedLocations([]);
+    setStartDate({ month: "", year: "" });
+    setEndDate({ month: "", year: "" });
+    setEdit(false);
+    setChecked(false);
+    onClose();
+  };
 
-  };
-  const handleEndDateChange = (selectedDate) => {
-    console.log("Selected end Date:", selectedDate); // { month: "September", year: 2015 }
-  };
+  useEffect(() => {
+    if (!!selectedExperienceData) {
+      setEdit(true);
+      setPosition(selectedExperienceData?.position);
+      setCompany(selectedExperienceData?.company);
+
+      if (selectedExperienceData?.startDate) {
+        const splitDate = selectedExperienceData?.startDate?.split(" ");
+        setStartDate({
+          month: splitDate[0] || "",
+          year: splitDate[1] || "",
+        });
+      }
+
+      if (selectedExperienceData?.endDate) {
+        const splitDate = selectedExperienceData?.endDate?.split(" ");
+        setEndDate({
+          month: splitDate[0],
+          year: splitDate[1],
+        });
+      }
+    }
+  }, [selectedExperienceData]);
 
   return (
     <Modal
@@ -81,7 +100,7 @@ console.log("experienceDataexperienceData",experienceData);
     >
       <div
         className={`common-modal-container overflow-visible ${
-          modals?.animatedModal && "shake"
+          modalAnimation && "shake"
         }`}
       >
         <div className="display-column" style={{ gap: 10 }}>
@@ -118,14 +137,36 @@ console.log("experienceDataexperienceData",experienceData);
               <span className={"text-black"}>{checkboxOptions[0]}</span>
             </div>
           </div>
-          <MonthYearPicker label="Start Date" onSelect={(date) => { console.log("Start Date Selected:", date); setStartDate(date); }} />
-          <MonthYearPicker label="End Date (expected)" onSelect={(date) => setEndDate(date)} isCheckedDisable={checked} />
+          <MonthYearPicker
+            label="Start Date"
+            onSelect={(date) => {
+              console.log("Start Date Selected:", date);
+              setStartDate(date);
+            }}
+            month={startDate?.month}
+            year={startDate?.year?.toString()}
+          />
+          <MonthYearPicker
+            label="End Date (expected)"
+            onSelect={(date) => setEndDate(date)}
+            month={endDate?.month}
+            year={endDate?.year?.toString()}
+            isCheckedDisable={checked}
+          />
+          {edit && (
+            <button
+              className="font-12-regular color-blue"
+              style={{ alignSelf: "flex-start" }}
+            >
+              Remove Experience
+            </button>
+          )}
         </div>
         <div
           className="display-flex"
           style={{ gap: 8, justifyContent: "center", marginTop: "24px" }}
         >
-          <CancelButton onClick={onClose} />
+          <CancelButton onClick={resetData} />
           <CommonButton title={"Add"} onClick={handleAddClick} />
         </div>
       </div>

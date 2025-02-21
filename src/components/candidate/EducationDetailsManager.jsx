@@ -31,10 +31,13 @@ const EducationDetailsManager = () => {
               <p className="text-l font-ubuntu font-medium text-customBlue">
                 {edu.degree} in {edu.major}
               </p>
-              <p className="text-m font-ubuntu text-customBlue">{edu.university}</p>
-                    <p className="font-ubuntu text-m text-customGray">
-                      {edu.startDate} - {edu.endDate === "Currently Working" ? "Present" : edu.endDate}
-                    </p>
+              <p className="text-m font-ubuntu text-customBlue">
+                {edu.university}
+              </p>
+              <p className="font-ubuntu text-m text-customGray">
+                {edu.startDate} -{" "}
+                {edu.endDate === "Currently Working" ? "Present" : edu.endDate}
+              </p>
             </div>
 
             {/* ✅ Remove Button */}
@@ -55,7 +58,7 @@ const EducationDetailsManager = () => {
         }
         className="text-buttonBLue font-ubuntu text-sm"
       >
-        + Add 
+        + Add
       </button>
 
       {/* Education Details Modal */}
