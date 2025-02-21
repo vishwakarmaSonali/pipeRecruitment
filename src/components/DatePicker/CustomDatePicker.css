@@ -54,6 +54,8 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    border-radius: 50%; /* Ensures rounded design */
+    transition: background 0.3s ease, color 0.3s ease;
   }
   
   .day {
@@ -90,9 +92,10 @@
   }
   
   .cell.selected {
-    background-color:#1761D81A;
-    border-radius: 100px;
-    color: #1761D8;
+    background-color:#1761D81A !important;
+    color: white !important;
+    font-weight: bold;
+    border-radius: 50%;
   }
   
   .cell.disabled-date {

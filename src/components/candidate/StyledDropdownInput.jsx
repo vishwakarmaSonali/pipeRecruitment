@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-const DropdownWithInput = () => {
+const DropdownWithInput = ({ selectedTitle, setSelectedTitle, firstName, setFirstName }) => {
   const [selected, setSelected] = useState("None");
   const [isOpen, setIsOpen] = useState(false);
   const options = ["None", "Mr.", "Ms.", "Mrs."];
@@ -13,7 +13,7 @@ const DropdownWithInput = () => {
           className="relative cursor-pointer flex items-center"
           onClick={() => setIsOpen(!isOpen)}
         >
-          <span className="mr-2">{selected}</span>
+          <span className="mr-2">{selectedTitle}</span>
           <svg
             className="w-4 h-4 text-gray-600"
             xmlns="http://www.w3.org/2000/svg"
@@ -30,6 +30,9 @@ const DropdownWithInput = () => {
           type="text"
           placeholder="First Name"
           className="ml-2 flex-1 outline-none border-none font-ubuntu text-sm text-customBlue"
+          value={firstName}
+          onChange={(e) => setFirstName(e.target.value)}
+
         />
       </div>
 
@@ -41,7 +44,7 @@ const DropdownWithInput = () => {
               key={option}
               className="p-2 hover:bg-gray-100 cursor-pointer font-ubuntu text-sm text-customBlue"
               onClick={() => {
-                setSelected(option);
+                setSelectedTitle(option);
                 setIsOpen(false);
               }}
             >

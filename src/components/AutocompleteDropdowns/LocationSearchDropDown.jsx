@@ -1,23 +1,38 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
-import "../../components/filterModal/FilterModal.css"
+import "../../components/filterModal/FilterModal.css";
 
-const LocationSearchDropdown = ({ selectedLocations = [], setSelectedLocations , placeholder}) => {
+const LocationSearchDropdown = ({ 
+  selectedLocations = [], 
+  setSelectedLocations, 
+  placeholder, 
+  multipleSelect = false 
+}) => {
   const [locationQuery, setLocationQuery] = useState("");
   const [locationSuggestions, setLocationSuggestions] = useState([]);
   const [showLocationDropdown, setShowLocationDropdown] = useState(false);
+  const debounceTimeout = useRef(null);
+  const isFetching = useRef(false); // Prevents duplicate API calls
+  const disableFetch = useRef(false); // Prevents API calls after selection
 
-  // Fetch location suggestions from API
+  // Fetch location suggestions from API (debounced)
   useEffect(() => {
+    if (disableFetch.current) {
+      disableFetch.current = false; // Reset flag after skipping one update
+      return;
+    }
+
     if (locationQuery.length > 1) {
-      const fetchLocations = async () => {
+      clearTimeout(debounceTimeout.current);
+
+      debounceTimeout.current = setTimeout(async () => {
+        isFetching.current = true; // Mark as fetching to prevent duplicate calls
         try {
           const response = await axios.get(
             `http://3.110.81.44/api/candidate-profiles/suggest/location?query=${locationQuery}`
           );
           console.log("Location API Response:", response?.data?.suggestions);
-          
-          // Ensure response is an array
+
           const suggestions = Array.isArray(response?.data?.suggestions)
             ? response.data.suggestions
             : [];
@@ -27,54 +42,70 @@ const LocationSearchDropdown = ({ selectedLocations = [], setSelectedLocations ,
         } catch (error) {
           console.error("Error fetching locations:", error);
           setLocationSuggestions([]);
+        } finally {
+          isFetching.current = false; // Reset flag
         }
-      };
-
-      fetchLocations();
+      }, 500); // Debounce delay
     } else {
       setLocationSuggestions([]);
       setShowLocationDropdown(false);
     }
-  }, [locationQuery]);
+
+    return () => clearTimeout(debounceTimeout.current); // Cleanup timeout
+  }, [locationQuery]); // Only trigger when user types
 
   // Handle location selection
   const handleSelectLocation = (location) => {
-    if (!Array.isArray(selectedLocations)) {
-      setSelectedLocations([]); // Ensure it's always an array
-    }
+    disableFetch.current = true; // Prevent API call after selection
 
-    if (!selectedLocations.includes(location)) {
-      setSelectedLocations([...selectedLocations, location]);
+    if (multipleSelect) {
+      if (!selectedLocations.includes(location)) {
+        setSelectedLocations([...selectedLocations, location]);
+      }
+    } else {
+      setSelectedLocations([location]); // Store as a single selection
+      setLocationQuery(location); // Show selected item in input
     }
-    setLocationQuery("");
-    setShowLocationDropdown(false);
+    
+    setShowLocationDropdown(false); // Close dropdown after selection
   };
 
-  // Remove selected location
-  const removeLocation = (index) => {
-    setSelectedLocations(selectedLocations.filter((_, i) => i !== index));
+  // Handle clearing input
+  const clearLocation = () => {
+    setSelectedLocations([]); // Clear state
+    setLocationQuery(""); // Clear input
+    setShowLocationDropdown(false); // Close dropdown
   };
 
   return (
     <div className="relative w-full min-h-[38px]">
-     <div className="border-1 rounded-[8px]">
-     <input
-        type="text"
-        placeholder={placeholder}
-        className="filter-input"
-        value={locationQuery}
-        onChange={(e) => setLocationQuery(e.target.value)}
-        onFocus={() => setShowLocationDropdown(true)}
-      />
+      <div className="border-1 rounded-[8px] flex items-center">
+        <input
+          type="text"
+          placeholder={placeholder}
+          className="filter-input flex-1"
+          value={multipleSelect ? locationQuery : selectedLocations[0] || locationQuery}
+          onChange={(e) => setLocationQuery(e.target.value)}
+          onFocus={() => setShowLocationDropdown(true)}
+          readOnly={!multipleSelect && selectedLocations.length > 0} // Prevent typing when single selection is active
+        />
+        {!multipleSelect && selectedLocations.length > 0 && (
+          <button className="mr-2 text-customBlue" onClick={clearLocation}>
+            ✕
+          </button>
+        )}
+      </div>
 
-     </div>
       {/* Location Suggestions Dropdown */}
       {showLocationDropdown && locationSuggestions.length > 0 && (
-            <div className="absolute left-0 z-50 flex flex-col  bg-white border border-borderGrey rounded-lg shadow-lg min-h-40 flex-1 w-full overflow-auto text-sm">
+        <div 
+          className="absolute left-0 z-50 flex flex-col bg-white border border-borderGrey rounded-lg shadow-lg w-full overflow-auto text-sm"
+          onMouseDown={(e) => e.preventDefault()} // Prevent input blur when clicking dropdown
+        >
           {locationSuggestions.map((location, index) => (
             <div
               key={index}
-              className="px-2 py-2 flex  gap-2 hover:bg-customGrey1 cursor-pointer"
+              className="px-2 py-2 hover:bg-customGrey1 cursor-pointer"
               onClick={() => handleSelectLocation(location)}
             >
               {location}
@@ -83,15 +114,15 @@ const LocationSearchDropdown = ({ selectedLocations = [], setSelectedLocations ,
         </div>
       )}
 
-      {/* Selected Locations List */}
-      {Array.isArray(selectedLocations) && selectedLocations.length > 0 && (
+      {/* Selected Locations List (only for multiple selection) */}
+      {multipleSelect && selectedLocations.length > 0 && (
         <div className="inputItemsDiv mt-2 flex flex-wrap">
           {selectedLocations.map((location, index) => (
             <div key={index} className="inputed-item">
               {location}
               <button
                 className="ml-2 text-customBlue"
-                onClick={() => removeLocation(index)}
+                onClick={() => setSelectedLocations(selectedLocations.filter((_, i) => i !== index))}
               >
                 ✕
               </button>

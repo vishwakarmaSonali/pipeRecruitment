@@ -157,6 +157,7 @@ const FilterDrawer = ({ isOpen, onClose, onApply, onReset, filters }) => {
                 selectedLocations={selectedLocations}
                 setSelectedLocations={setSelectedLocations}
                 placeholder={"Preferred Location"}
+                multipleSelect={true}
               />
             </div>
 

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import {
   format,
   startOfMonth,
@@ -15,11 +15,16 @@ import "./CustomDatePicker.css";
 import { ReactComponent as LeftArrow } from "../../assets/icons/left-arrow.svg"
 import { ReactComponent as RightArrow } from "../../assets/icons/right-arrow.svg";
 
-const CustomCalendar = ({ onDateSelect }) => {
+const CustomCalendar = ({ onDateSelect ,initialDate}) => {
   const today = new Date();
   const [currentMonth, setCurrentMonth] = useState(today);
   const [selectedDate, setSelectedDate] = useState(format(today, "yyyy-MM-dd"));
   const todayDate = format(today, "yyyy-MM-dd");
+  useEffect(() => {
+    if (initialDate) {
+      setSelectedDate(new Date(initialDate));
+    }
+  }, [initialDate]);
 
   const handleDateClick = (date) => {
     setSelectedDate(date);
@@ -35,7 +40,8 @@ const CustomCalendar = ({ onDateSelect }) => {
           <LeftArrow width={20} height={20} />
         </button>
         <span>
-          {format(currentMonth, "MMMM")} {currentMonth?.getFullYear()}
+          {/* {format(currentMonth, "MMMM")} {currentMonth?.getFullYear()} */}
+          {format(currentMonth, "MMMM yyyy")}
         </span>
         <button onClick={() => setCurrentMonth(addMonths(currentMonth, 1))}>
           <RightArrow width={20} height={20} />
