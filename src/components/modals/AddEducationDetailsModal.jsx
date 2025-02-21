@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import Modal from "react-bootstrap/Modal";
-import { useModal } from "../common/ModalProvider";
 import CancelButton from "../common/CancelButton";
 import CommonButton from "../common/CommonButton";
 import CommonTextInput from "../common/CommonTextInput";
@@ -12,7 +11,6 @@ const AddEducationDetailsModal = ({
   onAddEducation,
   selectedEducationData,
 }) => {
-  const { modals, setModalVisibility } = useModal();
   const [degree, setDegree] = useState("");
   const [major, setMajor] = useState("");
   const [university, setUniversity] = useState("");
@@ -22,13 +20,13 @@ const AddEducationDetailsModal = ({
   const [edit, setEdit] = useState(false);
 
   const handleAddClick = () => {
-    if (!degree || !major || !university|| !startDate || !endDate) return; // Prevent empty fields
+    if (!degree || !major || !university || !startDate || !endDate) return; // Prevent empty fields
     onAddEducation({ degree, major, university, startDate, endDate }); // Send data to parent
     setDegree(""); // Clear input fields
     setMajor("");
     setUniversity("");
-    setStartDate({ month: "", year: "" })
-    setEndDate({ month: "", year: "" })
+    setStartDate({ month: "", year: "" });
+    setEndDate({ month: "", year: "" });
     onClose();
   };
 
@@ -141,27 +139,4 @@ const AddEducationDetailsModal = ({
   );
 };
 
-export default AddEducationDetailsModal;
-
-// const languagesOptions = [
-//     { code: "en", name: "English", nativeName: "English", region: "Worldwide", script: "Latin" },
-//     { code: "es", name: "Spanish", nativeName: "Español", region: "Spain, Latin America", script: "Latin" },
-//     { code: "fr", name: "French", nativeName: "Français", region: "France, Africa, Canada", script: "Latin" }
-//   ];
-
-//   const App = () => {
-//     const [selectedLanguage, setSelectedLanguage] = useState(null);
-
-//     return (
-//       <div className="p-6">
-//         <h2 className="text-md font-medium">Select a Language</h2>
-//         <SearchDropdown
-//           options={languagesOptions}
-//           optionKey="name" // 👈 Choose which key to display & search
-//           placeholder="Search for a language..."
-//           onSelect={(value) => setSelectedLanguage(value)}
-//         />
-//         {selectedLanguage && <p className="mt-2 text-gray-700">Selected: <strong>{selectedLanguage.name} ({selectedLanguage.nativeName})</strong></p>}
-//       </div>
-//     );
-//   };
+export default React.memo(AddEducationDetailsModal);

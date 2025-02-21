@@ -69,9 +69,11 @@ const AddExperienceDetailsModal = ({
 
   useEffect(() => {
     if (!!selectedExperienceData) {
+      console.log(">>>>>>>>>>>.selectedExperienceData", selectedExperienceData);
       setEdit(true);
       setPosition(selectedExperienceData?.position);
       setCompany(selectedExperienceData?.company);
+      setSelectedLocations([selectedExperienceData?.location]);
 
       if (selectedExperienceData?.startDate) {
         const splitDate = selectedExperienceData?.startDate?.split(" ");

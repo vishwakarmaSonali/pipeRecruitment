@@ -1,5 +1,5 @@
-import React, { useRef, useEffect, useState } from "react";
-import ReactQuill, { Quill } from "react-quill";
+import React, { useEffect, useRef, useState } from "react";
+import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { ReactComponent as BoldIcon } from "../../assets/icons/text-bold.svg";
 import { ReactComponent as ItalicIcon } from "../../assets/icons/text-italic.svg";
@@ -12,10 +12,9 @@ import { ReactComponent as RedoIcon } from "../../assets/icons/redo.svg";
 import { ReactComponent as HeadingIcon } from "../../assets/icons/heading.svg";
 import ReactDOMServer from "react-dom/server";
 import "./common.css";
-import QuillToolbar, { modules, formats } from "./EditorToolbar";
+import QuillToolbar, { modules } from "./EditorToolbar";
 
-// Add custom icons to Quill
-const icons = Quill.import("ui/icons");
+const icons = ReactQuill.Quill.import("ui/icons");
 
 icons.bold = ReactDOMServer.renderToStaticMarkup(<BoldIcon stroke="#151B23" />);
 icons.italic = ReactDOMServer.renderToStaticMarkup(
@@ -33,26 +32,28 @@ icons["list"]["ordered"] = ReactDOMServer.renderToStaticMarkup(
 icons["list"]["bullet"] = ReactDOMServer.renderToStaticMarkup(
   <UnorderListIcon stroke="#151B23" />
 );
-const HtmlViewComponent = ({ value, onChange }) => {
+
+const HtmlViewComponent = ({ value, onChange, placeholder }) => {
   const quillRef = useRef(null);
+  const [quillInstance, setQuillInstance] = useState(null);
 
   useEffect(() => {
-    if (quillRef.current) {
-      console.log("Quill Editor instance assigned:", quillRef.current);
+    if (quillRef.current && quillRef.current.getEditor) {
+      const quill = quillRef.current.getEditor();
+      setQuillInstance(quill);
     }
-  }, []);
+  }, [quillRef.current]);
 
   return (
     <div className="editor-main-div">
-      <QuillToolbar toolbarId="t1" quillRef={quillRef} />
+      <QuillToolbar toolbarId="t1" quill={quillInstance} />
       <ReactQuill
         ref={quillRef}
         theme="snow"
         value={value}
         onChange={onChange}
-        placeholder="Add Description"
+        placeholder={placeholder}
         modules={modules("t1")}
-        formats={formats}
       />
     </div>
   );

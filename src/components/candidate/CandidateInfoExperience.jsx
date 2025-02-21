@@ -12,7 +12,8 @@ import AddExperienceDetailsModal from "../modals/AddExperienceDetailsModal";
 const CandidateInfoExperience = ({ label, data }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [collapse, setCollapse] = useState(true);
-  const { modals, setModalVisibility } = useModal();
+  const [educationModalVisible, setEducationModalVisible] = useState(false);
+  const [experienceModalVisible, setExperienceModalVisible] = useState(false);
   const open = Boolean(anchorEl);
   const handleMenuClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -27,13 +28,12 @@ const CandidateInfoExperience = ({ label, data }) => {
 
   const handleAddEducation = (details) => {
     setEducationDetails((prevDetails) => [...prevDetails, details]);
-    setModalVisibility("AddEducationModalVisible", false);
+    setEducationModalVisible(false);
   };
 
   const handleAddExperience = (details) => {
     setExperienceDetails((prevDetails) => [...prevDetails, details]);
-    console.log("Updated Experience Details:", experienceDetails);
-    setModalVisibility("AddExperienceModalVisible", false);
+    setExperienceModalVisible(false);
   };
 
   const handleMenuClose = () => {
@@ -56,9 +56,7 @@ const CandidateInfoExperience = ({ label, data }) => {
             onClick={(e) => {
               e.stopPropagation();
               setSelectedExperienceDetails(item);
-              setTimeout(() => {
-                setModalVisibility("AddExperienceModalVisible", true);
-              }, 300);
+              setExperienceModalVisible(true);
             }}
           >
             <EditIcon />
@@ -87,10 +85,11 @@ const CandidateInfoExperience = ({ label, data }) => {
           </p>
           <button
             className="edit-details-btn"
-            onClick={() => {
+            onClick={(e) => {
+              e.stopPropagation();
               setSelectedEducationDetails(item);
               setTimeout(() => {
-                setModalVisibility("AddEducationModalVisible", true);
+                setEducationModalVisible(true);
               }, 300);
             }}
           >
@@ -136,65 +135,71 @@ const CandidateInfoExperience = ({ label, data }) => {
     );
   };
   return (
-    <div className="candidate-details-main-container">
-      <div className="display-flex-justify align-center">
-        <div className="display-flex align-center" style={{ gap: 12 }}>
-          <h3 className="font-16-medium color-dark-black text-uppercase">
-            {label}
-          </h3>
+    <>
+      <div className="candidate-details-main-container">
+        <div className="display-flex-justify align-center">
+          <div className="display-flex align-center" style={{ gap: 12 }}>
+            <h3 className="font-16-medium color-dark-black text-uppercase">
+              {label}
+            </h3>
+            <button
+              className={`${
+                collapse ? "arrow-icon-btn-collpase" : "arrow-icon-btn"
+              }`}
+              onClick={() => setCollapse(!collapse)}
+            >
+              <ArrowIcon />
+            </button>
+          </div>
           <button
-            className={`${
-              collapse ? "arrow-icon-btn-collpase" : "arrow-icon-btn"
-            }`}
-            onClick={() => setCollapse(!collapse)}
+            className="add-details-btn"
+            onClick={(e) => {
+              e.stopPropagation();
+              if (label === "Experience Details") {
+                setExperienceModalVisible(true);
+              } else {
+                setEducationModalVisible(true);
+              }
+            }}
           >
-            <ArrowIcon />
+            + Add
           </button>
         </div>
-        <button
-          className="add-details-btn"
-          onClick={(e) => {
-            e.stopPropagation();
-            if (label === "Experience Details") {
-              setModalVisibility("AddExperienceModalVisible", true);
-            } else {
-              setModalVisibility("AddEducationModalVisible", true);
-            }
-          }}
-        >
-          + Add
-        </button>
+        {collapse && (
+          <>
+            <div className="divider-line" />
+            <div className="display-column" style={{ gap: 16 }}>
+              {data?.map((item) => {
+                if (label === "Experience Details") {
+                  return renderExperience(item);
+                } else {
+                  return renderEducation(item);
+                }
+              })}
+            </div>
+          </>
+        )}
       </div>
-      {collapse && (
-        <>
-          <div className="divider-line" />
-          <div className="display-column" style={{ gap: 16 }}>
-            {data?.map((item) => {
-              if (label === "Experience Details") {
-                return renderExperience(item);
-              } else {
-                return renderEducation(item);
-              }
-            })}
-          </div>
-        </>
-      )}
       <AddEducationDetailsModal
-        visible={modals?.AddEducationModalVisible}
+        visible={educationModalVisible}
         onClose={() => {
-          setModalVisibility("AddEducationModalVisible", false);
+          setEducationModalVisible(false);
           setSelectedEducationDetails(null);
         }}
         onAddEducation={handleAddEducation}
         selectedEducationData={selectedEducationDetails}
       />
+
       <AddExperienceDetailsModal
-        visible={modals?.AddExperienceModalVisible}
-        onClose={() => setModalVisibility("AddExperienceModalVisible", false)}
+        visible={experienceModalVisible}
+        onClose={() => {
+          setExperienceModalVisible(false);
+          setSelectedExperienceDetails(null);
+        }}
         onAddExperience={handleAddExperience}
         selectedExperienceData={selectedExperienceDetails}
       />
-    </div>
+    </>
   );
 };
 

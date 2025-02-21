@@ -40,6 +40,7 @@ const CandidateDescription = ({ label, data }) => {
                 <HtmlViewComponent
                   value={description}
                   onChange={setDescription}
+                  placeholder={"Add Description"}
                 />
               </div>
               <div

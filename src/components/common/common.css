@@ -4,13 +4,13 @@
 .ql-toolbar .ql-redo.ql-active svg,
 .ql-toolbar .ql-undo.ql-active svg,
 .ql-toolbar .ql-link.ql-active svg {
-  stroke: blue !important;
+  stroke: #06c !important;
 }
 
 .ql-toolbar .ql-active.ql-list[value="ordered"] svg,
 .ql-toolbar .ql-active.ql-list[value="bullet"] svg {
-  stroke: blue !important;
-  fill: blue;
+  stroke: #06c !important;
+  fill: #06c;
 }
 
 .main-container-html-view {
@@ -97,22 +97,10 @@
 .editor-main-div {
   border: 1px solid #d7d7d7;
   border-radius: 8px;
-  width: 100%;
-  /* overflow: hidden; */
-}
-
-.quill-toolbar {
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
 }
 
 .ql-container.ql-snow {
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
   border: none !important;
-  padding: 12px !important;
 }
 
 .ql-editor {
@@ -120,7 +108,7 @@
   height: 100%;
   outline: none;
   overflow-y: auto;
-  min-height: 160px;
+  min-height: 120px;
   text-align: left;
   white-space: pre-wrap;
   word-wrap: break-word;
@@ -137,24 +125,20 @@
 }
 
 .ql-toolbar.ql-snow {
-  border: none;
-  border-bottom: 1px solid #d7d7d7;
+  border: none !important;
+  border-bottom: 1px solid #d7d7d7 !important;
   box-sizing: border-box;
   font-family: "Ubuntu";
   max-height: 40px;
 }
 
 .ql-snow .ql-formats {
-  display: flex;
-  justify-content: space-between;
+  display: flex !important;
+  justify-content: space-between !important;
   align-items: center;
   width: 100%;
+  border: none !important;
   padding: 0px;
-}
-
-.ql-snow .ql-picker.ql-header {
-  width: 80px;
-  font-size: 12px;
 }
 
 .ql-snow .ql-tooltip {
@@ -175,6 +159,59 @@
   padding: 2px 6px;
   position: absolute;
   white-space: nowrap;
+}
+
+.custom-dropdown-size {
+  position: relative;
+}
+
+.custom-dropdown-toggle {
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+}
+
+.custom-dropdown-menu-size {
+  position: absolute;
+  top: 30px;
+  left: 0;
+  width: 100px;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+}
+
+.ql-snow.ql-toolbar button,
+.ql-snow .ql-toolbar button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: inline-block;
+  float: left;
+  height: auto !important;
+  padding: 3px 5px;
+  width: auto !important;
+}
+
+.custom-dropdown-menu-size button {
+  background: transparent;
+  border: none !important;
+  padding: 5px 12px !important;
+  cursor: pointer !important;
+  text-align: left !important;
+  width: 100% !important;
+}
+
+.custom-dropdown-menu-size button:hover {
+  background: #f0f0f0 !important;
+  color: var(--dark-black) !important;
 }
 
 .common-btn {

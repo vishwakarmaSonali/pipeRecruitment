@@ -149,64 +149,6 @@ const labelData = [
   },
 ];
 
-const candidateDetailsFields = [
-  {
-    name: "First Name",
-    type: "text",
-    options: [],
-    order: 1,
-    _id: "67b48df94adfdce1eb0b4313",
-  },
-  {
-    name: "Last Name",
-    type: "text",
-    options: [],
-    order: 2,
-    _id: "67b48df94adfdce1eb0b4314",
-  },
-  {
-    name: "Candidate Reference",
-    options: [],
-    order: 3,
-    _id: "67b48df94adfdce1eb0b4315",
-  },
-  {
-    name: "Gender",
-    type: "select",
-    options: ["Male", "Female", "Other"],
-    order: 4,
-    _id: "67b48df94adfdce1eb0b4316",
-  },
-  {
-    name: "Date of Birth",
-    type: "date",
-    options: [],
-    order: 5,
-    _id: "67b48df94adfdce1eb0b4317",
-  },
-  {
-    name: "location",
-    type: "text",
-    options: [],
-    order: 6,
-    _id: "67b48df94adfdce1eb0b4318",
-  },
-  {
-    name: "nationality",
-    type: "text",
-    options: [],
-    order: 7,
-    _id: "67b48df94adfdce1eb0b4319",
-  },
-  {
-    name: "Languages",
-    type: "text",
-    options: [],
-    order: 8,
-    _id: "67b48df94adfdce1eb0b4319",
-  },
-];
-
 const candidateDetailsData = {
   "First Name": "Priya",
   "Last Name": "Sharma",
@@ -249,17 +191,6 @@ const professionalDetails = {
   "Notice Period": null,
   "GDPR Consent": false,
   "Email Consent": false,
-};
-
-const aditionalInfoData = {
-  Languages: "English, Hindi",
-  "Candidate Department": "Design",
-  "Candidate Domain": "Design & Technology",
-  "Years of Experience": "1-2 years",
-  "Graduation Date": "2019",
-  "Current Salary": "12 LPA",
-  "Notice Period": "1-month",
-  Nationalities: "Indian",
 };
 
 const feedBackData = [

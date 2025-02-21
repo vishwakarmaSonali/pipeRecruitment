@@ -57,7 +57,7 @@ const LocationSearchDropdown = ({
   // Handle location selection
   const handleSelectLocation = (location) => {
     disableFetch.current = true; // Prevent API call after selection
- setLocationQuery(""); // Clear input
+    setLocationQuery(""); // Clear input
     if (multipleSelect) {
       if (!selectedLocations.includes(location)) {
         setSelectedLocations([...selectedLocations, location]);
