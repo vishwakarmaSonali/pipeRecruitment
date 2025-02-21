@@ -263,3 +263,6 @@ textarea {
   rotate: 0deg;
   transition: rotate 300ms ease;
 }
+.resumeContainers{
+  @apply bg-white p-[20px] rounded-[12px] border border-disableGrey w-full max-w-2xl
+}

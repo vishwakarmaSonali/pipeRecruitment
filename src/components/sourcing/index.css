@@ -114,6 +114,7 @@
   background-color: var(--white);
   box-sizing: border-box;
   overflow-x: hidden !important;
+ border-top-left-radius: 8px;
 }
 
 .candidate-details-drawer-container {

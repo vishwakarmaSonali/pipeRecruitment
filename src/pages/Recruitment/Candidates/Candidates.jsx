@@ -2,12 +2,8 @@ import React, { useState, useEffect, useRef } from "react";
 import "./Candidates.css";
 import { useSelector } from "react-redux"; // Import Redux selector
 
-import { ReactComponent as CandidatesIcon } from "../../../assets/icons/candidates/candidateFilled.svg";
-import { ReactComponent as Folder } from "../../../assets/icons/candidates/folderCandidates.svg";
-import { ReactComponent as SourcingIcon } from "../../../assets/icons/candidates/document-cloud.svg";
 import { ReactComponent as Plus } from "../../../assets/icons/plus.svg";
 import { ReactComponent as FilterIcon } from "../../../assets/icons/filter.svg";
-import { ReactComponent as ThreeDots } from "../../../assets/icons/threeDots.svg";
 import { ReactComponent as RefreshIcon } from "../../../assets/icons/refresh.svg";
 import { ReactComponent as DropArrow } from "../../../assets/icons/droparrow.svg";
 import { ReactComponent as EditIcon } from "../../../assets/icons/candidates/edit-2.svg";
@@ -20,13 +16,10 @@ import { ReactComponent as DownloadIcon } from "../../../assets/icons/sourcingIc
 import { ReactComponent as DocumentSign } from "../../../assets/icons/candidates/edit-2.svg";
 import { ReactComponent as ExportIcon } from "../../../assets/icons/export.svg";
 import { ReactComponent as ColumnIcon } from "../../../assets/icons/columns.svg";
-import close from "../../../assets/icons/close.svg";
 import SettingIcon from "../../../assets/icons/setting-2.svg";
 import LeftArrow from "../../../assets/icons/leftArrow.svg";
 import RightArrow from "../../../assets/icons/rightArrow.svg";
 import Tick from "../../../assets/icons/sourcingIcons/tick.svg";
-import Sidebar from "../../../components/sidebar/Sidebar";
-import Header from "../../../components/Header/Header";
 import CreateCandidateModal from "../../../components/modals/CreateCandidateModal";
 import { useModal } from "../../../components/common/ModalProvider";
 import CreateCandidateFormModal from "../../../components/modals/CreateCandidateFormModal";
@@ -43,8 +36,11 @@ import { useDispatch } from "react-redux";
 import Navbar from "../../../components/navbar/Navbar";
 import ColumnSelector from "../../../components/ColumnSelector";
 import CandidateFilterDrawer from "../../../components/candidate/CandidateFilterModal"
-import CreateCandidatesMenu from "./CreateCandidatesMenu";
 import CreateCandidateMenu from "./CreateCandidatesMenu";
+import AddToFolderDrawer from "../../../components/candidate/AddToFolderDrawer";
+import ChangeOwnershipDrawer from "../../../components/candidate/ChangeOwnershipDrawer";
+import AddToJobsDrawer from "../../../components/candidate/AddToJobsDrawer";
+import MergeDuplicateModal from "../../../components/modals/MergeDuplicateModal";
 
 const Candidates = ({ isDrawerOpen }) => {
   const dispatch = useDispatch();
@@ -56,6 +52,9 @@ const Candidates = ({ isDrawerOpen }) => {
   const [isFilterSaved, setIsFilterSaved] = useState(false);
   const [isColumnSelectorOpen, setIsColumnSelectorOpen] = useState(false);
     const [filterDrawerOpen, setFilterDrawerOpen] = useState(false);
+    const [addToFolderDrawerOpen, setAddToFolderDrawerOpen] = useState(false);
+    const [addToJobsDrawerOpen, setAddToJobsDrawerOpen] = useState(false);
+    const [changeOwnershipDrawerOpen, setChangeOwnershipDrawerOpen] = useState(false);
       const [filtersApplied, setFiltersApplied] = useState(false);
       const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -73,55 +72,55 @@ const Candidates = ({ isDrawerOpen }) => {
     {
       label: "Add to jobs",
       icon: <AddToJobsIcon />,
-      onClick: () => console.log("Add to jobs"),
+      onClick: () => setAddToJobsDrawerOpen(true),
     },
     {
       label: "Add to folder",
-      icon: <AddtoFolderIcon />,
-      onClick: () => console.log("Add to folder"),
+      icon: <AddtoFolderIcon  stroke="#151B23"
+/>,
+      onClick: () => setAddToFolderDrawerOpen(true),
     },
     {
-      label: "Edit Owner",
+      label: "Change Ownership",
       icon: <EditUser />,
-      onClick: () => console.log("Edit Owner"),
+      onClick: () => setChangeOwnershipDrawerOpen(true),
     },
     ...(selectedCandidates.length > 1
       ? [
           {
             label: "Merge Duplicate",
             icon: <MergeDuplicateIcon />,
-            onClick: () => console.log("Merge Duplicate"),
+            onClick: () => setModalVisibility('mergeDuplicateModalVisible',true),
           },
         ]
       : []),
-    {
-      label: "Document Signing",
-      icon: <DocumentSign />,
-      onClick: () => console.log("Document Signing"),
-    },
+    // {
+    //   label: "Document Signing",
+    //   icon: <DocumentSign />,
+    //   onClick: () => console.log("Document Signing"),
+    // },
     {
       label: "Archive",
       icon: <ArchiveIcon />,
       onClick: () => console.log("Archive"),
     },
   ];
-  const threeDotsMenuItems = [
-    {
-      label: "Edit Columns",
-      icon: <EditIcon />,
-      onClick: (event) => (
-        setModalVisibility("editColumnModalVisible", true), handleClose()
-      ),
-    },
-    {
-      label: "Export",
-      icon: <DownloadIcon />,
-      onClick: () => console.log("Export"),
-    },
-  ];
+
   const toggleFilterDrawer = (open) => {
   
     setFilterDrawerOpen(open);
+  };
+  const toggleAddToFolderDrawer = (open) => {
+  
+    setAddToFolderDrawerOpen(open);
+  };
+  const toggleAddToJobsDrawer = (open) => {
+  
+    setAddToJobsDrawerOpen(open);
+  };
+  const toggleChangeOwnershipDrawer = (open) => {
+  
+    setChangeOwnershipDrawerOpen(open);
   };
   const applyFilters = (newFilters) => {
     console.log(">>>>>>>>>>>>>>>>>>>>>newFilters", newFilters);
@@ -686,14 +685,14 @@ const Candidates = ({ isDrawerOpen }) => {
           {/* Action Buttons */}
           <div className="flex space-x-2">
             {/* ✅ Dynamically Change Button */}
-            {selectedCandidates.length > 1 ? (
+          
               <button
                 className="buttons text-white bg-buttonBLue"
-                onClick={handleBulkAction}
+                onClick={handleClickBulkAction}
               >
-                Bulk Action <DropArrow fill="white" />
+                Batch Actions<DropArrow fill="white" />
               </button>
-            ) : (
+          
               <button
                 className="buttons  text-white  bg-buttonBLue"
                 onClick={handleOpenMenu}
@@ -705,7 +704,7 @@ const Candidates = ({ isDrawerOpen }) => {
                 Create Candidate
                 <Plus stroke="#ffffff" />
               </button>
-            )}
+       
 
             {/* ✅ Dynamically Change Button */}
 
@@ -718,7 +717,7 @@ const Candidates = ({ isDrawerOpen }) => {
             <button
               className="buttons border-1 border-blue-600 text-buttonBLue min-w-[40px]"
               onClick={(event) => (
-                // setModalVisibility("editColumnModalVisible", true),
+                // setModalVisibility("mergeDuplicateModalVisible", true),
                 setIsColumnSelectorOpen(true),
                 handleClose()
               )}
@@ -856,12 +855,12 @@ const Candidates = ({ isDrawerOpen }) => {
                   {selectedColumns.map((columnName) => {
                     const key = columnMapping[columnName]; // Get actual key from mapping
                     return (
-                      <td key={key} className="td-text px-1">
+                      <td key={key} className="td-text px-1 justify-center">
                         {columnName === "Candidate Name" ? (
-                          <div className="flex items-center gap-2">
+                          <div className="flex items-center  gap-2">
                             {/* Display Initials */}
                             <div
-                              className="w-[28px] h-[28px] flex items-center justify-center rounded-full bg-customBlue text-white font-bold text-sm"
+                              className="w-[28px] h-[28px] flex items-center align-center justify-center rounded-full bg-customBlue text-white font-bold text-sm"
                               style={{ backgroundColor: getRandomColor() }}
                             >
                               {candidate.candidate_first_name?.charAt(0)}
@@ -912,10 +911,11 @@ const Candidates = ({ isDrawerOpen }) => {
           setModalVisibility("uploadResumeCandidateModalVisible", false)
         }
       />
-      <EditColumnModal
-        visible={modals?.editColumnModalVisible}
-        onClose={() => setModalVisibility("editColumnModalVisible", false)}
+      <MergeDuplicateModal
+        visible={modals?.mergeDuplicateModalVisible}
+        onClose={() => setModalVisibility("mergeDuplicateModalVisible", false)}
       />
+      
       <GlobalMenu
         anchorEl={anchorBulkActionEl}
         open={openBulkAction}
@@ -963,6 +963,27 @@ const Candidates = ({ isDrawerOpen }) => {
         filters={filters}
         isOpen={filterDrawerOpen}
         onClose={() => toggleFilterDrawer(false)}
+      />
+        <AddToJobsDrawer
+        // onApply={applyFilters}
+        // onReset={resetFilters}
+        filters={filters}
+        isOpen={addToJobsDrawerOpen}
+        onClose={() => toggleAddToJobsDrawer(false)}
+      />
+        <AddToFolderDrawer
+        // onApply={applyFilters}
+        // onReset={resetFilters}
+        filters={filters}
+        isOpen={addToFolderDrawerOpen}
+        onClose={() => toggleAddToFolderDrawer(false)}
+      />
+        <ChangeOwnershipDrawer
+        // onApply={applyFilters}
+        // onReset={resetFilters}
+        filters={filters}
+        isOpen={changeOwnershipDrawerOpen}
+        onClose={() => toggleChangeOwnershipDrawer(false)}
       />
       <CreateCandidateMenu anchorEl={anchorCreateCandidtaeEl} open={Boolean(anchorCreateCandidtaeEl)} onClose={handleCloseMenu} />
       </div>

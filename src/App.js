@@ -21,7 +21,8 @@ import { store, persistor } from "./store/store";
 import CandidateInfo from "./pages/Recruitment/Candidates/CandidateInfo";
 import CandidateCustomization from "./pages/Recruitment/Candidates/CandidateCustomization";
 import CreateCandidateForm from "./components/candidate/CreateCandidate";
-
+import CreateCandidateUploadResume from "./components/candidate/CandidateUploadResume";
+import CandidateUploadResumeCsvJsonPage from "./components/candidate/CandidateUploadCSVPage";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -62,6 +63,14 @@ const router = createBrowserRouter([
   {
     path: "/candidate/create-candidate-form",
     element: <CreateCandidateForm />,
+  },
+  {
+    path: "/candidate/create-candidate-resume-upload",
+    element: <CreateCandidateUploadResume />,
+  },
+  {
+    path: "/candidate/create-candidate-upload-resume",
+    element: <CandidateUploadResumeCsvJsonPage />,
   },
 ]);
 

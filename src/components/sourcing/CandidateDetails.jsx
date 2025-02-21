@@ -150,7 +150,7 @@ const CandidateDetails = ({
           </Tooltip>
           <Tooltip title="Add to Folder" onClick={onClickAddFolder}>
             <button>
-              <FolderAdd />
+              <FolderAdd stroke="#151B23"/>
             </button>
           </Tooltip>
           <Tooltip title="Download resume">

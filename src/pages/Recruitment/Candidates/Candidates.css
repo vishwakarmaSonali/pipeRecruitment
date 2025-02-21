@@ -88,8 +88,19 @@
 .upload-resume-inner-container {
   display: flex;
   flex-direction: column;
-  gap: 24px;
-  max-width: 600px;
+  width: 600px;
+  gap:20px;
+
+  /* max-width: 600px; */
+}
+.upload-resume-inner-container-section1 {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  border-radius: 10px;
+  border:1px solid #D7D7D7;
+  padding: 20px;
+  /* max-width: 600px; */
 }
 
 .font-16-medium {
@@ -182,7 +193,7 @@
 }
 
 .file-label {
-  padding: 6px 8px;
+  padding: 6px 10px;
   background-color: #f1f6fd;
   font-family: "Ubuntu";
   font-size: 14px;
@@ -191,6 +202,7 @@
   color: #1761d8;
   border-radius: 6px;
   align-self: flex-start;
+  margin-top: 12px;
 }
 
 .profile-progress-div-1 {

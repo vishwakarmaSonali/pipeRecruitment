@@ -1,8 +1,7 @@
 import React,{useState} from "react";
 import SearchIcon from "../../assets/icons/sourcingIcons/search-normal.svg"
 import "./AddModal.css"
-import folderIcon from "../../assets/icons/folder.svg"
-import FolderAdd from "../../assets/icons/sourcingIcons/folder-add.svg";
+import { ReactComponent as FolderAdd } from "../../assets/icons/sourcingIcons/folder-add.svg";
 import CreateFolderModal from "./CreateFolderModal";
 
 const FolderModal = ({ isOpen, onClose }) => {
@@ -48,9 +47,10 @@ const FolderModal = ({ isOpen, onClose }) => {
             
           </ul>
 
-          <button className="mt-4 w-full px-[8px] flex items-center gap-[8px] bg-buttonBlueOpacity text-customBlue font-ubuntu text-m py-2 rounded-[8px]"               onClick={() => setCreateFolderOpen(true)}
+          <button className="mt-4 w-full px-[8px] flex items-center gap-[8px] bg-buttonBlueOpacity text-customBlue font-ubuntu text-m py-2 rounded-[8px]"           
+              onClick={() => setCreateFolderOpen(true)}
           >
-          <img src={FolderAdd} alt="Folder Add" className="proifle-action-icon" />
+         <FolderAdd />
             <text>Create folder</text>
           </button>
         </div>

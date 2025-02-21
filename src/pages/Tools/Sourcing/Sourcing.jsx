@@ -1,11 +1,11 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState,  useEffect } from "react";
 import { Menu, MenuItem, ListItemIcon, Typography } from "@mui/material";
 import { css } from "@emotion/react";
 import "./Sourcing.css";
 import ProfileAdd from "../../../assets/icons/sourcingIcons/profile-add.svg";
 import jobIcon from "../../../assets/icons/sourcingIcons/briefcase.svg";
-import FolderAdd from "../../../assets/icons/sourcingIcons/folder-add.svg";
 import { ReactComponent as Tick } from "../../../assets/icons/sourcingIcons/tick.svg";
+import { ReactComponent as FolderAdd } from "../../../assets/icons/sourcingIcons/folder-add.svg";
 import FilterIcon from "../../../assets/icons/filter.svg";
 import { ReactComponent as DropArrow } from "../../../assets/icons/droparrow.svg";
 import { sourcingHubInfo } from "./config";
@@ -215,7 +215,7 @@ const BulkActionView = ({
           }}
         >
           <ListItemIcon>
-            <img src={FolderAdd} alt="Add to folder" />
+            <FolderAdd />
           </ListItemIcon>
           <Typography
             sx={{ fontSize: "14px", fontFamily: "'Ubuntu', sans-serif" }}

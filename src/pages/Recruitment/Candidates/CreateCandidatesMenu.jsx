@@ -56,7 +56,7 @@ const CreateCandidateMenu = ({ anchorEl, open, onClose }) => {
       </MenuItem>
 
       {/* Upload Resumes */}
-      <MenuItem onClick={() => { }} css={menuItemStyle}>
+      <MenuItem onClick={() => {navigate("/candidate/create-candidate-resume-upload")}} css={menuItemStyle}>
        <Box display="flex" alignItems="flex-start" width="100%">
         <ListItemIcon sx={{ minWidth: "20px", marginTop:"2px" }}>
             <ExportIcon />
@@ -74,7 +74,7 @@ const CreateCandidateMenu = ({ anchorEl, open, onClose }) => {
       </MenuItem>
 
       {/* Bulk Upload */}
-      <MenuItem onClick={() => {}} css={menuItemStyle}>
+      <MenuItem onClick={() => {navigate("/candidate/create-candidate-upload-resume")}} css={menuItemStyle}>
         <Box display="flex" alignItems="flex-start" width="100%">
           <ListItemIcon sx={{ minWidth: "20px", marginTop:"2px" }}>
             <BulkUploadIcon />

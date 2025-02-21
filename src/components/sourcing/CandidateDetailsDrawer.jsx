@@ -92,7 +92,7 @@ const CandidateDetailsDrawer = ({
                   }}
                 >
                   <button>
-                    <FolderAdd />
+                    <FolderAdd stroke="#151B23" />
                   </button>
                 </Tooltip>
                 <Tooltip title="Download resume">

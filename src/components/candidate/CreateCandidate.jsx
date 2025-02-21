@@ -30,6 +30,7 @@ import LanguageListManager from "./LanguageListManager";
 import SocialLinksManager from "./SocialLinksManager";
 import EducationDetailsManager from "./EducationDetailsManager";
 import ExperienceDetailsManager from "./ExperienceDetailsManager";
+import HeaderWithActions from "./CandidateHeader";
 const genderOptions = [
   { id: 1, label: "Female" },
   { id: 2, label: "Male" },
@@ -110,30 +111,32 @@ const CreateCandidateForm = () => {
     setLastUpdatedDate(date);
     setShowUpdatedCalendar(false);
   };
+  const handleCreate = () => {
+    console.log("Create button clicked");
+    // Add your logic here
+  };
+
+  const handleDiscard = () => {
+    console.log("Discard button clicked");
+    // Add your logic here
+  };
   return (
     <div
       className="w-full h-screen bg-white overflow-hidden overscroll-none"
       style={{ boxSizing: "border-box" }}
     >
       <Navbar />
+      <HeaderWithActions
+        title="Create Candidate"
+        primaryButtonText="Create"
+        secondaryButtonText="Discard"
+        onPrimaryClick={handleCreate}
+        onSecondaryClick={handleDiscard}
+      />
       <div
-        className="overflow-auto flex-grow h-[calc(100vh-80px)] bg-grey-90"
+        className="overflow-auto flex-grow h-[calc(90vh-30px)] bg-grey-90"
         style={{ flex: 1, display: "flex", flexDirection: "column" }}
       >
-        <div className="flex items-center justify-between p-[17px]">
-          <span className="font-ubuntu font-medium text-custom-large">
-            Create Candidate
-          </span>
-          {/* Action Buttons */}
-          <div className="flex items-center gap-[8px] ">
-            <button className="buttons border-1 border-buttonBLue text-buttonBLue min-w-[120px]">
-              Discard
-            </button>
-            <button className="buttons  text-white  bg-buttonBLue">
-              Create
-            </button>
-          </div>
-        </div>
         <div className="main-container-candidateForm overflow-auto">
           {/* Candidate details block starts */}
           <div className="flex justify-between ">
