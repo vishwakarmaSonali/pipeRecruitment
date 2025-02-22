@@ -150,6 +150,7 @@ const AddSocialLinksModal = ({ visible, onClose, onAddLanguages }) => {
   const { modals, setModalVisibility } = useModal();
   const [selectedSocialLink, setSelectedSocialLink] = useState(null);
   const [socialLinkURL, setSocialLinkURL] = useState("");
+  const [modalAnimation, setModalAnimation] = useState(false);
 
   // ✅ Handle Add Button Click (Ensure a platform & URL is selected)
   const handleAddClick = () => {
@@ -160,15 +161,26 @@ const AddSocialLinksModal = ({ visible, onClose, onAddLanguages }) => {
     }
   };
 
+  const handleBackdropClick = () => {
+    setModalAnimation(true);
+    setTimeout(() => {
+      setModalAnimation(false);
+    }, 600);
+  };
+
   return (
     <Modal
       show={visible}
-      onHide={() => setModalVisibility("addSocialLinksModalVisible", false)}
+      onHide={handleBackdropClick}
       dialogClassName="common-modal"
       contentClassName="modal-content"
       backdropClassName="custom-backdrop"
     >
-      <div className="common-modal-container overflow-visible">
+      <div
+        className={`common-modal-container overflow-visible ${
+          modalAnimation && "shake"
+        }`}
+      >
         <div className="display-column" style={{ gap: 10 }}>
           {/* 🔹 Social Links Dropdown */}
           <SearchDropdown
@@ -193,11 +205,7 @@ const AddSocialLinksModal = ({ visible, onClose, onAddLanguages }) => {
           className="display-flex"
           style={{ gap: 8, justifyContent: "center", marginTop: "24px" }}
         >
-          <CancelButton
-            onClick={() =>
-              setModalVisibility("addSocialLinksModalVisible", false)
-            }
-          />
+          <CancelButton title={"Cancel"} onClick={onClose} />
           <CommonButton title={"Add"} onClick={handleAddClick} />
         </div>
       </div>

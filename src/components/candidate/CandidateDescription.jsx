@@ -6,10 +6,12 @@ import { ReactComponent as ArrowIcon } from "../../assets/icons/arrowDown.svg";
 import { ReactComponent as RightIcon } from "../../assets/icons/right-circle.svg";
 import { ReactComponent as CancleIcon } from "../../assets/icons/close-circle.svg";
 import HtmlViewComponent from "../common/HtmlViewComponent";
+import { demoDescriptionText } from "../../helpers/config";
 
 const CandidateDescription = ({ label, data }) => {
   const [collapse, setCollapse] = useState(true);
-  const [description, setDescription] = useState("");
+  const [description, setDescription] = useState(demoDescriptionText);
+  const [edit, setEdit] = useState(false);
 
   return (
     <div className="candidate-details-main-container">
@@ -31,7 +33,7 @@ const CandidateDescription = ({ label, data }) => {
       {collapse && (
         <>
           <div className="divider-line" />
-          {true ? (
+          {edit ? (
             <div
               className="flex-1 display-flex align-center"
               style={{ gap: 8 }}
@@ -47,10 +49,15 @@ const CandidateDescription = ({ label, data }) => {
                 className="display-flex"
                 style={{ gap: 8, alignSelf: "flex-start" }}
               >
-                <button>
+                <button
+                  onClick={() => {
+                    setDescription(demoDescriptionText);
+                    setEdit(false);
+                  }}
+                >
                   <CancleIcon />
                 </button>
-                <button>
+                <button onClick={() => setEdit(false)}>
                   <RightIcon />
                 </button>
               </div>
@@ -60,19 +67,14 @@ const CandidateDescription = ({ label, data }) => {
               className="display-flex candidate-experince-item"
               style={{ gap: 8 }}
             >
-              <p className="font-14-regular color-dark-black">
-                A creative and user-focused UI/UX Designer with 3+ years of
-                experience in crafting intuitive digital experiences. Adept at
-                creating wireframes, prototypes, and high-fidelity designs for
-                web and mobile applications. Skilled in translating business
-                goals and user needs into functional and visually appealing
-                interfaces. Priya is known for her strong attention to detail,
-                collaborative approach, and ability to deliver innovative design
-                solutions.
-              </p>
+              <p
+                className="font-14-regular color-dark-black"
+                dangerouslySetInnerHTML={{ __html: description }}
+              ></p>
               <button
                 className="edit-details-btn"
                 style={{ alignSelf: "flex-start" }}
+                onClick={() => setEdit(true)}
               >
                 <EditIcon />
               </button>

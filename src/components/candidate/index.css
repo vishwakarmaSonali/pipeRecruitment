@@ -79,7 +79,8 @@ th {
 }
 
 .detail-row:hover .edit-details-btn,
-.candidate-experince-item:hover .edit-details-btn {
+.candidate-experince-item:hover .edit-details-btn,
+.candidate-info-feedback-container:hover .edit-details-btn {
   opacity: 1;
 }
 

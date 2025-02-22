@@ -8,6 +8,10 @@ import {
   techwave,
   uptech,
 } from "./assets";
+import { ReactComponent as LinkedIn } from "../assets/icons/sociallinks/linkedin.svg";
+import { ReactComponent as Facebook } from "../assets/icons/sociallinks/facebook.svg";
+import { ReactComponent as Github } from "../assets/icons/sociallinks/github.svg";
+import { ReactComponent as Twitter } from "../assets/icons/sociallinks/twitter.svg";
 
 export const usePersistentState = (key, defaultValue) => {
   const [state, setState] = useState(() => {
@@ -553,3 +557,13 @@ export const languagesOptions = [
     script: "Arabic, Cyrillic (Tajik)",
   },
 ];
+
+export const icons = {
+  linkedin_url: <LinkedIn />,
+  twitter_url: <Twitter />,
+  github_url: <Github />,
+  facebook_url: <Facebook />,
+};
+
+export const demoDescriptionText =
+  "<p>A creative and user-focused UI/UX Designer with 3+ years of experience in crafting intuitive digital experiences. Adept at creating wireframes, prototypes, and high-fidelity designs for web and mobile applications. Skilled in translating business goals and user needs into functional and visually appealing interfaces. Priya is known for her strong attention to detail, collaborative approach, and ability to deliver innovative design solutions.</p>";

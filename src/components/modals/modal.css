@@ -83,6 +83,17 @@
   overflow: auto;
 }
 
+.common-modal-container-540 {
+  max-width: 540px;
+  min-width: 540px;
+  background-color: #fff;
+  border-radius: 14px;
+  padding: 14px;
+  box-sizing: border-box;
+  box-shadow: -1px 4px 18px 0px #0000002e;
+  overflow: auto;
+}
+
 .candidate-info-modal-container {
   width: 100%;
   background-color: #fff;
@@ -318,7 +329,6 @@ textarea,
 .drag-upload {
   background-color: #1761d80f;
   border: 1px dashed #1761d80f;
-  
 }
 
 .upload-label {
@@ -683,4 +693,29 @@ textarea,
   padding: 12px;
   display: flex;
   gap: 12px;
+}
+
+.skill-score-container {
+  border: 1px solid #f3f4f4;
+  padding: 4px;
+  display: flex;
+  gap: 4px;
+  border-radius: 4px;
+}
+
+.skill-score-item-div {
+  flex: 1;
+  border: 1px solid #d7d7d7;
+  border-radius: 3px;
+  min-height: 16px;
+  max-height: 16px;
+  background-color: transparent;
+  box-sizing: border-box;
+  transition: background-color 300ms;
+}
+
+.skilled-skill-bg {
+  border: 1px solid #46a13c;
+  background-color: #46a13c;
+  transition: background-color 300ms;
 }

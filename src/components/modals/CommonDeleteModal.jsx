@@ -16,12 +16,12 @@ const CommonDeleteModal = ({
   description,
   isLoading,
 }) => {
-  const { modals, setModalVisibility } = useModal();
+  const [modalAnimation, setModalAnimation] = useState(false);
 
   const handleBackdropClick = () => {
-    setModalVisibility("animatedModal", true);
+    setModalAnimation(true);
     setTimeout(() => {
-      setModalVisibility("animatedModal", false);
+      setModalAnimation(false);
     }, 600);
   };
   return (
@@ -34,7 +34,7 @@ const CommonDeleteModal = ({
     >
       <div
         className={`common-modal-container overflow-visible ${
-          modals?.animatedModal && "shake"
+          modalAnimation && "shake"
         }`}
       >
         <div className="display-column" style={{ gap: 24 }}>
@@ -53,7 +53,11 @@ const CommonDeleteModal = ({
             </p>
           </div>
           <div className="display-flex justify-center" style={{ gap: 8 }}>
-            <CancelButton onClick={onClose} disabled={isLoading} />
+            <CancelButton
+              title={"Cancel"}
+              onClick={onClose}
+              disabled={isLoading}
+            />
             <DeleteButton onClick={onClickDelete} />
           </div>
         </div>

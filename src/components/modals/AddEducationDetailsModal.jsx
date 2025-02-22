@@ -131,7 +131,7 @@ const AddEducationDetailsModal = ({
           className="display-flex"
           style={{ gap: 8, justifyContent: "center", marginTop: "24px" }}
         >
-          <CancelButton onClick={resetData} />
+          <CancelButton title={"Cancel"} onClick={resetData} />
           <CommonButton title={"Add"} onClick={handleAddClick} />
         </div>
       </div>

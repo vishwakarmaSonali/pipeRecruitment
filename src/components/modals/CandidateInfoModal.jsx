@@ -15,6 +15,8 @@ import { ReactComponent as ArchiveIcon } from "../../pages/Recruitment/Candidate
 import { ReactComponent as ModalClose } from "../../pages/Recruitment/Candidates/assets/modalClose.svg";
 import { ReactComponent as ModalPrevious } from "../../pages/Recruitment/Candidates/assets/modalPrevious.svg";
 import { ReactComponent as ModalNext } from "../../pages/Recruitment/Candidates/assets/modalNext.svg";
+import { ReactComponent as EditIcon } from "../../pages/Recruitment/Candidates/assets/edit.svg";
+import { ReactComponent as DeleteIcon } from "../../pages/Recruitment/Candidates/assets/delete.svg";
 import {
   comapnyListing,
   commonStyle,
@@ -31,6 +33,8 @@ import CandidateInfoJobs from "../candidate/CandidateInfoJobs";
 import CandidateInfoExperience from "../candidate/CandidateInfoExperience";
 import CandidateDescription from "../candidate/CandidateDescription";
 import ProfessionalDetails from "../candidate/ProfessionalDetails";
+import CommonDeleteModal from "./CommonDeleteModal";
+import AddNoteModal from "./AddNoteModal";
 
 const skillData = [
   {
@@ -219,7 +223,20 @@ const CandidateInfoModal = ({ visible, onClose }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [randomColor, setRandomColor] = useState([]);
   const [writeText, setWriteText] = useState("");
+  const [deleteNoteModalVisible, setDeleteNoteModalVisible] = useState(false);
+  const [noteModalVisible, setNoteModalVisible] = useState(false);
+  const [selectedNote, setSelectedNote] = useState(null);
+  const [anchorE2, setAnchorE2] = useState(null);
+  const feedBackMenuOpen = Boolean(anchorE2);
   const open = Boolean(anchorEl);
+
+  const handleFeedbackMenuClick = (event) => {
+    setAnchorE2(event.currentTarget);
+  };
+
+  const handleFeedbackMenuClose = () => {
+    setAnchorE2(null);
+  };
 
   const handleMenuClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -261,7 +278,59 @@ const CandidateInfoModal = ({ visible, onClose }) => {
         <div className="flex-1 display-column" style={{ gap: 10 }}>
           <div className="display-flex-justify align-center">
             <p className="font-14-medium color-dark-black">{item?.name}</p>
-            <p className="font-14-regular color-dark-black">{item?.date}</p>
+            <div className="display-flex align-center">
+              <p className="font-14-regular color-dark-black">{item?.date}</p>
+              <button
+                className="edit-details-btn"
+                aria-controls={feedBackMenuOpen ? "basic-menu" : undefined}
+                aria-haspopup="true"
+                aria-expanded={feedBackMenuOpen ? "true" : undefined}
+                onClick={handleFeedbackMenuClick}
+              >
+                <MoreIcon width={18} height={18} />
+              </button>
+              <Menu
+                anchorEl={anchorE2}
+                open={feedBackMenuOpen}
+                onClose={handleFeedbackMenuClose}
+                PaperProps={{
+                  sx: commonStyle.sx,
+                }}
+                transformOrigin={{
+                  vertical: "top",
+                  horizontal: "right",
+                }}
+                anchorOrigin={{
+                  vertical: "bottom",
+                  horizontal: "right",
+                }}
+              >
+                <div className="display-column">
+                  <button
+                    className="common-menu-item-btn"
+                    onClick={() => {
+                      setSelectedNote(item);
+                      handleFeedbackMenuClose();
+                      setNoteModalVisible(true);
+                    }}
+                  >
+                    <EditIcon stroke="#151B23" />
+                    Edit
+                  </button>
+                  <button
+                    className="common-menu-item-btn"
+                    onClick={() => {
+                      setSelectedNote(item);
+                      handleFeedbackMenuClose();
+                      setDeleteNoteModalVisible(true);
+                    }}
+                  >
+                    <DeleteIcon stroke="#151B23" />
+                    Delete
+                  </button>
+                </div>
+              </Menu>
+            </div>
           </div>
           <p className="font-14-regular color-dark-black">{item?.feedback}</p>
         </div>
@@ -281,198 +350,224 @@ const CandidateInfoModal = ({ visible, onClose }) => {
     }, 600);
   };
   return (
-    <Modal
-      show={visible}
-      onHide={handleBackdropClick}
-      dialogClassName={`candidate-info-common-modal`}
-      contentClassName="modal-content"
-      backdropClassName="custom-backdrop"
-    >
-      <div
-        className={`candidate-info-modal-container ${
-          modals?.animatedModal && "shake"
-        }`}
+    <>
+      <Modal
+        show={visible}
+        onHide={handleBackdropClick}
+        dialogClassName={`candidate-info-common-modal`}
+        contentClassName="modal-content"
+        backdropClassName="custom-backdrop"
       >
-        <div className="candidate-info-header">
-          <div className="display-flex-justify align-center">
-            <div className="display-flex" style={{ gap: 10 }}>
-              <Avatar
-                src={""}
-                alt={"Priya Sharma"}
-                style={{ width: 60, height: 60, backgroundColor: randomColor }}
-              />
-              <div className="display-column" style={{ gap: 8 }}>
-                <p className="font-16-medium color-dark-black">Priya Sharma</p>
-                <div
-                  className="display-flex align-center"
-                  style={{ gap: 8, flexWrap: "wrap" }}
-                >
-                  {labelData?.map((item) => {
-                    const color = getRandomColor();
-                    return (
-                      <div key={item?.id} className="candidate-info-label">
-                        <LabelIcon fill={color} /> {item?.name}
-                      </div>
-                    );
-                  })}
-                  <button className="add-label-btn-candidate-info">
-                    <AddIcon /> Label
-                  </button>
+        <div
+          className={`candidate-info-modal-container ${
+            modals?.animatedModal && "shake"
+          }`}
+        >
+          <div className="candidate-info-header">
+            <div className="display-flex-justify align-center">
+              <div className="display-flex" style={{ gap: 10 }}>
+                <Avatar
+                  src={""}
+                  alt={"Priya Sharma"}
+                  style={{
+                    width: 60,
+                    height: 60,
+                    backgroundColor: randomColor,
+                  }}
+                />
+                <div className="display-column" style={{ gap: 8 }}>
+                  <p className="font-16-medium color-dark-black">
+                    Priya Sharma
+                  </p>
+                  <div
+                    className="display-flex align-center"
+                    style={{ gap: 8, flexWrap: "wrap" }}
+                  >
+                    {labelData?.map((item) => {
+                      const color = getRandomColor();
+                      return (
+                        <div key={item?.id} className="candidate-info-label">
+                          <LabelIcon fill={color} /> {item?.name}
+                        </div>
+                      );
+                    })}
+                    <button className="add-label-btn-candidate-info">
+                      <AddIcon /> Label
+                    </button>
+                  </div>
                 </div>
               </div>
+              <div className="display-flex" style={{ gap: 10 }}>
+                <div className="profile-progress-div-1">56%</div>
+                <div className="profile-progress-div-2">62</div>
+              </div>
             </div>
-            <div className="display-flex" style={{ gap: 10 }}>
-              <div className="profile-progress-div-1">56%</div>
-              <div className="profile-progress-div-2">62</div>
+            <div className="display-flex-justify align-center">
+              <div className="candidate-info-tab-main">
+                {candidateTabs?.map((item) => {
+                  return (
+                    <button
+                      key={item?.id}
+                      className={`candidate-info-tab-btn ${
+                        item?.selected && "active-info-tab"
+                      }`}
+                      onClick={() => selectedTabHandler(item?.id)}
+                    >
+                      {item?.name}{" "}
+                      {item?.count && (
+                        <span className="candidate-info-tab-count">
+                          {item?.count}
+                        </span>
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+              <div className="display-flex align-center" style={{ gap: 18 }}>
+                <button className="customize-btn">
+                  Customize
+                  <SettingIcon />
+                </button>
+                <button
+                  aria-controls={open ? "basic-menu" : undefined}
+                  aria-haspopup="true"
+                  aria-expanded={open ? "true" : undefined}
+                  onClick={handleMenuClick}
+                >
+                  <MoreIcon />
+                </button>
+                <Menu
+                  anchorEl={anchorEl}
+                  open={open}
+                  onClose={handleMenuClose}
+                  PaperProps={{
+                    sx: commonStyle.sx,
+                  }}
+                  transformOrigin={{
+                    vertical: "top",
+                    horizontal: "right",
+                  }}
+                  anchorOrigin={{
+                    vertical: "bottom",
+                    horizontal: "right",
+                  }}
+                >
+                  <div className="display-column">
+                    <button className="common-menu-item-btn">
+                      <AddJobIcon /> Add to Jobs
+                    </button>
+                    <button className="common-menu-item-btn">
+                      <AddFolderIcon /> Add to Folder
+                    </button>
+                    <button className="common-menu-item-btn">
+                      <MarkProfileIcon /> Mark as Employee
+                    </button>
+                    <button className="common-menu-item-btn">
+                      <DownloadIcon /> Download Resume
+                    </button>
+                    <button className="common-menu-item-btn">
+                      <ArchiveIcon /> Archive
+                    </button>
+                  </div>
+                </Menu>
+              </div>
             </div>
-          </div>
-          <div className="display-flex-justify align-center">
-            <div className="candidate-info-tab-main">
-              {candidateTabs?.map((item) => {
-                return (
-                  <button
-                    key={item?.id}
-                    className={`candidate-info-tab-btn ${
-                      item?.selected && "active-info-tab"
-                    }`}
-                    onClick={() => selectedTabHandler(item?.id)}
-                  >
-                    {item?.name}{" "}
-                    {item?.count && (
-                      <span className="candidate-info-tab-count">
-                        {item?.count}
-                      </span>
-                    )}
-                  </button>
-                );
-              })}
-            </div>
-            <div className="display-flex align-center" style={{ gap: 18 }}>
-              <button className="customize-btn">
-                Customize
-                <SettingIcon />
-              </button>
-              <button
-                aria-controls={open ? "basic-menu" : undefined}
-                aria-haspopup="true"
-                aria-expanded={open ? "true" : undefined}
-                onClick={handleMenuClick}
-              >
-                <MoreIcon />
-              </button>
-              <Menu
-                anchorEl={anchorEl}
-                open={open}
-                onClose={handleMenuClose}
-                PaperProps={{
-                  sx: commonStyle.sx,
-                }}
-                transformOrigin={{
-                  vertical: "top",
-                  horizontal: "right",
-                }}
-                anchorOrigin={{
-                  vertical: "bottom",
-                  horizontal: "right",
-                }}
-              >
-                <div className="display-column">
-                  <button className="common-menu-item-btn">
-                    <AddJobIcon /> Add to Jobs
-                  </button>
-                  <button className="common-menu-item-btn">
-                    <AddFolderIcon /> Add to Folder
-                  </button>
-                  <button className="common-menu-item-btn">
-                    <MarkProfileIcon /> Mark as Employee
-                  </button>
-                  <button className="common-menu-item-btn">
-                    <DownloadIcon /> Download Resume
-                  </button>
-                  <button className="common-menu-item-btn">
-                    <ArchiveIcon /> Archive
-                  </button>
-                </div>
-              </Menu>
-            </div>
-          </div>
-        </div>
-        <div
-          className="display-flex"
-          style={{ gap: 12, padding: "0px 16px", overflow: "auto" }}
-        >
-          <div
-            className="flex-1 display-column"
-            style={{ gap: 12, overflowY: "auto", marginBottom: "10px" }}
-          >
-            <ProfessionalDetails
-              details={candidateDetailsData}
-              label={"Candidate Details"}
-            />
-            <ProfessionalDetails
-              label={"Contact Details"}
-              details={contactDetails}
-            />
-            <CandidateDescription label={"Candidate Description"} />
-            <ProfessionalDetails
-              label={"Professional Details"}
-              details={professionalDetails}
-            />
-            <CandidateDetails
-              label={"Placement Details"}
-              details={placementDetails}
-            />
-            <CandidateInfoExperience
-              label={"Experience Details"}
-              data={experienceData}
-            />
-            <CandidateInfoExperience
-              label={"Education Details"}
-              data={educationData}
-            />
-            <CandidateInfoJobs label={"Jobs"} data={jobData} />
-            <AddCommonCandidateInfo label={"Folders"} />
-            <CandidateLog />
           </div>
           <div
-            className="candidate-info-modal-section-2 flex-1 "
-            style={{
-              maxWidth: 500,
-              maxHeight: "max-content",
-              overflowY: "auto",
-            }}
+            className="display-flex"
+            style={{ gap: 12, padding: "0px 16px", overflow: "auto" }}
           >
-            <div className="candidate-info-modal-inner-section-1">
-              <CompanyDropdown options={comapnyListing} />
-              <input
-                type="text"
-                placeholder="Write a note"
-                value={writeText}
-                onChange={(e) => setWriteText(e.target?.value)}
-                className="common-input"
+            <div
+              className="flex-1 display-column"
+              style={{ gap: 12, overflowY: "auto", marginBottom: "10px" }}
+            >
+              <ProfessionalDetails
+                details={candidateDetailsData}
+                label={"Candidate Details"}
               />
+              <ProfessionalDetails
+                label={"Contact Details"}
+                details={contactDetails}
+              />
+              <CandidateDescription label={"Candidate Description"} />
+              <ProfessionalDetails
+                label={"Professional Details"}
+                details={professionalDetails}
+              />
+              <CandidateDetails
+                label={"Placement Details"}
+                details={placementDetails}
+              />
+              <CandidateInfoExperience
+                label={"Experience Details"}
+                data={experienceData}
+              />
+              <CandidateInfoExperience
+                label={"Education Details"}
+                data={educationData}
+              />
+              <CandidateInfoJobs label={"Jobs"} data={jobData} />
+              <AddCommonCandidateInfo label={"Folders"} />
+              <CandidateLog />
             </div>
-            <div className="divider-line" />
-            <div className="display-column" style={{ gap: 16 }}>
-              {feedBackData?.map((item) => {
-                return renderFeedback(item);
-              })}
+            <div
+              className="candidate-info-modal-section-2 flex-1 "
+              style={{
+                maxWidth: 500,
+                maxHeight: "max-content",
+                overflowY: "auto",
+              }}
+            >
+              <div className="candidate-info-modal-inner-section-1">
+                <CompanyDropdown options={comapnyListing} />
+                <input
+                  type="text"
+                  placeholder="Write a note"
+                  value={writeText}
+                  onChange={(e) => setWriteText(e.target?.value)}
+                  className="common-input"
+                />
+              </div>
+              <div className="divider-line" />
+              <div className="display-column" style={{ gap: 16 }}>
+                {feedBackData?.map((item) => {
+                  return renderFeedback(item);
+                })}
+              </div>
             </div>
           </div>
         </div>
-      </div>
-      <div className="close-previous-next-btn-wrapper">
-        <button className="modal-close-btn" onClick={onClose}>
-          <ModalClose />
-        </button>
-        <button className="modal-next-btn">
-          <ModalNext />
-        </button>
-        <button className="modal-previous-btn">
-          <ModalPrevious />
-        </button>
-      </div>
-    </Modal>
+        <div className="close-previous-next-btn-wrapper">
+          <button className="modal-close-btn" onClick={onClose}>
+            <ModalClose />
+          </button>
+          <button className="modal-next-btn">
+            <ModalNext />
+          </button>
+          <button className="modal-previous-btn">
+            <ModalPrevious />
+          </button>
+        </div>
+      </Modal>
+      <CommonDeleteModal
+        visible={deleteNoteModalVisible}
+        title={"Delete Note"}
+        description={"Are you sure you want to delete this note?"}
+        onClose={() => {
+          setDeleteNoteModalVisible(false);
+          setSelectedNote(null);
+        }}
+        onClickDelete={() => {
+          setDeleteNoteModalVisible(false);
+          setSelectedNote(null);
+        }}
+      />
+      <AddNoteModal
+        visible={noteModalVisible}
+        onClose={() => setNoteModalVisible(false)}
+        selectedNote={selectedNote}
+      />
+    </>
   );
 };
 
