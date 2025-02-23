@@ -565,5 +565,139 @@ export const icons = {
   facebook_url: <Facebook />,
 };
 
+export const jobsTableHeaderData = [
+  "Job Position",
+  "Client Name",
+  "Location",
+  "Job Stage",
+  "Created Date",
+  "Created By",
+];
+
+export const candidateJobData = [
+  {
+    id: 1,
+    job_position: "UI UX Designer",
+    client_data: {
+      name: "DesignScape Studios",
+      image: "",
+    },
+    location: "Mumbai, India",
+    job_stage: "Client Interview",
+    create_date: "December 28, 2024",
+    created_by: {
+      name: "xBoost",
+      image: "",
+    },
+  },
+  {
+    id: 2,
+    job_position: "UI UX Designer",
+    client_data: {
+      name: "DesignScape Studios",
+      image: "",
+    },
+    location: "Mumbai, India",
+    job_stage: "Client Interview",
+    create_date: "December 28, 2024",
+    created_by: {
+      name: "xBoost",
+      image: "",
+    },
+  },
+  {
+    id: 3,
+    job_position: "UI UX Designer",
+    client_data: {
+      name: "DesignScape Studios",
+      image: "",
+    },
+    location: "Mumbai, India",
+    job_stage: "Client Interview",
+    create_date: "December 28, 2024",
+    created_by: {
+      name: "xBoost",
+      image: "",
+    },
+  },
+  {
+    id: 4,
+    job_position: "UI UX Designer",
+    client_data: {
+      name: "DesignScape Studios",
+      image: "",
+    },
+    location: "Mumbai, India",
+    job_stage: "Client Interview",
+    create_date: "December 28, 2024",
+    created_by: {
+      name: "xBoost",
+      image: "",
+    },
+  },
+  {
+    id: 5,
+    job_position: "UI UX Designer",
+    client_data: {
+      name: "DesignScape Studios",
+      image: "",
+    },
+    location: "Mumbai, India",
+    job_stage: "Client Interview",
+    create_date: "December 28, 2024",
+    created_by: {
+      name: "xBoost",
+      image: "",
+    },
+  },
+  {
+    id: 6,
+    job_position: "UI UX Designer",
+    client_data: {
+      name: "DesignScape Studios",
+      image: "",
+    },
+    location: "Mumbai, India",
+    job_stage: "Client Interview",
+    create_date: "December 28, 2024",
+    created_by: {
+      name: "xBoost",
+      image: "",
+    },
+  },
+];
+
+export const attachmentsHeaderData = [
+  "File Name",
+  "File Type",
+  "Uploaded Date",
+];
+
+export const attachmentListData = [
+  {
+    id: 1,
+    file_name: "documents.zip",
+    file_type: "zip",
+    uploaded_date: "February 26, 2025 • 8:14 AM",
+  },
+  {
+    id: 2,
+    file_name: "Priya-Sharma-Assignment.pdf",
+    file_type: "pdf",
+    uploaded_date: "January 31, 2025 • 04:51 PM",
+  },
+  {
+    id: 3,
+    file_name: "Priya-Sharma.jpg",
+    file_type: "image",
+    uploaded_date: "January 25, 2025 • 11:26 AM",
+  },
+  {
+    id: 4,
+    file_name: "Priya-Sharma-Resume.doc",
+    file_type: "document",
+    uploaded_date: "January 25, 2025 • 11:26 AM",
+  },
+];
 export const demoDescriptionText =
   "<p>A creative and user-focused UI/UX Designer with 3+ years of experience in crafting intuitive digital experiences. Adept at creating wireframes, prototypes, and high-fidelity designs for web and mobile applications. Skilled in translating business goals and user needs into functional and visually appealing interfaces. Priya is known for her strong attention to detail, collaborative approach, and ability to deliver innovative design solutions.</p>";

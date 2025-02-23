@@ -18,11 +18,15 @@ import { ReactComponent as ModalNext } from "../../pages/Recruitment/Candidates/
 import { ReactComponent as EditIcon } from "../../pages/Recruitment/Candidates/assets/edit.svg";
 import { ReactComponent as DeleteIcon } from "../../pages/Recruitment/Candidates/assets/delete.svg";
 import {
+  attachmentListData,
+  attachmentsHeaderData,
+  candidateJobData,
   comapnyListing,
   commonStyle,
   educationData,
   experienceData,
   jobData,
+  jobsTableHeaderData,
 } from "../../helpers/config";
 import CandidateDetails from "../candidate/CandidateDetails";
 import CandidateInfoSkills from "../candidate/CandidateInfoSkills";
@@ -35,6 +39,8 @@ import CandidateDescription from "../candidate/CandidateDescription";
 import ProfessionalDetails from "../candidate/ProfessionalDetails";
 import CommonDeleteModal from "./CommonDeleteModal";
 import AddNoteModal from "./AddNoteModal";
+import CanidateJobListTable from "../candidate/CanidateJobListTable";
+import AttachmentsListTable from "../candidate/AttachmentsListTable";
 
 const skillData = [
   {
@@ -93,51 +99,43 @@ const candidateInfoTabs = [
   {
     id: 1,
     name: "Summary",
-
     selected: true,
   },
   {
     id: 2,
     name: "Resume",
-
     selected: false,
   },
   {
     id: 3,
     name: "Jobs",
-
     count: "04",
     selected: false,
   },
   {
     id: 4,
     name: "Inbox",
-
     selected: false,
   },
   {
     id: 5,
     name: "Calendar",
-
     selected: false,
   },
   {
     id: 6,
     name: "Enrich User Profile",
-
     selected: false,
   },
   {
     id: 7,
     name: "Attachments",
-
     count: "06",
     selected: false,
   },
   {
     id: 8,
     name: "History",
-
     selected: false,
   },
 ];
@@ -473,69 +471,103 @@ const CandidateInfoModal = ({ visible, onClose }) => {
               </div>
             </div>
           </div>
-          <div
-            className="display-flex"
-            style={{ gap: 12, padding: "0px 16px", overflow: "auto" }}
-          >
+          {selectedCandidateTab === "Summary" && (
             <div
-              className="flex-1 display-column"
-              style={{ gap: 12, overflowY: "auto", marginBottom: "10px" }}
+              className="display-flex"
+              style={{ gap: 12, padding: "0px 16px", overflow: "auto" }}
             >
-              <ProfessionalDetails
-                details={candidateDetailsData}
-                label={"Candidate Details"}
-              />
-              <ProfessionalDetails
-                label={"Contact Details"}
-                details={contactDetails}
-              />
-              <CandidateDescription label={"Candidate Description"} />
-              <ProfessionalDetails
-                label={"Professional Details"}
-                details={professionalDetails}
-              />
-              <CandidateDetails
-                label={"Placement Details"}
-                details={placementDetails}
-              />
-              <CandidateInfoExperience
-                label={"Experience Details"}
-                data={experienceData}
-              />
-              <CandidateInfoExperience
-                label={"Education Details"}
-                data={educationData}
-              />
-              <CandidateInfoJobs label={"Jobs"} data={jobData} />
-              <AddCommonCandidateInfo label={"Folders"} />
-              <CandidateLog />
+              <div
+                className="flex-1 display-column"
+                style={{ gap: 12, overflowY: "auto", marginBottom: "10px" }}
+              >
+                <ProfessionalDetails
+                  details={candidateDetailsData}
+                  label={"Candidate Details"}
+                />
+                <ProfessionalDetails
+                  label={"Contact Details"}
+                  details={contactDetails}
+                />
+                <CandidateDescription label={"Candidate Description"} />
+                <ProfessionalDetails
+                  label={"Professional Details"}
+                  details={professionalDetails}
+                />
+                <CandidateDetails
+                  label={"Placement Details"}
+                  details={placementDetails}
+                />
+                <CandidateInfoExperience
+                  label={"Experience Details"}
+                  data={experienceData}
+                />
+                <CandidateInfoExperience
+                  label={"Education Details"}
+                  data={educationData}
+                />
+                <CandidateInfoJobs label={"Jobs"} data={jobData} />
+                <AddCommonCandidateInfo label={"Folders"} />
+                <CandidateLog />
+              </div>
+              <div
+                className="candidate-info-modal-section-2 flex-1 "
+                style={{
+                  maxWidth: 500,
+                  maxHeight: "max-content",
+                  overflowY: "auto",
+                }}
+              >
+                <div className="candidate-info-modal-inner-section-1">
+                  <CompanyDropdown options={comapnyListing} />
+                  <input
+                    type="text"
+                    placeholder="Write a note"
+                    value={writeText}
+                    onChange={(e) => setWriteText(e.target?.value)}
+                    className="common-input"
+                  />
+                </div>
+                <div className="divider-line" />
+                <div className="display-column" style={{ gap: 16 }}>
+                  {feedBackData?.map((item) => {
+                    return renderFeedback(item);
+                  })}
+                </div>
+              </div>
             </div>
+          )}
+
+          {selectedCandidateTab === "Jobs" && (
             <div
-              className="candidate-info-modal-section-2 flex-1 "
               style={{
-                maxWidth: 500,
-                maxHeight: "max-content",
-                overflowY: "auto",
+                gap: 12,
+                padding: "0px 16px",
+                overflow: "auto",
+                position: "relative",
               }}
             >
-              <div className="candidate-info-modal-inner-section-1">
-                <CompanyDropdown options={comapnyListing} />
-                <input
-                  type="text"
-                  placeholder="Write a note"
-                  value={writeText}
-                  onChange={(e) => setWriteText(e.target?.value)}
-                  className="common-input"
-                />
-              </div>
-              <div className="divider-line" />
-              <div className="display-column" style={{ gap: 16 }}>
-                {feedBackData?.map((item) => {
-                  return renderFeedback(item);
-                })}
-              </div>
+              <CanidateJobListTable
+                header={jobsTableHeaderData}
+                data={candidateJobData}
+              />
             </div>
-          </div>
+          )}
+
+          {selectedCandidateTab === "Attachments" && (
+            <div
+              style={{
+                gap: 12,
+                padding: "0px 16px",
+                overflow: "auto",
+                position: "relative",
+              }}
+            >
+              <AttachmentsListTable
+                header={attachmentsHeaderData}
+                data={attachmentListData}
+              />
+            </div>
+          )}
         </div>
         <div className="close-previous-next-btn-wrapper">
           <button className="modal-close-btn" onClick={onClose}>
