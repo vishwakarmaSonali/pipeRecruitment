@@ -44,6 +44,13 @@ import AddNoteModal from "./AddNoteModal";
 import CanidateJobListTable from "../candidate/CanidateJobListTable";
 import AttachmentsListTable from "../candidate/AttachmentsListTable";
 import CandidateHistoryTabel from "../candidate/CandidateHistoryTabel";
+import { ReactComponent as EnrichIcon } from "../../assets/icons/enrich.svg";
+import { ReactComponent as RefreshIcon } from "../../assets/icons/refresh-2.svg";
+import { ReactComponent as InfoIcon } from "../../assets/icons/info.svg";
+import { ReactComponent as VerifyIcon } from "../../assets/icons/verified.svg";
+import { ReactComponent as LinkedIn } from "../../assets/icons/sociallinks/linkedin.svg";
+import { ReactComponent as PlusIcon } from "../../assets/icons/plusIcon.svg";
+import CommonAddButton from "../common/CommonAddButton";
 
 const skillData = [
   {
@@ -217,6 +224,49 @@ const feedBackData = [
   },
 ];
 
+const enrichUserProfileData = [
+  {
+    id: 1,
+    key: "",
+    name: "LinkedIn",
+    verified: true,
+    percentage: "100%",
+    visitLink: "www.linkedin.com",
+  },
+  {
+    id: 2,
+    key: "",
+    name: "Behance",
+    verified: false,
+    percentage: "85%",
+    visitLink: "www.behnace.com",
+  },
+  {
+    id: 3,
+    key: "",
+    name: "Dribbble",
+    verified: true,
+    percentage: "100%",
+    visitLink: "www.dribbble.com",
+  },
+  {
+    id: 4,
+    key: "",
+    name: "Medium",
+    verified: false,
+    percentage: "85%",
+    visitLink: "www.medium.com",
+  },
+  {
+    id: 5,
+    key: "",
+    name: "Youtube",
+    verified: false,
+    percentage: "85%",
+    visitLink: "www.youtube.com",
+  },
+];
+
 const CandidateInfoModal = ({ visible, onClose }) => {
   const { modals, setModalVisibility } = useModal();
   const [candidateTabs, setCandidateTabs] = useState(candidateInfoTabs);
@@ -230,6 +280,8 @@ const CandidateInfoModal = ({ visible, onClose }) => {
   const [selectedCompanyHistory, setSelectedCompanyHistory] = useState(
     comapnyListing[0]
   );
+  const [enrichUserProfileVisible, setEnrichUserProfileVisible] =
+    useState(false);
   const [anchorE2, setAnchorE2] = useState(null);
   const feedBackMenuOpen = Boolean(anchorE2);
   const open = Boolean(anchorEl);
@@ -628,6 +680,109 @@ const CandidateInfoModal = ({ visible, onClose }) => {
               </div>
             </div>
           )}
+
+          {selectedCandidateTab === "Enrich User Profile" &&
+            (enrichUserProfileVisible ? (
+              <div
+                className="display-flex"
+                style={{
+                  gap: 14,
+                  flexWrap: "wrap",
+                  padding: "0 16px",
+                  overflowY: "auto",
+                }}
+              >
+                {enrichUserProfileData?.map((item) => {
+                  return (
+                    <div
+                      className="enrich-user-profilte-item-div"
+                      key={item?.id}
+                    >
+                      <div
+                        className="display-flex align-center"
+                        style={{ gap: 10 }}
+                      >
+                        <LinkedIn width={35} height={36} />
+                        <div className="disply-column" style={{ gap: 6 }}>
+                          <p className="font-14-regular color-dark-black">
+                            {item?.name}
+                          </p>
+                          <a
+                            href={item?.visitLink}
+                            className="font-12-regular color-grey"
+                          >
+                            {item?.visitLink}
+                          </a>
+                        </div>
+                      </div>
+                      <div className="display-flex-justify align-center">
+                        <button className="font-14-regular color-blue">
+                          Not the right profile?
+                        </button>
+
+                        <div
+                          className="common-badge-style"
+                          style={{
+                            backgroundColor: item?.verified
+                              ? "#46A13C1A"
+                              : "#D2A01D1A",
+                          }}
+                        >
+                          {item?.verified ? <VerifyIcon /> : <InfoIcon />}
+                          <span
+                            className={`font-12-regular ${
+                              item?.verified ? "color-success" : "color-holt"
+                            }`}
+                          >
+                            {item?.verified
+                              ? "Verified"
+                              : `${item?.percentage} Match`}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+                <CommonAddButton
+                  title={"Add More"}
+                  icon={<PlusIcon stroke="#1761D8" />}
+                  btnStyle={{
+                    backgroundColor: "transparent",
+                    border: "1px solid #1761D8",
+                    color: "#1761D8",
+                    alignSelf: "center",
+                  }}
+                />
+              </div>
+            ) : (
+              <div
+                className="display-column flex-1"
+                style={{
+                  padding: "0px 16px",
+                  gap: 40,
+                  alignItems: "center",
+                  justifyContent: "center",
+                  overflow: "auto",
+                }}
+              >
+                <EnrichIcon />
+                <p
+                  className="font-14-regular color-dark-black text-center"
+                  style={{ maxWidth: 650 }}
+                >
+                  Enhance candidate profiles by linking their social media
+                  accounts.
+                  <br /> Using key details like name, location, job title, and
+                  employer, our system gathers publicly available social media
+                  information to provide a more complete candidate overview.
+                </p>
+                <CommonAddButton
+                  title={"Enrich User Profile"}
+                  icon={<RefreshIcon />}
+                  onClick={() => setEnrichUserProfileVisible(true)}
+                />
+              </div>
+            ))}
         </div>
         <div className="close-previous-next-btn-wrapper">
           <button className="modal-close-btn" onClick={onClose}>

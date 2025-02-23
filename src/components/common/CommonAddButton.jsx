@@ -2,7 +2,7 @@ import React from "react";
 import "./common.css";
 import { ReactComponent as AddIcon } from "../../assets/icons/plusIcon.svg";
 
-const CommonAddButton = ({ title, onClick, btnStyle, disable }) => {
+const CommonAddButton = ({ title, onClick, btnStyle, disable, icon }) => {
   return (
     <button
       disabled={disable}
@@ -11,7 +11,7 @@ const CommonAddButton = ({ title, onClick, btnStyle, disable }) => {
       onClick={onClick}
     >
       {title}
-      <AddIcon />
+      {icon}
     </button>
   );
 };
