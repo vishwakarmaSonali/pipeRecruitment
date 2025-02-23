@@ -25,6 +25,8 @@ import {
   commonStyle,
   educationData,
   experienceData,
+  historyData,
+  historyHeaderData,
   jobData,
   jobsTableHeaderData,
 } from "../../helpers/config";
@@ -41,6 +43,7 @@ import CommonDeleteModal from "./CommonDeleteModal";
 import AddNoteModal from "./AddNoteModal";
 import CanidateJobListTable from "../candidate/CanidateJobListTable";
 import AttachmentsListTable from "../candidate/AttachmentsListTable";
+import CandidateHistoryTabel from "../candidate/CandidateHistoryTabel";
 
 const skillData = [
   {
@@ -224,6 +227,9 @@ const CandidateInfoModal = ({ visible, onClose }) => {
   const [deleteNoteModalVisible, setDeleteNoteModalVisible] = useState(false);
   const [noteModalVisible, setNoteModalVisible] = useState(false);
   const [selectedNote, setSelectedNote] = useState(null);
+  const [selectedCompanyHistory, setSelectedCompanyHistory] = useState(
+    comapnyListing[0]
+  );
   const [anchorE2, setAnchorE2] = useState(null);
   const feedBackMenuOpen = Boolean(anchorE2);
   const open = Boolean(anchorEl);
@@ -360,6 +366,7 @@ const CandidateInfoModal = ({ visible, onClose }) => {
           className={`candidate-info-modal-container ${
             modals?.animatedModal && "shake"
           }`}
+          style={{ paddingBottom: 16 }}
         >
           <div className="candidate-info-header">
             <div className="display-flex-justify align-center">
@@ -566,6 +573,59 @@ const CandidateInfoModal = ({ visible, onClose }) => {
                 header={attachmentsHeaderData}
                 data={attachmentListData}
               />
+            </div>
+          )}
+
+          {selectedCandidateTab === "History" && (
+            <div
+              className="display-flex flex-1"
+              style={{
+                gap: 16,
+                padding: "0px 16px",
+                overflow: "auto",
+              }}
+            >
+              <div className="candidate-info-history-sidebar">
+                <div className="display-column" style={{ gap: 12 }}>
+                  {comapnyListing?.map((item) => {
+                    return (
+                      <button
+                        className={`history-comapny-list-btn ${
+                          selectedCompanyHistory?.id === item?.id &&
+                          "selected-history-company"
+                        }`}
+                        key={item?.id}
+                        onClick={() => setSelectedCompanyHistory(item)}
+                      >
+                        <div className="w-h-32">
+                          <img src={item?.logo} className="common-img" />
+                        </div>
+                        <div
+                          className="display-column"
+                          style={{ gap: 4, alignItems: "flex-start" }}
+                        >
+                          {item?.name && (
+                            <p className="font-14-medium color-dark-black">
+                              {item?.name}
+                            </p>
+                          )}
+                          {item?.position && (
+                            <p className="font-10-regular color-dark-black">
+                              {item?.position}
+                            </p>
+                          )}
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+              <div className="flex-1">
+                <CandidateHistoryTabel
+                  header={historyHeaderData}
+                  data={historyData}
+                />
+              </div>
             </div>
           )}
         </div>

@@ -699,5 +699,47 @@ export const attachmentListData = [
     uploaded_date: "January 25, 2025 • 11:26 AM",
   },
 ];
+
+export const historyHeaderData = ["User", "Action", "Date & Time"];
+
+export const historyData = [
+  {
+    id: 1,
+    user: {
+      name: "xBoost",
+      image: "",
+    },
+    action: "Updated candidate",
+    date: "January 15, 2025 • 6:12 PM",
+  },
+  {
+    id: 2,
+    user: {
+      name: "xBoost",
+      image: "",
+    },
+    action: "Updated candidate",
+    date: "January 11, 2025 • 6:12 PM",
+  },
+  {
+    id: 3,
+    user: {
+      name: "xBoost",
+      image: "",
+    },
+    action: "Moved candidate from stage new candidate to assignmnet",
+    date: "January 05, 2025 • 6:12 PM",
+  },
+  {
+    id: 4,
+    user: {
+      name: "xBoost",
+      image: "",
+    },
+    action: "Updated candidate",
+    date: "January 11, 2025 • 6:12 PM",
+  },
+];
+
 export const demoDescriptionText =
   "<p>A creative and user-focused UI/UX Designer with 3+ years of experience in crafting intuitive digital experiences. Adept at creating wireframes, prototypes, and high-fidelity designs for web and mobile applications. Skilled in translating business goals and user needs into functional and visually appealing interfaces. Priya is known for her strong attention to detail, collaborative approach, and ability to deliver innovative design solutions.</p>";
