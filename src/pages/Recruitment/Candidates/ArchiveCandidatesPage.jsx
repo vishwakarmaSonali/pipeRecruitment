@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import "./Candidates.css";
 import { useSelector } from "react-redux"; // Import Redux selector
-
+import { ReactComponent as DeleteIcon } from "../../../assets/icons/delete.svg";
 import { ReactComponent as Plus } from "../../../assets/icons/plus.svg";
 import { ReactComponent as FilterIcon } from "../../../assets/icons/filter.svg";
 import { ReactComponent as RefreshIcon } from "../../../assets/icons/refresh.svg";
@@ -12,10 +12,7 @@ import { ReactComponent as AddtoFolderIcon } from "../../../assets/icons/sourcin
 import { ReactComponent as EditUser } from "../../../assets/icons/user-edit.svg";
 import { ReactComponent as MergeDuplicateIcon } from "../../../assets/icons/merge.svg";
 import { ReactComponent as ArchiveIcon } from "../../../assets/icons/archive.svg";
-import { ReactComponent as DownloadIcon } from "../../../assets/icons/sourcingIcons/download.svg";
-import { ReactComponent as DocumentSign } from "../../../assets/icons/candidates/edit-2.svg";
-import { ReactComponent as ExportIcon } from "../../../assets/icons/export.svg";
-import { ReactComponent as ColumnIcon } from "../../../assets/icons/columns.svg";
+import Tooltip from "@mui/material/Tooltip";
 import SettingIcon from "../../../assets/icons/setting-2.svg";
 import LeftArrow from "../../../assets/icons/leftArrow.svg";
 import RightArrow from "../../../assets/icons/rightArrow.svg";
@@ -30,7 +27,10 @@ import SearchableMenu from "../../../components/SearchableMenu/SearchableMenu";
 import FilterMenu from "../../../components/FilterMenu/FilterMenu";
 import SaveFiltersModal from "../../../components/modals/SaveFiltersModal";
 import EditColumnModal from "../../../components/modals/EditColumns";
-import { candidates } from "../../../helpers/dataCandidates";
+import {
+  candidates,
+  archivedCandidates,
+} from "../../../helpers/dataCandidates";
 import { updateFilterAsync } from "../../../store/filterSlice";
 import { useDispatch } from "react-redux";
 import Navbar from "../../../components/navbar/Navbar";
@@ -41,12 +41,12 @@ import AddToFolderDrawer from "../../../components/candidate/AddToFolderDrawer";
 import ChangeOwnershipDrawer from "../../../components/candidate/ChangeOwnershipDrawer";
 import AddToJobsDrawer from "../../../components/candidate/AddToJobsDrawer";
 import MergeDuplicateModal from "../../../components/modals/MergeDuplicateModal";
-import { useNavigate } from "react-router-dom";
+import DeleteCandidateDrawer from "../../../components/candidate/DeleteCandidateDrawer";
+import { notifySuccess } from "../../../helpers/utils";
 
-const Candidates = ({ isDrawerOpen }) => {
+const ArchiveCandidates = ({ isDrawerOpen }) => {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const [candidateList, setCandidateList] = useState(candidates);
+  const [candidateList, setCandidateList] = useState(archivedCandidates);
   const [selectedCandidates, setSelectedCandidates] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("Candidates");
   const selectedColumns = useSelector((state) => state.columns.selected); // Get selected columns from Redux
@@ -56,8 +56,8 @@ const Candidates = ({ isDrawerOpen }) => {
   const [filterDrawerOpen, setFilterDrawerOpen] = useState(false);
   const [addToFolderDrawerOpen, setAddToFolderDrawerOpen] = useState(false);
   const [addToJobsDrawerOpen, setAddToJobsDrawerOpen] = useState(false);
-  const [hoveredCandidate, setHoveredCandidate] = useState(null);
-
+  const [deleteCandidateDrawerOpen, setDeleteCandidateDrawerOpen] =
+    useState(false);
   const [changeOwnershipDrawerOpen, setChangeOwnershipDrawerOpen] =
     useState(false);
   const [filtersApplied, setFiltersApplied] = useState(false);
@@ -107,7 +107,7 @@ const Candidates = ({ isDrawerOpen }) => {
     {
       label: "Archive",
       icon: <ArchiveIcon />,
-      onClick: () => navigate("/archive-candidates"),
+      onClick: () => console.log("Archive"),
     },
   ];
 
@@ -117,37 +117,14 @@ const Candidates = ({ isDrawerOpen }) => {
   const toggleAddToFolderDrawer = (open) => {
     setAddToFolderDrawerOpen(open);
   };
+  const toggleDeleteCandidateDrawer = (open) => {
+    setDeleteCandidateDrawerOpen(open);
+  };
   const toggleAddToJobsDrawer = (open) => {
     setAddToJobsDrawerOpen(open);
   };
-  const toggleChangeOwnershipDrawer = (open) => {
-    setChangeOwnershipDrawerOpen(open);
-  };
-  const applyFilters = (newFilters) => {
-    console.log(">>>>>>>>>>>>>>>>>>>>>newFilters", newFilters);
-    setFilters(newFilters);
-    setFiltersApplied(true);
-    toggleFilterDrawer(false);
-  };
 
-  // Function to reset filters
-  const resetFilters = () => {
-    setFilters({
-      jobTitle: "",
-      location: "",
-      company: "",
-      yearsOfExperience: { from: "", to: "" },
-      industry: "",
-      radius: "",
-      education: { major: "", school: "", degree: "" },
-    });
-    setFiltersApplied(false);
-  };
   const [anchorCreateCandidtaeEl, setAnchorCreateCandidtaeEl] = useState(null);
-
-  const handleOpenMenu = (event) => {
-    setAnchorCreateCandidtaeEl(event.currentTarget);
-  };
 
   const handleCloseMenu = () => {
     setAnchorCreateCandidtaeEl(null);
@@ -191,25 +168,8 @@ const Candidates = ({ isDrawerOpen }) => {
   // 🔍 Map formatted column names to actual data keys
   const columnMapping = {
     "Candidate Name": "candidate_name",
-    "Candidate First Name": "candidate_first_name",
-    "Candidate Last Name": "candidate_last_name",
-    "Reference Id": "reference_id",
-    Location: "location",
-    Gender: "gender",
-    Diploma: "diploma",
-    University: "university",
-    "Current Company": "current_company",
-    "Current Position": "current_position",
-    Email: "email",
-    Birthdate: "birthDate",
-    "Candidate Address": "candidate_address",
-    "Employment Status": "employment_status",
-    "Contact Number": "phone",
-    "Hired Date": "hired_date",
-    "Start Date": "start_date",
-    "ATS score": "ats_score",
-    "Created Date": "created_at",
-    "Created By": "created_by",
+    Owner: "owner",
+    "Archive Date": "archived_date",
   };
   // 🔍 Searchable Menu Items
   const initialSearchableItems = [
@@ -251,7 +211,6 @@ const Candidates = ({ isDrawerOpen }) => {
     initialSearchableItems
   );
   const { modals, setModalVisibility } = useModal();
-  const [activeTab, setActiveTab] = useState("candidates");
   const [searchQuery, setSearchQuery] = useState("");
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
@@ -267,12 +226,8 @@ const Candidates = ({ isDrawerOpen }) => {
   const [selectedSearchableOption, setSelectedSearchableOption] = useState("");
   const [originalConditions, setOriginalConditions] = useState([]);
   const [conditions, setConditions] = useState([]); // Store multiple conditions
-
-  // useEffect(() => {
-  //   if (conditions.length === 0) {
-  //     setSearchableMenuItems([...initialSearchableItems]); // Restore all items when no filters remain
-  //   }
-  // }, [conditions]);
+  const [deleteMessage, setDeleteMessage] = useState(""); // New state to store the delete message
+  const [deletingCandidates, setDeletingCandidates] = useState([]); // Track candidates to delete
 
   const applySavedFilter = (filterName) => {
     const selectedFilter = savedFilters.find(
@@ -313,10 +268,6 @@ const Candidates = ({ isDrawerOpen }) => {
   const filteredCandidates = candidateList.filter((candidate) =>
     candidate?.candidate_name?.toLowerCase().includes(searchQuery.toLowerCase())
   );
-
-  const handleSeacrchableMenuOpen = (event) => {
-    setAnchorAddConditionEl(event.currentTarget);
-  };
 
   const handleSearchableMenuClose = () => {
     setAnchorAddConditionEl(null);
@@ -362,66 +313,8 @@ const Candidates = ({ isDrawerOpen }) => {
     setAnchorFilterMenuEl(null);
   };
 
-  // ❌ Remove a condition and restore it to the searchable menu
-  // const removeCondition = (index) => {
-  //   setConditions((prevConditions) => {
-  //     if (prevConditions.length === 0) return prevConditions;
-
-  //     // Extract label from the condition being removed
-  //     const removedConditionLabel = prevConditions[index].split(" ")[0];
-
-  //     // Remove the condition from the list
-  //     const updatedConditions = prevConditions.filter((_, i) => i !== index);
-
-  //     setSearchableMenuItems((prevItems) => {
-  //       // Ensure the removed condition is added back only if it’s not already present
-  //       const itemToRestore = initialSearchableItems.find(
-  //         (item) => item.label === removedConditionLabel
-  //       );
-
-  //       if (
-  //         itemToRestore &&
-  //         !prevItems.some((item) => item.label === removedConditionLabel)
-  //       ) {
-  //         return [...prevItems, itemToRestore];
-  //       }
-
-  //       return prevItems;
-  //     });
-
-  //     return updatedConditions;
-  //   });
-  // };
-
-  // ✅ Handle Candidate Selection
-  const handleCandidateSelection = (id) => {
-    setSelectedCandidates((prevSelected) =>
-      prevSelected.includes(id)
-        ? prevSelected.filter((candidateId) => candidateId !== id)
-        : [...prevSelected, id]
-    );
-  };
-
-  // ✅ Select/Deselect All Candidates
-  const handleSelectAll = () => {
-    if (selectedCandidates.length === filteredCandidates.length) {
-      setSelectedCandidates([]); // Deselect all
-    } else {
-      setSelectedCandidates(
-        filteredCandidates.map((candidate) => candidate.id)
-      ); // Select all
-    }
-  };
-
-  // Function to handle opening the dropdown menu
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
   const handleClickBulkAction = (event) => {
     setAnchorBulkActionEl(event.currentTarget);
-  };
-  const handleClickSetting = (event) => {
-    setAnchorSettingEl(event.currentTarget);
   };
 
   // Function to handle closing the dropdown menu
@@ -434,17 +327,7 @@ const Candidates = ({ isDrawerOpen }) => {
   const handleCloseBulkAction = () => {
     setAnchorBulkActionEl(null);
   };
-  const handleFilterMenuOpen = (event) => {
-    setAnchorFilterMenuEl(event.currentTarget);
-  };
 
-  const handleFilterMenuClose = () => {
-    setAnchorFilterMenuEl(null);
-  };
-  // ✅ Handle Bulk Action Click (Customize as Needed)
-  const handleBulkAction = () => {
-    alert(`Performing bulk action on ${selectedCandidates.length} candidates!`);
-  };
   const PaginationFooter = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [resultsPerPage, setResultsPerPage] = useState(20);
@@ -577,14 +460,14 @@ const Candidates = ({ isDrawerOpen }) => {
     );
   };
 
-  // const getInitials = (name) => {
-  //   if (!name) return "";
-  //   const nameParts = name.split(" ");
-  //   const initials = nameParts
-  //     .map((part) => part[0].toUpperCase()) // Take the first letter of each part
-  //     .join(""); // Combine them
-  //   return initials.substring(0, 2); // Limit to 2 initials
-  // };
+  const getInitials = (name) => {
+    if (!name) return "";
+    const nameParts = name.split(" ");
+    const initials = nameParts
+      .map((part) => part[0].toUpperCase()) // Take the first letter of each part
+      .join(""); // Combine them
+    return initials.substring(0, 2); // Limit to 2 initials
+  };
   // Function to generate a random color
   const getRandomColor = () => {
     const colors = [
@@ -600,6 +483,42 @@ const Candidates = ({ isDrawerOpen }) => {
     return colors[Math.floor(Math.random() * colors.length)];
   };
 
+  const handleArchive = (id) => {
+    console.log(`Archiving candidate with ID: ${id}`);
+    // TODO: Implement API call or state update to archive candidate
+  };
+
+  // 🔥 Handle Delete Action (Determines message & opens drawer)
+  const handleDelete = (id = null) => {
+    if (id) {
+      setDeleteMessage("This candidate profile");
+      setDeletingCandidates([id]); // Only delete this one user
+
+    } else if (selectedCandidates.length === 1) {
+      setDeleteMessage("Selected candidate profile");
+      setDeletingCandidates([...selectedCandidates]); // Single selected user
+    } else {
+      setDeleteMessage("Selected candidate profiles");
+      setDeletingCandidates([...selectedCandidates]); // Multiple selected users
+    }
+
+    setDeleteCandidateDrawerOpen(true);
+  };
+  // 🔥 Handle Confirm Delete (Filters Out Deleted Candidates)
+  const handleConfirmDelete = (id) => {
+    if (id) {
+       notifySuccess("Candidate has been permanently deleted.")
+       
+    } else if (selectedCandidates.length === 1) {
+          notifySuccess("Selected candidate has been permanently deleted.")
+          
+    }
+    setCandidateList((prev) =>
+      prev.filter((candidate) => !deletingCandidates.includes(candidate.id))
+    );
+    setSelectedCandidates([]); // Clear selection after deletion
+    setDeleteCandidateDrawerOpen(false);
+  };
   return (
     <div
       className="w-full h-screen bg-white overflow-hidden overscroll-none"
@@ -615,181 +534,37 @@ const Candidates = ({ isDrawerOpen }) => {
         {/* Tabs Section */}
 
         <div className="flex items-center justify-between p-[17px]">
-          {/* <div className="flex space-x-6 border-b border-customGray">
-            <button
-              className={`flex items-center space-x-2 py-2 px-3 text-sm font-medium ${
-                activeTab === "candidates"
-                  ? "text-black border-b border-black"
-                  : "text-gray-500"
-              }`}
-              onClick={() => setActiveTab("candidates")}
-            >
-              <CandidatesIcon
-                fill={activeTab === "candidates" ? "customBlue" : "#797979"}
-              />
-              <span
-                className={`tab-title-text ${
-                  activeTab === "candidates"
-                    ? "text-customBlue"
-                    : "text-customGray"
-                }`}
-              >
-                Candidates
-              </span>
-            </button>
-
-            <button
-              className={`flex items-center space-x-2 py-2 px-3 text-sm font-medium ${
-                activeTab === "folder"
-                  ? "text-black border-b border-black"
-                  : "text-gray-500"
-              }`}
-              onClick={() => setActiveTab("folder")}
-            >
-              <Folder
-                fill={activeTab === "folder" ? "customBlue" : "#797979"}
-              />
-              <span
-                className={`tab-title-text ${
-                  activeTab === "folder" ? "text-customBlue" : "text-customGray"
-                }`}
-              >
-                Folder
-              </span>
-            </button>
-
-            <button
-              className={`flex items-center space-x-2 py-2 px-3 text-sm font-medium ${
-                activeTab === "sourcing"
-                  ? "text-black border-b border-black"
-                  : "text-gray-500"
-              }`}
-              onClick={() => setActiveTab("sourcing")}
-            >
-              <SourcingIcon
-                fill={activeTab === "sourcing" ? "customBlue" : "#797979"}
-              />
-              <span
-                className={`tab-title-text ${
-                  activeTab === "sourcing"
-                    ? "text-customBlue"
-                    : "text-customGray"
-                }`}
-              >
-                Sourcing
-              </span>
-            </button>
-          </div> */}
           <span className="font-ubuntu font-medium text-custom-large">
-            Candidates
+            Archived Candidates
           </span>
           {/* Action Buttons */}
-          <div className="flex space-x-2">
-            {/* ✅ Dynamically Change Button */}
+          {selectedCandidates.length >= 1 && (
+            <div className="flex space-x-2">
+              {/* ✅ Dynamically Change Button */}
 
-            <button
-              className="buttons text-white bg-buttonBLue"
-              onClick={handleClickBulkAction}
-            >
-              Batch Actions
-              <DropArrow fill="white" />
-            </button>
+              <button
+                className="buttons border-1 border-blue-600 text-buttonBLue min-w-[40px]"
+                onClick={(event) => (
+                  // setModalVisibility("mergeDuplicateModalVisible", true),
+                  setIsColumnSelectorOpen(true), handleClose()
+                )}
+              >
+                Restore Selected
+              </button>
+              <button
+                className="buttons text-white bg-buttonBLue"
+                onClick={() => handleDelete()}
+              >
+                Delete Selected
+              </button>
 
-            <button
-              className="buttons  text-white  bg-buttonBLue"
-              onClick={handleOpenMenu}
-
-              // onClick={() =>
-              //   setModalVisibility("createCandidateModalVisible", true)
-              // }
-            >
-              Create Candidate
-              <Plus stroke="#ffffff" />
-            </button>
-
-            {/* ✅ Dynamically Change Button */}
-
-            <button
-              className="buttons text-white bg-buttonBLue"
-              onClick={() => toggleFilterDrawer(true)}
-            >
-              Filter <FilterIcon />
-            </button>
-            <button
-              className="buttons border-1 border-blue-600 text-buttonBLue min-w-[40px]"
-              onClick={(event) => (
-                // setModalVisibility("mergeDuplicateModalVisible", true),
-                setIsColumnSelectorOpen(true), handleClose()
-              )}
-            >
-              Columns <ColumnIcon />
-            </button>
-            <button
-              className="buttons border-1 border-blue-600 text-buttonBLue min-w-[40px]"
-              onClick={() => setIsFilter(!isFilter)}
-            >
-              <ExportIcon  stroke="#1761D8"/>
-            </button>
-
-            <button className="buttons border-1 border-blue-600 text-buttonBLue  min-w-[40px] ">
-              <RefreshIcon />
-            </button>
-            {/* <button className="text-gray-700 pl-[8px]" onClick={handleClick}>
+              {/* <button className="text-gray-700 pl-[8px]" onClick={handleClick}>
               <ThreeDots />
             </button> */}
-          </div>
-        </div>
-        <div className="flex-1 bg-grey-90 flex flex-col overflow-hidden">
-          {isFilter && (
-            <div className="flex items-center justify-between p-[10px]">
-              {/* Display Applied Filters */}
-              <div className="flex items-center gap-2 flex-wrap">
-                {/* {conditions.length > 0 && (
-                <div className=" flex flex-wrap gap-2">
-                  {conditions.map((condition, index) => (
-                    <span
-                      key={index}
-                      className="border border-customGray text-customBlue px-3 py-1 rounded-lg text-sm flex items-center"
-                    >
-                      {condition}
-                      <button
-                        className="ml-2 text-red-500 hover:text-red-700"
-                        onClick={() => removeCondition(index)}
-                      >
-                        <img src={close} height={8} width={8} alt="close" />
-                      </button>
-                    </span>
-                  ))}
-                </div>
-              )} */}
-                {/* <div onClick={handleSeacrchableMenuOpen}>
-                <span className="text-buttonBLue font-ubuntu text-sm cursor-pointer">
-                  + Add condition
-                </span>
-              </div> */}
-              </div>
-              <div className="flex items-center justify-center gap-[8px]">
-                {/* <button
-                className={`buttons border-1  text-buttonBLue cursor-pointer ${
-                  conditions.length > 0
-                    ? "text-buttonBLue border-buttonBLue"
-                    : "text-customGray border-customGray"
-                }`}
-                onClick={handleApplyFilter}
-                disabled={conditions.length > 0}
-              >
-                Apply filter
-              </button> */}
-                <button
-                  className="buttons border-1 min-w-[40px] border-buttonBLue justify-center text-buttonBLue"
-                  onClick={handleClickSetting}
-                  style={{ borderColor: "#1761D8" }} // Use your exact blue color code
-                >
-                  <img src={SettingIcon} alt="settings" />
-                </button>
-              </div>
             </div>
           )}
+        </div>
+        <div className="flex-1 bg-grey-90 flex flex-col overflow-hidden">
           {/* Table Wrapper with Horizontal Scroll */}
 
           <div className="overflow-auto px-[10px] bg-white shadow-md flex-grow h-[calc(100vh)]">
@@ -818,25 +593,27 @@ const Candidates = ({ isDrawerOpen }) => {
                   </th>
 
                   {/* ✅ Dynamically Generate Column Headers from selectedColumns */}
-                  {selectedColumns.map((columnName) => (
-                    <th
-                      key={columnName}
-                      className="th-title p-0 bg-blueBg max-w-[240px] min-w-[230px]"
-                    >
-                      {columnName}
-                    </th>
-                  ))}
+                  {["Candidate Name", "Owner", "Archived Date", "Actions"].map(
+                    (columnName) => (
+                      <th
+                        key={columnName}
+                        className="th-title p-0 bg-blueBg max-w-[240px] min-w-[230px]"
+                      >
+                        {columnName}
+                      </th>
+                    )
+                  )}
                 </tr>
               </thead>
 
               {/* ✅ Table Body */}
               <tbody className="divide-y overflow-auto divide-gray-200">
-                {filteredCandidates.map((candidate) => (
+                {archivedCandidates.map((candidate) => (
                   <tr key={candidate.id} className="hover:bg-gray-50">
                     {/* Checkbox Column for Selecting Candidates */}
                     <td className="pr-0">
                       <div
-                        className={`w-[20px] h-[20px] border-1 m-0  border-customBlue bg-white rounded-[6px] flex items-center justify-center cursor-pointer`}
+                        className={`w-[20px] h-[20px] border-1 m-0 border-customBlue bg-white rounded-[6px] flex items-center justify-center cursor-pointer`}
                         onClick={() =>
                           setSelectedCandidates((prev) =>
                             prev.includes(candidate.id)
@@ -851,50 +628,56 @@ const Candidates = ({ isDrawerOpen }) => {
                       </div>
                     </td>
 
-                    {/* ✅ Dynamically Show Data for Selected Columns */}
-                    {selectedColumns.map((columnName) => {
-                      const key = columnMapping[columnName]; // Get actual key from mapping
-                      return (
-                        <td key={key} className="td-text px-1 justify-between">
-                          {columnName === "Candidate Name" ? (
-                            <div
-                              className="flex items-center gap-2 relative"
-                              onMouseEnter={() =>
-                                setHoveredCandidate(candidate.id)
-                              }
-                              onMouseLeave={() => setHoveredCandidate(null)}
-                            >
-                              {/* Display Initials */}
-                              <div
-                                className="w-[28px] h-[28px] flex items-center justify-center rounded-full bg-customBlue text-white font-bold text-sm"
-                                style={{ backgroundColor: getRandomColor() }}
-                              >
-                                {candidate.candidate_first_name?.charAt(0)}
-                                {candidate.candidate_last_name?.charAt(0)}
+                    {/* Dynamically Show Data for Selected Columns */}
+                    {["Candidate Name", "Owner", "Archived Date"].map(
+                      (columnName) => {
+                        const key = columnMapping[columnName]; // Get actual key from mapping
+                        return (
+                          <td key={key} className="td-text px-1 justify-center">
+                            {columnName === "Candidate Name" ? (
+                              <div className="flex items-center gap-2">
+                                {/* Display Initials */}
+                                <div
+                                  className="w-[28px] h-[28px] flex items-center justify-center rounded-full bg-customBlue text-white font-bold text-sm"
+                                  style={{ backgroundColor: getRandomColor() }}
+                                >
+                                  {getInitials(candidate?.candidate_name)}
+                                </div>
+                                {/* Display Candidate Name */}
+                                <span>{candidate[key] || "-"}</span>
                               </div>
+                            ) : (
+                              candidate[key] || "-"
+                            )}
+                          </td>
+                        );
+                      }
+                    )}
 
-                              {/* Display Candidate Name */}
-                              <span>{candidate[key] || "-"}</span>
+                    {/* Actions Column */}
+                    <td className="td-text px-1 justify-center">
+                      <div className="flex gap-2">
+                        {/* Archive Button */}
+                        <Tooltip title="Restore">
+                          <button
+                            className="px-2 py-1  text-white rounded-md"
+                            onClick={() => handleArchive(candidate.id)}
+                          >
+                            <ArchiveIcon />
+                          </button>
+                        </Tooltip>
 
-                              {/* ✅ Show Eye Icon on Hover */}
-                              {hoveredCandidate === candidate.id && (
-                                <p>eye</p>
-                                // <EyeIcon
-                                //   className="absolute right-[-20px] cursor-pointer"
-                                //   onClick={() =>
-                                //     console.log(
-                                //       `Viewing candidate ${candidate.id}`
-                                //     )
-                                //   }
-                                // />
-                              )}
-                            </div>
-                          ) : (
-                            candidate[key] || "-"
-                          )}
-                        </td>
-                      );
-                    })}
+                        {/* Delete Button */}
+                        <Tooltip title="Delete Permanently">
+                          <button
+                            className="px-2 py-1 bg-red-500 text-white rounded-md "
+                            onClick={() => handleDelete(candidate.id)}
+                          >
+                            <DeleteIcon />
+                          </button>
+                        </Tooltip>
+                      </div>
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -991,19 +774,11 @@ const Candidates = ({ isDrawerOpen }) => {
         isOpen={addToJobsDrawerOpen}
         onClose={() => toggleAddToJobsDrawer(false)}
       />
-      <AddToFolderDrawer
-        // onApply={applyFilters}
-        // onReset={resetFilters}
-        filters={filters}
-        isOpen={addToFolderDrawerOpen}
-        onClose={() => toggleAddToFolderDrawer(false)}
-      />
-      <ChangeOwnershipDrawer
-        // onApply={applyFilters}
-        // onReset={resetFilters}
-        filters={filters}
-        isOpen={changeOwnershipDrawerOpen}
-        onClose={() => toggleChangeOwnershipDrawer(false)}
+   <DeleteCandidateDrawer
+        isOpen={deleteCandidateDrawerOpen}
+        onClose={() => setDeleteCandidateDrawerOpen(false)}
+        deleteMessage={deleteMessage} // Pass message dynamically
+        onConfirmDelete={handleConfirmDelete} // Pass function to confirm delete
       />
       <CreateCandidateMenu
         anchorEl={anchorCreateCandidtaeEl}
@@ -1014,4 +789,4 @@ const Candidates = ({ isDrawerOpen }) => {
   );
 };
 
-export default Candidates;
+export default ArchiveCandidates;

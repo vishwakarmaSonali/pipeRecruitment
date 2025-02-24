@@ -8,6 +8,7 @@ import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/material.css";
 import { ReactComponent as GallaryEdit } from "../../assets/icons/gallery-edit.svg";
 import { ReactComponent as Calendar2 } from "../../assets/icons/calendar-2.svg";
+import { useDispatch, useSelector } from "react-redux";
 
 import { profileImage } from "../../helpers/assets";
 import StyledDropdownInput from "./StyledDropdownInput";
@@ -31,6 +32,8 @@ import SocialLinksManager from "./SocialLinksManager";
 import EducationDetailsManager from "./EducationDetailsManager";
 import ExperienceDetailsManager from "./ExperienceDetailsManager";
 import HeaderWithActions from "./CandidateHeader";
+import { createCandidates } from "../../actions/candidateActions";
+import { useNavigate } from "react-router-dom";
 const genderOptions = [
   { id: 1, label: "Female" },
   { id: 2, label: "Male" },
@@ -53,6 +56,8 @@ const frequencyOptions = [
   { id: 7, frequency: "Anually" },
 ];
 const CreateCandidateForm = () => {
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
   const today = new Date();
   const [description, setDescription] = useState("");
   const [profileImages, setProfileImage] = useState("");
@@ -60,10 +65,8 @@ const CreateCandidateForm = () => {
   const [selectedTitle, setSelectedTitle] = useState("None");
   const [firstName, setFirstName] = useState(""); // New state for First Name
   const [lastName, setLastName] = useState(""); // New state for First Name
-  const [dateofbirth, setDateofbirth] = useState(format(today, "yyyy-MM-dd"));
-  const [lastContactedDate, setLastContactedDate] = useState(
-    format(today, "yyyy-MM-dd")
-  );
+  const [dateofbirth, setDateofbirth] = useState(null);
+ 
 
   const [lastUpdatedDate, setLastUpdatedDate] = useState(
     format(today, "yyyy-MM-dd")
@@ -143,43 +146,101 @@ const CreateCandidateForm = () => {
     setShowUpdatedCalendar(false);
   };
   // ✅ Handle Form Submission
-  const handleCreate = () => {
+  // const handleCreate = () => {
+  //   const candidateData = {
+  //     profileImage,
+  //     selectedTitle,
+  //     firstName, // ✅ Log first name
+  //     lastName,
+  //     selectedGender,
+  //     dateofbirth,
+  //     // lastUpdatedDate,
+  //     selectedLocations,
+  //     selectedNationality,
+  //     selectedJobs,
+  //     nationality,
+  //     phoneNumber: `${selectedCountry.dialCode} ${phoneNumber}`,
+  //     country: selectedCountry.name,
+  //     frequency,
+  //     currentSalaryCurrency,
+  //     expectedSalaryCurrency,
+  //     yearsOfExp,
+  //     highestQualification,
+  //     currentEmployer,
+  //     currentSalary,
+  //     expectedSalary,
+  //     // selectedJob,
+  //     // selectedFolder,
+  //     skills,
+  //     languages,
+  //     socialLinks,
+  //     experience,
+  //     education,
+  //     // phoneNumber,
+  //     // email,
+  //     // description,
+  //   };
+  //   let params = {};
+    
+  //    dispatch(createCandidates(null,candidateData ));
+  //   console.log("🚀 Candidate Data:", candidateData);
+  // };
+  const handleCreate = async () => {
+    if (!firstName.trim() || !lastName.trim()) {
+      alert("First Name and Last Name are required!");
+      return;
+    }
+  
     const candidateData = {
-      profileImage,
-      selectedTitle,
-      firstName, // ✅ Log first name
-      lastName,
-      selectedGender,
-      dateofbirth,
-      // lastUpdatedDate,
-      selectedLocations,
-      selectedNationality,
-      selectedJobs,
-      nationality,
-      phoneNumber: `${selectedCountry.dialCode} ${phoneNumber}`,
-      country: selectedCountry.name,
-      frequency,
-      currentSalaryCurrency,
-      expectedSalaryCurrency,
-      yearsOfExp,
-      highestQualification,
-      currentEmployer,
-      currentSalary,
-      expectedSalary,
-      // selectedJob,
-      // selectedFolder,
-      skills,
-      languages,
-      socialLinks,
-      experience,
-      education,
-      // phoneNumber,
-      // email,
-      // description,
+      first_name: firstName,
+      last_name: lastName,
+      ...(email && { email }),
+      // ...(salutation && { salutation:selectedTitle }),  // ✅ Added missing `salutation`
+      ...(dateofbirth && { date_of_birth: dateofbirth }), // ✅ Added `date_of_birth`
+      ...(selectedGender && { gender :selectedGender.label.toLowerCase()}),  // ✅ Added `gender`
+      ...(phoneNumber && {
+        phone: phoneNumber,  
+        country_code: selectedCountry.dialCode || "+91" // ✅ Added `country_code`
+      }),
+      ...(selectedLocations.length > 0 && { city: selectedLocations[0] }),
+      // ...(selectedState && { state: selectedState }), // ✅ Added `state`
+      ...(selectedCountry.name && { country: selectedCountry.name }),
+      ...(selectedTitle !== "None" && { salutation: selectedTitle }),
+      ...(skills.length > 0 && {
+        skills: skills.map(skill => ({
+          name: skill.name,
+          level: parseInt(skill.score, 10) || 1
+        }))
+      }),
+      ...(description && { info: description }),
+      ...(selectedNationality.length > 0 && { nationality: selectedNationality }),
+      ...(selectedJobs.length > 0 && { jobs: selectedJobs }),
+      showArray: [{ key: "value" }, { hasBool: true }], // ✅ Already included
+      // work_preference: { waaafh: true, aadf: false }, // ✅ Already included
+      ...(highestQualification && {
+        education_1: { [highestQualification]: "yes" }
+      }),
+      ...(yearsOfExp && { years_of_experience: yearsOfExp }),
+      ...(currentSalary && { current_salary: currentSalary }),
+      ...(expectedSalary && { expected_salary: expectedSalary }),
     };
-    console.log("🚀 Candidate Data:", candidateData);
+  
+    try {
+      const response = await dispatch(createCandidates(null, candidateData));
+      console.log("response>>>>", response);
+  
+      if (response?.success || response?.id) {
+        alert("Candidate created successfully!");
+        navigate("/candidates"); // ✅ Navigate on success
+      } else {
+        alert(response?.message || "Failed to create candidate. Please try again.");
+      }
+    } catch (error) {
+      console.error("❌ API Error:", error);
+      alert("Something went wrong. Please try again.");
+    }
   };
-
+  
   // ✅ Reset Form
   const handleDiscard = () => {
     setProfileImage(null);
@@ -187,24 +248,29 @@ const CreateCandidateForm = () => {
     setSelectedTitle("None");
     setFirstName("");
     setLastName("");
-    setLastUpdatedDate(format(today, "yyyy-MM-dd"));
+    setSelectedGender([]);
+    setDateofbirth(null); // Reset date of birth
     setSelectedLocations([]);
     setSelectedNationality([]);
-    setSelectedGender([]);
+    setSelectedJobs([]); // Clear selected jobs
+    setNationality([]);
+    setPhoneNumber("");
+    setSelectedCountry({ code: "US", name: "United States", dialCode: "+1", flag: "🇺🇸" }); // Reset country
     setFrequency(null);
+    setCurrentSalaryCurrency({ code: "USD", name: "US Dollar", symbol: "US$", flag: "🇺🇸" }); // Reset salary currency
+    setExpectedSalaryCurrency({ code: "GBP", name: "British Pound", symbol: "£", flag: "🇬🇧" }); // Reset expected salary currency
+    setYearsOfExp("");
+    setHighestQualification("");
+    setCurrentEmployer("");
     setCurrentSalary("");
     setExpectedSalary("");
-    setSelectedJob([]);
-    setSelectedFolder([]);
-    setSkills([]);
-    setLanguages([]);
+    setSkills([]); // Reset skills
+    setLanguages([]); // Reset languages
     setSocialLinks([]);
     setExperience([]);
     setEducation([]);
-    setPhoneNumber("");
-    setEmail("");
-    setDescription("");
   };
+  
 
   return (
     <div
@@ -286,7 +352,7 @@ const CreateCandidateForm = () => {
                       <input
                         placeholder="Date of Birth"
                         className=" outline-none border-none padding-0 margin-0 text-sm font-ubuntu"
-                        value={format(dateofbirth, "MMMM d, yyyy")}
+                        value={dateofbirth==null ?"": format(dateofbirth, "MMMM d, yyyy")}
                         onFocus={() => setShowUpdatedCalendar(true)}
                         readOnly
                       />

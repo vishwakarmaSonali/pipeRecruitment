@@ -99,7 +99,6 @@ const CustomDropdown = ({ options, placeholder, selectedValues, onChange, option
           )}
         </ul>
       )}
-
       {selectedValues?.length > 0 && (
         <div className="inputItemsDiv mt-2">
           {selectedValues.map((val, index) => (
@@ -115,6 +114,7 @@ const CustomDropdown = ({ options, placeholder, selectedValues, onChange, option
           ))}
         </div>
       )}
+
     </div>
   );
 };

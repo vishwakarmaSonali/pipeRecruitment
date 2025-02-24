@@ -45,29 +45,32 @@ const SearchDropdown = ({
     };
   }, []);
 
-  // 🔹 Handle Option Selection
   const handleSelect = (option) => {
     if (multiSelect) {
       const alreadySelected = selectedOptions.some(
         (item) => item[optionKey] === option[optionKey]
       );
-
+  
       const updatedSelections = alreadySelected
-        ? selectedOptions.filter(
-            (item) => item[optionKey] !== option[optionKey]
-          ) // Remove if already selected
-        : [...selectedOptions, option]; // Add if not selected
-
+        ? selectedOptions.filter((item) => item[optionKey] !== option[optionKey])
+        : [...selectedOptions, option];
+  
       setSelectedOptions(updatedSelections);
       onSelect(updatedSelections);
+
+      
+      // ✅ Keep dropdown open for multiple selections
+      setIsDropdownOpen(false);
     } else {
       setSelectedOptions(option);
       setSearchTerm(option[optionKey]); // Show selected value in input
-      setIsDropdownOpen(false); // Close dropdown after selecting
       onSelect(option);
+  
+      // ✅ Close dropdown immediately for single selection
+      setIsDropdownOpen(false);
     }
   };
-
+  
   // 🔹 Remove Selected Option (Multi-Select)
   const removeSelectedOption = (option) => {
     const updatedSelections = selectedOptions.filter(

@@ -3,7 +3,7 @@ import { toast } from "react-toastify";
 export const notifySuccess = (success) => {
   toast.dismiss();
   toast.success(success, {
-    position: "top-center",
+    position: "bottom-right",
     autoClose: 2000,
   });
 };

@@ -22,6 +22,9 @@ import { useModal } from "../../../components/common/ModalProvider";
 import AddToJobsModal from "../../../components/modals/AddToJobsModal";
 import AddToFolderModal from "../../../components/modals/AddToFolderModal";
 import CreateFolderModal from "../../../components/modals/CreateFolderModal";
+import AddToJobsDrawer from "../../../components/candidate/AddToJobsDrawer";
+import AddToFolderDrawer from "../../../components/candidate/AddToFolderDrawer";
+
 
 const candidates = [
   {
@@ -96,6 +99,7 @@ const candidates = [
   },
 ];
 
+
 const BulkActionView = ({
   isBulkAction,
   filters,
@@ -105,7 +109,6 @@ const BulkActionView = ({
 }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
-
   const open = Boolean(anchorEl);
 
   // Function to calculate the number of applied filters
@@ -265,7 +268,8 @@ const Sourcing = () => {
     candidateFilters,
     candidateData,
   } = useSelector((state) => state.sourcing);
-
+  const [addToFolderDrawerOpen, setAddToFolderDrawerOpen] = useState(false);
+  const [addToJobsDrawerOpen, setAddToJobsDrawerOpen] = useState(false);
   const { modals, setModalVisibility } = useModal();
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [selectedCandidate, setSelectedCandidate] = useState(
@@ -390,6 +394,15 @@ const Sourcing = () => {
         </p>
       </div>
     );
+  };
+
+  const toggleAddToFolderDrawer = (open) => {
+  
+    setAddToFolderDrawerOpen(open);
+  };
+  const toggleAddToJobsDrawer = (open) => {
+  
+    setAddToJobsDrawerOpen(open);
   };
 
   useEffect(() => {
@@ -539,10 +552,10 @@ const Sourcing = () => {
               isBulkAction={selectedCandidates.length > 0}
               onSelectAll={handleSelectAll}
               onClickAddJob={() =>
-                setModalVisibility("addToJobsModalVisible", true)
+               setAddToJobsDrawerOpen(true)
               }
               onClickFolder={() =>
-                setModalVisibility("addToFolderModalVisible", true)
+               setAddToFolderDrawerOpen(true)
               }
               isAllSelected={selectedCandidates.length === candidates.length}
               filters={filters} // Pass filters as a prop
@@ -578,10 +591,10 @@ const Sourcing = () => {
                     data={selectedCandidate}
                     loading={fetchMoreLoading}
                     onClickAddJob={() =>
-                      setModalVisibility("addToJobsModalVisible", true)
+                     setAddToJobsDrawerOpen(true)
                     }
                     onClickAddFolder={() =>
-                      setModalVisibility("addToFolderModalVisible", true)
+                     setAddToFolderDrawerOpen(true)
                     }
                   />
                 </div>
@@ -680,18 +693,32 @@ const Sourcing = () => {
         visible={candidateDrawerOpen}
         onClose={() => toggleCandidateDrawer(false)}
         data={selectedCandidate}
-        onClickAddJob={() => setModalVisibility("addToJobsModalVisible", true)}
+        onClickAddJob={() =>setAddToJobsDrawerOpen(true)}
         onClickAddFolder={() =>
-          setModalVisibility("addToFolderModalVisible", true)
+         setAddToFolderDrawerOpen(true)
         }
       />
-      <AddToJobsModal
+      {/* <AddToJobsModal
         visible={modals?.addToJobsModalVisible}
         onClose={() => setModalVisibility("addToJobsModalVisible", false)}
       />
       <AddToFolderModal
         visible={modals?.addToFolderModalVisible}
         onClose={() => setModalVisibility("addToFolderModalVisible", false)}
+      /> */}
+       <AddToJobsDrawer
+        // onApply={applyFilters}
+        // onReset={resetFilters}
+        filters={filters}
+        isOpen={addToJobsDrawerOpen}
+        onClose={() => toggleAddToJobsDrawer(false)}
+      />
+       <AddToFolderDrawer
+        // onApply={applyFilters}
+        // onReset={resetFilters}
+        filters={filters}
+        isOpen={addToFolderDrawerOpen}
+        onClose={() => toggleAddToFolderDrawer(false)}
       />
       <CreateFolderModal
         visible={modals?.createFolderModalVisible}

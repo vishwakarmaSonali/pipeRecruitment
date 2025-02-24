@@ -920,3 +920,305 @@ export const candidates = [
        created_by: "HR Consultant"
     }
 ]
+
+export const archivedCandidates = [
+   {
+       "id": 1,
+       "candidate_name": "David Brown",
+       "owner": "Manager",
+       "archived_date": "2024-05-01"
+   },
+   {
+       "id": 2,
+       "candidate_name": "Jack Smith",
+       "owner": "Supervisor",
+       "archived_date": "2024-05-09"
+   },
+   {
+       "id": 3,
+       "candidate_name": "Isaac White",
+       "owner": "Lead",
+       "archived_date": "2024-08-03"
+   },
+   {
+       "id": 4,
+       "candidate_name": "Charlie Brown",
+       "owner": "Owner3",
+       "archived_date": "2024-09-07"
+   },
+   {
+       "id": 5,
+       "candidate_name": "Isaac Smith",
+       "owner": "Supervisor",
+       "archived_date": "2024-07-24"
+   },
+   {
+       "id": 6,
+       "candidate_name": "Hannah Anderson",
+       "owner": "Owner2",
+       "archived_date": "2024-08-31"
+   },
+   {
+       "id": 7,
+       "candidate_name": "Emma Martin",
+       "owner": "Manager",
+       "archived_date": "2024-06-18"
+   },
+   {
+       "id": 8,
+       "candidate_name": "Jack Thomas",
+       "owner": "Manager",
+       "archived_date": "2025-02-02"
+   },
+   {
+       "id": 9,
+       "candidate_name": "Hannah Brown",
+       "owner": "Owner2",
+       "archived_date": "2024-07-27"
+   },
+   {
+       "id": 10,
+       "candidate_name": "Isaac Jackson",
+       "owner": "Lead",
+       "archived_date": "2024-05-08"
+   },
+   {
+       "id": 11,
+       "candidate_name": "Alice Jackson",
+       "owner": "HR",
+       "archived_date": "2024-03-11"
+   },
+   {
+       "id": 12,
+       "candidate_name": "George Thomas",
+       "owner": "Owner1",
+       "archived_date": "2024-06-18"
+   },
+   {
+       "id": 13,
+       "candidate_name": "Fiona Harris",
+       "owner": "Owner1",
+       "archived_date": "2024-12-06"
+   },
+   {
+       "id": 14,
+       "candidate_name": "David White",
+       "owner": "HR",
+       "archived_date": "2024-08-24"
+   },
+   {
+       "id": 15,
+       "candidate_name": "Bob Taylor",
+       "owner": "Owner1",
+       "archived_date": "2024-11-24"
+   },
+   {
+       "id": 16,
+       "candidate_name": "Bob White",
+       "owner": "Manager",
+       "archived_date": "2024-08-20"
+   },
+   {
+       "id": 17,
+       "candidate_name": "Alice Brown",
+       "owner": "Owner1",
+       "archived_date": "2024-09-28"
+   },
+   {
+       "id": 18,
+       "candidate_name": "Hannah Taylor",
+       "owner": "Coordinator",
+       "archived_date": "2024-10-25"
+   },
+   {
+       "id": 19,
+       "candidate_name": "Jack Taylor",
+       "owner": "Lead",
+       "archived_date": "2024-04-22"
+   },
+   {
+       "id": 20,
+       "candidate_name": "David Smith",
+       "owner": "Recruiter",
+       "archived_date": "2024-08-25"
+   },
+   {
+       "id": 21,
+       "candidate_name": "David Johnson",
+       "owner": "Lead",
+       "archived_date": "2024-04-20"
+   },
+   {
+       "id": 22,
+       "candidate_name": "Charlie Smith",
+       "owner": "Admin",
+       "archived_date": "2024-08-26"
+   },
+   {
+       "id": 23,
+       "candidate_name": "David Harris",
+       "owner": "Recruiter",
+       "archived_date": "2024-09-10"
+   },
+   {
+       "id": 24,
+       "candidate_name": "Alice Taylor",
+       "owner": "Owner1",
+       "archived_date": "2024-12-14"
+   },
+   {
+       "id": 25,
+       "candidate_name": "Charlie Taylor",
+       "owner": "Supervisor",
+       "archived_date": "2024-07-13"
+   },
+   {
+       "id": 26,
+       "candidate_name": "Isaac Thomas",
+       "owner": "Manager",
+       "archived_date": "2024-07-08"
+   },
+   {
+       "id": 27,
+       "candidate_name": "Alice Brown",
+       "owner": "Recruiter",
+       "archived_date": "2024-10-30"
+   },
+   {
+       "id": 28,
+       "candidate_name": "Bob Anderson",
+       "owner": "Manager",
+       "archived_date": "2024-10-13"
+   },
+   {
+       "id": 29,
+       "candidate_name": "Emma Smith",
+       "owner": "Coordinator",
+       "archived_date": "2024-03-28"
+   },
+   {
+       "id": 30,
+       "candidate_name": "Isaac White",
+       "owner": "Recruiter",
+       "archived_date": "2024-08-11"
+   },
+   {
+       "id": 31,
+       "candidate_name": "Hannah Johnson",
+       "owner": "Recruiter",
+       "archived_date": "2024-11-02"
+   },
+   {
+       "id": 32,
+       "candidate_name": "Fiona Anderson",
+       "owner": "HR",
+       "archived_date": "2024-04-14"
+   },
+   {
+       "id": 33,
+       "candidate_name": "Charlie Smith",
+       "owner": "HR",
+       "archived_date": "2024-03-15"
+   },
+   {
+       "id": 34,
+       "candidate_name": "Bob Jackson",
+       "owner": "HR",
+       "archived_date": "2024-11-24"
+   },
+   {
+       "id": 35,
+       "candidate_name": "Jack Harris",
+       "owner": "Recruiter",
+       "archived_date": "2024-03-30"
+   },
+   {
+       "id": 36,
+       "candidate_name": "Bob Smith",
+       "owner": "Recruiter",
+       "archived_date": "2025-01-31"
+   },
+   {
+       "id": 37,
+       "candidate_name": "Emma Jackson",
+       "owner": "Owner2",
+       "archived_date": "2025-02-11"
+   },
+   {
+       "id": 38,
+       "candidate_name": "Bob Johnson",
+       "owner": "Owner1",
+       "archived_date": "2024-10-02"
+   },
+   {
+       "id": 39,
+       "candidate_name": "Isaac Brown",
+       "owner": "Recruiter",
+       "archived_date": "2024-11-14"
+   },
+   {
+       "id": 40,
+       "candidate_name": "Fiona Brown",
+       "owner": "Owner3",
+       "archived_date": "2024-03-29"
+   }
+]
+export const foldersCandidates = [
+    {
+        "id": 1,
+        "folder_name": "David Brown",
+        "candidate_count":"10",
+        "create-on": "2024-05-01",
+        "create_by": "updiser"
+    },
+    {
+        "id": 2,
+        "folder_name": "Jack Smith",
+        "candidate_count":"10",
+        "create-on": "2024-05-09",
+        "create_by": "updiser"
+    },
+    {
+        "id": 3,
+        "folder_name": "Isaac White",
+        "candidate_count":"10",
+        "create-on": "2024-08-03",
+        "create_by": "updiser"
+    },
+    {
+        "id": 4,
+        "folder_name": "Charlie Brown",
+        "candidate_count":"10",
+        "create-on": "2024-09-07",
+        "create_by": "updiser"
+    },
+    {
+        "id": 5,
+        "folder_name": "Isaac Smith",
+        "candidate_count":"10",
+        "create-on": "2024-07-24",
+        "create_by": "updiser"
+    },
+    {
+        "id": 6,
+        "folder_name": "Hannah Anderson",
+        "candidate_count":"10",
+        "create-on": "2024-08-31",
+        "create_by": "updiser"
+    },
+    {
+        "id": 7,
+        "folder_name": "Emma Martin",
+        "candidate_count":"10",
+        "create-on": "2024-06-18",
+        "create_by": "updiser"
+    },
+    {
+        "id": 8,
+        "folder_name": "Jack Thomas",
+        "candidate_count":"10",
+        "create-on": "2025-02-02",
+        "create_by": "updiser"
+    },
+    
+ ]

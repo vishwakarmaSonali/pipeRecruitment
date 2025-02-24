@@ -38,9 +38,11 @@
 
 .custom-toast {
   min-width: 400px !important;
-  background-color: #222121 !important;
-  color: #fff !important;
-  opacity: 0.8;
+  background-color: #F3F4F4 !important;
+  color: #151B23 !important;
+  border-radius:8px ;
+
+  /* opacity: 0.8; */
 }
 
 @media screen and (max-width: 567px) {
@@ -50,6 +52,6 @@
 }
 
 .custom-toast .Toastify__close-button {
-  color: #fff !important;
-  opacity: 0.8 !important;
+  color: #797979 !important;
+  /* opacity: 0.8 !important; */
 }

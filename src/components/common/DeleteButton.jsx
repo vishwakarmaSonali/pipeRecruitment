@@ -5,7 +5,7 @@ const DeleteButton = ({ onClick, disabled, btnStyle, isLoading }) => {
   return (
     <button
       disabled={disabled}
-      className={`common-delete-btn`}
+      className={`common-delete-btn  ${disabled && "disable-common-btn "}`}
       style={btnStyle}
       onClick={onClick}
     >

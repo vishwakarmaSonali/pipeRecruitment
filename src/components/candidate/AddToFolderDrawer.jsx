@@ -7,8 +7,10 @@ import { Drawer } from "@mui/material";
 import CommonSearchBox from "../common/CommonSearchBox";
 import CommonButton from "../common/CommonButton";
 import { ReactComponent as TickCircle } from "../../assets/icons/tick-circle.svg";
+import { useNavigate } from "react-router-dom";
 
 const AddToFolderDrawer = ({ isOpen, onClose, onApply, onReset }) => {
+  const navigate = useNavigate()
   const [folderData, setFolderData] = useState([
     { id: 1, name: "Designer", isEditable: false },
     { id: 2, name: "Developer", isEditable: false },
@@ -68,6 +70,7 @@ const AddToFolderDrawer = ({ isOpen, onClose, onApply, onReset }) => {
  // ✅ Handle Folder Selection
  const handleSelectFolder = (id) => {
   setSelectedFolder(selectedFolder === id ? null : id); // Toggle selection
+  navigate("/folder-candidates")
 };
   return (
     <Drawer anchor="right" open={isOpen} onClose={onClose}>

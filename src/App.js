@@ -23,6 +23,9 @@ import CandidateCustomization from "./pages/Recruitment/Candidates/CandidateCust
 import CreateCandidateForm from "./components/candidate/CreateCandidate";
 import CreateCandidateUploadResume from "./components/candidate/CandidateUploadResume";
 import CandidateUploadResumeCsvJsonPage from "./components/candidate/CandidateUploadCSVPage";
+import ArchiveCandidates from "./pages/Recruitment/Candidates/ArchiveCandidatesPage";
+import FolderAddCandidates from "./pages/Recruitment/Candidates/FoldersList";
+import IndividualFilterCandidateListPage from "./pages/Recruitment/Candidates/IndividualFolderCandidateList";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -71,6 +74,18 @@ const router = createBrowserRouter([
   {
     path: "/candidate/create-candidate-upload-resume",
     element: <CandidateUploadResumeCsvJsonPage />,
+  },
+  {
+    path: "/archive-candidates",
+    element: <ArchiveCandidates />,
+  },
+  {
+    path: "/folder-candidates",
+    element: <FolderAddCandidates />,
+  },
+  {
+    path: "/individual-folder/:folderId",
+    element: <IndividualFilterCandidateListPage/>,
   },
 ]);
 

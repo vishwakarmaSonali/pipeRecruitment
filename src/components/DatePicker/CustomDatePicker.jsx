@@ -18,7 +18,7 @@ import { ReactComponent as RightArrow } from "../../assets/icons/right-arrow.svg
 const CustomCalendar = ({ onDateSelect ,initialDate}) => {
   const today = new Date();
   const [currentMonth, setCurrentMonth] = useState(today);
-  const [selectedDate, setSelectedDate] = useState(format(today, "yyyy-MM-dd"));
+  const [selectedDate, setSelectedDate] = useState(null);
   const todayDate = format(today, "yyyy-MM-dd");
   useEffect(() => {
     if (initialDate) {
