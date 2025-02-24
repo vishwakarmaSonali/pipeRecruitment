@@ -13,3 +13,7 @@ export const nord = require("../assets/images/company/nord.png");
 export const even = require("../assets/images/company/even.png");
 export const blueDesign = require("../assets/images/company/blueStudio.png");
 export const techwave = require("../assets/images/company/techwave.png");
+
+export const userImage = require("../assets/images/userImage.png");
+export const priyaImage = require("../assets/images/priya.png");
+export const priya = require("../assets/images/priyaImage.png");

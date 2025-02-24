@@ -51,6 +51,10 @@ import { ReactComponent as VerifyIcon } from "../../assets/icons/verified.svg";
 import { ReactComponent as LinkedIn } from "../../assets/icons/sociallinks/linkedin.svg";
 import { ReactComponent as PlusIcon } from "../../assets/icons/plusIcon.svg";
 import CommonAddButton from "../common/CommonAddButton";
+import AddSocialLinksModal from "./AddSocialLinksModal";
+import ProfileNotMarkedModal from "./ProfileNotMarkedModal";
+import NotRightProfileModal from "./NotRightProfileModal";
+import VerifiedEnrichProfileUserModal from "./VerifiedEnrichProfileUserModal";
 
 const skillData = [
   {
@@ -282,6 +286,22 @@ const CandidateInfoModal = ({ visible, onClose }) => {
   );
   const [enrichUserProfileVisible, setEnrichUserProfileVisible] =
     useState(false);
+  const [
+    enrichUserProfileSocialAddModalVisible,
+    setEnrichUserProfileSocialAddModalVisible,
+  ] = useState(false);
+  const [
+    enrichUserProfileInfoModalVisible,
+    setEnrichUserProfileInfoModalVisible,
+  ] = useState(false);
+  const [notRightProfileModalVisible, setNotRightProfileModalVisible] =
+    useState(false);
+  const [
+    verifiedEnrichProfileModalVisible,
+    setVerifiedEnrichProfileModalVisible,
+  ] = useState(false);
+  const [selectedEnrichUserProfile, setSelectedEnrichUserProfile] =
+    useState(null);
   const [anchorE2, setAnchorE2] = useState(null);
   const feedBackMenuOpen = Boolean(anchorE2);
   const open = Boolean(anchorEl);
@@ -697,6 +717,14 @@ const CandidateInfoModal = ({ visible, onClose }) => {
                     <div
                       className="enrich-user-profilte-item-div"
                       key={item?.id}
+                      onClick={() => {
+                        setSelectedEnrichUserProfile(item);
+                        if (item?.verified) {
+                          setVerifiedEnrichProfileModalVisible(true);
+                        } else {
+                          setEnrichUserProfileInfoModalVisible(true);
+                        }
+                      }}
                     >
                       <div
                         className="display-flex align-center"
@@ -709,6 +737,8 @@ const CandidateInfoModal = ({ visible, onClose }) => {
                           </p>
                           <a
                             href={item?.visitLink}
+                            target="_blank"
+                            rel="noopener noreferrer"
                             className="font-12-regular color-grey"
                           >
                             {item?.visitLink}
@@ -716,7 +746,14 @@ const CandidateInfoModal = ({ visible, onClose }) => {
                         </div>
                       </div>
                       <div className="display-flex-justify align-center">
-                        <button className="font-14-regular color-blue">
+                        <button
+                          className="font-14-regular color-blue"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setSelectedEnrichUserProfile(item);
+                            setNotRightProfileModalVisible(true);
+                          }}
+                        >
                           Not the right profile?
                         </button>
 
@@ -752,6 +789,9 @@ const CandidateInfoModal = ({ visible, onClose }) => {
                     color: "#1761D8",
                     alignSelf: "center",
                   }}
+                  onClick={() =>
+                    setEnrichUserProfileSocialAddModalVisible(true)
+                  }
                 />
               </div>
             ) : (
@@ -813,6 +853,26 @@ const CandidateInfoModal = ({ visible, onClose }) => {
         visible={noteModalVisible}
         onClose={() => setNoteModalVisible(false)}
         selectedNote={selectedNote}
+      />
+      <AddSocialLinksModal
+        visible={enrichUserProfileSocialAddModalVisible}
+        onClose={() => setEnrichUserProfileSocialAddModalVisible(false)}
+        showHeader={true}
+      />
+      <ProfileNotMarkedModal
+        visible={enrichUserProfileInfoModalVisible}
+        onClose={() => setEnrichUserProfileInfoModalVisible(false)}
+        data={selectedEnrichUserProfile}
+      />
+      <NotRightProfileModal
+        visible={notRightProfileModalVisible}
+        onClose={() => setNotRightProfileModalVisible(false)}
+      />
+      <VerifiedEnrichProfileUserModal
+        visible={verifiedEnrichProfileModalVisible}
+        onClose={() => {
+          setVerifiedEnrichProfileModalVisible(false);
+        }}
       />
     </>
   );

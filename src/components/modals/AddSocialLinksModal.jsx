@@ -30,6 +30,7 @@ import x from "../../assets/icons/sociallinks/x.svg";
 import yt from "../../assets/icons/sociallinks/yt.svg";
 import threads from "../../assets/icons/sociallinks/threads.svg";
 import CommonTextInput from "../common/CommonTextInput";
+import { ReactComponent as CloseIcon } from "../../assets/icons/closeModal.svg";
 
 const socialLinksOptions = [
   {
@@ -146,7 +147,12 @@ const socialLinksOptions = [
   },
 ];
 
-const AddSocialLinksModal = ({ visible, onClose, onAddLanguages }) => {
+const AddSocialLinksModal = ({
+  visible,
+  onClose,
+  onAddLanguages,
+  showHeader,
+}) => {
   const { modals, setModalVisibility } = useModal();
   const [selectedSocialLink, setSelectedSocialLink] = useState(null);
   const [socialLinkURL, setSocialLinkURL] = useState("");
@@ -181,6 +187,16 @@ const AddSocialLinksModal = ({ visible, onClose, onAddLanguages }) => {
           modalAnimation && "shake"
         }`}
       >
+        {showHeader && (
+          <div className="display-flex-justify" style={{ marginBottom: 24 }}>
+            <p className="font-16-medium color-dark-black">
+              Add Social Media Profile
+            </p>
+            <button onClick={onClose}>
+              <CloseIcon width={18} height={18} />
+            </button>
+          </div>
+        )}
         <div className="display-column" style={{ gap: 10 }}>
           {/* 🔹 Social Links Dropdown */}
           <SearchDropdown
@@ -205,7 +221,7 @@ const AddSocialLinksModal = ({ visible, onClose, onAddLanguages }) => {
           className="display-flex"
           style={{ gap: 8, justifyContent: "center", marginTop: "24px" }}
         >
-          <CancelButton title={"Cancel"} onClick={onClose} />
+          {!showHeader && <CancelButton title={"Cancel"} onClick={onClose} />}
           <CommonButton title={"Add"} onClick={handleAddClick} />
         </div>
       </div>
