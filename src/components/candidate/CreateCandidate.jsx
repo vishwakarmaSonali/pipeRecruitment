@@ -14,7 +14,6 @@ import { profileImage } from "../../helpers/assets";
 import StyledDropdownInput from "./StyledDropdownInput";
 import DropdownWithInput from "./StyledDropdownInput";
 import CustomCalendar from "../DatePicker/CustomDatePicker";
-import "react-datepicker/dist/react-datepicker.css";
 import { format } from "date-fns";
 import CustomDropdown from "../CustomDropdown/CustomDropdown";
 import LocationSearchDropdown from "../AutocompleteDropdowns/LocationSearchDropDown";
@@ -56,8 +55,8 @@ const frequencyOptions = [
   { id: 7, frequency: "Anually" },
 ];
 const CreateCandidateForm = () => {
-  const dispatch = useDispatch()
-  const navigate = useNavigate()
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const today = new Date();
   const [description, setDescription] = useState("");
   const [profileImages, setProfileImage] = useState("");
@@ -66,7 +65,6 @@ const CreateCandidateForm = () => {
   const [firstName, setFirstName] = useState(""); // New state for First Name
   const [lastName, setLastName] = useState(""); // New state for First Name
   const [dateofbirth, setDateofbirth] = useState(null);
- 
 
   const [lastUpdatedDate, setLastUpdatedDate] = useState(
     format(today, "yyyy-MM-dd")
@@ -181,7 +179,7 @@ const CreateCandidateForm = () => {
   //     // description,
   //   };
   //   let params = {};
-    
+
   //    dispatch(createCandidates(null,candidateData ));
   //   console.log("🚀 Candidate Data:", candidateData);
   // };
@@ -190,57 +188,61 @@ const CreateCandidateForm = () => {
       alert("First Name and Last Name are required!");
       return;
     }
-  
+
     const candidateData = {
       first_name: firstName,
       last_name: lastName,
       ...(email && { email }),
       // ...(salutation && { salutation:selectedTitle }),  // ✅ Added missing `salutation`
       ...(dateofbirth && { date_of_birth: dateofbirth }), // ✅ Added `date_of_birth`
-      ...(selectedGender && { gender :selectedGender.label.toLowerCase()}),  // ✅ Added `gender`
+      ...(selectedGender && { gender: selectedGender.label.toLowerCase() }), // ✅ Added `gender`
       ...(phoneNumber && {
-        phone: phoneNumber,  
-        country_code: selectedCountry.dialCode || "+91" // ✅ Added `country_code`
+        phone: phoneNumber,
+        country_code: selectedCountry.dialCode || "+91", // ✅ Added `country_code`
       }),
       ...(selectedLocations.length > 0 && { city: selectedLocations[0] }),
       // ...(selectedState && { state: selectedState }), // ✅ Added `state`
       ...(selectedCountry.name && { country: selectedCountry.name }),
       ...(selectedTitle !== "None" && { salutation: selectedTitle }),
       ...(skills.length > 0 && {
-        skills: skills.map(skill => ({
+        skills: skills.map((skill) => ({
           name: skill.name,
-          level: parseInt(skill.score, 10) || 1
-        }))
+          level: parseInt(skill.score, 10) || 1,
+        })),
       }),
       ...(description && { info: description }),
-      ...(selectedNationality.length > 0 && { nationality: selectedNationality }),
+      ...(selectedNationality.length > 0 && {
+        nationality: selectedNationality,
+      }),
       ...(selectedJobs.length > 0 && { jobs: selectedJobs }),
       showArray: [{ key: "value" }, { hasBool: true }], // ✅ Already included
       // work_preference: { waaafh: true, aadf: false }, // ✅ Already included
       ...(highestQualification && {
-        education_1: { [highestQualification]: "yes" }
+        education_1: { [highestQualification]: "yes" },
       }),
       ...(yearsOfExp && { years_of_experience: yearsOfExp }),
       ...(currentSalary && { current_salary: currentSalary }),
       ...(expectedSalary && { expected_salary: expectedSalary }),
     };
-  
+
     try {
       const response = await dispatch(createCandidates(null, candidateData));
       console.log("response>>>>", response);
-  
+
       if (response?.success || response?.id) {
         alert("Candidate created successfully!");
         navigate("/candidates"); // ✅ Navigate on success
       } else {
-        alert(response?.message || "Failed to create candidate. Please try again.");
+        alert(
+          response?.message || "Failed to create candidate. Please try again."
+        );
       }
     } catch (error) {
       console.error("❌ API Error:", error);
       alert("Something went wrong. Please try again.");
     }
   };
-  
+
   // ✅ Reset Form
   const handleDiscard = () => {
     setProfileImage(null);
@@ -255,10 +257,25 @@ const CreateCandidateForm = () => {
     setSelectedJobs([]); // Clear selected jobs
     setNationality([]);
     setPhoneNumber("");
-    setSelectedCountry({ code: "US", name: "United States", dialCode: "+1", flag: "🇺🇸" }); // Reset country
+    setSelectedCountry({
+      code: "US",
+      name: "United States",
+      dialCode: "+1",
+      flag: "🇺🇸",
+    }); // Reset country
     setFrequency(null);
-    setCurrentSalaryCurrency({ code: "USD", name: "US Dollar", symbol: "US$", flag: "🇺🇸" }); // Reset salary currency
-    setExpectedSalaryCurrency({ code: "GBP", name: "British Pound", symbol: "£", flag: "🇬🇧" }); // Reset expected salary currency
+    setCurrentSalaryCurrency({
+      code: "USD",
+      name: "US Dollar",
+      symbol: "US$",
+      flag: "🇺🇸",
+    }); // Reset salary currency
+    setExpectedSalaryCurrency({
+      code: "GBP",
+      name: "British Pound",
+      symbol: "£",
+      flag: "🇬🇧",
+    }); // Reset expected salary currency
     setYearsOfExp("");
     setHighestQualification("");
     setCurrentEmployer("");
@@ -270,7 +287,6 @@ const CreateCandidateForm = () => {
     setExperience([]);
     setEducation([]);
   };
-  
 
   return (
     <div
@@ -352,7 +368,11 @@ const CreateCandidateForm = () => {
                       <input
                         placeholder="Date of Birth"
                         className=" outline-none border-none padding-0 margin-0 text-sm font-ubuntu"
-                        value={dateofbirth==null ?"": format(dateofbirth, "MMMM d, yyyy")}
+                        value={
+                          dateofbirth == null
+                            ? ""
+                            : format(dateofbirth, "MMMM d, yyyy")
+                        }
                         onFocus={() => setShowUpdatedCalendar(true)}
                         readOnly
                       />
@@ -601,7 +621,10 @@ const CreateCandidateForm = () => {
               </span>
             </div>
             <div className="flex flex-1 ">
-              <ExperienceDetailsManager setExperienceDetails={setExperience} experienceDetails={experience}/>
+              <ExperienceDetailsManager
+                setExperienceDetails={setExperience}
+                experienceDetails={experience}
+              />
             </div>
           </div>
           {/* Experience details block ends */}
@@ -613,7 +636,10 @@ const CreateCandidateForm = () => {
               </span>
             </div>
             <div className="flex flex-1 ">
-              <EducationDetailsManager educationDetails={education} setEducationDetails={setEducation} />
+              <EducationDetailsManager
+                educationDetails={education}
+                setEducationDetails={setEducation}
+              />
             </div>
           </div>
           {/* Education details block ends */}
@@ -624,4 +650,3 @@ const CreateCandidateForm = () => {
 };
 
 export default CreateCandidateForm;
- 

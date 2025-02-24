@@ -5,7 +5,6 @@ import { ReactComponent as CloseIcon } from "../../assets/icons/drawerClose.svg"
 import { Drawer } from "@mui/material";
 import Tick from "../../assets/icons/sourcingIcons/tick.svg";
 import CustomCalendar from "../DatePicker/CustomDatePicker";
-import "react-datepicker/dist/react-datepicker.css";
 import { format } from "date-fns";
 import SkillSearchDropdown from "../AutocompleteDropdowns/SkillDropdown";
 import LocationSearchDropdown from "../AutocompleteDropdowns/LocationSearchDropDown";
