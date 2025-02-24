@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useModal } from "../common/ModalProvider";
 import Modal from "react-bootstrap/Modal";
-import { getRandomColor } from "../../helpers/utils";
+import { formatTwoDigits, getRandomColor } from "../../helpers/utils";
 import { Avatar, Menu } from "@mui/material";
 import { ReactComponent as LabelIcon } from "../../pages/Recruitment/Candidates/assets/label.svg";
 import { ReactComponent as AddIcon } from "../../pages/Recruitment/Candidates/assets/add.svg";
@@ -55,6 +55,9 @@ import AddSocialLinksModal from "./AddSocialLinksModal";
 import ProfileNotMarkedModal from "./ProfileNotMarkedModal";
 import NotRightProfileModal from "./NotRightProfileModal";
 import VerifiedEnrichProfileUserModal from "./VerifiedEnrichProfileUserModal";
+import UploadDocumentModal from "./UploadDocumentModal";
+import { ReactComponent as AttachementIcon } from "../../assets/images/attachment.svg";
+import { ReactComponent as JobIcon } from "../../assets/images/jobs.svg";
 
 const skillData = [
   {
@@ -123,7 +126,6 @@ const candidateInfoTabs = [
   {
     id: 3,
     name: "Jobs",
-    count: "04",
     selected: false,
   },
   {
@@ -144,7 +146,6 @@ const candidateInfoTabs = [
   {
     id: 7,
     name: "Attachments",
-    count: "06",
     selected: false,
   },
   {
@@ -302,6 +303,16 @@ const CandidateInfoModal = ({ visible, onClose }) => {
   ] = useState(false);
   const [selectedEnrichUserProfile, setSelectedEnrichUserProfile] =
     useState(null);
+
+  const [attachementUploadModalVisible, setAttachmentUploadModalVisible] =
+    useState(false);
+  const [attachmentData, setAttachmentData] = useState([]);
+
+  const attachmentDeleteHandler = (id) => {
+    const updatedData = attachmentData?.filter((item) => item?.id !== id);
+    setAttachmentData(updatedData);
+  };
+
   const [anchorE2, setAnchorE2] = useState(null);
   const feedBackMenuOpen = Boolean(anchorE2);
   const open = Boolean(anchorEl);
@@ -490,12 +501,19 @@ const CandidateInfoModal = ({ visible, onClose }) => {
                       }`}
                       onClick={() => selectedTabHandler(item?.id)}
                     >
-                      {item?.name}{" "}
-                      {item?.count && (
-                        <span className="candidate-info-tab-count">
-                          {item?.count}
-                        </span>
-                      )}
+                      {item?.name}
+                      {item?.name === "Attachments" &&
+                        attachmentData?.length > 0 && (
+                          <span className="candidate-info-tab-count">
+                            {formatTwoDigits(attachmentData?.length)}
+                          </span>
+                        )}
+                      {item?.name === "Jobs" &&
+                        candidateJobData?.length > 0 && (
+                          <span className="candidate-info-tab-count">
+                            {formatTwoDigits(candidateJobData?.length)}
+                          </span>
+                        )}
                     </button>
                   );
                 })}
@@ -616,37 +634,103 @@ const CandidateInfoModal = ({ visible, onClose }) => {
             </div>
           )}
 
-          {selectedCandidateTab === "Jobs" && (
-            <div
-              style={{
-                gap: 12,
-                padding: "0px 16px",
-                overflow: "auto",
-                position: "relative",
-              }}
-            >
-              <CanidateJobListTable
-                header={jobsTableHeaderData}
-                data={candidateJobData}
-              />
-            </div>
-          )}
+          {selectedCandidateTab === "Jobs" &&
+            (candidateJobData?.length > 0 ? (
+              <div
+                style={{
+                  gap: 12,
+                  padding: "0px 16px",
+                  overflow: "auto",
+                  position: "relative",
+                }}
+              >
+                <CanidateJobListTable
+                  header={jobsTableHeaderData}
+                  data={candidateJobData}
+                />
+              </div>
+            ) : (
+              <div
+                className="display-column flex-1"
+                style={{
+                  padding: "0px 16px",
+                  gap: 40,
+                  alignItems: "center",
+                  justifyContent: "center",
+                  overflow: "auto",
+                }}
+              >
+                <div
+                  className="display-column"
+                  style={{ gap: 14, alignItems: "center" }}
+                >
+                  <JobIcon />
+                  <div className="display-column" style={{ gap: 8 }}>
+                    <p className="font-14-medium color-dark-black text-center">
+                      No Jobs
+                    </p>
+                    <p className="font-14-regular color-grey text-center">
+                      No jobs have been added to this candidate yet.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            ))}
 
-          {selectedCandidateTab === "Attachments" && (
-            <div
-              style={{
-                gap: 12,
-                padding: "0px 16px",
-                overflow: "auto",
-                position: "relative",
-              }}
-            >
-              <AttachmentsListTable
-                header={attachmentsHeaderData}
-                data={attachmentListData}
-              />
-            </div>
-          )}
+          {selectedCandidateTab === "Attachments" &&
+            (attachmentData?.length > 0 ? (
+              <div
+                style={{
+                  gap: 12,
+                  padding: "0px 16px",
+                  overflow: "auto",
+                  position: "relative",
+                }}
+              >
+                <AttachmentsListTable
+                  header={attachmentsHeaderData}
+                  data={attachmentData}
+                  onUpload={() => {
+                    setAttachmentUploadModalVisible(true);
+                  }}
+                  onDelete={attachmentDeleteHandler}
+                />
+              </div>
+            ) : (
+              <div
+                className="display-column flex-1"
+                style={{
+                  padding: "0px 16px",
+                  gap: 40,
+                  alignItems: "center",
+                  justifyContent: "center",
+                  overflow: "auto",
+                }}
+              >
+                <div
+                  className="display-column"
+                  style={{ gap: 14, alignItems: "center" }}
+                >
+                  <AttachementIcon />
+                  <div className="display-column" style={{ gap: 8 }}>
+                    <p className="font-14-medium color-dark-black text-center">
+                      No Attachments
+                    </p>
+                    <p className="font-14-regular color-grey text-center">
+                      There are no attachments available for this candidate.
+                    </p>
+                  </div>
+                </div>
+                <CommonAddButton
+                  title={"Upload"}
+                  icon={<PlusIcon stroke="#FFFFFF" />}
+                  btnStyle={{
+                    alignSelf: "center",
+                  }}
+                  onClick={() => setAttachmentUploadModalVisible(true)}
+                />
+              </div>
+            ))}
 
           {selectedCandidateTab === "History" && (
             <div
@@ -873,6 +957,12 @@ const CandidateInfoModal = ({ visible, onClose }) => {
         onClose={() => {
           setVerifiedEnrichProfileModalVisible(false);
         }}
+      />
+      <UploadDocumentModal
+        visible={attachementUploadModalVisible}
+        onClose={() => setAttachmentUploadModalVisible(false)}
+        uploadedFiles={setAttachmentData}
+        attachmentData={attachmentData}
       />
     </>
   );

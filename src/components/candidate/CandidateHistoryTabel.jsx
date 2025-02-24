@@ -34,6 +34,7 @@ const CandidateHistoryTabel = ({ header, data }) => {
             {header?.map((item) => {
               return <TableCell className="font-14-regular">{item}</TableCell>;
             })}
+            
           </TableRow>
         </TableHead>
         <TableBody>

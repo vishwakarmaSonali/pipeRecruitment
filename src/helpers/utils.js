@@ -36,3 +36,24 @@ export const getRandomColor = () => {
   ];
   return colors[Math.floor(Math.random() * colors.length)];
 };
+
+export function formatCustomDate(input) {
+  const date = input instanceof Date ? input : new Date(input);
+
+  if (isNaN(date)) return "Invalid Date";
+
+  return date
+    .toLocaleString("en-US", {
+      month: "long",
+      day: "2-digit",
+      year: "numeric",
+      hour: "numeric",
+      minute: "2-digit",
+      hour12: true,
+    })
+    .replace("at", " •");
+}
+
+export function formatTwoDigits(num) {
+  return num < 10 ? `0${num}` : `${num}`;
+}

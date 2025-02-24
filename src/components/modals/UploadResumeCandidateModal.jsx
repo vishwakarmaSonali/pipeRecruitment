@@ -12,6 +12,7 @@ import axios from "axios";
 
 const UploadResumeCandidateModal = ({ visible, onClose }) => {
   const { modals, setModalVisibility } = useModal();
+  const [modalAnimation, setModalAnimation] = useState(false);
   const [jobValue, setJobValue] = useState("");
   const [folderValue, setFolderValue] = useState("");
   const [file, setFile] = useState(null);

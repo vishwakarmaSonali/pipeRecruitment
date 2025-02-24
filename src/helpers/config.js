@@ -7,6 +7,11 @@ import {
   nord,
   techwave,
   uptech,
+  pdf,
+  jpg,
+  zip,
+  doc,
+  docs,
 } from "./assets";
 import { ReactComponent as LinkedIn } from "../assets/icons/sociallinks/linkedin.svg";
 import { ReactComponent as Facebook } from "../assets/icons/sociallinks/facebook.svg";
@@ -743,3 +748,13 @@ export const historyData = [
 
 export const demoDescriptionText =
   "<p>A creative and user-focused UI/UX Designer with 3+ years of experience in crafting intuitive digital experiences. Adept at creating wireframes, prototypes, and high-fidelity designs for web and mobile applications. Skilled in translating business goals and user needs into functional and visually appealing interfaces. Priya is known for her strong attention to detail, collaborative approach, and ability to deliver innovative design solutions.</p>";
+
+export const extensions = {
+  jpg: jpg,
+  pdf: pdf,
+  doc: doc,
+  docs: docs,
+  zip: zip,
+  png: jpg,
+  jpeg: jpg,
+};

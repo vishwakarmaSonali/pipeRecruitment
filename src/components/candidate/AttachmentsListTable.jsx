@@ -12,12 +12,20 @@ import {
   Chip,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import { getRandomColor } from "../../helpers/utils";
+import { formatCustomDate, getRandomColor } from "../../helpers/utils";
 import { ReactComponent as DownloadIcon } from "../../assets/icons/download.svg";
 import { ReactComponent as DeleteIcon } from "../../assets/icons/delete.svg";
+import { extensions } from "../../helpers/config";
 
-const AttachmentsListTable = ({ header, data }) => {
+const AttachmentsListTable = ({
+  header,
+  data,
+  onUpload,
+  onDelete,
+  onDownload,
+}) => {
   const navigate = useNavigate();
+
   return (
     <TableContainer style={{ flex: 1, overflow: "auto" }}>
       <Table
@@ -33,28 +41,68 @@ const AttachmentsListTable = ({ header, data }) => {
               zIndex: 10,
             }}
           >
-            {header?.map((item) => {
-              return <TableCell className="font-14-regular">{item}</TableCell>;
+            {header?.map((item, index) => {
+              return (
+                <TableCell className="font-14-regular">
+                  <div style={{ paddingLeft: index === 0 ? 40 : 0 }}>
+                    {item}
+                  </div>
+                </TableCell>
+              );
             })}
-            <TableCell>
-              <button className="add-details-btn">+ Upload</button>
+            <TableCell style={{ textAlign: "right" }}>
+              <button className="add-details-btn" onClick={onUpload}>
+                + Upload
+              </button>
             </TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {data.map((row, index) => {
+          {data?.map((row, index) => {
+            const extension = row?.file?.name?.split(".").pop();
+
+            const handleDownload = () => {
+              if (!row?.file) {
+                console.error("No file available.");
+                return;
+              }
+              const blobUrl = URL.createObjectURL(row.file);
+              const link = document.createElement("a");
+              link.href = blobUrl;
+              link.download = row.file.name;
+              document.body.appendChild(link);
+              link.click();
+              document.body.removeChild(link);
+              URL.revokeObjectURL(blobUrl);
+            };
             return (
               <>
                 <TableRow key={index}>
-                  <TableCell>{row?.file_name}</TableCell>
-                  <TableCell>{row?.file_type}</TableCell>
-                  <TableCell>{row?.uploaded_date}</TableCell>
                   <TableCell>
-                    <div className="display-flex" style={{ gap: 8 }}>
-                      <button>
+                    <div
+                      className="display-flex align-center"
+                      style={{ gap: 20 }}
+                    >
+                      <img
+                        src={extensions[extension]}
+                        className="extension-img"
+                      />
+                      <span>{row?.file?.name}</span>
+                    </div>
+                  </TableCell>
+                  <TableCell>{extension}</TableCell>
+                  <TableCell>
+                    {formatCustomDate(row?.file?.lastModifiedDate)}
+                  </TableCell>
+                  <TableCell>
+                    <div
+                      className="display-flex"
+                      style={{ gap: 8, justifyContent: "flex-end" }}
+                    >
+                      <button onClick={() => onDelete(row?.id)}>
                         <DeleteIcon />
                       </button>
-                      <button>
+                      <button onClick={handleDownload}>
                         <DownloadIcon />
                       </button>
                     </div>
