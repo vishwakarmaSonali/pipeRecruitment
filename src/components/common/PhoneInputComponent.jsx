@@ -10,7 +10,6 @@ const PhoneInputComponent = () => {
       <PhoneInput
         country={"us"}
         value={phoneNumber}
-        className="font-ubuntu text-sm text-customBlue"
         onChange={(text) => {
           setphoneNumber(text);
         }}

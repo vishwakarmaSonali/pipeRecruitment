@@ -732,7 +732,7 @@ const Candidates = ({ isDrawerOpen }) => {
             </button>
 
             <button className="buttons border-1 border-blue-600 text-buttonBLue  min-w-[40px] ">
-              <RefreshIcon />
+              <RefreshIcon stroke="#1761D8"/>
             </button>
             {/* <button className="text-gray-700 pl-[8px]" onClick={handleClick}>
               <ThreeDots />

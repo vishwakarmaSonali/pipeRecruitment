@@ -100,7 +100,11 @@ const AddFieldDrawer = ({ visible, onClose }) => {
             />
           </div>
           <div className="display-flex" style={{ gap: 8 }}>
-            <CancelButton btnStyle={{ flex: 1 }} onClick={onCloseDrawer} />
+            <CancelButton
+              title={"Cancel"}
+              btnStyle={{ flex: 1 }}
+              onClick={onCloseDrawer}
+            />
             <CommonButton
               disabled={saveBtnDisable}
               isLoading={false}

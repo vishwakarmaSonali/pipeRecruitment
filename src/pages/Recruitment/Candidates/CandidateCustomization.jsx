@@ -33,6 +33,7 @@ import { ReactComponent as RightIcon } from "./assets/right.svg";
 import { ReactComponent as LableIcon } from "./assets/label.svg";
 import { ReactComponent as AddCircleIcon } from "./assets/add-circle.svg";
 import { HexColorPicker } from "react-colorful";
+import { ReactComponent as AddIcon } from "../../../assets/icons/plusIcon.svg";
 
 const candidateCustomizationsTabs = [
   {
@@ -384,6 +385,7 @@ const CandidateCustomization = () => {
                   title={"Add Category"}
                   onClick={handleAddCategory}
                   disable={addCategoryBtnDisable}
+                  icon={<AddIcon stroke="white" />}
                 />
               </div>
               <div>
@@ -582,6 +584,7 @@ const CandidateCustomization = () => {
                     <CommonAddButton
                       title={"Add Field"}
                       onClick={() => toggleAddFieldDrawer(true)}
+                      icon={<AddIcon stroke="white" />}
                     />
                   </div>
                   <div>
@@ -708,6 +711,7 @@ const CandidateCustomization = () => {
                 title={"Add Label"}
                 disable={editingIndex !== null}
                 onClick={addLabel}
+                icon={<AddIcon stroke="white" />}
               />
             </div>
             {labels?.length > 0 ? (

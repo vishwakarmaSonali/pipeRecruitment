@@ -8,7 +8,7 @@ const CancelButton = ({ title, onClick, disabled, btnStyle }) => {
       style={btnStyle}
       onClick={onClick}
     >
-      Cancel
+      {title}
     </button>
   );
 };

@@ -222,6 +222,7 @@ const AddLanguages = ({ visible, onClose, onAddLanguages }) => {
           style={{ gap: 8, justifyContent: "center", marginTop: "24px" }}
         >
           <CancelButton
+            title={"Cancle"}
             onClick={() => setModalVisibility("addLanguageModalVisible", false)}
           />
           <CommonButton
