@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import {
   format,
   startOfMonth,
@@ -12,19 +12,20 @@ import {
   isBefore,
 } from "date-fns";
 import "./CustomDatePicker.css";
-import { ReactComponent as LeftArrow } from "../../assets/icons/left-arrow.svg"
+import { ReactComponent as LeftArrow } from "../../assets/icons/left-arrow.svg";
 import { ReactComponent as RightArrow } from "../../assets/icons/right-arrow.svg";
 
-const CustomCalendar = ({ onDateSelect ,initialDate}) => {
+const CustomCalendar = ({ onDateSelect, initialDate }) => {
   const today = new Date();
   const [currentMonth, setCurrentMonth] = useState(today);
-  const [selectedDate, setSelectedDate] = useState(null);
+  const [selectedDate, setSelectedDate] = useState(initialDate);
+
   const todayDate = format(today, "yyyy-MM-dd");
-  useEffect(() => {
-    if (initialDate) {
-      setSelectedDate(new Date(initialDate));
-    }
-  }, [initialDate]);
+  // useEffect(() => {
+  //   if (initialDate) {
+  //     setSelectedDate(new Date(initialDate));
+  //   }
+  // }, [initialDate]);
 
   const handleDateClick = (date) => {
     setSelectedDate(date);
@@ -79,31 +80,13 @@ const CustomCalendar = ({ onDateSelect ,initialDate}) => {
         formattedDate = format(day, "d");
         const cloneDay = day;
 
-        // Disable dates before today and the 17th of any month
-        // const isDisabled = isBefore(day, today) && !isSameDay(day, today);
-
-        const consultantDisableDate = format(day, "d") === "17";
-
         days.push(
           <div
             className={`cell ${
-              format(day, "MM") !== format(currentMonth, "MM") && "disabled"
-            } 
-                        ${
-                          selectedDate === format(day, "yyyy-MM-dd") &&
-                          "selected"
-                        } 
-                        ${
-                          todayDate === format(day, "yyyy-MM-dd") &&
-                          "today-date"
-                        }
-                        `}
+              selectedDate === format(day, "yyyy-MM-dd") && "selected"
+            } ${todayDate === format(day, "yyyy-MM-dd") && "today-date"}`}
             key={day}
-            onClick={() =>
-             
-              !consultantDisableDate &&
-              handleDateClick(format(cloneDay, "yyyy-MM-dd"))
-            } // Prevent clicking on disabled dates
+            onClick={() => handleDateClick(format(cloneDay, "yyyy-MM-dd"))}
           >
             <span>{formattedDate}</span>
           </div>

@@ -1,4 +1,5 @@
 import { toast } from "react-toastify";
+import { parse, formatISO } from "date-fns";
 
 export const notifySuccess = (success) => {
   toast.dismiss();
@@ -56,4 +57,21 @@ export function formatCustomDate(input) {
 
 export function formatTwoDigits(num) {
   return num < 10 ? `0${num}` : `${num}`;
+}
+
+export const formatDate = (dateString) => {
+  const date = new Date(dateString);
+  return date.toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+};
+
+export function convertToISO(dateString) {
+  // Parse input format: "January 26, 2025 • 8:14 AM"
+  const parsedDate = parse(dateString, "MMMM dd, yyyy • h:mm a", new Date());
+
+  // Convert to ISO format: "2025-02-26T08:14:00+05:30"
+  return formatISO(parsedDate, { representation: "complete" });
 }

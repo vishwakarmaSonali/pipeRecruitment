@@ -12,6 +12,8 @@ import SearchDropdown from "../common/SearchDropDown";
 import AddSocialLinksModal from "../modals/AddSocialLinksModal";
 import { ReactComponent as CloseIcon } from "../../assets/icons/close.svg";
 import AddSkillsModal from "../modals/AddSkillsModal";
+import DateTimePicker from "../common/DateTimePicker";
+import { formatCustomDate, formatDate } from "../../helpers/utils";
 
 const ProfessionalDetails = ({ details, label }) => {
   const [fields, setFields] = useState(details);
@@ -22,6 +24,12 @@ const ProfessionalDetails = ({ details, label }) => {
   const [selectedMultiLanguages, setSelectedMultiLanguages] = useState([]);
   const [socialLinkModalVisible, setSocialLinkModalVisible] = useState(false);
   const [addSkillModalVisible, setAddSkillModalVisible] = useState(false);
+  const [tempDate, setTempDate] = useState(null);
+
+  const handleDateSelect = (date) => {
+    console.log(">>>>>>>>>>>>>>>>>>date", date);
+    setTempValue(date);
+  };
 
   const handleEdit = (key, value) => {
     setEditField(key);
@@ -47,6 +55,48 @@ const ProfessionalDetails = ({ details, label }) => {
 
   const handleCancel = () => {
     setEditField(null);
+  };
+
+  const renderEditInput = (key, value) => {
+    if (key === "Hired Date") {
+      return (
+        <DateTimePicker
+          initialDate={value}
+          onDateSelect={handleDateSelect}
+          showTime={true}
+        />
+      );
+    } else if (
+      key === "Start Date" ||
+      key === "Probation End Date" ||
+      key === "Left Date"
+    ) {
+      return (
+        <DateTimePicker initialDate={value} onDateSelect={handleDateSelect} />
+      );
+    } else {
+      return (
+        <CommonTextInput
+          type="text"
+          value={tempValue}
+          onChange={(e) => setTempValue(e.target.value)}
+        />
+      );
+    }
+  };
+
+  const renderItemValue = (key, value) => {
+    if (key === "Hired Date") {
+      return formatCustomDate(value);
+    } else if (
+      key === "Start Date" ||
+      key === "Probation End Date" ||
+      key === "Left Date"
+    ) {
+      return formatDate(value);
+    } else {
+      return value;
+    }
   };
 
   const renderValues = (key, value) => {
@@ -322,6 +372,28 @@ const ProfessionalDetails = ({ details, label }) => {
           </div>
         </div>
       );
+    } else if (key === "Job") {
+      return (
+        <div className="detail-row">
+          <p className="font-14-medium color-dark-black flex-1">{key}</p>
+          <div className="display-flex align-center flex-2" style={{ gap: 6 }}>
+            <div className="w-h-32">
+              <img src={value?.image} className="common-img" />
+            </div>
+            <div className="display-column" style={{ gap: 4 }}>
+              {value?.name && (
+                <p className="font-14-medium color-dark-black">{value?.name}</p>
+              )}
+
+              {value?.position && (
+                <p className="font-10-regular color-dark-black">
+                  {value?.position}
+                </p>
+              )}
+            </div>
+          </div>
+        </div>
+      );
     } else {
       return (
         <div key={key} className="detail-row">
@@ -332,13 +404,7 @@ const ProfessionalDetails = ({ details, label }) => {
                 className="flex-1 display-flex align-center"
                 style={{ gap: 8 }}
               >
-                <div className="flex-1">
-                  <CommonTextInput
-                    type="text"
-                    value={tempValue}
-                    onChange={(e) => setTempValue(e.target.value)}
-                  />
-                </div>
+                <div className="flex-1">{renderEditInput(key, value)}</div>
 
                 <div className="display-flex" style={{ gap: 8 }}>
                   <button onClick={handleCancel}>
@@ -357,7 +423,7 @@ const ProfessionalDetails = ({ details, label }) => {
                 >
                   {!!value ? (
                     <span className="font-14-regular color-dark-blak ">
-                      {value}
+                      {renderItemValue(key, value)}
                     </span>
                   ) : (
                     <DashIcon />

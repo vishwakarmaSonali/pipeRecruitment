@@ -62,6 +62,7 @@ import AddToJobsModal from "./AddToJobsModal";
 import { ReactComponent as CloseIcon } from "../../assets/icons/closeModal.svg";
 import { useNavigate } from "react-router-dom";
 import AddToFolderModal from "./AddToFolderModal";
+import { uptech } from "../../helpers/assets";
 
 const skillData = [
   {
@@ -200,10 +201,15 @@ const candidateDetailsData = {
 
 const placementDetails = {
   "Employment Status": "Hired",
-  "Hired Date": "January 10, 2025 • 1:56 PM",
-  "Start Date": "March 1, 2025",
-  "Probation End Date": "May 1, 2025",
-  "Left Date": "April 21, 2025",
+  "Hired Date": "2025-01-26T08:14:00+05:30",
+  "Start Date": "2025-03-01T08:14:00+05:30",
+  "Probation End Date": "2025-05-01T08:14:00+05:30",
+  "Left Date": "2025-04-21T08:14:00+05:30",
+  Job: {
+    image: uptech,
+    name: "UpTech",
+    position: "UI Designer",
+  },
 };
 
 const contactDetails = {
@@ -700,7 +706,7 @@ const CandidateInfoModal = ({ visible, onClose }) => {
                   label={"Professional Details"}
                   details={professionalDetails}
                 />
-                <CandidateDetails
+                <ProfessionalDetails
                   label={"Placement Details"}
                   details={placementDetails}
                 />
