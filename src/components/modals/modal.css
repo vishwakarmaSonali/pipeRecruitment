@@ -639,10 +639,7 @@ textarea,
   display: flex;
   align-items: center;
   gap: 8px;
-}
-
-.modal-backdrop.show {
-  opacity: 0.6;
+  background-color: transparent;
 }
 
 .close-previous-next-btn-wrapper {
@@ -830,4 +827,18 @@ textarea,
   padding: 12px;
   border-radius: 12px;
   border: 1px solid #d7d7d7;
+}
+
+.label-item {
+  padding: 14px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  background-color: transparent;
+  transition: background-color 300ms;
+}
+
+.label-item:hover,
+.folder-list-item:hover {
+  background-color: #1761d81a;
 }

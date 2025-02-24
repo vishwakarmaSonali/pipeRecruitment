@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import Modal from "react-bootstrap/Modal";
 import { useModal } from "../common/ModalProvider";
-import { ReactComponent as CloseIcon } from "../../assets/icons/closeModal.svg";
 import { ReactComponent as LabelClose } from "../../assets/icons/labelClose.svg";
 import { ReactComponent as TickCircle } from "../../assets/icons/tick-circle.svg";
 import CommonSearchBox from "../common/CommonSearchBox";
 import CommonDropdown from "../common/CommonDropdown";
+import CommonButton from "../common/CommonButton";
+import CancelButton from "../common/CancelButton";
 
 const jobStatusOptions = [
   { id: 1, type: "Active", color: "#98D4DF", selected: false },
@@ -49,6 +50,7 @@ const companies = [
 
 const AddToJobsModal = ({ visible, onClose }) => {
   const { modals, setModalVisibility } = useModal();
+  const [modalAnimation, setModalAnimation] = useState(false);
   const [searchValue, setSearchValue] = useState("");
   const [selectedJobStatus, setSelectedJobStatus] = useState([]);
   const [jobStatusData, setJobStatusData] = useState(jobStatusOptions);
@@ -85,19 +87,20 @@ const AddToJobsModal = ({ visible, onClose }) => {
   };
 
   const handleBackdropClick = () => {
-    setModalVisibility("animatedModal", true);
+    setModalAnimation(true);
     setTimeout(() => {
-      setModalVisibility("animatedModal", false);
+      setModalAnimation(false);
     }, 600);
   };
- // ✅ Toggle Company Selection (Allow multiple)
- const toggleCompanySelection = (company) => {
-  setSelectedCompanies((prev) =>
-    prev.some((c) => c.name === company.name)
-      ? prev.filter((c) => c.name !== company.name) // Remove if already selected
-      : [...prev, company] // Add if not selected
-  );
-};
+
+  const toggleCompanySelection = (company) => {
+    setSelectedCompanies(
+      (prev) =>
+        prev.some((c) => c.name === company.name)
+          ? prev.filter((c) => c.name !== company.name) // Remove if already selected
+          : [...prev, company] // Add if not selected
+    );
+  };
   return (
     <Modal
       show={visible}
@@ -108,16 +111,10 @@ const AddToJobsModal = ({ visible, onClose }) => {
     >
       <div
         className={`common-modal-container overflow-visible ${
-          modals?.animatedModal && "shake"
+          modalAnimation && "shake"
         }`}
       >
         <div className="display-column" style={{ gap: 24 }}>
-          <div className="display-flex-justify align-center">
-            <p className="font-16-medium color-dark-black">Add to Jobs</p>
-            <button onClick={onClose}>
-              <CloseIcon />
-            </button>
-          </div>
           <div className="display-column" style={{ gap: 16 }}>
             <div className="display-column" style={{ gap: 10 }}>
               <CommonSearchBox
@@ -160,11 +157,16 @@ const AddToJobsModal = ({ visible, onClose }) => {
             </div>
             <div
               className="display-column"
-              style={{ gap: 10, maxHeight: 256, overflowY: "auto" }}
+              style={{ gap: 10, maxHeight: 300, overflowY: "auto" }}
             >
               {companies?.map((item, index) => {
                 return (
-                  <div key={index} className="job-compony-list-item" onClick={() => toggleCompanySelection(item)}>
+                  <div
+                    key={index}
+                    className="job-compony-list-item"
+                    onClick={() => toggleCompanySelection(item)}
+                    style={{ cursor: "pointer" }}
+                  >
                     <div
                       className="display-flex align-center"
                       style={{ gap: 6 }}
@@ -190,13 +192,19 @@ const AddToJobsModal = ({ visible, onClose }) => {
                         style={{ backgroundColor: "#98D4DF" }}
                       />
                       <button>
-                      {selectedCompanies.some((c) => c.name === item.name) &&  <TickCircle />}
+                        {selectedCompanies.some(
+                          (c) => c.name === item.name
+                        ) && <TickCircle />}
                       </button>
                     </div>
                   </div>
                 );
               })}
             </div>
+          </div>
+          <div className="display-flex justify-center" style={{ gap: 8 }}>
+            <CancelButton title={"Cancel"} onClick={onClose} />
+            <CommonButton title={"Add"} onClick={onClose} />
           </div>
         </div>
       </div>

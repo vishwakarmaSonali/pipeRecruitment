@@ -58,6 +58,10 @@ import VerifiedEnrichProfileUserModal from "./VerifiedEnrichProfileUserModal";
 import UploadDocumentModal from "./UploadDocumentModal";
 import { ReactComponent as AttachementIcon } from "../../assets/images/attachment.svg";
 import { ReactComponent as JobIcon } from "../../assets/images/jobs.svg";
+import AddToJobsModal from "./AddToJobsModal";
+import { ReactComponent as CloseIcon } from "../../assets/icons/closeModal.svg";
+import { useNavigate } from "react-router-dom";
+import AddToFolderModal from "./AddToFolderModal";
 
 const skillData = [
   {
@@ -155,14 +159,31 @@ const candidateInfoTabs = [
   },
 ];
 
-const labelData = [
+const allLabelData = [
   {
     id: 1,
     name: "High Priority",
+    color: "#F2AFAF",
   },
   {
     id: 2,
+    name: "Available",
+    color: "#65D56E",
+  },
+  {
+    id: 3,
     name: "Important",
+    color: "#6893D4",
+  },
+  {
+    id: 4,
+    name: "Recently Placed",
+    color: "#E9C328",
+  },
+  {
+    id: 5,
+    name: "Black Listed",
+    color: "#EE3F3F",
   },
 ];
 
@@ -273,14 +294,18 @@ const enrichUserProfileData = [
 ];
 
 const CandidateInfoModal = ({ visible, onClose }) => {
+  const navigate = useNavigate();
   const { modals, setModalVisibility } = useModal();
   const [candidateTabs, setCandidateTabs] = useState(candidateInfoTabs);
   const [selectedCandidateTab, setSelectedCandidateTab] = useState("Summary");
   const [anchorEl, setAnchorEl] = useState(null);
   const [randomColor, setRandomColor] = useState([]);
   const [writeText, setWriteText] = useState("");
+  const [selectedLabelData, setSelectedLabelData] = useState([]);
+  const [labelData, setLabelData] = useState(allLabelData);
   const [deleteNoteModalVisible, setDeleteNoteModalVisible] = useState(false);
   const [noteModalVisible, setNoteModalVisible] = useState(false);
+  const [folders, setFolders] = useState([]);
   const [selectedNote, setSelectedNote] = useState(null);
   const [selectedCompanyHistory, setSelectedCompanyHistory] = useState(
     comapnyListing[0]
@@ -313,9 +338,23 @@ const CandidateInfoModal = ({ visible, onClose }) => {
     setAttachmentData(updatedData);
   };
 
+  const [addToJobsModalVisible, setAddToJobsModalVisible] = useState(false);
+
+  const [addToFolderModalVisible, setAddToFolderModalVisible] = useState(false);
+
   const [anchorE2, setAnchorE2] = useState(null);
+  const [labelAnchor, setLabelAnchor] = useState(null);
+  const labelMenuOpen = Boolean(labelAnchor);
   const feedBackMenuOpen = Boolean(anchorE2);
   const open = Boolean(anchorEl);
+
+  const handleLabelMenuClick = (event) => {
+    setLabelAnchor(event.currentTarget);
+  };
+
+  const handleLabelMenuClose = () => {
+    setLabelAnchor(null);
+  };
 
   const handleFeedbackMenuClick = (event) => {
     setAnchorE2(event.currentTarget);
@@ -345,6 +384,19 @@ const CandidateInfoModal = ({ visible, onClose }) => {
     const filterTab = updatedData?.filter((item) => item?.selected);
     setSelectedCandidateTab(filterTab[0]?.name);
     setCandidateTabs(updatedData);
+  };
+
+  const labelHandler = (id) => {
+    const updatedData = labelData?.map((item) => {
+      if (item?.id === id) {
+        return { ...item, selected: !item?.selected };
+      } else {
+        return { ...item };
+      }
+    });
+    const filterLableData = updatedData?.filter((item) => item?.selected);
+    setSelectedLabelData(filterLableData);
+    setLabelData(updatedData);
   };
 
   const renderFeedback = (item) => {
@@ -471,17 +523,75 @@ const CandidateInfoModal = ({ visible, onClose }) => {
                     className="display-flex align-center"
                     style={{ gap: 8, flexWrap: "wrap" }}
                   >
-                    {labelData?.map((item) => {
-                      const color = getRandomColor();
+                    {selectedLabelData?.map((item) => {
                       return (
                         <div key={item?.id} className="candidate-info-label">
-                          <LabelIcon fill={color} /> {item?.name}
+                          <LabelIcon fill={item?.color} /> {item?.name}
                         </div>
                       );
                     })}
-                    <button className="add-label-btn-candidate-info">
+                    <button
+                      className="add-label-btn-candidate-info"
+                      aria-controls={labelMenuOpen ? "basic-menu" : undefined}
+                      aria-haspopup="true"
+                      aria-expanded={labelMenuOpen ? "true" : undefined}
+                      onClick={handleLabelMenuClick}
+                    >
                       <AddIcon /> Label
                     </button>
+                    <Menu
+                      anchorEl={labelAnchor}
+                      open={labelMenuOpen}
+                      onClose={handleLabelMenuClose}
+                      PaperProps={{
+                        sx: commonStyle.sx,
+                      }}
+                      transformOrigin={{
+                        vertical: "top",
+                        horizontal: "left",
+                      }}
+                      anchorOrigin={{
+                        vertical: "bottom",
+                        horizontal: "left",
+                      }}
+                    >
+                      <div className="display-column">
+                        {labelData?.map((item) => {
+                          return (
+                            <button
+                              className="label-item"
+                              onClick={() => labelHandler(item?.id)}
+                            >
+                              <LabelIcon fill={item?.color} />
+                              <span
+                                className="font-12-regular color-dark-black flex-1"
+                                style={{ textAlign: "left" }}
+                              >
+                                {item?.name}
+                              </span>
+                              {item?.selected && (
+                                <button>
+                                  <CloseIcon width={14} height={14} />
+                                </button>
+                              )}
+                            </button>
+                          );
+                        })}
+                        <div className="divider-line" />
+                        <button
+                          className="label-item"
+                          onClick={() => navigate("/candidate-customization")}
+                        >
+                          <LabelIcon fill={"#151B23"} />
+                          <span
+                            className="font-12-regular color-dark-black flex-1"
+                            style={{ textAlign: "left" }}
+                          >
+                            Manage Labels
+                          </span>
+                        </button>
+                      </div>
+                    </Menu>
                   </div>
                 </div>
               </div>
@@ -602,8 +712,16 @@ const CandidateInfoModal = ({ visible, onClose }) => {
                   label={"Education Details"}
                   data={educationData}
                 />
-                <CandidateInfoJobs label={"Jobs"} data={jobData} />
-                <AddCommonCandidateInfo label={"Folders"} />
+                <CandidateInfoJobs
+                  label={"Jobs"}
+                  data={jobData}
+                  onAdd={() => setAddToJobsModalVisible(true)}
+                />
+                <AddCommonCandidateInfo
+                  label={"Folders"}
+                  onAdd={() => setAddToFolderModalVisible(true)}
+                  data={folders}
+                />
                 <CandidateLog />
               </div>
               <div
@@ -963,6 +1081,17 @@ const CandidateInfoModal = ({ visible, onClose }) => {
         onClose={() => setAttachmentUploadModalVisible(false)}
         uploadedFiles={setAttachmentData}
         attachmentData={attachmentData}
+      />
+      <AddToJobsModal
+        visible={addToJobsModalVisible}
+        onClose={() => {
+          setAddToJobsModalVisible(false);
+        }}
+      />
+      <AddToFolderModal
+        visible={addToFolderModalVisible}
+        onClose={() => setAddToFolderModalVisible(false)}
+        folders={setFolders}
       />
     </>
   );

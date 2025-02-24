@@ -1,34 +1,60 @@
 import React, { useState } from "react";
 import Modal from "react-bootstrap/Modal";
 import { useModal } from "../common/ModalProvider";
-import { ReactComponent as CloseIcon } from "../../assets/icons/closeModal.svg";
 import CommonSearchBox from "../common/CommonSearchBox";
-import { ReactComponent as FolderIcon } from "../../assets/icons/addFolder.svg";
 import { ReactComponent as Folder } from "../../assets/icons/folderIcon.svg";
+import { ReactComponent as TickCircle } from "../../assets/icons/tick-circle.svg";
+import CancelButton from "../common/CancelButton";
+import CommonButton from "../common/CommonButton";
 
-const AddToFolderModal = ({ visible, onClose }) => {
+const availableFolderData = [
+  {
+    id: 1,
+    name: "Designer",
+  },
+  {
+    id: 2,
+    name: "Developer",
+  },
+  {
+    id: 3,
+    name: "HR",
+  },
+];
+
+const AddToFolderModal = ({ visible, onClose, folders }) => {
   const { modals, setModalVisibility } = useModal();
+  const [modalAnimation, setModalAnimation] = useState(false);
   const [searchValue, setSearchValue] = useState("");
 
-  const [folderData, setFolderData] = useState([
-    {
-      id: 1,
-      name: "Designer",
-    },
-    {
-      id: 2,
-      name: "Developer",
-    },
-    {
-      id: 3,
-      name: "HR",
-    },
-  ]);
+  const [folderData, setFolderData] = useState(availableFolderData);
+
+  const [selectedFolderData, setSelectedFolderData] = useState([]);
+
+  const folderHandler = (id) => {
+    const updatedData = folderData?.map((item) => {
+      if (item?.id === id) {
+        return { ...item, selected: !item?.selected };
+      } else {
+        return { ...item };
+      }
+    });
+
+    const filterData = updatedData?.filter((item) => item?.selected);
+    setSelectedFolderData(filterData);
+    setFolderData(updatedData);
+  };
+
+  const resetData = () => {
+    setFolderData(availableFolderData);
+    setSelectedFolderData([]);
+    onClose();
+  };
 
   const handleBackdropClick = () => {
-    setModalVisibility("animatedModal", true);
+    setModalAnimation(true);
     setTimeout(() => {
-      setModalVisibility("animatedModal", false);
+      setModalAnimation(false);
     }, 600);
   };
   return (
@@ -41,46 +67,51 @@ const AddToFolderModal = ({ visible, onClose }) => {
     >
       <div
         className={`common-modal-container overflow-visible ${
-          modals?.animatedModal && "shake"
+          modalAnimation && "shake"
         }`}
       >
         <div className="display-column" style={{ gap: 24 }}>
-          <div className="display-flex-justify align-center">
-            <p className="font-16-medium color-dark-black">Add to Folder</p>
-            <button onClick={onClose}>
-              <CloseIcon />
-            </button>
+          <div className="display-column" style={{ gap: 16 }}>
+            <CommonSearchBox
+              value={searchValue}
+              onChange={(e) => setSearchValue(e.target.value)}
+            />
+            {folderData?.length > 0 && (
+              <div className="display-column" style={{ gap: 10 }}>
+                {folderData?.map((item) => {
+                  return (
+                    <button
+                      key={item?.id}
+                      className={`folder-list-item ${
+                        item?.selected && "selected-item-common-bg"
+                      }`}
+                      onClick={() => folderHandler(item?.id)}
+                    >
+                      <Folder />
+                      <span
+                        className="font-14-regular color-dark-black flex-1"
+                        style={{ textAlign: "left" }}
+                      >
+                        {item?.name}
+                      </span>
+                      {item?.selected && <TickCircle />}
+                    </button>
+                  );
+                })}
+              </div>
+            )}
           </div>
-          <CommonSearchBox
-            value={searchValue}
-            onChange={(e) => setSearchValue(e.target.value)}
-          />
-          {folderData?.length > 0 && (
-            <div className="display-column" style={{ gap: 10 }}>
-              {folderData?.map((item) => {
-                return (
-                  <button key={item?.id} className="folder-list-item">
-                    <Folder />
-                    <span className="font-14-regular color-dark-black">
-                      {item?.name}
-                    </span>
-                  </button>
-                );
-              })}
-            </div>
-          )}
-          <button
-            className="create-folder-btn"
-            onClick={() => {
-              onClose();
-              setModalVisibility("createFolderModalVisible", true);
-            }}
-          >
-            <FolderIcon />
-            <span className="font-14-regular color-dark-black">
-              Create folder
-            </span>
-          </button>
+          <div className="display-flex justify-center" style={{ gap: 8 }}>
+            <CancelButton title={"Cancel"} onClick={resetData} />
+            <CommonButton
+              title={"Add"}
+              onClick={() => {
+                folders(selectedFolderData);
+                onClose();
+              }}
+              disabled={selectedFolderData?.length < 1}
+            />
+          </div>
         </div>
       </div>
     </Modal>

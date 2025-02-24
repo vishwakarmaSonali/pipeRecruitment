@@ -4,7 +4,7 @@ import { Avatar } from "@mui/material";
 import { getRandomColor } from "../../helpers/utils";
 import { ReactComponent as ArrowIcon } from "../../assets/icons/arrowDown.svg";
 
-const CandidateInfoJobs = ({ label, data }) => {
+const CandidateInfoJobs = ({ label, data, onAdd }) => {
   const [collapse, setCollapse] = useState(true);
   return (
     <div className="candidate-details-main-container">
@@ -22,7 +22,9 @@ const CandidateInfoJobs = ({ label, data }) => {
             <ArrowIcon />
           </button>
         </div>
-        <button className="add-details-btn">+ Add</button>
+        <button className="add-details-btn" onClick={onAdd}>
+          + Add
+        </button>
       </div>
       {collapse && (
         <>
