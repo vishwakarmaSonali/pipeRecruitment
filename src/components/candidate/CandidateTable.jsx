@@ -33,6 +33,7 @@ const CandidateTable = ({
   header,
   data,
   setSelectedCandidateUser,
+  setSelectedCandidateUsers,
   AddJobClick,
   AddFolderClick,
   ChangeOwnerShipClick,
@@ -91,6 +92,11 @@ const CandidateTable = ({
                                 ? []
                                 : data.map((c) => c.id)
                             );
+                            setSelectedCandidateUsers(
+                              selectedCandidates.length === data.length
+                                ? []
+                                : data.map((c) => c.id)
+                            );
                           }}
                         >
                           {selectedCandidates.length === data.length && (
@@ -141,6 +147,11 @@ const CandidateTable = ({
                                 onClick={(e) => {
                                   e.stopPropagation();
                                   setSelectedCandidates((prev) =>
+                                    prev.includes(candidate.id)
+                                      ? prev.filter((id) => id !== candidate.id)
+                                      : [...prev, candidate.id]
+                                  );
+                                  setSelectedCandidateUsers((prev) =>
                                     prev.includes(candidate.id)
                                       ? prev.filter((id) => id !== candidate.id)
                                       : [...prev, candidate.id]

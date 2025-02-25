@@ -623,6 +623,7 @@ const Candidates = ({ isDrawerOpen }) => {
               AddJobClick={() => toggleAddToJobsDrawer(true)}
               AddFolderClick={() => toggleAddToFolderDrawer(true)}
               ChangeOwnerShipClick={() => toggleChangeOwnershipDrawer(true)}
+              setSelectedCandidateUsers={setSelectedCandidates}
             />
           </div>
         </div>
