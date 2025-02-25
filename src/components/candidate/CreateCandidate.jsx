@@ -34,6 +34,7 @@ import HeaderWithActions from "./CandidateHeader";
 import { createCandidates } from "../../actions/candidateActions";
 import { useNavigate } from "react-router-dom";
 import TitleSearchDropdown from "../AutocompleteDropdowns/TitleSearchDropDown";
+import DateTimePicker from "../common/DateTimePicker";
 const genderOptions = [
   { id: 1, label: "Female" },
   { id: 2, label: "Male" },
@@ -304,7 +305,7 @@ const CreateCandidateForm = () => {
         onSecondaryClick={handleDiscard}
       />
       <div
-        className="overflow-auto flex-grow h-[calc(90vh-30px)] bg-grey-90 "
+        className="overflow-auto flex-grow h-[calc(80vh-20px)] bg-grey-90 "
         style={{ flex: 1, display: "flex", flexDirection: "column" }}
       >
         <div className="main-container-candidateForm overflow-auto">
@@ -366,29 +367,20 @@ const CreateCandidateForm = () => {
                     />
                   </div>
                   <div className="flex-1 relative">
-                    <div className="flex items-center border-1 rounded-[8px] h-[38px] px-2">
-                      <input
-                        placeholder="Date of Birth"
-                        className=" outline-none border-none padding-0 margin-0 text-sm font-ubuntu"
-                        value={
-                          dateofbirth == null
-                            ? ""
-                            : format(dateofbirth, "MMMM d, yyyy")
-                        }
-                        onFocus={() => setShowUpdatedCalendar(true)}
-                        readOnly
-                      />
-                      <div className="mr-2">
-                        <Calendar2 />
-                      </div>
-                    </div>
+                  <DateTimePicker
+                          initialDate={dateofbirth}
+                          onDateSelect={handleDateOfBirthSelect}
+                          showTime={false}
+                          showIcon={true}
+                        />
 
                     {showUpdatedCalendar && (
                       <div className="absolute w-[100%] z-10 bg-white mt-1">
-                        <CustomCalendar
+                        {/* <CustomCalendar
                           onDateSelect={handleDateOfBirthSelect}
                           initialDate={dateofbirth}
-                        />
+                        /> */}
+                       
                       </div>
                     )}
                   </div>

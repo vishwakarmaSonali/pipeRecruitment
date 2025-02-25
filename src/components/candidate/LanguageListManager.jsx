@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useModal } from "../common/ModalProvider";
 import AddLanguages from "../modals/AddLanguagesModal";
+import { ReactComponent as CloseIcon } from "../../assets/icons/closeModal.svg";
 
 const LanguageListManager = ({ selectedLanguages, setSelectedLanguages }) => {
   const { modals, setModalVisibility } = useModal();
@@ -23,14 +24,14 @@ const LanguageListManager = ({ selectedLanguages, setSelectedLanguages }) => {
         {selectedLanguages.map((language, index) => (
           <div
             key={index}
-            className="flex items-center gap-[8px] border-1 border-customBlue p-[8px] rounded-[8px] text-m"
+            className="bg-white border text-gray-700 text-sm max-h-[30px] p-[8px] rounded-[8px] flex items-center gap-[8px]"
           >
             <span className="text-customBlue rounded-[6px] text-m">{language.name}</span>
             <button
               onClick={() => removeLanguage(index)}
               className="text-customBlue  font-ubuntu text-sm focus:outline-none"
             >
-              ✕
+            <CloseIcon height={"10px"} width={"10px"}/>
             </button>
           </div>
         ))}

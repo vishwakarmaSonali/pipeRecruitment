@@ -23,7 +23,7 @@ const SocialLinksManager = ({selectedSocialLinks,setSelectedSocialLinks}) => {
         {selectedSocialLinks.map((link, index) => (
           <div
             key={index}
-            className="flex items-center justify-between border border-customBlue p-2 rounded-md space-x-1"
+             className="bg-white border text-gray-700 text-sm max-h-[30px] p-[8px] rounded-[8px] flex items-center gap-[8px] justify-between  border-customBlue space-x-1"
           >
             {/* ✅ Show Icon & Name */}
             <div className="flex items-center ">

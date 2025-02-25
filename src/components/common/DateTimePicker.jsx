@@ -16,6 +16,7 @@ import {
 import { ReactComponent as LeftArrow } from "../../assets/icons/left-arrow.svg";
 import { ReactComponent as RightArrow } from "../../assets/icons/right-arrow.svg";
 import { ReactComponent as Arrowup } from "../../assets/icons/arrow-up.svg";
+import { ReactComponent as CalendarIcon } from "../../assets/icons/calendar-2.svg";
 import { convertToISO, formatDate } from "../../helpers/utils";
 
 const DateTimePicker = ({ onDateSelect, initialDate, showTime }) => {
