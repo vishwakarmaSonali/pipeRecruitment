@@ -42,12 +42,23 @@ import ChangeOwnershipDrawer from "../../../components/candidate/ChangeOwnership
 import AddToJobsDrawer from "../../../components/candidate/AddToJobsDrawer";
 import MergeDuplicateModal from "../../../components/modals/MergeDuplicateModal";
 import { useNavigate } from "react-router-dom";
+import CandidateTable from "../../../components/candidate/CandidateTable";
+import { candidateTableHeader } from "../../../helpers/config";
+import PaginationComponent from "../../../components/common/PaginationComponent";
 
 const Candidates = ({ isDrawerOpen }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const {
+    fetchMoreLoading,
+    totalCandidateData,
+    totalCandidatePages,
+    candidateFilters,
+    candidateData,
+  } = useSelector((state) => state.sourcing);
   const [candidateList, setCandidateList] = useState(candidates);
   const [selectedCandidates, setSelectedCandidates] = useState([]);
+  const [selectedCandidate, setSelectedCandidate] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState("Candidates");
   const selectedColumns = useSelector((state) => state.columns.selected); // Get selected columns from Redux
   const savedFilters = useSelector((state) => state.filters.filters); // Get saved filters from Redux
@@ -57,11 +68,22 @@ const Candidates = ({ isDrawerOpen }) => {
   const [addToFolderDrawerOpen, setAddToFolderDrawerOpen] = useState(false);
   const [addToJobsDrawerOpen, setAddToJobsDrawerOpen] = useState(false);
   const [hoveredCandidate, setHoveredCandidate] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [resultsPerPage, setResultsPerPage] = useState(20);
 
   const [changeOwnershipDrawerOpen, setChangeOwnershipDrawerOpen] =
     useState(false);
   const [filtersApplied, setFiltersApplied] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
+
+  const handleResultsChange = (value) => {
+    setResultsPerPage(value);
+    setIsDropdownOpen(false);
+  };
 
   const [filters, setFilters] = useState({
     jobTitle: "",
@@ -267,6 +289,8 @@ const Candidates = ({ isDrawerOpen }) => {
   const [selectedSearchableOption, setSelectedSearchableOption] = useState("");
   const [originalConditions, setOriginalConditions] = useState([]);
   const [conditions, setConditions] = useState([]); // Store multiple conditions
+  const dropdownRef = useRef(null);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   // useEffect(() => {
   //   if (conditions.length === 0) {
@@ -445,146 +469,7 @@ const Candidates = ({ isDrawerOpen }) => {
   const handleBulkAction = () => {
     alert(`Performing bulk action on ${selectedCandidates.length} candidates!`);
   };
-  const PaginationFooter = () => {
-    const [currentPage, setCurrentPage] = useState(1);
-    const [resultsPerPage, setResultsPerPage] = useState(20);
-    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-    const totalPages = 1154;
-    const dropdownRef = useRef(null);
 
-    const handlePageClick = (page) => {
-      setCurrentPage(page);
-    };
-
-    const handleResultsChange = (value) => {
-      setResultsPerPage(value);
-      setIsDropdownOpen(false);
-      setCurrentPage(1); // Reset to first page when changing results per page
-    };
-
-    // ✅ Close dropdown when clicking outside
-    useEffect(() => {
-      function handleClickOutside(event) {
-        if (
-          dropdownRef.current &&
-          !dropdownRef.current.contains(event.target)
-        ) {
-          setIsDropdownOpen(false);
-        }
-      }
-      document.addEventListener("mousedown", handleClickOutside);
-      return () => {
-        document.removeEventListener("mousedown", handleClickOutside);
-      };
-    }, []);
-
-    return (
-      <div className="fixed bottom-0 w-screen bg-gray-100 py-2 flex items-center justify-between px-6 shadow-md">
-        <div className="w-1/4"></div>
-        {/* Pagination Controls */}
-        <div className="flex items-center space-x-4 justify-center w-1/2">
-          {/* Previous Page Button */}
-          <button
-            className={`px-3 py-1 rounded-md ${
-              currentPage === 1
-                ? "text-gray-400 cursor-not-allowed"
-                : "text-black"
-            }`}
-            onClick={() => handlePageClick(currentPage - 1)}
-            disabled={currentPage === 1}
-          >
-            <img src={LeftArrow} alt="leftArrow" />
-          </button>
-
-          {/* Page Numbers */}
-          <div className="flex items-center space-x-2 text-gray-700">
-            {[1, 2, 3, 4].map((page) => (
-              <button
-                key={page}
-                className={`px-3 py-1 rounded-md ${
-                  currentPage === page
-                    ? "text-blue-600 font-ubuntu font-medium text-sm"
-                    : "text-gray-700 font-ubuntu font-medium text-sm"
-                }`}
-                onClick={() => handlePageClick(page)}
-              >
-                {page}
-              </button>
-            ))}
-
-            {/* Ellipsis */}
-            <span className="text-gray-500">...</span>
-
-            {/* Last Page Number */}
-            <button
-              className={`px-3 py-1 rounded-md ${
-                currentPage === totalPages
-                  ? "text-blue-600 font-ubuntu font-medium text-sm"
-                  : "text-gray-700 font-ubuntu font-medium text-sm"
-              }`}
-              onClick={() => handlePageClick(totalPages)}
-            >
-              {totalPages}
-            </button>
-          </div>
-
-          {/* Next Page Button */}
-          <button
-            className={`px-3 py-1 rounded-md ${
-              currentPage === totalPages
-                ? "text-gray-400 cursor-not-allowed"
-                : "text-black"
-            }`}
-            onClick={() => handlePageClick(currentPage + 1)}
-            disabled={currentPage === totalPages}
-          >
-            <img src={RightArrow} alt="leftArrow" />
-          </button>
-        </div>
-
-        {/* Results Per Page Dropdown */}
-        <div
-          className="relative flex items-center space-x-2 justify-end w-1/4"
-          ref={dropdownRef}
-        >
-          <span className="text-sm font-ubuntu text-customGray">
-            Results per page
-          </span>
-          <button
-            className="border border-customGray rounded-md px-2 py-1 gap-1 text-sm font-ubuntu focus:outline-none focus:ring-0 relative items-center flex"
-            onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-          >
-            {resultsPerPage}
-            <DropArrow fill="customBlue" />
-          </button>
-
-          {/* Dropdown Menu (Positioned Above) */}
-          {isDropdownOpen && (
-            <div className="absolute bottom-full mb-2 right-0 w-16 text-sm font-ubuntu bg-white shadow-lg rounded-lg overflow-hidden z-50">
-              {[10, 20, 30, 40, 50].map((option) => (
-                <button
-                  key={option}
-                  className="block w-full text-center px-4 py-2 text-customBlue hover:bg-gray-100"
-                  onClick={() => handleResultsChange(option)}
-                >
-                  {option}
-                </button>
-              ))}
-            </div>
-          )}
-        </div>
-      </div>
-    );
-  };
-
-  // const getInitials = (name) => {
-  //   if (!name) return "";
-  //   const nameParts = name.split(" ");
-  //   const initials = nameParts
-  //     .map((part) => part[0].toUpperCase()) // Take the first letter of each part
-  //     .join(""); // Combine them
-  //   return initials.substring(0, 2); // Limit to 2 initials
-  // };
   // Function to generate a random color
   const getRandomColor = () => {
     const colors = [
@@ -601,85 +486,19 @@ const Candidates = ({ isDrawerOpen }) => {
   };
 
   return (
-    <div
-      className="w-full h-screen bg-white overflow-hidden overscroll-none"
-      style={{ boxSizing: "border-box" }}
-    >
+    <div className="sourcing-main-container">
       <Navbar />
       <div
-        className=" bg-grey-90"
-        style={{ flex: 1, display: "flex", flexDirection: "column" }}
+        className="bg-grey-90"
+        style={{
+          flex: 1,
+          display: "flex",
+          flexDirection: "column",
+        }}
       >
-        {/* <Header title={"Candidates"} onFilterSelect={applySavedFilter} /> */}
-
         {/* Tabs Section */}
 
         <div className="flex items-center justify-between p-[17px]">
-          {/* <div className="flex space-x-6 border-b border-customGray">
-            <button
-              className={`flex items-center space-x-2 py-2 px-3 text-sm font-medium ${
-                activeTab === "candidates"
-                  ? "text-black border-b border-black"
-                  : "text-gray-500"
-              }`}
-              onClick={() => setActiveTab("candidates")}
-            >
-              <CandidatesIcon
-                fill={activeTab === "candidates" ? "customBlue" : "#797979"}
-              />
-              <span
-                className={`tab-title-text ${
-                  activeTab === "candidates"
-                    ? "text-customBlue"
-                    : "text-customGray"
-                }`}
-              >
-                Candidates
-              </span>
-            </button>
-
-            <button
-              className={`flex items-center space-x-2 py-2 px-3 text-sm font-medium ${
-                activeTab === "folder"
-                  ? "text-black border-b border-black"
-                  : "text-gray-500"
-              }`}
-              onClick={() => setActiveTab("folder")}
-            >
-              <Folder
-                fill={activeTab === "folder" ? "customBlue" : "#797979"}
-              />
-              <span
-                className={`tab-title-text ${
-                  activeTab === "folder" ? "text-customBlue" : "text-customGray"
-                }`}
-              >
-                Folder
-              </span>
-            </button>
-
-            <button
-              className={`flex items-center space-x-2 py-2 px-3 text-sm font-medium ${
-                activeTab === "sourcing"
-                  ? "text-black border-b border-black"
-                  : "text-gray-500"
-              }`}
-              onClick={() => setActiveTab("sourcing")}
-            >
-              <SourcingIcon
-                fill={activeTab === "sourcing" ? "customBlue" : "#797979"}
-              />
-              <span
-                className={`tab-title-text ${
-                  activeTab === "sourcing"
-                    ? "text-customBlue"
-                    : "text-customGray"
-                }`}
-              >
-                Sourcing
-              </span>
-            </button>
-          </div> */}
           <span className="font-ubuntu font-medium text-custom-large">
             Candidates
           </span>
@@ -728,18 +547,18 @@ const Candidates = ({ isDrawerOpen }) => {
               className="buttons border-1 border-blue-600 text-buttonBLue min-w-[40px]"
               onClick={() => setIsFilter(!isFilter)}
             >
-              <ExportIcon  stroke="#1761D8"/>
+              <ExportIcon stroke="#1761D8" />
             </button>
 
             <button className="buttons border-1 border-blue-600 text-buttonBLue  min-w-[40px] ">
-              <RefreshIcon stroke="#1761D8"/>
+              <RefreshIcon stroke="#1761D8" />
             </button>
             {/* <button className="text-gray-700 pl-[8px]" onClick={handleClick}>
               <ThreeDots />
             </button> */}
           </div>
         </div>
-        <div className="flex-1 bg-grey-90 flex flex-col overflow-hidden">
+        <div className="flex-1 bg-grey-90 flex flex-col">
           {isFilter && (
             <div className="flex items-center justify-between p-[10px]">
               {/* Display Applied Filters */}
@@ -790,121 +609,40 @@ const Candidates = ({ isDrawerOpen }) => {
               </div>
             </div>
           )}
-          {/* Table Wrapper with Horizontal Scroll */}
-
-          <div className="overflow-auto px-[10px] bg-white shadow-md flex-grow h-[calc(100vh)]">
-            <table className="min-w-full divide-y divide-gray-200">
-              {/* Table Header */}
-              <thead className="sticky top-0 bg-white z-[50px]">
-                <tr className="text-left text-gray-600 font-semibold">
-                  {/* Checkbox Column for Selecting All */}
-                  <th className="px-2 py-3 font-ubuntu font-medium text-m text-customBlue justify-center text-left ml-10 max-w-[380px] sticky top-0 bg-blueBg ">
-                    <div
-                      className={`w-[20px] h-[20px] border-1 border-customBlue bg-white rounded-[6px] flex items-center justify-center cursor-pointer`}
-                      onClick={() =>
-                        setSelectedCandidates(
-                          selectedCandidates.length ===
-                            filteredCandidates.length
-                            ? []
-                            : filteredCandidates.map((c) => c.id)
-                        )
-                      }
-                    >
-                      {selectedCandidates.length ===
-                      filteredCandidates.length ? (
-                        <img src={Tick} alt="Selected" />
-                      ) : null}
-                    </div>
-                  </th>
-
-                  {/* ✅ Dynamically Generate Column Headers from selectedColumns */}
-                  {selectedColumns.map((columnName) => (
-                    <th
-                      key={columnName}
-                      className="px-2 py-3 font-ubuntu font-medium text-m text-customBlue justify-center text-left ml-10 p-0 bg-blueBg max-w-[240px] min-w-[230px]"
-                    >
-                      {columnName}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-
-              {/* ✅ Table Body */}
-              <tbody className="divide-y overflow-auto divide-gray-200">
-                {filteredCandidates.map((candidate) => (
-                  <tr key={candidate.id} className="hover:bg-gray-50">
-                    {/* Checkbox Column for Selecting Candidates */}
-                    <td className="pr-0">
-                      <div
-                        className={`w-[20px] h-[20px] border-1 m-0  border-customBlue bg-white rounded-[6px] flex items-center justify-center cursor-pointer`}
-                        onClick={() =>
-                          setSelectedCandidates((prev) =>
-                            prev.includes(candidate.id)
-                              ? prev.filter((id) => id !== candidate.id)
-                              : [...prev, candidate.id]
-                          )
-                        }
-                      >
-                        {selectedCandidates.includes(candidate.id) ? (
-                          <img src={Tick} alt="Selected" />
-                        ) : null}
-                      </div>
-                    </td>
-
-                    {/* ✅ Dynamically Show Data for Selected Columns */}
-                    {selectedColumns.map((columnName) => {
-                      const key = columnMapping[columnName]; // Get actual key from mapping
-                      return (
-                        <td key={key} className="td-text px-1 justify-between">
-                          {columnName === "Candidate Name" ? (
-                            <div
-                              className="flex items-center gap-2 "
-                              onMouseEnter={() =>
-                                setHoveredCandidate(candidate.id)
-                              }
-                              onMouseLeave={() => setHoveredCandidate(null)}
-                            >
-                              {/* Display Initials */}
-                              <div
-                                className="w-[28px] h-[28px] flex items-center justify-center rounded-full bg-customBlue text-white font-bold text-sm"
-                                style={{ backgroundColor: getRandomColor() }}
-                              >
-                                {candidate.candidate_first_name?.charAt(0)}
-                                {candidate.candidate_last_name?.charAt(0)}
-                              </div>
-
-                              {/* Display Candidate Name */}
-                              <span>{candidate[key] || "-"}</span>
-
-                              {/* ✅ Show Eye Icon on Hover */}
-                              {hoveredCandidate === candidate.id && (
-                                <p>eye</p>
-                                // <EyeIcon
-                                //   className="absolute right-[-20px] cursor-pointer"
-                                //   onClick={() =>
-                                //     console.log(
-                                //       `Viewing candidate ${candidate.id}`
-                                //     )
-                                //   }
-                                // />
-                              )}
-                            </div>
-                          ) : (
-                            candidate[key] || "-"
-                          )}
-                        </td>
-                      );
-                    })}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          <div
+            style={{
+              overflow: "hidden",
+              flex: 1,
+              maxHeight: "calc(100vh - 194px)",
+            }}
+          >
+            <CandidateTable
+              header={candidateTableHeader}
+              data={filteredCandidates}
+              setSelectedCandidateUser={setSelectedCandidate}
+              AddJobClick={() => toggleAddToJobsDrawer(true)}
+              AddFolderClick={() => toggleAddToFolderDrawer(true)}
+              ChangeOwnerShipClick={() => toggleChangeOwnershipDrawer(true)}
+            />
           </div>
         </div>
-        {/* filter div */}
       </div>
-      <PaginationFooter />
-      {/* Menu for Bulk Actions */}
+
+      <div className="sourcing-pagination-div">
+        <div
+          style={{
+            flex: 1,
+            display: "flex",
+            justifyContent: "center",
+          }}
+        >
+          <PaginationComponent
+            totalPages={5}
+            currentPage={currentPage}
+            onPageChange={handlePageChange}
+          />
+        </div>
+      </div>
 
       <CreateCandidateModal
         visible={modals?.createCandidateModalVisible}

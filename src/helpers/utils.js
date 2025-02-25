@@ -97,3 +97,11 @@ export function formatPhoneNumber(phoneNumber) {
 
   return `(+${countryCode}) ${formattedNational}`;
 }
+
+export const getInitials = (name) => {
+  return name
+    .split(" ")
+    .map((word) => word[0])
+    .join("")
+    .toUpperCase();
+};
