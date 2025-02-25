@@ -46,7 +46,7 @@ th {
   flex-direction: column;
   gap: 12px;
   width: 100%;
-  /* z-index: 1; */
+  overflow: visible;
   transition: all 400ms ease;
 }
 
@@ -281,4 +281,8 @@ textarea {
   height: 20px;
   object-fit: contain;
   object-position: center center;
+}
+
+.opacity-1 {
+  opacity: 1;
 }

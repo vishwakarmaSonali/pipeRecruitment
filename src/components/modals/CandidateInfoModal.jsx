@@ -635,7 +635,10 @@ const CandidateInfoModal = ({ visible, onClose }) => {
                 })}
               </div>
               <div className="display-flex align-center" style={{ gap: 18 }}>
-                <button className="customize-btn">
+                <button
+                  className="customize-btn"
+                  onClick={() => navigate("/candidate-customization")}
+                >
                   Customize
                   <SettingIcon />
                 </button>
