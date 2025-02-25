@@ -87,17 +87,17 @@ const LocationSearchDropdown = ({
           value={
             multipleSelect
               ? locationQuery
-              : selectedLocations[0] || locationQuery
+              :  locationQuery
           }
           onChange={(e) => setLocationQuery(e.target.value)}
           onFocus={() => setShowLocationDropdown(true)}
-          readOnly={!multipleSelect && selectedLocations.length > 0} // Prevent typing when single selection is active
+          // readOnly={!multipleSelect && selectedLocations.length > 0} // Prevent typing when single selection is active
         />
-        {!multipleSelect && selectedLocations.length > 0 && (
+        {/* {!multipleSelect && selectedLocations.length > 0 && (
           <button className="mr-2 text-customBlue" onClick={clearLocation}>
             ✕
           </button>
-        )}
+        )} */}
       </div>
 
       {showLocationDropdown && locationSuggestions.length > 0 && (

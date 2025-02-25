@@ -1,35 +1,68 @@
 import React, { useState } from "react";
 import { ReactComponent as DropArrow } from "../../assets/icons/droparrow.svg";
+import CommonSearchBox from "./CommonSearchBox";
+import getSymbolFromCurrency from "currency-map-symbol";
 
-const currencyOptions = [
-  { code: "USD", name: "US Dollar", symbol: "US$", flag: "🇺🇸" },
-  { code: "ILS", name: "Israeli New Shekel", symbol: "₪", flag: "🇮🇱" },
-  { code: "GBP", name: "British Pound", symbol: "£", flag: "🇬🇧" },
-  { code: "AUD", name: "Australian Dollar", symbol: "A$", flag: "🇦🇺" },
-  { code: "CNY", name: "Chinese Yuan", symbol: "CN¥", flag: "🇨🇳" },
+
+const currencyList = [
+  { code: "USD", name: "United States Dollar" },
+  { code: "EUR", name: "Euro" },
+  { code: "INR", name: "Indian Rupee" },
+  { code: "GBP", name: "British Pound" },
+  { code: "JPY", name: "Japanese Yen" },
+  { code: "CNY", name: "Chinese Yuan" },
+  { code: "AUD", name: "Australian Dollar" },
+  { code: "CAD", name: "Canadian Dollar" },
 ];
+// Format the country list with currency symbols
+// const countryList = countries.map((country) => ({
+//   code: country.cca2, // 2-letter country code (e.g., US, IN)
+//   name: country.name.common, // Country name
+//   currency: country.currencies
+//     ? Object.keys(country.currencies)[0]
+//     : "N/A", // Currency Code
+//   symbol: country.currencies
+//     ? Object.values(country.currencies)[0].symbol || "N/A"
+//     : "N/A", // Currency Symbol
+// }));
 
-const CurrencySelector = ({ label, selectedCurrency, setSelectedCurrency, salary, setSalary }) => {
+const CurrencySelector = ({
+  label,
+  selectedCurrency,
+  setSelectedCurrency,
+  salary,
+  setSalary,
+}) => {
   const [showDropdown, setShowDropdown] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
   const [isOpen, setIsOpen] = useState(false);
+  const [searchValue, setSearchValue] = useState("");
 
-  const filteredCurrencies = currencyOptions.filter((currency) =>
-    currency.name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const formattedCurrencies = currencyList.map((currency) => ({
+    ...currency,
+    symbol: getSymbolFromCurrency(currency.code) || "N/A",
+  }));
+  console.log("formattedCurrenciesformattedCurrenciesformattedCurrencies",formattedCurrencies);
+  
 
   return (
     <div className="relative ">
       {/* Input Field with Currency Selector */}
       <div className="flex items-center border border-gray-300 px-2 rounded-md cursor-pointer bg-white py-3 border-none h-[38px]">
-        <div className="flex items-center cursor-pointer" onClick={() => setShowDropdown(!showDropdown)}>
-          <span className="mx-1 text-sm text-customBlue font-ubuntu">{selectedCurrency.symbol}</span>
+        <div
+          className="flex items-center cursor-pointer"
+          onClick={() => setShowDropdown(!showDropdown)}
+        >
+          <span className="mx-1 text-sm text-customBlue font-ubuntu">
+            {selectedCurrency.symbol}
+          </span>
           <DropArrow
-          width={14}
-          height={14}
-          fill="customBlue"
-          className={`w-5 h-5 transition-transform ${isOpen ? "rotate-180" : "rotate-0"}`}
-        />
+            width={14}
+            height={14}
+            fill="customBlue"
+            className={`w-5 h-5 transition-transform ${
+              isOpen ? "rotate-180" : "rotate-0"
+            }`}
+          />
         </div>
         <input
           type="text"
@@ -44,30 +77,30 @@ const CurrencySelector = ({ label, selectedCurrency, setSelectedCurrency, salary
       {showDropdown && (
         <div className="absolute top-full left-0 w-full bg-white border border-gray-300 shadow-md rounded-md mt-1 z-50">
           {/* Search Input */}
-          <div className="p-2">
-            <input
-              type="text"
-              className="w-full p-2 border border-gray-300 rounded-md"
-              placeholder="🔍 Search"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+          <div className="flex-1 p-2">
+            <CommonSearchBox
+              value={searchValue}
+              onChange={(e) => setSearchValue(e.target.value)}
             />
           </div>
 
           {/* Currency List */}
           <ul className="max-h-60 overflow-auto">
-            {filteredCurrencies.map((currency) => (
+            {formattedCurrencies.map((currency) => (
               <li
                 key={currency.code}
-                className="flex items-center justify-between p-3 hover:bg-gray-100 cursor-pointer"
+                className="flex items-center justify-between px-[10px] py-[10px] hover:bg-gray-100 cursor-pointer"
                 onClick={() => {
-                  setSelectedCurrency(currency);
+                  setSelectedCurrency({
+                    code: currency.code,
+                    name: currency.name,
+                    symbol: currency.symbol,
+                  });
                   setShowDropdown(false);
-                  setSearchQuery("");
                 }}
               >
                 <div className="flex items-center">
-                  <span className="text-lg">{currency.flag}</span>
+                  {/* <span className="text-lg">{currency.flag}</span> */}
                   <span className="ml-3">{currency.name}</span>
                 </div>
                 <span className="text-gray-600">{currency.symbol}</span>

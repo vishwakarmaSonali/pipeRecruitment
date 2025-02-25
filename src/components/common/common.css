@@ -92,11 +92,13 @@
   padding: 12px;
   margin: 0px;
   border: none;
+  width:100%
 }
 
 .editor-main-div {
   border: 1px solid #d7d7d7;
   border-radius: 8px;
+  @apply font-ubuntu font-normal text-customBlue
 }
 
 .ql-container.ql-snow {

@@ -33,6 +33,7 @@ import ExperienceDetailsManager from "./ExperienceDetailsManager";
 import HeaderWithActions from "./CandidateHeader";
 import { createCandidates } from "../../actions/candidateActions";
 import { useNavigate } from "react-router-dom";
+import TitleSearchDropdown from "../AutocompleteDropdowns/TitleSearchDropDown";
 const genderOptions = [
   { id: 1, label: "Female" },
   { id: 2, label: "Male" },
@@ -117,6 +118,7 @@ const CreateCandidateForm = () => {
   const [selectedJobs, setSelectedJobs] = useState([]); // Store selected jobs
   const [yearsOfExp, setYearsOfExp] = useState("");
   const [highestQualification, setHighestQualification] = useState("");
+    const [selectedTitles, setSelectedTitles] = useState([]); // Ensure it's an array
   const [currentEmployer, setCurrentEmployer] = useState("");
   const handleNationalityChange = (selectedItem) => {
     setNationality(selectedItem);
@@ -302,7 +304,7 @@ const CreateCandidateForm = () => {
         onSecondaryClick={handleDiscard}
       />
       <div
-        className="overflow-auto flex-grow h-[calc(90vh-30px)] bg-grey-90"
+        className="overflow-auto flex-grow h-[calc(90vh-30px)] bg-grey-90 "
         style={{ flex: 1, display: "flex", flexDirection: "column" }}
       >
         <div className="main-container-candidateForm overflow-auto">
@@ -419,12 +421,13 @@ const CreateCandidateForm = () => {
                 <div className="display-flex gap-[10px] mt-[10px]">
                   <div className="flex-1  rounded-[8px]">
                     <CustomDropdown
-                      options={nationalityOptions} // List of available options
-                      placeholder="Add to folder" // Placeholder text
-                      selectedValues={nationality} // State to track selected options
-                      onChange={setNationality} // Function to update state
-                      optionKey="nationality" // Key to display in the dropdown
-                      multiSelect={true} // Enable multiple selections
+                      options={nationalityOptions}
+                      placeholder="Add to folder"
+                      selectedValues={nationality}
+                      onChange={setNationality}
+                      optionKey="nationality"
+                      multiSelect={true}
+                      showCheckbox={false}
                     />
                   </div>
                   <div className="flex-1 rounded-[8px]">
@@ -482,10 +485,12 @@ const CreateCandidateForm = () => {
                 Candidate description
               </span>
             </div>
-            <div className="flex flex-1  flex-col items-center">
+            <div style={{ width: "100%", flex: 1 }}>
               <HtmlViewComponent
                 value={description}
                 onChange={setDescription}
+                placeholder="Add Description"
+                // className='w-[100%]'
               />
             </div>
           </div>
@@ -503,7 +508,7 @@ const CreateCandidateForm = () => {
           </div>
           {/* Skills block ends */}
           {/* Professional details block starts */}
-          <div className="flex justify-between mt-[26px]">
+          <div className="flex justify-between mt-[26px] ">
             <div className=" bg-red-900 flex flex-1 max-w-[350px]">
               <span className="items-start font-ubuntu text-xl font-medium">
                 Professional details
@@ -532,12 +537,23 @@ const CreateCandidateForm = () => {
                   </div>
                 </div>
                 <div className="display-flex gap-[10px] mt-[10px]">
-                  <div className="flex-1 border-1 rounded-[8px]">
-                    <input
-                      placeholder="Current Job Title"
-                      className="filter-input"
-                      type="text"
+                  <div className="flex-1 ">
+                  <CustomDropdown
+                      options={frequencyOptions}
+                      placeholder="Domain"
+                      selectedValue={frequency}
+                      onChange={setFrequency}
+                      optionKey="frequency"
                     />
+                  </div>
+                  <div className="flex-1 ">
+                  
+                  </div>
+                </div>
+                <div className="display-flex gap-[10px] mt-[10px]">
+                  <div className="flex-1 ">
+                  <TitleSearchDropdown placeholder={'Current Job Title'} selectedTitles={selectedTitles} setSelectedTitles={setSelectedTitles} allowMultiple={false} />
+
                   </div>
                   <div className="flex-1 border-1 rounded-[8px]">
                     <input
@@ -580,9 +596,11 @@ const CreateCandidateForm = () => {
                   </div>
                 </div>
               </div>
+              
             </div>
           </div>
           {/* Professional details block ends */}
+          
           {/* Languages block starts */}
           <div className="flex justify-between mt-[26px]">
             <div className=" flex flex-1 max-w-[350px]">

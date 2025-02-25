@@ -141,7 +141,7 @@ const FilterDrawer = ({ isOpen, onClose, onApply, onReset, filters }) => {
               <label className="font-12-regular color-dark-black">
                 Job Title
               </label>
-              <div className="rounded-[8px]">
+              <div className="flex-1">
                 <TitleSearchDropdown
                   selectedTitles={selectedTitles}
                   setSelectedTitles={setSelectedTitles}

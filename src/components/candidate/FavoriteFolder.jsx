@@ -12,8 +12,13 @@ import { ReactComponent as EditIcon } from "../../assets/icons/candidates/edit-2
 import Tick from "../../assets/icons/sourcingIcons/tick.svg";
 import { useNavigate } from "react-router-dom";
 import GlobalMenu from "../GlobalMenu/GlobalMenu";
+import AddCandidatesToFolder from "../modals/AddCandidatesToFolder";
+import ShareFolderModal from "../modals/ShareFolderModal";
+import { useModal } from "../common/ModalProvider";
+import CommonDeleteModal from "../modals/CommonDeleteModal";
 
 const FavoriteFolders = () => {
+    const { modals, setModalVisibility } = useModal();
   const [starredFolders, setStarredFolders] = useState([1, 5]);
     const [anchorSettingEl, setAnchorSettingEl] = useState(null);
     const openSetting = Boolean(anchorSettingEl);
@@ -24,16 +29,16 @@ const FavoriteFolders = () => {
   
   const navigate = useNavigate();
     const bulkMenuItems = [
-      {
-        label: "Add candidates",
-        icon: <AddCandidate />,
-        // onClick: () => setAddToJobsDrawerOpen(true),
-      },
-      {
-        label: "Share Folder",
-        icon: <ShareFolder/>,
-        // onClick: () => setAddToFolderDrawerOpen(true),
-      },
+       {
+         label: "Add candidates",
+         icon: <AddCandidate />,
+         onClick: () => (setModalVisibility("AddCandidatesToFolderVisible", true),handleSettingsClose()),
+       },
+       {
+         label: "Share Folder",
+         icon: <ShareFolder />,
+         onClick: () => (setModalVisibility("ShareFolderModalVisible", true),handleSettingsClose()),
+       },
       {
         label: "Export",
         icon: <ExportIcon  stroke="#151B23" />,
@@ -43,12 +48,12 @@ const FavoriteFolders = () => {
       {
         label: "Edit Folder",
         icon: <EditIcon />,
-        onClick: () => navigate("/archive-candidates"),
+        onClick: () => (navigate("/archive-candidates"),handleSettingsClose()),
       },
       {
         label: "Delete Folder",
         icon: <DeleteIcon />,
-        onClick: () => navigate("/archive-candidates"),
+        onClick: () => (setModalVisibility("categoryDeleteModalVisible", true),handleSettingsClose()),
       },
     ];
   const toggleStar = (id) => {
@@ -63,6 +68,9 @@ const FavoriteFolders = () => {
   ];
   const handleClickSetting = (event) => {
     setAnchorSettingEl(event.currentTarget);
+  };
+  const deleteCategory = () => {
+    setModalVisibility("categoryDeleteModalVisible", false);
   };
 
   return (
@@ -115,6 +123,26 @@ const FavoriteFolders = () => {
         open={openSetting}
         onClose={handleSettingsClose}
         menuItems={bulkMenuItems}
+      />
+       <AddCandidatesToFolder
+        visible={modals?.AddCandidatesToFolderVisible}
+        onClose={() =>
+          setModalVisibility("AddCandidatesToFolderVisible", false)
+        }
+      />
+      <ShareFolderModal
+        visible={modals?.ShareFolderModalVisible}
+        onClose={() => setModalVisibility("ShareFolderModalVisible", false)}
+      />
+        <CommonDeleteModal
+        visible={modals?.categoryDeleteModalVisible}
+        title={"Delete Folder"}
+        description={"Are you sure you want to delete this folder?"}
+        onClose={() => {
+          setModalVisibility("categoryDeleteModalVisible", false);
+          // setSelectedItem(null);
+        }}
+        onClickDelete={deleteCategory}
       />
     </div>
   );

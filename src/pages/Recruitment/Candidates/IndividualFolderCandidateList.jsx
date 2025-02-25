@@ -9,6 +9,9 @@ import { ReactComponent as FolderIcon } from "../../../assets/icons/folderBlue.s
 import { ReactComponent as ThreeDots } from "../../../assets/icons/threeDots.svg";
 import { ReactComponent as ExportIcon } from "../../../assets/icons/export.svg";
 import { ReactComponent as AddCandidate } from "../../../assets/icons/sourcingIcons/profile-add.svg";
+import { ReactComponent as AddtoFolderIcon } from "../../../assets/icons/sourcingIcons/folder-add.svg";
+import { ReactComponent as AddToJobsIcon } from "../../../assets/icons/sourcingIcons/briefcase.svg";
+import { ReactComponent as AddLabelIcon } from "../../../assets/icons/tag.svg";
 import { ReactComponent as EditIcon } from "../../../assets/icons/edit.svg";
 import { ReactComponent as DeleteIcon } from "../../../assets/icons/delete.svg";
 import { ReactComponent as ShareFolder } from "../../../assets/icons/share.svg";
@@ -24,7 +27,32 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import GlobalMenu from "../../../components/GlobalMenu/GlobalMenu";
 import AddSkillModal from "../../../components/modals/AddSkillsModal";
 import AddCandidatesToFolder from "../../../components/modals/AddCandidatesToFolder";
+import ShareFolderModal from "../../../components/modals/ShareFolderModal";
+import CommonDeleteModal from "../../../components/modals/CommonDeleteModal";
+import AddToJobsDrawer from "../../../components/candidate/AddToJobsDrawer";
+import AddToFolderDrawer from "../../../components/candidate/AddToFolderDrawer";
+import AddLabelDrawer from "../../../components/candidate/AddLabelDrawer";
 
+const companies = [
+  {
+    id: 1,
+    name: "xBoost",
+    logo: "https://via.placeholder.com/40/000000/FFFFFF?text=X", // Replace with actual logo
+    bgColor: "bg-black",
+  },
+  {
+    id: 2,
+    name: "Upside",
+    logo: "https://via.placeholder.com/40/0000FF/FFFFFF?text=U", // Replace with actual logo
+    bgColor: "bg-blue-700",
+  },
+  {
+    id: 3,
+    name: "Crown",
+    logo: "https://via.placeholder.com/40/004F4F/FFFFFF?text=C", // Replace with actual logo
+    bgColor: "bg-teal-800",
+  },
+];
 const IndividualFilterCandidateListPage = ({ isDrawerOpen }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -36,7 +64,9 @@ const IndividualFilterCandidateListPage = ({ isDrawerOpen }) => {
   const selectedColumns = useSelector((state) => state.columns.selected); // Get selected columns from Redux
   const savedFilters = useSelector((state) => state.filters.filters); // Get saved filters from Redux
   const [isFilterSaved, setIsFilterSaved] = useState(false);
-
+  const [addToFolderDrawerOpen, setAddToFolderDrawerOpen] = useState(false);
+  const [addToJobsDrawerOpen, setAddToJobsDrawerOpen] = useState(false);
+  const [addLabelDrawerOpen, setAddLabelDrawerOpen] = useState(false);
   const [hoveredCandidate, setHoveredCandidate] = useState(null);
   const [isStarred, setIsStarred] = useState(false);
   const { modals, setModalVisibility } = useModal();
@@ -83,6 +113,9 @@ const IndividualFilterCandidateListPage = ({ isDrawerOpen }) => {
   const handleSettingsClose = () => {
     setAnchorSettingEl(null);
   };
+  const handleBulkActionClose = () => {
+    setAnchorBulkActionEl(null);
+  };
   // 🔍 Searchable Menu Items
   const initialSearchableItems = [
     {
@@ -122,38 +155,51 @@ const IndividualFilterCandidateListPage = ({ isDrawerOpen }) => {
   const [searchableMenuItems, setSearchableMenuItems] = useState(
     initialSearchableItems
   );
-    const bulkMenuItems = [
-      {
-        label: "Add candidates",
-        icon: <AddCandidate />,
-        onClick: () => setModalVisibility("AddCandidatesToFolderVisible",true),
-      },
-      {
-        label: "Share Folder",
-        icon: <ShareFolder/>,
-        // onClick: () => setAddToFolderDrawerOpen(true),
-      },
-      {
-        label: "Export",
-        icon: <ExportIcon  stroke="#151B23" />,
-        // onClick: () => setChangeOwnershipDrawerOpen(true),
-      },
-     
-      {
-        label: "Edit Folder",
-        icon: <EditIcon />,
-        onClick: () => navigate("/archive-candidates"),
-      },
-      {
-        label: "Delete Folder",
-        icon: <DeleteIcon />,
-        onClick: () => navigate("/archive-candidates"),
-      },
-    ];
+  const threeDotsMenuItems = [
+    {
+      label: "Add candidates",
+      icon: <AddCandidate />,
+      onClick: () => setModalVisibility("AddCandidatesToFolderVisible", true),
+    },
+    {
+      label: "Share Folder",
+      icon: <ShareFolder />,
+      onClick: () => setModalVisibility("AddCandidatesToFolderVisible", true),
+    },
+    {
+      label: "Export",
+      icon: <ExportIcon stroke="#151B23" />,
+      // onClick: () => setChangeOwnershipDrawerOpen(true),
+    },
 
-
-
-
+    {
+      label: "Edit Folder",
+      icon: <EditIcon />,
+      onClick: () => navigate("/archive-candidates"),
+    },
+    {
+      label: "Delete Folder",
+      icon: <DeleteIcon />,
+      onClick: () => navigate("/archive-candidates"),
+    },
+  ];
+  const bulkActionMenuItems = [
+ {
+       label: "Add to jobs",
+       icon: <AddToJobsIcon />,
+       onClick: () =>( setAddToJobsDrawerOpen(true),handleBulkActionClose()),
+     },
+     {
+       label: "Add to folder",
+       icon: <AddtoFolderIcon stroke="#151B23" />,
+       onClick: () => (setAddToFolderDrawerOpen(true),handleBulkActionClose()),
+     },
+     {
+      label: "Add label",
+      icon: <AddLabelIcon stroke="#151B23" />,
+      onClick: () => (setAddLabelDrawerOpen(true),handleBulkActionClose()),
+    },
+  ];
   useEffect(() => {
     if (modals?.savedFiltersModalVisible) {
       const selectedFilter = savedFilters.find((filter) => filter.isSelected);
@@ -166,25 +212,10 @@ const IndividualFilterCandidateListPage = ({ isDrawerOpen }) => {
     }
   }, [modals?.savedFiltersModalVisible, savedFilters]);
 
-  // Function to clear all filters
-  const clearAllFilters = () => {
-    setConditions([]);
-    setIsFilterSaved(false);
-    setSelectedCategory("Candidates");
-  };
-  // Function to update filter
-  const updateFilter = () => {
-    if (!isFilterSaved) return;
-    dispatch(updateFilterAsync({ name: selectedCategory, conditions }));
-  };
   // 🔍 Filter Candidates based on Search Query
   const filteredCandidates = candidateList.filter((candidate) =>
     candidate?.candidate_name?.toLowerCase().includes(searchQuery.toLowerCase())
   );
-
-  const handleSeacrchableMenuOpen = (event) => {
-    setAnchorAddConditionEl(event.currentTarget);
-  };
 
   const handleSearchableMenuClose = () => {
     setAnchorAddConditionEl(null);
@@ -194,40 +225,6 @@ const IndividualFilterCandidateListPage = ({ isDrawerOpen }) => {
     setSelectedSearchableOption(selected);
     handleSearchableMenuClose(); // Close searchable menu
     setAnchorFilterMenuEl(event.currentTarget); // Set position for filter menu
-  };
-  const discardChanges = () => {
-    setConditions([...originalConditions]);
-  };
-  // ✅ Handle Filter Menu Apply
-  const handleFilterApply = (filterOption, inputValue) => {
-    if (!inputValue || inputValue.trim() === "") {
-      console.error(
-        "Filter input value is missing. Please enter a valid value."
-      );
-      return;
-    }
-
-    const newCondition = `${selectedSearchableOption} ${filterOption} ${inputValue}`;
-
-    setConditions((prevConditions) => {
-      // Prevent duplicates
-      if (
-        prevConditions.some((condition) =>
-          condition.startsWith(selectedSearchableOption)
-        )
-      ) {
-        return prevConditions;
-      }
-      return [...prevConditions, newCondition];
-    });
-
-    // Remove the selected filter from the searchable menu
-    setSearchableMenuItems((prevItems) =>
-      prevItems.filter((item) => item.label !== selectedSearchableOption)
-    );
-
-    setSelectedSearchableOption("");
-    setAnchorFilterMenuEl(null);
   };
 
   const PaginationFooter = () => {
@@ -246,7 +243,6 @@ const IndividualFilterCandidateListPage = ({ isDrawerOpen }) => {
       setIsDropdownOpen(false);
       setCurrentPage(1); // Reset to first page when changing results per page
     };
-
 
     // ✅ Close dropdown when clicking outside
     useEffect(() => {
@@ -362,8 +358,38 @@ const IndividualFilterCandidateListPage = ({ isDrawerOpen }) => {
       </div>
     );
   };
+  const HorizontalCompanyList = () => {
+    return (
+      <div className="flex items-center space-x-4 px-[12px] overflow-x-auto rounded-lg">
+        {companies.map((company) => (
+          <div
+            key={company.id}
+            className="flex items-center bg-customGrey1 justify-between p-2 rounded-[8px] space-x-2 min-w-[315px] max-h-[52px]"
+          >
+            {/* Company Logo */}
+            <div className="flex items-center space-x-2 ">
+              <div
+                className={`w-10 h-10 rounded-full ${company.bgColor} flex items-center justify-center text-white font-semibold`}
+              >
+                <img
+                  src={company.logo}
+                  alt={company.name}
+                  className="w-10 h-10 rounded-full"
+                />
+              </div>
 
-
+              {/* Company Name */}
+              <p className="text-gray-900 font-medium">{company.name}</p>
+            </div>
+            {/* Delete Icon */}
+            <button className="ml-auto text-gray-500 hover:text-red-600">
+              <DeleteIcon />
+            </button>
+          </div>
+        ))}
+      </div>
+    );
+  };
   // Function to generate a random color
   const getRandomColor = () => {
     const colors = [
@@ -381,6 +407,23 @@ const IndividualFilterCandidateListPage = ({ isDrawerOpen }) => {
   const handleClickSetting = (event) => {
     setAnchorSettingEl(event.currentTarget);
   };
+  const handleClickBulkAction = (event) => {
+    setAnchorBulkActionEl(event.currentTarget);
+  };
+
+  const deleteCategory = () => {
+    setModalVisibility("categoryDeleteModalVisible", false);
+  };
+  const toggleAddToFolderDrawer = (open) => {
+    setAddToFolderDrawerOpen(open);
+  };
+
+  const toggleAddToJobsDrawer = (open) => {
+    setAddToJobsDrawerOpen(open);
+  };
+  const toggleAddLabelDrawer = (open) => {
+    setAddLabelDrawerOpen(open);
+  };
 
   return (
     <div
@@ -396,43 +439,81 @@ const IndividualFilterCandidateListPage = ({ isDrawerOpen }) => {
 
         {/* Tabs Section */}
 
-        <div className="flex items-center justify-between p-[17px]">
-          
-               
-                <div className="flex items-center space-x-4">
-        <FolderIcon className="w-[36px] h-[36px] text-blue-500" />
-        <div>
-        <span className="font-ubuntu font-medium text-l">{location.state?.name || "Unknown"}</span>
-          <p className="text-sm text-gray-600">{"Sort listed candidates for CodeHive Technologies, Mumbai"}</p>
-        </div>
-      </div>
+        <div className="flex items-center justify-between p-[17px] ">
+          <div className="flex items-center space-x-4">
+            <FolderIcon className="w-[36px] h-[36px] text-blue-500" />
+            <div>
+              <span className="font-ubuntu font-medium text-l">
+                {location.state?.name || "Unknown"}
+              </span>
+              <p className="text-sm text-gray-600">
+                {"Sort listed candidates for CodeHive Technologies, Mumbai"}
+              </p>
+            </div>
+          </div>
 
-      {/* Right Section - Star & Menu */}
-      <div className="flex items-center space-x-4">
-        <button onClick={() => setIsStarred(!isStarred)}>
-          {isStarred ? (
-            <StarFilled className="w-5 h-5 text-yellow-500" />
-          ) : (
-            <StarOutlined className="w-5 h-5 text-gray-400" />
-          )}
-        </button>
-        <button className="text-gray-500 hover:text-black" onClick={handleClickSetting}>
-          <ThreeDots className="w-4 h-4" />
-        </button>
-      
-    </div>
+          {/* Right Section - Star & Menu */}
+          <div className="flex items-center space-x-4">
+            {selectedCandidates.length > 0 && (
+              <button className="buttons text-white bg-buttonBLue" onClick={handleClickBulkAction}>
+                Batch Actions
+                <DropArrow fill="white" />
+              </button>
+            )}
+            <button onClick={() => setIsStarred(!isStarred)}>
+              {isStarred ? (
+                <StarFilled className="w-5 h-5 text-yellow-500" />
+              ) : (
+                <StarOutlined className="w-5 h-5 text-gray-400" />
+              )}
+            </button>
+            <button
+              className="text-gray-500 hover:text-black"
+              onClick={handleClickSetting}
+            >
+              <ThreeDots className="w-4 h-4" />
+            </button>
+          </div>
         </div>
-        <div className="flex-1 bg-grey-90 flex flex-col overflow-hidden">
-       
-          {/* Table Wrapper with Horizontal Scroll */}
+        <div className="flex mb-[24px]  border-gray-300 px-[17px]">
+          {/* Candidates Tab */}
+          <div
+            className={`flex items-center space-x-1 pb-2 cursor-pointer font-ubuntu text-m  px-[10px] border-b border-customGrey ${
+              activeTab === "candidates"
+                ? "text-black  border-b border-customBlue"
+                : "text-gray-500 border-b border-customGrey"
+            }`}
+            onClick={() => setActiveTab("candidates")}
+          >
+            <span className="">Candidates</span>
+            <span className="text-buttonBLue">03</span>
+          </div>
 
-          <div className="overflow-auto px-[10px] bg-white shadow-md flex-grow h-[calc(100vh)]">
-            <table className="min-w-full divide-y divide-gray-200">
-              {/* Table Header */}
-              <thead className="sticky top-0 bg-white z-[50px]">
+          {/* Team Tab */}
+          <div
+            className={`flex items-center space-x-1 pb-2 cursor-pointer pl-6 font-ubuntu text-m  px-[10px] ${
+              activeTab === "team"
+                ? "text-black  border-b border-customBlue"
+                : "text-gray-500 border-b border-customGrey"
+            }`}
+            onClick={() => setActiveTab("team")}
+          >
+            <span className="">Team</span>
+            <span className="text-buttonBLue">03</span>
+          </div>
+        </div>
+        {/* here */}
+        {activeTab == "candidates" ? (
+          <div className="flex-1 bg-grey-90 flex flex-col overflow-hidden">
+            {/* Table Wrapper with Horizontal Scroll */}
+
+            <div className="overflow-auto px-[10px] bg-white shadow-md flex-grow h-[calc(100vh)]">
+              <table className="min-w-full divide-y divide-gray-200">
+                {/* Table Header */}
+                <thead className="sticky top-0 bg-white z-[50px]">
                 <tr className="text-left text-gray-600 font-semibold">
                   {/* Checkbox Column for Selecting All */}
-                  <th className="th-title sticky top-0 bg-blueBg z-[50]">
+                  <th className="px-2 py-3 font-ubuntu font-medium text-m text-customBlue justify-center text-left ml-10 max-w-[380px] sticky top-0 bg-blueBg z-[50]">
                     <div
                       className={`w-[20px] h-[20px] border-1 border-customBlue bg-white rounded-[6px] flex items-center justify-center cursor-pointer`}
                       onClick={() =>
@@ -455,7 +536,7 @@ const IndividualFilterCandidateListPage = ({ isDrawerOpen }) => {
                   {selectedColumns.map((columnName) => (
                     <th
                       key={columnName}
-                      className="th-title p-0 bg-blueBg max-w-[240px] min-w-[230px]"
+                      className="px-2 py-3 font-ubuntu font-medium text-m text-customBlue justify-center text-left ml-10 max-w-[380px] p-0 bg-blueBg  min-w-[230px]"
                     >
                       {columnName}
                     </th>
@@ -463,78 +544,77 @@ const IndividualFilterCandidateListPage = ({ isDrawerOpen }) => {
                 </tr>
               </thead>
 
-              {/* ✅ Table Body */}
-              <tbody className="divide-y overflow-auto divide-gray-200">
-                {filteredCandidates.map((candidate) => (
-                  <tr key={candidate.id} className="hover:bg-gray-50">
-                    {/* Checkbox Column for Selecting Candidates */}
-                    <td className="pr-0">
-                      <div
-                        className={`w-[20px] h-[20px] border-1 m-0  border-customBlue bg-white rounded-[6px] flex items-center justify-center cursor-pointer`}
-                        onClick={() =>
-                          setSelectedCandidates((prev) =>
-                            prev.includes(candidate.id)
-                              ? prev.filter((id) => id !== candidate.id)
-                              : [...prev, candidate.id]
-                          )
-                        }
-                      >
-                        {selectedCandidates.includes(candidate.id) ? (
-                          <img src={Tick} alt="Selected" />
-                        ) : null}
-                      </div>
-                    </td>
+                {/* ✅ Table Body */}
+                <tbody className="divide-y overflow-auto divide-gray-200">
+                  {filteredCandidates.map((candidate) => (
+                    <tr key={candidate.id} className="hover:bg-gray-50">
+                      {/* Checkbox Column for Selecting Candidates */}
+                      <td className="pr-0">
+                        <div
+                          className={`w-[20px] h-[20px] border-1 m-0  border-customBlue bg-white rounded-[6px] flex items-center justify-center cursor-pointer`}
+                          onClick={() =>
+                            setSelectedCandidates((prev) =>
+                              prev.includes(candidate.id)
+                                ? prev.filter((id) => id !== candidate.id)
+                                : [...prev, candidate.id]
+                            )
+                          }
+                        >
+                          {selectedCandidates.includes(candidate.id) ? (
+                            <img src={Tick} alt="Selected" />
+                          ) : null}
+                        </div>
+                      </td>
 
-                    {/* ✅ Dynamically Show Data for Selected Columns */}
-                    {selectedColumns.map((columnName) => {
-                      const key = columnMapping[columnName]; // Get actual key from mapping
-                      return (
-                        <td key={key} className="td-text px-1 justify-between">
-                          {columnName === "Candidate Name" ? (
-                            <div
-                              className="flex items-center gap-2 relative"
-                              onMouseEnter={() =>
-                                setHoveredCandidate(candidate.id)
-                              }
-                              onMouseLeave={() => setHoveredCandidate(null)}
-                            >
-                              {/* Display Initials */}
+                      {/* ✅ Dynamically Show Data for Selected Columns */}
+                      {selectedColumns.map((columnName) => {
+                        const key = columnMapping[columnName]; // Get actual key from mapping
+                        return (
+                          <td
+                            key={key}
+                            className="px-2 py-3 font-ubuntu font-normal text-m text-customBlue max-w-full text-left  justify-between"
+                          >
+                            {columnName === "Candidate Name" ? (
                               <div
-                                className="w-[28px] h-[28px] flex items-center justify-center rounded-full bg-customBlue text-white font-bold text-sm"
-                                style={{ backgroundColor: getRandomColor() }}
+                                className="flex items-center gap-2 "
+                                onMouseEnter={() =>
+                                  setHoveredCandidate(candidate.id)
+                                }
+                                onMouseLeave={() => setHoveredCandidate(null)}
                               >
-                                {candidate.candidate_first_name?.charAt(0)}
-                                {candidate.candidate_last_name?.charAt(0)}
+                                {/* Display Initials */}
+                                <div
+                                  className="w-[28px] h-[28px] flex items-center justify-center rounded-full bg-customBlue text-white font-bold text-sm"
+                                  style={{ backgroundColor: getRandomColor() }}
+                                >
+                                  {candidate.candidate_first_name?.charAt(0)}
+                                  {candidate.candidate_last_name?.charAt(0)}
+                                </div>
+
+                                {/* Display Candidate Name */}
+                                <span>{candidate[key] || "-"}</span>
+
+                                {/* ✅ Show Eye Icon on Hover */}
+                                {hoveredCandidate === candidate.id && (
+                                
+                           <DeleteIcon />
+                                )}
                               </div>
-
-                              {/* Display Candidate Name */}
-                              <span>{candidate[key] || "-"}</span>
-
-                              {/* ✅ Show Eye Icon on Hover */}
-                              {hoveredCandidate === candidate.id && (
-                                <p>eye</p>
-                                // <EyeIcon
-                                //   className="absolute right-[-20px] cursor-pointer"
-                                //   onClick={() =>
-                                //     console.log(
-                                //       `Viewing candidate ${candidate.id}`
-                                //     )
-                                //   }
-                                // />
-                              )}
-                            </div>
-                          ) : (
-                            candidate[key] || "-"
-                          )}
-                        </td>
-                      );
-                    })}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+                            ) : (
+                              candidate[key] || "-"
+                            )}
+                          </td>
+                        );
+                      })}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
-        </div>
+        ) : (
+          <div>{HorizontalCompanyList()}</div>
+        )}
         {/* filter div */}
       </div>
       <PaginationFooter />
@@ -542,15 +622,56 @@ const IndividualFilterCandidateListPage = ({ isDrawerOpen }) => {
         anchorEl={anchorSettingEl}
         open={openSetting}
         onClose={handleSettingsClose}
-        menuItems={bulkMenuItems}
+        menuItems={threeDotsMenuItems}
       />
-         <AddCandidatesToFolder
+      <GlobalMenu
+        anchorEl={anchorBulkActionEl}
+        open={openBulkAction}
+        onClose={handleBulkActionClose}
+        menuItems={bulkActionMenuItems}
+      />
+      <AddCandidatesToFolder
         visible={modals?.AddCandidatesToFolderVisible}
-        onClose={() => setModalVisibility("AddCandidatesToFolderVisible", false)}
-       
+        onClose={() =>
+          setModalVisibility("AddCandidatesToFolderVisible", false)
+        }
       />
-      {/* Menu for Bulk Actions */}
+      <ShareFolderModal
+        visible={modals?.ShareFolderModalVisible}
+        onClose={() => setModalVisibility("ShareFolderModalVisible", false)}
+      />
+      <CommonDeleteModal
+        visible={modals?.categoryDeleteModalVisible}
+        title={"Delete Folder"}
+        description={"Are you sure you want to delete this folder?"}
+        onClose={() => {
+          setModalVisibility("categoryDeleteModalVisible", false);
+        }}
+        onClickDelete={deleteCategory}
+      />
+         <AddToJobsDrawer
+        // onApply={applyFilters}
+        // onReset={resetFilters}
+        // filters={filters}
+        isOpen={addToJobsDrawerOpen}
+        onClose={() => toggleAddToJobsDrawer(false)}
+      />
+         <AddToFolderDrawer
+        // onApply={applyFilters}
+        // onReset={resetFilters}
+        // filters={filters}
+        isOpen={addToFolderDrawerOpen}
+        onClose={() => toggleAddToFolderDrawer(false)}
+      />
+              <AddLabelDrawer
+        // onApply={applyFilters}
+        // onReset={resetFilters}
+        // filters={filters}
+        isOpen={addLabelDrawerOpen}
+        onClose={() => toggleAddLabelDrawer(false)}
+      />
 
+      {/* Menu for Bulk Actions */}
     </div>
   );
 };

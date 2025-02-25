@@ -14,8 +14,11 @@
     "@reduxjs/toolkit": "^2.5.1",
     "axios": "^1.7.9",
     "bootstrap": "^5.3.3",
+    "country-currency-map": "^2.1.7",
     "country-list": "^2.3.0",
     "cra-template": "1.2.0",
+    "currency-codes": "^2.2.0",
+    "currency-map-symbol": "^4.0.5",
     "date-fns": "^4.1.0",
     "dayjs": "^1.11.13",
     "i18n-iso-countries": "^7.13.0",
@@ -47,7 +50,8 @@
     "redux-thunk": "^3.1.0",
     "sass": "^1.83.4",
     "uuid": "^11.0.5",
-    "web-vitals": "^4.2.4"
+    "web-vitals": "^4.2.4",
+    "world-countries": "^5.0.0"
   },
   "scripts": {
     "start": "react-scripts start",

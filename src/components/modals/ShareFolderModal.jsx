@@ -68,7 +68,7 @@ const ShareFolderModal = ({ visible, onClose, setTags, tags }) => {
       <div className="fixed inset-0 bg-gray-100 bg-opacity-10 flex justify-center items-center ">
         <div className="bg-white p-[14px] rounded-lg shadow-lg min-w-[400px]">
           <div className="flex items-center justify-between mb-[24px] ">
-            <h2 className="text-lg font-semibold ">Add Candidates to Folder</h2>
+            <h2 className="text-lg font-semibold ">Share Folder</h2>
             <button onClick={onClose}>
               <CloseIcon />
             </button>
@@ -92,9 +92,9 @@ const ShareFolderModal = ({ visible, onClose, setTags, tags }) => {
                       <p className="font-14-medium color-dark-black">
                         {item?.name}
                       </p>
-                      <p className="font-10-regular color-dark-black">
+                      {/* <p className="font-10-regular color-dark-black">
                         {item?.location}
-                      </p>
+                      </p> */}
                     </div>
                   </div>
                   <div className="display-flex align-center" style={{ gap: 8 }}>

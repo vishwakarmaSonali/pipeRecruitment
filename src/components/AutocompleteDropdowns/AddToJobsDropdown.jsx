@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { ReactComponent as CloseIcon } from "../../assets/icons/closeModal.svg";
 import { ReactComponent as LabelClose } from "../../assets/icons/labelClose.svg";
 import { ReactComponent as TickCircle } from "../../assets/icons/tick-circle.svg";
-import { ReactComponent as DropArrow } from "../../assets/icons/droparrow.svg";
+import { ReactComponent as DropArrow } from "../../assets/icons/arrowDown.svg";
 import CommonSearchBox from "../common/CommonSearchBox";
 import CommonDropdown from "../common/CommonDropdown";
 
@@ -105,10 +105,10 @@ const AddToJobsDropdown = ({ placeholder, selectedJobs, setSelectedJobs }) => {
 
       {/* Selected Items Display */}
       {(selectedJobs.length > 0) && (
-        <div className="mt-2 flex flex-wrap gap-2">
+        <div className="mt-2 flex flex-wrap gap-2" onClick={() => setIsModalOpen(!isModalOpen)}>
          
           {selectedJobs.map((company, index) => (
-            <div key={index} className="flex items-center px-2 py-1 border rounded-md text-sm">
+            <div key={index} className="flex items-center px-2 py-1 border rounded-md text-sm"  >
               <span>{company.name}</span>
               <button className="ml-2 text-red-500" onClick={() => toggleCompanySelection(company)}>
                 ✕

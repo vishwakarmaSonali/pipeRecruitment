@@ -7,14 +7,21 @@ import { ReactComponent as FilterIcon } from "../../../assets/icons/filter.svg";
 import { ReactComponent as RefreshIcon } from "../../../assets/icons/refresh.svg";
 import { ReactComponent as DropArrow } from "../../../assets/icons/droparrow.svg";
 import { ReactComponent as EditIcon } from "../../../assets/icons/candidates/edit-2.svg";
-import { ReactComponent as AddToJobsIcon } from "../../../assets/icons/sourcingIcons/briefcase.svg";
-import { ReactComponent as AddtoFolderIcon } from "../../../assets/icons/sourcingIcons/folder-add.svg";
-import { ReactComponent as EditUser } from "../../../assets/icons/user-edit.svg";
-import { ReactComponent as MergeDuplicateIcon } from "../../../assets/icons/merge.svg";
-import { ReactComponent as ArchiveIcon } from "../../../assets/icons/archive.svg";
-import { ReactComponent as StarOutlined } from "../../../assets/icons/archive.svg";
-import { ReactComponent as StarFilled } from "../../../assets/icons/archive.svg";
+import { ReactComponent as ThreeDots } from "../../../assets/icons/threeDots.svg";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  Avatar,
+  Chip,
+} from "@mui/material";
 import Tooltip from "@mui/material/Tooltip";
+
+import { getRandomColor } from "../../../helpers/utils";
 import SettingIcon from "../../../assets/icons/setting-2.svg";
 import LeftArrow from "../../../assets/icons/leftArrow.svg";
 import RightArrow from "../../../assets/icons/rightArrow.svg";
@@ -37,29 +44,28 @@ import {
 import { updateFilterAsync } from "../../../store/filterSlice";
 import { useDispatch } from "react-redux";
 import Navbar from "../../../components/navbar/Navbar";
-import ColumnSelector from "../../../components/ColumnSelector";
-import CandidateFilterDrawer from "../../../components/candidate/CandidateFilterModal";
-import CreateCandidateMenu from "./CreateCandidatesMenu";
-import AddToFolderDrawer from "../../../components/candidate/AddToFolderDrawer";
-import ChangeOwnershipDrawer from "../../../components/candidate/ChangeOwnershipDrawer";
-import AddToJobsDrawer from "../../../components/candidate/AddToJobsDrawer";
-import MergeDuplicateModal from "../../../components/modals/MergeDuplicateModal";
-import DeleteCandidateDrawer from "../../../components/candidate/DeleteCandidateDrawer";
-import { notifySuccess } from "../../../helpers/utils";
+
 import CommonSearchBox from "../../../components/common/CommonSearchBox";
 import FavoriteFolders from "../../../components/candidate/FavoriteFolder";
 import { ReactComponent as AddCandidate } from "../../../assets/icons/sourcingIcons/profile-add.svg";
 import { ReactComponent as ShareFolder } from "../../../assets/icons/share.svg";
 import { ReactComponent as ExportIcon } from "../../../assets/icons/export.svg";
+import { ReactComponent as StarFilled } from "../../../assets/icons/starfilledYellow.svg";
+import { ReactComponent as StarOutlined } from "../../../assets/icons/starOutline.svg";
 
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-
+import ShareFolderModal from "../../../components/modals/ShareFolderModal";
+import AddCandidatesToFolder from "../../../components/modals/AddCandidatesToFolder";
+import CreateNewFolderModal from "../../../components/modals/CreateNewFolderModal";
+import CommonDeleteModal from "../../../components/modals/CommonDeleteModal";
+const header = ["Folder Name", "Candidate Count", "Created On", "Created By"];
 const FolderAddCandidates = ({ isDrawerOpen }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { folderId } = useParams();
   const location = useLocation();
-  const [candidateList, setCandidateList] = useState(foldersCandidates);
+  // const [candidateList, setCandidateList] = useState(foldersCandidates);
+  // 🔹 State to store folder list
   const [folderList, setFolderList] = useState([
     {
       id: 1,
@@ -75,174 +81,68 @@ const FolderAddCandidates = ({ isDrawerOpen }) => {
       created_on: "2025-02-18",
       created_by: "Jane Smith",
     },
-    {
-      id: 3,
-      folder_name: "Product Managers",
-      candidate_count: 12,
-      created_on: "2025-02-20",
-      created_by: "Alice Johnson",
-    },
   ]);
-const [selectedFolder, setSelectedFolder] = useState(null);
 
   const [selectedCandidates, setSelectedCandidates] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("Candidates");
-  const selectedColumns = useSelector((state) => state.columns.selected); // Get selected columns from Redux
   const savedFilters = useSelector((state) => state.filters.filters); // Get saved filters from Redux
   const [isFilterSaved, setIsFilterSaved] = useState(false);
-  const [isColumnSelectorOpen, setIsColumnSelectorOpen] = useState(false);
-  const [filterDrawerOpen, setFilterDrawerOpen] = useState(false);
-  const [addToFolderDrawerOpen, setAddToFolderDrawerOpen] = useState(false);
-  const [addToJobsDrawerOpen, setAddToJobsDrawerOpen] = useState(false);
-  const [deleteCandidateDrawerOpen, setDeleteCandidateDrawerOpen] =
-    useState(false);
-  const [changeOwnershipDrawerOpen, setChangeOwnershipDrawerOpen] =
-    useState(false);
-  const [filtersApplied, setFiltersApplied] = useState(false);
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  const [filters, setFilters] = useState({
-    jobTitle: "",
-    location: "",
-    company: "",
-    yearsOfExperience: { from: "", to: "" },
-    industry: "",
-    radius: "",
-    skill: "",
-    education: { major: "", school: "", degree: "" },
-  });
+  const threeDotsMenuItems = [
+    {
+      label: "Add candidates",
+      icon: <AddCandidate />,
+      onClick: () => (
+        setModalVisibility("AddCandidatesToFolderVisible", true),
+        handleSettingsClose()
+      ),
+    },
+    {
+      label: "Share Folder",
+      icon: <ShareFolder />,
+      onClick: () => (
+        setModalVisibility("ShareFolderModalVisible", true),
+        handleSettingsClose()
+      ),
+    },
+    {
+      label: "Export",
+      icon: <ExportIcon stroke="#151B23" />,
+      // onClick: () => setChangeOwnershipDrawerOpen(true),
+    },
 
-  const handleMenuOpen = (event, folderId) => {
-    setAnchorEl(event.currentTarget);
-    setSelectedFolder(folderId);
-  };
-  
-  const handleMenuClose = () => {
-    setAnchorEl(null);
-    setSelectedFolder(null);
-  };
-  
-  const toggleFilterDrawer = (open) => {
-    setFilterDrawerOpen(open);
-  };
-  const toggleAddToFolderDrawer = (open) => {
-    setAddToFolderDrawerOpen(open);
-  };
-  const toggleDeleteCandidateDrawer = (open) => {
-    setDeleteCandidateDrawerOpen(open);
-  };
-  const toggleAddToJobsDrawer = (open) => {
-    setAddToJobsDrawerOpen(open);
-  };
-
-  const [anchorCreateCandidtaeEl, setAnchorCreateCandidtaeEl] = useState(null);
-
-  const handleCloseMenu = () => {
-    setAnchorCreateCandidtaeEl(null);
-  };
-  // Settings menu items
-  const settingsMenuItems = isFilterSaved
-    ? [
-        {
-          label: "Update filter",
-          onClick: () => (updateFilter(), handleSettingsClose()),
-        },
-        {
-          label: "Save as new filter",
-          onClick: () => (
-            setModalVisibility("saveFiltersModalVisible", true),
-            handleSettingsClose()
-          ),
-        },
-        {
-          label: "Discard changes",
-          onClick: () => (discardChanges(), handleSettingsClose()),
-        },
-        {
-          label: "Clear all filters",
-          onClick: () => (clearAllFilters(), handleSettingsClose()),
-        },
-      ]
-    : [
-        {
-          label: "Save filter",
-          onClick: () => (
-            setModalVisibility("saveFiltersModalVisible", true),
-            handleSettingsClose()
-          ),
-        },
-        {
-          label: "Clear all filters",
-          onClick: () => (clearAllFilters(), handleSettingsClose()),
-        },
-      ];
-    const bulkMenuItems = [
-      {
-        label: "Add candidates",
-        icon: <AddCandidate />,
-        // onClick: () => setAddToJobsDrawerOpen(true),
-      },
-      {
-        label: "Share Folder",
-        icon: <ShareFolder/>,
-        // onClick: () => setAddToFolderDrawerOpen(true),
-      },
-      {
-        label: "Export",
-        icon: <ExportIcon  stroke="#151B23" />,
-        // onClick: () => setChangeOwnershipDrawerOpen(true),
-      },
-     
-      {
-        label: "Edit Folder",
-        icon: <EditIcon />,
-        onClick: () => navigate("/archive-candidates"),
-      },
-      {
-        label: "Delete Folder",
-        icon: <DeleteIcon />,
-        onClick: () => navigate("/archive-candidates"),
-      },
-    ];
-  // 🔍 Searchable Menu Items
-  const initialSearchableItems = [
     {
-      label: "Candidate Name",
-      onClick: (event) => handleSearchableSelect("Candidate Name", event),
+      label: "Edit Folder",
+      icon: <EditIcon />,
+      onClick: () => (navigate("/archive-candidates"), handleSettingsClose()),
     },
     {
-      label: "Email Id",
-      onClick: (event) => handleSearchableSelect("Email Id", event),
-    },
-    {
-      label: "Contact Number",
-      onClick: (event) => handleSearchableSelect("Contact Number", event),
-    },
-    {
-      label: "Location",
-      onClick: (event) => handleSearchableSelect("Location", event),
-    },
-    {
-      label: "Nationality",
-      onClick: (event) => handleSearchableSelect("Nationality", event),
-    },
-    {
-      label: "Language",
-      onClick: (event) => handleSearchableSelect("Language", event),
-    },
-    {
-      label: "ATS Score",
-      onClick: (event) => handleSearchableSelect("ATS Score", event),
-    },
-    {
-      label: "Created By",
-      onClick: (event) => handleSearchableSelect("Created By", event),
+      label: "Delete Folder",
+      icon: <DeleteIcon />,
+      onClick: () => (
+        setModalVisibility("categoryDeleteModalVisible", false),
+        handleSettingsClose()
+      ),
     },
   ];
-
-  const [searchableMenuItems, setSearchableMenuItems] = useState(
-    initialSearchableItems
-  );
+  const bulkMenuItems = [
+    {
+      label: "Share Folder",
+      icon: <ShareFolder />,
+      onClick: () => (
+        setModalVisibility("ShareFolderModalVisible", true),
+        handleBulkActionClose()
+      ),
+    },
+    {
+      label: "Delete Folder",
+      icon: <DeleteIcon />,
+      onClick: () => (
+        setModalVisibility("categoryDeleteModalVisible", false),
+        handleBulkActionClose()
+      ),
+    },
+  ];
   const { modals, setModalVisibility } = useModal();
   const [searchQuery, setSearchQuery] = useState("");
   const [anchorEl, setAnchorEl] = useState(null);
@@ -259,18 +159,37 @@ const [selectedFolder, setSelectedFolder] = useState(null);
   const [selectedSearchableOption, setSelectedSearchableOption] = useState("");
   const [originalConditions, setOriginalConditions] = useState([]);
   const [conditions, setConditions] = useState([]); // Store multiple conditions
-
-
+  const [selectedItem, setSelectedItem] = useState(null);
   const [deleteMessage, setDeleteMessage] = useState("");
   const [deletingCandidates, setDeletingCandidates] = useState([]);
   const [starredFolders, setStarredFolders] = useState([1, 5]); // Example: Folder IDs with stars
+  const [selectedRows, setSelectedRows] = useState([]); // Track selected rows
 
+  // 🔹 State to store folder list (Dynamic Update)
+  const [foldersCandidates, setFoldersCandidates] = useState([
+    {
+      id: 1,
+      folder_name: "Software Engineers",
+      candidate_count: 25,
+      created_on: "2025-02-15",
+      created_by: "John Doe",
+    },
+    {
+      id: 2,
+      folder_name: "Designers",
+      candidate_count: 18,
+      created_on: "2025-02-18",
+      created_by: "Jane Smith",
+    },
+  ]);
   const toggleStar = (id) => {
     setStarredFolders((prev) =>
-      prev.includes(id) ? prev.filter((folderId) => folderId !== id) : [...prev, id]
+      prev.includes(id)
+        ? prev.filter((folderId) => folderId !== id)
+        : [...prev, id]
     );
   };
-  
+
   const columnMapping = {
     "Folder Name": "folder_name",
     "Candidate Count": "candidate_count",
@@ -313,14 +232,14 @@ const [selectedFolder, setSelectedFolder] = useState(null);
     dispatch(updateFilterAsync({ name: selectedCategory, conditions }));
   };
   // 🔍 Filter Candidates based on Search Query
-  const filteredCandidates = candidateList.filter((candidate) =>
+  const filteredCandidates = foldersCandidates.filter((candidate) =>
     candidate?.candidate_name?.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   const handleSearchableMenuClose = () => {
     setAnchorAddConditionEl(null);
   };
- 
+
   // ✅ Handle Selection from Searchable Menu
   const handleSearchableSelect = (selected, event) => {
     setSelectedSearchableOption(selected);
@@ -334,8 +253,15 @@ const [selectedFolder, setSelectedFolder] = useState(null);
   const handleSettingsClose = () => {
     setAnchorSettingEl(null);
   };
-
-
+  const handleBulkActionClose = () => {
+    setAnchorBulkActionEl(null);
+  };
+  const handleClickSetting = (event) => {
+    setAnchorSettingEl(event.currentTarget);
+  };
+  const handleClickBulkAction = (event) => {
+    setAnchorBulkActionEl(event.currentTarget);
+  };
   const PaginationFooter = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [resultsPerPage, setResultsPerPage] = useState(20);
@@ -467,53 +393,23 @@ const [selectedFolder, setSelectedFolder] = useState(null);
       </div>
     );
   };
-
-  const getInitials = (name) => {
-    if (!name) return "";
-    const nameParts = name.split(" ");
-    const initials = nameParts
-      .map((part) => part[0].toUpperCase()) // Take the first letter of each part
-      .join(""); // Combine them
-    return initials.substring(0, 2); // Limit to 2 initials
+  // 🔹 Function to add a new folder dynamically
+  const addFolder = (newFolder) => {
+    setFoldersCandidates([
+      ...foldersCandidates,
+      { id: foldersCandidates.length + 1, ...newFolder },
+    ]);
   };
-  // Function to generate a random color
-  const getRandomColor = () => {
-    const colors = [
-      "#D4C158",
-      "#8282D8",
-      "#9BCD6A",
-      "#D458A0",
-      "#CDA26A",
-      "#38658E",
-      "#6D58D4",
-      "#CD6ABC",
-    ];
-    return colors[Math.floor(Math.random() * colors.length)];
+  const deleteCategory = () => {
+    setModalVisibility("categoryDeleteModalVisible", false);
   };
-
-  const handleArchive = (id) => {
-    console.log(`Archiving candidate with ID: ${id}`);
-    // TODO: Implement API call or state update to archive candidate
-  };
-
-  const handleDelete = (id = null) => {
-    if (id) {
-      setDeleteMessage("This candidate profile");
-      setDeletingCandidates([id]);
-    } else {
-      setDeleteMessage("Selected candidate profiles");
-      setDeletingCandidates([...selectedCandidates]);
-    }
-    setDeleteCandidateDrawerOpen(true);
-  };
-
-  const handleConfirmDelete = () => {
-    notifySuccess("Candidate(s) have been permanently deleted.");
-    setCandidateList((prev) =>
-      prev.filter((candidate) => !deletingCandidates.includes(candidate.id))
+  // ✅ Toggle Checkbox Selection
+  const toggleCheckbox = (id) => {
+    setSelectedRows((prev) =>
+      prev.includes(id)
+        ? prev.filter((folderId) => folderId !== id)
+        : [...prev, id]
     );
-    setSelectedCandidates([]);
-    setDeleteCandidateDrawerOpen(false);
   };
   return (
     <div
@@ -534,125 +430,167 @@ const [selectedFolder, setSelectedFolder] = useState(null);
             Folder
           </span>
           {/* Action Buttons */}
-        
-            <div className="flex space-x-2">
-              {/* ✅ Dynamically Change Button */}
- <button
-              className="buttons text-white bg-buttonBLue"
-            //   onClick={handleClickBulkAction}
+
+          <div className="flex space-x-2">
+            {/* ✅ Conditionally Render Batch Actions Button */}
+            {selectedCandidates.length > 0 && (
+              <button className="buttons text-white bg-buttonBLue">
+                Batch Actions
+                <DropArrow fill="white" />
+              </button>
+            )}
+            <button
+              className="buttons  text-white  bg-buttonBLue"
+              //   onClick={handleOpenMenu}
+
+              onClick={() =>
+                setModalVisibility("createFolderModalVisible", true)
+              }
             >
-              Batch Actions
-              <DropArrow fill="white" />
+              Create Folder
+              <Plus stroke="#ffffff" />
             </button>
-                 <button
-                              className="buttons  text-white  bg-buttonBLue"
-                            //   onClick={handleOpenMenu}
-              
-                              // onClick={() =>
-                              //   setModalVisibility("createCandidateModalVisible", true)
-                              // }
-                            >
-                              Create Candidate
-                              <Plus stroke="#ffffff" />
-                            </button>
-             <div className="flex-1 w-[320px]">
-             <CommonSearchBox />
-             </div>
-              {/* <button className="text-gray-700 pl-[8px]" onClick={handleClick}>
+            <div className="flex-1 w-[320px]">
+              <CommonSearchBox />
+            </div>
+            {/* <button className="text-gray-700 pl-[8px]" onClick={handleClick}>
               <ThreeDots />
             </button> */}
-            </div>
-        
-        </div>
-      <FavoriteFolders />
-      <div className="flex-1 bg-grey-90 flex flex-col overflow-hidden">
-          {/* Table Wrapper with Horizontal Scroll */}
-
-          <div className="overflow-auto px-[10px] bg-white shadow-md flex-grow h-[calc(100vh)]">
-            <table className="min-w-full divide-y divide-gray-200">
-              {/* Table Header */}
-              <thead className="sticky top-0 bg-white z-[50px]">
-                <tr className="text-left text-gray-600 font-semibold">
-                  {/* Checkbox Column for Selecting All */}
-                  <th className="th-title sticky top-0 bg-blueBg z-[50]">
-                    <div
-                      className={`w-[20px] h-[20px] border-1 border-customBlue bg-white rounded-[6px] flex items-center justify-center cursor-pointer`}
-                      onClick={() =>
-                        setSelectedCandidates(
-                          selectedCandidates.length ===
-                            filteredCandidates.length
-                            ? []
-                            : filteredCandidates.map((c) => c.id)
-                        )
-                      }
-                    >
-                      {selectedCandidates.length ===
-                      filteredCandidates.length ? (
-                        <img src={Tick} alt="Selected" />
-                      ) : null}
-                    </div>
-                  </th>
-
-                  {/* ✅ Dynamically Generate Column Headers from selectedColumns */}
-                  {Object.keys(columnMapping).map((columnName) => (
-                  <th key={columnName} className="th-title bg-blueBg">
-                    {columnName}
-                  </th>
-                ))}
-            
-                </tr>
-              </thead>
-
-              {/* ✅ Table Body */}
-              <tbody className="divide-y overflow-auto divide-gray-200">
-                {foldersCandidates.map((candidate) => (
-                  <tr key={candidate.id} className="hover:bg-gray-50 font-ubuntu text-sm">
-                    {/* Checkbox Column for Selecting Candidates */}
-                    <td className="pr-0">
-                      <div
-                        className={`w-[20px] h-[20px] border-1 m-0 border-customBlue bg-white rounded-[6px] flex items-center justify-center cursor-pointer`}
-                        onClick={() =>
-                          setSelectedCandidates((prev) =>
-                            prev.includes(candidate.id)
-                              ? prev.filter((id) => id !== candidate.id)
-                              : [...prev, candidate.id]
-                          )
-                        }
-                      >
-                        {selectedCandidates.includes(candidate.id) ? (
-                          <img src={Tick} alt="Selected" />
-                        ) : null}
-                      </div>
-                      
-                    </td>
-
-                    {/* Dynamically Show Data for Selected Columns */}
-                    {Object.entries(columnMapping).map(([columnName, key]) => (
-                        
-        <td key={key} className="td-text font-ubuntu text-sm ">
-      
-           { candidate[key] || "-"}
-          
-        </td>
-      ))}
-                    {/* <td className=" p-0 m-0">
-                      <Tooltip title="More Options">
-                        <button
-                          className="text-gray-600 hover:text-black"
-                          onClick={(event) => handleMenuOpen(event, candidate.id)}
-                        >
-                          ⋮
-                        </button>
-                      </Tooltip>
-                      </td> */}
-                  </tr>
-                ))}
-             
-              </tbody>
-            </table>
           </div>
         </div>
-       
+        <FavoriteFolders />
+        <div className="flex-1 bg-grey-90 flex flex-col overflow-hidden">
+          {/* Table Wrapper with Horizontal Scroll */}
+
+          <div className="overflow-auto px-[10px] bg-white shadow-md flex-grow h-[calc(200vh-20px)]">
+            <TableContainer style={{ flex: 1, overflow: "auto" }}>
+              <Table
+                stickyHeader
+                sx={{ borderSpacing: "0 10px", borderCollapse: "separate" }}
+              >
+                <TableHead>
+                  <TableRow
+                    style={{
+                      backgroundColor: "#1761D81A",
+                      position: "sticky",
+                      top: 0,
+                      zIndex: 10,
+                    }}
+                  >
+                    {/* Conditionally Add Checkbox & Star for "First Name" */}
+                    {header?.map((item, index) => {
+                      console.log("iterwerewrwer", item);
+
+                      return (
+                        <TableCell key={index} className="font-14-regular">
+                          <div className="flex items-center space-x-2">
+                            {/* If header item is "First Name", add checkbox and star */}
+                            {item === "Folder Name" && (
+                              <>
+                           <div
+                      className="w-[20px] h-[20px] border border-gray-400 rounded-md flex items-center justify-center cursor-pointer mr-[46px]"
+                      onClick={() => {
+                        // Select All or Deselect All
+                        if (selectedRows.length === foldersCandidates.length) {
+                          setSelectedRows([]); // Deselect all
+                        } else {
+                          setSelectedRows(foldersCandidates.map((row) => row.id)); // Select all
+                        }
+                      }}
+                    >
+                      {selectedRows.length === foldersCandidates.length && <img src={Tick} alt="Selected" />}
+                    </div>
+                              </>
+                            )}
+                            {item} {/* Normal header text */}
+                          </div>
+                        </TableCell>
+                      );
+                    })}
+
+                    {/* Empty Cell for Actions (Aligns with last column) */}
+                    <TableCell className="justify-end flex">{""}</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {foldersCandidates.map((row, index) => {
+                    console.log("roeeeererwer", row === "folder_name");
+
+                    const randomColor = getRandomColor();
+                    return (
+                      <>
+                        <TableRow key={index}>
+                          <TableCell>
+                            <div className="flex items-center ">
+                              {row?.folder_name && (
+                                <div className="flex items-center">
+                                  <div
+                                    className="w-[20px] h-[20px] border border-gray-400 rounded-md flex items-center justify-center cursor-pointer mr-[10px]"
+                                    onClick={() => toggleCheckbox(row.id)}
+                                  >
+                                    {selectedRows.includes(row.id) && (
+                                      <img src={Tick} alt="Selected" />
+                                    )}
+                                  </div>
+                                  <div
+                                    className="mr-[16px]"
+                                    onClick={() => toggleStar(row.id)}
+                                  >
+                                    {starredFolders.includes(row.id) ? (
+                                      <StarFilled className="h-[20px] w-[20px]" />
+                                    ) : (
+                                      <StarOutlined className="h-[20px] w-[20px]" />
+                                    )}
+                                  </div>
+                                </div>
+                              )}
+                              {row?.folder_name}
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <div
+                              style={{ display: "flex", alignItems: "center" }}
+                            >
+                              <span style={{ marginLeft: "6px" }}>
+                                {row?.candidate_count}
+                              </span>
+                            </div>
+                          </TableCell>
+
+                          <TableCell>{row?.created_on}</TableCell>
+                          <TableCell>
+                            <div
+                              style={{ display: "flex", alignItems: "center" }}
+                            >
+                              <Avatar
+                                src={row?.created_by?.image}
+                                alt={row?.created_by?.name}
+                                style={{
+                                  width: 32,
+                                  height: 32,
+                                  backgroundColor: randomColor,
+                                }}
+                              />
+                              <span style={{ marginLeft: "6px" }}>
+                                {row?.created_by}
+                              </span>
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <button onClick={handleClickSetting}>
+                              <ThreeDots />
+                            </button>
+                          </TableCell>
+                        </TableRow>
+                      </>
+                    );
+                  })}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </div>
+        </div>
+
         {/* filter div */}
       </div>
       <PaginationFooter />
@@ -662,7 +600,28 @@ const [selectedFolder, setSelectedFolder] = useState(null);
         anchorEl={anchorSettingEl}
         open={openSetting}
         onClose={handleSettingsClose}
+        menuItems={threeDotsMenuItems}
+      />
+      <GlobalMenu
+        anchorEl={anchorBulkActionEl}
+        open={openBulkAction}
+        onClose={handleBulkActionClose}
         menuItems={bulkMenuItems}
+      />
+      <CreateNewFolderModal
+        visible={modals?.createFolderModalVisible}
+        onClose={() => setModalVisibility("createFolderModalVisible", false)}
+        addFolder={addFolder}
+      />
+      <CommonDeleteModal
+        visible={modals?.categoryDeleteModalVisible}
+        title={"Delete Folder"}
+        description={"Are you sure you want to delete this folder?"}
+        onClose={() => {
+          setModalVisibility("categoryDeleteModalVisible", false);
+          setSelectedItem(null);
+        }}
+        onClickDelete={deleteCategory}
       />
     </div>
   );

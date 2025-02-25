@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import "../../components/filterModal/FilterModal.css";
 
-const NationalitySearchDropdown = ({ 
+const JobTitleSearchDropdown = ({ 
   selectedNationalities = [], 
   setSelectedNationalities, 
   placeholder, 
@@ -80,15 +80,15 @@ const NationalitySearchDropdown = ({
           type="text"
           placeholder={placeholder}
           className="filter-input w-full"
-          value={multipleSelect ? nationalityQuery : nationalityQuery }
+          value={multipleSelect ? nationalityQuery : nationalityQuery || selectedNationalities[0] || ""}
           onChange={(e) => setNationalityQuery(e.target.value)}
           onFocus={() => setShowNationalityDropdown(true)}
         />
-        {/* {!multipleSelect && selectedNationalities.length > 0 && (
+        {!multipleSelect && selectedNationalities.length > 0 && (
           <button className="ml-2 text-customBlue" onClick={clearNationality}>
             ✕
           </button>
-        )} */}
+        )}
       </div>
 
       {/* Nationality Suggestions Dropdown */}
@@ -126,4 +126,4 @@ const NationalitySearchDropdown = ({
   );
 };
 
-export default NationalitySearchDropdown;
+export default JobTitleSearchDropdown;

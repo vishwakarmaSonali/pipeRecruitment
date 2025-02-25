@@ -2,12 +2,16 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "../../components/filterModal/FilterModal.css";
 
-const TitleSearchDropdown = ({ selectedTitles = [], setSelectedTitles }) => {
+const TitleSearchDropdown = ({
+  selectedTitles = [],
+  setSelectedTitles,
+  allowMultiple = true, // Single or Multiple selection
+}) => {
   const [titleQuery, setTitleQuery] = useState("");
   const [titleSuggestions, setTitleSuggestions] = useState([]);
   const [showTitleDropdown, setShowTitleDropdown] = useState(false);
 
-  // Fetch title suggestions from API
+  // Fetch title suggestions from API when the user types
   useEffect(() => {
     if (titleQuery.length > 1) {
       const fetchTitles = async () => {
@@ -39,30 +43,37 @@ const TitleSearchDropdown = ({ selectedTitles = [], setSelectedTitles }) => {
 
   // Handle title selection
   const handleSelectTitle = (title) => {
-    if (!Array.isArray(selectedTitles)) {
-      setSelectedTitles([]); // Ensure it's always an array
+    if (!allowMultiple) {
+      // Single Selection Mode
+      setSelectedTitles([title]);
+      setTitleQuery(title); // Display the selected title in the input
+    } else {
+      // Multiple Selection Mode
+      if (!selectedTitles.includes(title)) {
+        setSelectedTitles([...selectedTitles, title]);
+      }
+      setTitleQuery(""); // Clear input for the next selection
     }
 
-    if (!selectedTitles.includes(title)) {
-      setSelectedTitles([...selectedTitles, title]);
-    }
-    setTitleQuery("");
     setShowTitleDropdown(false);
   };
 
-  // Remove selected title
+  // Remove selected title (only in multiple selection mode)
   const removeTitle = (index) => {
     setSelectedTitles(selectedTitles.filter((_, i) => i !== index));
   };
 
   return (
-    <div className="relative">
+    <div className="relative ">
       <input
         type="text"
         placeholder="Job Title"
         className="filter-input border"
-        value={titleQuery}
-        onChange={(e) => setTitleQuery(e.target.value)}
+        value={!allowMultiple && selectedTitles.length > 0 ? selectedTitles[0] : titleQuery}
+        onChange={(e) => {
+          setTitleQuery(e.target.value);
+          if (!allowMultiple) setSelectedTitles([]); // Allow retyping in single mode
+        }}
         onFocus={() => setShowTitleDropdown(true)}
       />
 
@@ -81,16 +92,13 @@ const TitleSearchDropdown = ({ selectedTitles = [], setSelectedTitles }) => {
         </div>
       )}
 
-      {/* Selected Titles List */}
-      {Array.isArray(selectedTitles) && selectedTitles.length > 0 && (
-        <div className="inputItemsDiv mt-2 flex flex-wrap">
+      {/* Selected Titles List (Only for Multiple Selection Mode) */}
+      {allowMultiple && selectedTitles.length > 0 && (
+        <div className="mt-2 flex flex-wrap gap-2 max-h-40">
           {selectedTitles.map((title, index) => (
             <div key={index} className="inputed-item">
               {title}
-              <button
-                className="ml-2 text-customBlue"
-                onClick={() => removeTitle(index)}
-              >
+              <button className="ml-2 text-customBlue" onClick={() => removeTitle(index)}>
                 ✕
               </button>
             </div>

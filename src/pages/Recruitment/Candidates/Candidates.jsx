@@ -798,7 +798,7 @@ const Candidates = ({ isDrawerOpen }) => {
               <thead className="sticky top-0 bg-white z-[50px]">
                 <tr className="text-left text-gray-600 font-semibold">
                   {/* Checkbox Column for Selecting All */}
-                  <th className="th-title sticky top-0 bg-blueBg z-[50]">
+                  <th className="px-2 py-3 font-ubuntu font-medium text-m text-customBlue justify-center text-left ml-10 max-w-[380px] sticky top-0 bg-blueBg ">
                     <div
                       className={`w-[20px] h-[20px] border-1 border-customBlue bg-white rounded-[6px] flex items-center justify-center cursor-pointer`}
                       onClick={() =>
@@ -821,7 +821,7 @@ const Candidates = ({ isDrawerOpen }) => {
                   {selectedColumns.map((columnName) => (
                     <th
                       key={columnName}
-                      className="th-title p-0 bg-blueBg max-w-[240px] min-w-[230px]"
+                      className="px-2 py-3 font-ubuntu font-medium text-m text-customBlue justify-center text-left ml-10 p-0 bg-blueBg max-w-[240px] min-w-[230px]"
                     >
                       {columnName}
                     </th>
@@ -858,7 +858,7 @@ const Candidates = ({ isDrawerOpen }) => {
                         <td key={key} className="td-text px-1 justify-between">
                           {columnName === "Candidate Name" ? (
                             <div
-                              className="flex items-center gap-2 relative"
+                              className="flex items-center gap-2 "
                               onMouseEnter={() =>
                                 setHoveredCandidate(candidate.id)
                               }
