@@ -84,11 +84,7 @@ const LocationSearchDropdown = ({
           type="text"
           placeholder={placeholder}
           className="filter-input flex-1"
-          value={
-            multipleSelect
-              ? locationQuery
-              :  locationQuery
-          }
+          value={multipleSelect ? locationQuery : locationQuery}
           onChange={(e) => setLocationQuery(e.target.value)}
           onFocus={() => setShowLocationDropdown(true)}
           // readOnly={!multipleSelect && selectedLocations.length > 0} // Prevent typing when single selection is active

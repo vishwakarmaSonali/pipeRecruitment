@@ -1,54 +1,56 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { ReactComponent as ArrowIcon } from "../../assets/icons/arrowDown.svg";
 
-const DropdownWithInput = ({ selectedTitle, setSelectedTitle, firstName, setFirstName }) => {
-  const [selected, setSelected] = useState("None");
+const DropdownWithInput = ({
+  selectedTitle,
+  setSelectedTitle,
+  firstName,
+  setFirstName,
+}) => {
   const [isOpen, setIsOpen] = useState(false);
   const options = ["None", "Mr.", "Ms.", "Mrs."];
 
   return (
     <div className="relative w-[100%]">
-      <div className="flex items-center border h-[38px] border-gray-300 rounded-lg px-2  box-border bg-white font-ubuntu text-sm text-customBlue">
-        {/* Dropdown Section */}
-        <div 
-          className="relative cursor-pointer flex items-center"
+      <div className="common-input-div">
+        <button
+          className="display-flex align-center"
           onClick={() => setIsOpen(!isOpen)}
+          style={{ gap: 2 }}
         >
-          <span className="mr-2">{selectedTitle}</span>
-          <svg
-            className="w-4 h-4 text-gray-600"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
+          <span className="font-12-regular">{selectedTitle}</span>
+          <button
+            className={`${
+              isOpen ? "arrow-icon-btn-collpase" : "arrow-icon-btn"
+            }`}
           >
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-          </svg>
-        </div>
+            <ArrowIcon />
+          </button>
+        </button>
 
-        {/* Text Input */}
         <input
           type="text"
           placeholder="First Name"
-          className="ml-2 flex-1 outline-none border-none font-ubuntu text-sm text-customBlue"
+          className="flex-1 normal-input"
           value={firstName}
           onChange={(e) => setFirstName(e.target.value)}
-
         />
       </div>
 
-      {/* Dropdown Options */}
       {isOpen && (
-        <div className="absolute z-50 left-0 mt-2 w-full bg-white border border-gray-300 rounded-lg ">
+        <div className="dropdown-container">
           {options.map((option) => (
             <div
               key={option}
-              className="p-2 hover:bg-gray-100 cursor-pointer font-ubuntu text-sm text-customBlue"
+              className={`normal-list-item-div ${
+                selectedTitle === option && "bg-selected"
+              }`}
               onClick={() => {
                 setSelectedTitle(option);
                 setIsOpen(false);
               }}
             >
-              {option}
+              <p className="font-12-regular color-dark-black"> {option} </p>
             </div>
           ))}
         </div>

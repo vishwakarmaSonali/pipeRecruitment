@@ -26,6 +26,8 @@ import CommonDropdown from "../common/CommonDropdown";
 import LocationSearchDropdown from "../AutocompleteDropdowns/LocationSearchDropDown";
 import PhoneInputComponent from "../common/PhoneInputComponent";
 import CommonSearchDropdown from "../common/CommonSearchDropdown";
+import DropdownWithInput from "./StyledDropdownInput";
+import NationalitySearchDropdown from "../AutocompleteDropdowns/NationalitySearchDropDown";
 
 const ProfessionalDetails = ({ details, label }) => {
   const [fields, setFields] = useState(details);
@@ -37,11 +39,7 @@ const ProfessionalDetails = ({ details, label }) => {
   const [socialLinkModalVisible, setSocialLinkModalVisible] = useState(false);
   const [addSkillModalVisible, setAddSkillModalVisible] = useState(false);
   const [tempDate, setTempDate] = useState(null);
-
-  console.log(
-    ">>>>>>>>>>>>>>>>>>>>>selectedMultiLanguages",
-    selectedMultiLanguages
-  );
+  const [selectedTitle, setSelectedTitle] = useState("None");
 
   const handleDateSelect = (date) => {
     console.log(">>>>>>>>>>>>>>>>>>date", date);
@@ -56,13 +54,6 @@ const ProfessionalDetails = ({ details, label }) => {
   const handleSocialLinkEdit = (key, value) => {
     setEditField(key);
     setTempValue(value);
-  };
-
-  const handleLanguageSave = () => {
-    console.log(
-      ">>>>>>>>>>>>>>>>selectedMultiLanguages",
-      selectedMultiLanguages
-    );
   };
 
   const handleSave = (key) => {
@@ -84,6 +75,15 @@ const ProfessionalDetails = ({ details, label }) => {
           initialDate={value}
           onDateSelect={handleDateSelect}
           showTime={true}
+        />
+      );
+    } else if (key === "First Name") {
+      return (
+        <DropdownWithInput
+          selectedTitle={selectedTitle}
+          setSelectedTitle={setSelectedTitle}
+          firstName={tempValue}
+          setFirstName={setTempValue}
         />
       );
     } else if (
@@ -123,6 +123,15 @@ const ProfessionalDetails = ({ details, label }) => {
           selectedLocations={tempValue}
           setSelectedLocations={setTempValue}
           placeholder={"Location"}
+        />
+      );
+    } else if (key === "Nationality") {
+      return (
+        <NationalitySearchDropdown
+          selectedNationalities={tempValue}
+          setSelectedNationalities={setTempValue}
+          placeholder={"Nationality"}
+          multipleSelect={false}
         />
       );
     } else if (key === "Phone Number") {

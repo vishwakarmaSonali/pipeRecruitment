@@ -70,7 +70,9 @@ const CandidateCard = ({
               </p>
             )}
             {data?.title && (
-              <p className="font-14-regular color-dark-black">{data?.title}</p>
+              <p className="font-14-regular color-dark-black truncate-text ">
+                {data?.title}
+              </p>
             )}
           </div>
         </div>

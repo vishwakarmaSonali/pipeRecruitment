@@ -107,8 +107,6 @@ const CommonSearchDropdown = ({
       {isDropdownOpen && filteredOptions.length > 0 && (
         <div className="dropdown-container">
           {filteredOptions.map((option, index) => {
-            console.log("{option[iconKey]{option[iconKey]", option[iconKey]);
-
             return (
               <div
                 key={index}

@@ -118,7 +118,7 @@ const CreateCandidateForm = () => {
   const [selectedJobs, setSelectedJobs] = useState([]); // Store selected jobs
   const [yearsOfExp, setYearsOfExp] = useState("");
   const [highestQualification, setHighestQualification] = useState("");
-    const [selectedTitles, setSelectedTitles] = useState([]); // Ensure it's an array
+  const [selectedTitles, setSelectedTitles] = useState([]); // Ensure it's an array
   const [currentEmployer, setCurrentEmployer] = useState("");
   const handleNationalityChange = (selectedItem) => {
     setNationality(selectedItem);
@@ -538,7 +538,7 @@ const CreateCandidateForm = () => {
                 </div>
                 <div className="display-flex gap-[10px] mt-[10px]">
                   <div className="flex-1 ">
-                  <CustomDropdown
+                    <CustomDropdown
                       options={frequencyOptions}
                       placeholder="Domain"
                       selectedValue={frequency}
@@ -546,14 +546,16 @@ const CreateCandidateForm = () => {
                       optionKey="frequency"
                     />
                   </div>
-                  <div className="flex-1 ">
-                  
-                  </div>
+                  <div className="flex-1 "></div>
                 </div>
                 <div className="display-flex gap-[10px] mt-[10px]">
                   <div className="flex-1 ">
-                  <TitleSearchDropdown placeholder={'Current Job Title'} selectedTitles={selectedTitles} setSelectedTitles={setSelectedTitles} allowMultiple={false} />
-
+                    <TitleSearchDropdown
+                      placeholder={"Current Job Title"}
+                      selectedTitles={selectedTitles}
+                      setSelectedTitles={setSelectedTitles}
+                      allowMultiple={false}
+                    />
                   </div>
                   <div className="flex-1 border-1 rounded-[8px]">
                     <input
@@ -596,11 +598,10 @@ const CreateCandidateForm = () => {
                   </div>
                 </div>
               </div>
-              
             </div>
           </div>
           {/* Professional details block ends */}
-          
+
           {/* Languages block starts */}
           <div className="flex justify-between mt-[26px]">
             <div className=" flex flex-1 max-w-[350px]">
