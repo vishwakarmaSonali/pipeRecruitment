@@ -120,8 +120,15 @@
   color: var(--dark-black);
   border: none !important;
 }
-.ql-editor::placeholder {
+
+.ql-editor::before {
   color: #797979 !important;
+  font-size: 12px !important;
+  line-height: 13.79px !important;
+  font-family: "Ubuntu" !important;
+  font-weight: 400 !important;
+  font-style: normal !important;
+  opacity: 1 !important;
 }
 
 .ql-toolbar.ql-snow {
@@ -361,6 +368,10 @@
   background-color: transparent !important;
 }
 
+.special-label {
+  display: none !important;
+}
+
 .form-control:focus {
   outline: 0;
   box-shadow: none !important;
@@ -373,10 +384,23 @@
   padding: 0;
   border-radius: 3px 0 0 3px;
   background-color: transparent !important;
+  z-index: 999;
 }
 
 .react-tel-input .country-list .search-emoji {
-  display: none;
+  display: inline-block !important;
+  width: 16px !important;
+  height: 16px !important;
+  background-image: url("../../assets/icons/search.svg") !important;
+  background-size: contain !important;
+  background-repeat: no-repeat !important;
+  background-position: center !important;
+  font-size: 0 !important;
+  overflow: hidden !important;
+}
+
+.react-tel-input .country-list .search-emoji span {
+  display: none !important;
 }
 
 .react-tel-input .country-list {
@@ -388,11 +412,73 @@
   box-shadow: 1px 2px 10px rgba(0, 0, 0, 0.35);
   background-color: #fff;
   min-width: 370px;
-  max-height: 155px !important;
+  max-height: 250px !important;
   overflow-y: scroll;
   overflow-x: hidden;
   border-radius: 0 0 3px 3px;
-  z-index: 99999 !important;
+  z-index: 9999 !important;
+}
+
+.country-list .search {
+  border: 1px solid #f3f4f4;
+  margin: 8px !important;
+  background-color: #fff;
+  padding: 0px 12px !important;
+  min-height: 36px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  border-radius: 8px;
+  top: 8px !important;
+  box-sizing: border-box;
+}
+
+.react-tel-input .country-list .search-box {
+  flex: 1 !important;
+  font-family: "Ubuntu" !important;
+  font-weight: 400 !important;
+  font-size: 14px !important;
+  line-height: 16.09px !important;
+  color: var(--dark-black) !important;
+  margin-left: 0px !important;
+  padding: 0px !important;
+  z-index: 1;
+}
+
+.react-tel-input .country-list .search-box ::placeholder {
+  color: var(--grey) !important;
+}
+
+.country-list .country {
+  max-height: 40px;
+  padding: 12px;
+  background-color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 1;
+}
+
+.country-list .country .country-name {
+  font-size: 12px;
+  line-height: 13.79px;
+  color: var(--dark-black);
+  font-family: "Ubuntu";
+  font-weight: 400;
+  flex: 1;
+  align-self: flex-start;
+}
+
+.country-list .country .dial-code {
+  font-size: 12px;
+  line-height: 13.79px;
+  color: var(--grey);
+  font-family: "Ubuntu";
+  font-weight: 400;
+}
+
+.react-tel-input .flag {
+  background-repeat: no-repeat;
 }
 
 .dropdown-container {
@@ -404,7 +490,7 @@
   height: auto;
   max-height: 260px;
   overflow: auto;
-  z-index: 99999;
+  z-index: 9999 !important;
   margin-top: 2px;
   transition: height 2s ease;
 }

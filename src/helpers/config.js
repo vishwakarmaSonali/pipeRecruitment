@@ -758,3 +758,37 @@ export const extensions = {
   png: jpg,
   jpeg: jpg,
 };
+
+export const genderOption = [
+  {
+    id: 1,
+    type: "Female",
+  },
+  {
+    id: 2,
+    type: "Male",
+  },
+  {
+    id: 3,
+    type: "Other",
+  },
+];
+
+export const employmentStatus = [
+  {
+    id: 1,
+    status: "Hired",
+  },
+  {
+    id: 2,
+    status: "Probation",
+  },
+  {
+    id: 3,
+    status: "Employed",
+  },
+  {
+    id: 4,
+    status: "Left Organization",
+  },
+];

@@ -213,7 +213,7 @@ const placementDetails = {
 };
 
 const contactDetails = {
-  "Phone Number": "(+91) 98765-43210",
+  "Phone Number": "919664866848",
   "Email Id": "priya.s@designscape.com",
   "Social Links": {
     linkedin_url: "http://www.linkedin.com/in/himanshu-singh-861209b8",

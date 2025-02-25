@@ -2,19 +2,20 @@ import React, { useState, useRef, useEffect } from "react";
 import { ReactComponent as CloseIcon } from "../../assets/icons/close.svg"; // Ensure this icon exists
 import CommonTextInput from "./CommonTextInput";
 
-const SearchDropdown = ({
+const CommonSearchDropdown = ({
   options,
   optionKey = "name", // Default key to search & display
   iconKey = "icon",
   placeholder,
   onSelect,
+  selectedData,
   multiSelect = false,
 }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredOptions, setFilteredOptions] = useState([]);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [selectedOptions, setSelectedOptions] = useState(
-    multiSelect ? [] : null
+    multiSelect ? (selectedData ? selectedData : []) : null
   );
   const dropdownRef = useRef(null);
 
@@ -48,46 +49,42 @@ const SearchDropdown = ({
   const handleSelect = (option) => {
     if (multiSelect) {
       const alreadySelected = selectedOptions.some(
-        (item) => item[optionKey] === option[optionKey]
+        (item) => item === option[optionKey]
       );
 
       const updatedSelections = alreadySelected
-        ? selectedOptions.filter((item) => item[optionKey] !== option[optionKey])
-        : [...selectedOptions, option];
+        ? selectedOptions.filter((item) => item !== option[optionKey])
+        : [...selectedOptions, option[optionKey]];
 
       setSelectedOptions(updatedSelections);
       onSelect(updatedSelections);
-
-      
-      // ✅ Keep dropdown open for multiple selections
-      setIsDropdownOpen(false);
     } else {
       setSelectedOptions(option);
-      setSearchTerm(option[optionKey]); // Show selected value in input
+      setSearchTerm(option[optionKey]);
       onSelect(option);
-
-      // ✅ Close dropdown immediately for single selection
       setIsDropdownOpen(false);
     }
   };
 
   // 🔹 Remove Selected Option (Multi-Select)
   const removeSelectedOption = (option) => {
-    const updatedSelections = selectedOptions.filter(
-      (item) => item[optionKey] !== option[optionKey]
-    );
+    const updatedSelections = selectedOptions.filter((item) => item !== option);
     setSelectedOptions(updatedSelections);
     onSelect(updatedSelections);
   };
+
+  useEffect(() => {
+    if (multiSelect) {
+      setSelectedOptions(selectedData);
+    }
+  }, []);
 
   return (
     <div className="relative w-full" ref={dropdownRef}>
       {/* 🔹 Input Field */}
       <CommonTextInput
         type="text"
-        value={
-          multiSelect ? searchTerm : selectedOptions?.[optionKey] || searchTerm
-        }
+        value={multiSelect ? searchTerm : selectedOptions || searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
         placeholder={placeholder}
         onFocus={() => setIsDropdownOpen(true)}
@@ -97,9 +94,7 @@ const SearchDropdown = ({
         <div className="flex flex-wrap gap-2 mt-2">
           {selectedOptions.map((option, index) => (
             <div key={index} className="selected-options-item">
-              <span className="font-12-regular color-dark-black">
-                {option[optionKey]}
-              </span>
+              <span className="font-12-regular color-dark-black">{option}</span>
               <button onClick={() => removeSelectedOption(option)}>
                 <CloseIcon height={8} width={8} />
               </button>
@@ -121,9 +116,7 @@ const SearchDropdown = ({
                 className={`cursor-pointer hover:bg-gray-100 font-12-regular color-dark-black p-[12px]  flex  items-center gap-[8px]
                   ${
                     multiSelect &&
-                    selectedOptions.some(
-                      (item) => item[optionKey] === option[optionKey]
-                    )
+                    selectedOptions.some((item) => item === option[optionKey])
                       ? "selected-item-common-bg"
                       : ""
                   } `}
@@ -145,4 +138,4 @@ const SearchDropdown = ({
   );
 };
 
-export default SearchDropdown;
+export default CommonSearchDropdown;

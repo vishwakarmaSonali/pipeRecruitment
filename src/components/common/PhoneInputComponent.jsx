@@ -2,8 +2,14 @@ import React, { useState } from "react";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 
-const PhoneInputComponent = () => {
-  const [phoneNumber, setphoneNumber] = useState("");
+const PhoneInputComponent = ({ phone, onChange }) => {
+  const [phoneNumber, setphoneNumber] = useState(phone || "");
+
+  useState(() => {
+    if (!!phone) {
+      setphoneNumber(phone);
+    }
+  }, []);
 
   return (
     <div className="phone-input-style">
@@ -12,6 +18,7 @@ const PhoneInputComponent = () => {
         value={phoneNumber}
         onChange={(text) => {
           setphoneNumber(text);
+          onChange(text);
         }}
         enableSearch
         containerStyle={{

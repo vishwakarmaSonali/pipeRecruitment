@@ -7,13 +7,25 @@ import { ReactComponent as ArrowIcon } from "../../assets/icons/arrowDown.svg";
 import { ReactComponent as DashIcon } from "../../assets/icons/dash.svg";
 import CommonSwitch from "../common/CommonSwitch";
 import AddEducationDetailsModal from "../modals/AddEducationDetailsModal";
-import { icons, languagesOptions } from "../../helpers/config";
-import SearchDropdown from "../common/SearchDropDown";
+import {
+  employmentStatus,
+  genderOption,
+  icons,
+  languagesOptions,
+} from "../../helpers/config";
 import AddSocialLinksModal from "../modals/AddSocialLinksModal";
 import { ReactComponent as CloseIcon } from "../../assets/icons/close.svg";
 import AddSkillsModal from "../modals/AddSkillsModal";
 import DateTimePicker from "../common/DateTimePicker";
-import { formatCustomDate, formatDate } from "../../helpers/utils";
+import {
+  formatCustomDate,
+  formatDate,
+  formatPhoneNumber,
+} from "../../helpers/utils";
+import CommonDropdown from "../common/CommonDropdown";
+import LocationSearchDropdown from "../AutocompleteDropdowns/LocationSearchDropDown";
+import PhoneInputComponent from "../common/PhoneInputComponent";
+import CommonSearchDropdown from "../common/CommonSearchDropdown";
 
 const ProfessionalDetails = ({ details, label }) => {
   const [fields, setFields] = useState(details);
@@ -25,6 +37,11 @@ const ProfessionalDetails = ({ details, label }) => {
   const [socialLinkModalVisible, setSocialLinkModalVisible] = useState(false);
   const [addSkillModalVisible, setAddSkillModalVisible] = useState(false);
   const [tempDate, setTempDate] = useState(null);
+
+  console.log(
+    ">>>>>>>>>>>>>>>>>>>>>selectedMultiLanguages",
+    selectedMultiLanguages
+  );
 
   const handleDateSelect = (date) => {
     console.log(">>>>>>>>>>>>>>>>>>date", date);
@@ -49,7 +66,10 @@ const ProfessionalDetails = ({ details, label }) => {
   };
 
   const handleSave = (key) => {
-    setFields({ ...fields, [key]: tempValue });
+    setFields({
+      ...fields,
+      [key]: tempValue,
+    });
     setEditField(null);
   };
 
@@ -69,11 +89,44 @@ const ProfessionalDetails = ({ details, label }) => {
     } else if (
       key === "Start Date" ||
       key === "Probation End Date" ||
-      key === "Left Date"
+      key === "Left Date" ||
+      key === "Date of Birth"
     ) {
       return (
         <DateTimePicker initialDate={value} onDateSelect={handleDateSelect} />
       );
+    } else if (key === "Gender") {
+      return (
+        <CommonDropdown
+          options={genderOption}
+          placeholder="Gender"
+          selectedValue={tempValue}
+          onChange={setTempValue}
+          optionKey="type"
+          candidateInfo={true}
+        />
+      );
+    } else if (key === "Employment Status") {
+      return (
+        <CommonDropdown
+          options={employmentStatus}
+          placeholder="Status"
+          selectedValue={tempValue}
+          onChange={setTempValue}
+          optionKey="status"
+          candidateInfo={true}
+        />
+      );
+    } else if (key === "Location") {
+      return (
+        <LocationSearchDropdown
+          selectedLocations={tempValue}
+          setSelectedLocations={setTempValue}
+          placeholder={"Location"}
+        />
+      );
+    } else if (key === "Phone Number") {
+      return <PhoneInputComponent phone={value} onChange={setTempValue} />;
     } else {
       return (
         <CommonTextInput
@@ -91,9 +144,12 @@ const ProfessionalDetails = ({ details, label }) => {
     } else if (
       key === "Start Date" ||
       key === "Probation End Date" ||
-      key === "Left Date"
+      key === "Left Date" ||
+      key === "Date of Birth"
     ) {
       return formatDate(value);
+    } else if (key === "Phone Number") {
+      return formatPhoneNumber(`+${value}`);
     } else {
       return value;
     }
@@ -310,15 +366,19 @@ const ProfessionalDetails = ({ details, label }) => {
                 style={{ gap: 8 }}
               >
                 <div className="flex-1">
-                  <SearchDropdown
+                  <CommonSearchDropdown
                     options={languagesOptions}
                     optionKey="name"
                     placeholder="Language"
                     multiSelect={true}
-                    onSelect={(values) => setSelectedMultiLanguages(values)}
+                    selectedData={value}
+                    onSelect={setTempValue}
                   />
                 </div>
-                <div className="display-flex" style={{ gap: 8 }}>
+                <div
+                  className="display-flex"
+                  style={{ gap: 8, alignSelf: "flex-start" }}
+                >
                   <button onClick={handleCancel}>
                     <CancleIcon />
                   </button>
@@ -428,12 +488,14 @@ const ProfessionalDetails = ({ details, label }) => {
                   ) : (
                     <DashIcon />
                   )}
-                  <button
-                    className="edit-details-btn"
-                    onClick={() => handleEdit(key, value)}
-                  >
-                    <EditIcon />
-                  </button>
+                  {key !== "Candidate Reference" && (
+                    <button
+                      className="edit-details-btn"
+                      onClick={() => handleEdit(key, value)}
+                    >
+                      <EditIcon />
+                    </button>
+                  )}
                 </div>
               </div>
             )}

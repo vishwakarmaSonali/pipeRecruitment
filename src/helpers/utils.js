@@ -1,5 +1,6 @@
 import { toast } from "react-toastify";
 import { parse, formatISO } from "date-fns";
+import { parsePhoneNumberFromString } from "libphonenumber-js";
 
 export const notifySuccess = (success) => {
   toast.dismiss();
@@ -74,4 +75,25 @@ export function convertToISO(dateString) {
 
   // Convert to ISO format: "2025-02-26T08:14:00+05:30"
   return formatISO(parsedDate, { representation: "complete" });
+}
+
+export function formatPhoneNumber(phoneNumber) {
+  // Ensure phone number starts with '+'
+  if (!phoneNumber.startsWith("+")) {
+    phoneNumber = "+" + phoneNumber;
+  }
+
+  // Parse the phone number
+  const parsedNumber = parsePhoneNumberFromString(phoneNumber);
+
+  if (!parsedNumber) return phoneNumber; // Return as is if invalid
+
+  // Extract country code and national number
+  const countryCode = parsedNumber.countryCallingCode;
+  const nationalNumber = parsedNumber.nationalNumber;
+
+  // Format the national number with a custom pattern (XXXXX-XXXXX)
+  const formattedNational = nationalNumber.replace(/(\d{5})(\d+)/, "$1-$2");
+
+  return `(+${countryCode}) ${formattedNational}`;
 }

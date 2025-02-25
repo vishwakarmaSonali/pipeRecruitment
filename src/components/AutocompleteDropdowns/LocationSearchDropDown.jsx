@@ -102,16 +102,16 @@ const LocationSearchDropdown = ({
 
       {showLocationDropdown && locationSuggestions.length > 0 && (
         <div
-          className="absolute left-0 z-50 flex flex-col bg-white border border-borderGrey rounded-lg shadow-lg w-full overflow-auto text-sm"
+          className="dropdown-container"
           onMouseDown={(e) => e.preventDefault()} // Prevent input blur when clicking dropdown
         >
           {locationSuggestions.map((location, index) => (
             <div
               key={index}
-              className="px-2 py-2 hover:bg-customGrey1 cursor-pointer"
+              className="normal-list-item-div"
               onClick={() => handleSelectLocation(location)}
             >
-              {location}
+              <p className="font-12-regular color-dark-black">{location}</p>
             </div>
           ))}
         </div>

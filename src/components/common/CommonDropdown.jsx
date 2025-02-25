@@ -11,12 +11,17 @@ const CommonDropdown = ({
   optionKey,
   type,
   handleMultiSelectHandler,
+  candidateInfo,
 }) => {
   const dropdownRef = useRef(null);
 
   const [isOpen, setIsOpen] = useState(false);
   const [selectedOption, setSelectedOption] = useState(
-    selectedValue ? selectedValue[optionKey] : ""
+    selectedValue
+      ? candidateInfo
+        ? selectedValue
+        : selectedValue[optionKey]
+      : ""
   );
   const [selectedColor, setSelectedColor] = useState(
     selectedValue?.color || ""
@@ -29,8 +34,12 @@ const CommonDropdown = ({
       setSelectedOption(selectedValue[optionKey] || "");
       setSelectedColor(selectedValue.color || "");
     } else {
-      setSelectedOption("");
-      setSelectedColor("");
+      if (candidateInfo && selectedValue) {
+        setSelectedOption(selectedValue);
+      } else {
+        setSelectedOption("");
+        setSelectedColor("");
+      }
     }
   }, [selectedValue, optionKey]);
 
@@ -54,8 +63,12 @@ const CommonDropdown = ({
   const handleSelect = (option) => {
     if (option && optionKey in option) {
       setSelectedOption(option[optionKey]); // Update displayed text
-      setSelectedColor(option.color || ""); // Update color if exists
-      onChange(option); // Pass the entire object back to parent component
+      setSelectedColor(option.color || "");
+      if (candidateInfo) {
+        onChange(option[optionKey]); // Pass the entire object back to parent component
+      } else {
+        onChange(option); // Pass the entire object back to parent component
+      }
     } else {
     }
     setIsOpen(false);
@@ -104,7 +117,7 @@ const CommonDropdown = ({
   };
 
   const normalListItem = (item, index) => {
-    const itemValue = item?.industryType || item?.type;
+    const itemValue = item?.industryType || item?.type || item?.status;
     const selectedItem = itemValue === selectedOption;
     return (
       <div
@@ -138,7 +151,11 @@ const CommonDropdown = ({
   return (
     <div className="relative w-full" ref={dropdownRef}>
       {/* Dropdown button */}
-      <div className="common-dropdown" onClick={() => setIsOpen(!isOpen)}>
+      <div
+        className="common-dropdown"
+        onClick={() => setIsOpen(!isOpen)}
+        style={{ cursor: "pointer" }}
+      >
         <span
           className="common-dropdown-text"
           style={{ color: !!selectedOption ? "#151B23" : "#797979" }}
