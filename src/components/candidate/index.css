@@ -286,3 +286,14 @@ textarea {
 .opacity-1 {
   opacity: 1;
 }
+
+.create-candidate-main-container {
+  max-width: 1200px;
+  width: 100%;
+  margin: 0px auto;
+  box-sizing: border-box;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 26px;
+}

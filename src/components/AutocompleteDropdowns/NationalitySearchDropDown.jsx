@@ -74,22 +74,15 @@ const NationalitySearchDropdown = ({
   };
 
   return (
-    <div className="relative w-full min-h-[38px]">
-      <div className="border border-customGrey1 rounded-[8px] flex items-center">
-        <input
-          type="text"
-          placeholder={placeholder}
-          className="filter-input w-full"
-          value={multipleSelect ? nationalityQuery : nationalityQuery}
-          onChange={(e) => setNationalityQuery(e.target.value)}
-          onFocus={() => setShowNationalityDropdown(true)}
-        />
-        {/* {!multipleSelect && selectedNationalities.length > 0 && (
-          <button className="ml-2 text-customBlue" onClick={clearNationality}>
-            ✕
-          </button>
-        )} */}
-      </div>
+    <div className="relative w-full ">
+      <input
+        type="text"
+        placeholder={placeholder}
+        className="common-input"
+        value={multipleSelect ? nationalityQuery : nationalityQuery}
+        onChange={(e) => setNationalityQuery(e.target.value)}
+        onFocus={() => setShowNationalityDropdown(true)}
+      />
 
       {/* Nationality Suggestions Dropdown */}
       {showNationalityDropdown && nationalitySuggestions.length > 0 && (

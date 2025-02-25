@@ -119,11 +119,7 @@ const CustomDropdown = ({
                   key={index}
                   onClick={() => handleSelect(option)}
                   className={`px-[12px] py-2 flex items-center gap-2 cursor-pointer transition 
-              ${
-                isSelected
-                  ? "bg-blueBg"
-                  : "hover:bg-blueBg"
-              }`}
+              ${isSelected ? "bg-blueBg" : "hover:bg-blueBg"}`}
                 >
                   {showCheckbox && multiSelect && (
                     <div

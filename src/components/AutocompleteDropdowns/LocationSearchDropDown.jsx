@@ -78,23 +78,15 @@ const LocationSearchDropdown = ({
   };
 
   return (
-    <div className="relative w-full min-h-[38px]">
-      <div className="border-1 rounded-[8px] flex items-center">
-        <input
-          type="text"
-          placeholder={placeholder}
-          className="filter-input flex-1"
-          value={multipleSelect ? locationQuery : locationQuery}
-          onChange={(e) => setLocationQuery(e.target.value)}
-          onFocus={() => setShowLocationDropdown(true)}
-          // readOnly={!multipleSelect && selectedLocations.length > 0} // Prevent typing when single selection is active
-        />
-        {/* {!multipleSelect && selectedLocations.length > 0 && (
-          <button className="mr-2 text-customBlue" onClick={clearLocation}>
-            ✕
-          </button>
-        )} */}
-      </div>
+    <div className="relative w-full">
+      <input
+        type="text"
+        placeholder={placeholder}
+        className="common-input"
+        value={multipleSelect ? locationQuery : locationQuery}
+        onChange={(e) => setLocationQuery(e.target.value)}
+        onFocus={() => setShowLocationDropdown(true)}
+      />
 
       {showLocationDropdown && locationSuggestions.length > 0 && (
         <div
