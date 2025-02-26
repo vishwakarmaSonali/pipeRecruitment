@@ -396,7 +396,6 @@ const Candidates = ({ isDrawerOpen }) => {
   //   });
   // };
 
-
   // Function to handle opening the dropdown menu
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -419,86 +418,96 @@ const Candidates = ({ isDrawerOpen }) => {
     setAnchorBulkActionEl(null);
   };
 
-
   return (
     <div className="sourcing-main-container">
       <Navbar />
-      <div
-        className="bg-grey-90"
-        style={{
-          flex: 1,
-          display: "flex",
-          flexDirection: "column",
-        }}
-      >
-        {/* Tabs Section */}
+      <div className="display-flex flex-1">
+        <div
+          style={{
+            flex: 1,
+            width: "100%",
+            display: "flex",
+            flexDirection: "column",
+            overflow: "auto",
+            transition: "width 500ms",
+          }}
+        >
+          <div
+            className="bg-grey-90"
+            style={{
+              flex: 1,
+              display: "flex",
+              flexDirection: "column",
+            }}
+          >
+            {/* Tabs Section */}
 
-        <div className="flex items-center justify-between p-[17px]">
-          <span className="font-ubuntu font-medium text-custom-large">
-            Candidates
-          </span>
-          {/* Action Buttons */}
-          <div className="flex space-x-2">
-            {/* ✅ Dynamically Change Button */}
+            <div className="flex items-center justify-between p-[17px]">
+              <span className="font-ubuntu font-medium text-custom-large">
+                Candidates
+              </span>
+              {/* Action Buttons */}
+              <div className="flex space-x-2">
+                {/* ✅ Dynamically Change Button */}
 
-            <button
-              className="buttons text-white bg-buttonBLue"
-              onClick={handleClickBulkAction}
-            >
-              Batch Actions
-              <DropArrow fill="white" />
-            </button>
+                <button
+                  className="buttons text-white bg-buttonBLue"
+                  onClick={handleClickBulkAction}
+                >
+                  Batch Actions
+                  <DropArrow fill="white" />
+                </button>
 
-            <button
-              className="buttons  text-white  bg-buttonBLue"
-              onClick={handleOpenMenu}
+                <button
+                  className="buttons  text-white  bg-buttonBLue"
+                  onClick={handleOpenMenu}
 
-              // onClick={() =>
-              //   setModalVisibility("createCandidateModalVisible", true)
-              // }
-            >
-              Create Candidate
-              <Plus stroke="#ffffff" />
-            </button>
+                  // onClick={() =>
+                  //   setModalVisibility("createCandidateModalVisible", true)
+                  // }
+                >
+                  Create Candidate
+                  <Plus stroke="#ffffff" />
+                </button>
 
-            {/* ✅ Dynamically Change Button */}
+                {/* ✅ Dynamically Change Button */}
 
-            <button
-              className="buttons text-white bg-buttonBLue"
-              onClick={() => toggleFilterDrawer(true)}
-            >
-              Filter <FilterIcon />
-            </button>
-            <button
-              className="buttons border-1 border-blue-600 text-buttonBLue min-w-[40px]"
-              onClick={(event) => (
-                // setModalVisibility("mergeDuplicateModalVisible", true),
-                setIsColumnSelectorOpen(true), handleClose()
-              )}
-            >
-              Columns <ColumnIcon />
-            </button>
-            <button
-              className="buttons border-1 border-blue-600 text-buttonBLue min-w-[40px]"
-              onClick={() => setIsFilter(!isFilter)}
-            >
-              <ExportIcon stroke="#1761D8" />
-            </button>
+                <button
+                  className="buttons text-white bg-buttonBLue"
+                  onClick={() => toggleFilterDrawer(true)}
+                >
+                  Filter <FilterIcon />
+                </button>
+                <button
+                  className="buttons border-1 border-blue-600 text-buttonBLue min-w-[40px]"
+                  onClick={(event) => (
+                    // setModalVisibility("mergeDuplicateModalVisible", true),
+                    setIsColumnSelectorOpen(true), handleClose()
+                  )}
+                >
+                  Columns <ColumnIcon />
+                </button>
+                <button
+                  className="buttons border-1 border-blue-600 text-buttonBLue min-w-[40px]"
+                  onClick={() => setIsFilter(!isFilter)}
+                >
+                  <ExportIcon stroke="#1761D8" />
+                </button>
 
-            <button className="buttons border-1 border-blue-600 text-buttonBLue  min-w-[40px] ">
-              <RefreshIcon stroke="#1761D8" />
-            </button>
-            {/* <button className="text-gray-700 pl-[8px]" onClick={handleClick}>
+                <button className="buttons border-1 border-blue-600 text-buttonBLue  min-w-[40px] ">
+                  <RefreshIcon stroke="#1761D8" />
+                </button>
+                {/* <button className="text-gray-700 pl-[8px]" onClick={handleClick}>
               <ThreeDots />
             </button> */}
-          </div>
-        </div>
-        <div className="flex-1 bg-grey-90 flex flex-col">
-          {isFilter && (
-            <div className="flex items-center justify-between p-[10px]">
-              {/* Display Applied Filters */}
-              <div className="flex items-center gap-2 flex-wrap">
-                {/* {conditions.length > 0 && (
+              </div>
+            </div>
+            <div className="flex-1 bg-grey-90 flex flex-col">
+              {isFilter && (
+                <div className="flex items-center justify-between p-[10px]">
+                  {/* Display Applied Filters */}
+                  <div className="flex items-center gap-2 flex-wrap">
+                    {/* {conditions.length > 0 && (
                 <div className=" flex flex-wrap gap-2">
                   {conditions.map((condition, index) => (
                     <span
@@ -516,14 +525,14 @@ const Candidates = ({ isDrawerOpen }) => {
                   ))}
                 </div>
               )} */}
-                {/* <div onClick={handleSeacrchableMenuOpen}>
+                    {/* <div onClick={handleSeacrchableMenuOpen}>
                 <span className="text-buttonBLue font-ubuntu text-sm cursor-pointer">
                   + Add condition
                 </span>
               </div> */}
-              </div>
-              <div className="flex items-center justify-center gap-[8px]">
-                {/* <button
+                  </div>
+                  <div className="flex items-center justify-center gap-[8px]">
+                    {/* <button
                 className={`buttons border-1  text-buttonBLue cursor-pointer ${
                   conditions.length > 0
                     ? "text-buttonBLue border-buttonBLue"
@@ -534,51 +543,62 @@ const Candidates = ({ isDrawerOpen }) => {
               >
                 Apply filter
               </button> */}
-                <button
-                  className="buttons border-1 min-w-[40px] border-buttonBLue justify-center text-buttonBLue"
-                  onClick={handleClickSetting}
-                  style={{ borderColor: "#1761D8" }} // Use your exact blue color code
-                >
-                  <img src={SettingIcon} alt="settings" />
-                </button>
+                    <button
+                      className="buttons border-1 min-w-[40px] border-buttonBLue justify-center text-buttonBLue"
+                      onClick={handleClickSetting}
+                      style={{ borderColor: "#1761D8" }} // Use your exact blue color code
+                    >
+                      <img src={SettingIcon} alt="settings" />
+                    </button>
+                  </div>
+                </div>
+              )}
+              <div
+                style={{
+                  overflow: "hidden",
+                  flex: 1,
+                  maxHeight: "calc(100vh - 194px)",
+                }}
+              >
+                <CandidateTable
+                  header={candidateTableHeader}
+                  data={filteredCandidates}
+                  setSelectedCandidateUser={setSelectedCandidate}
+                  AddJobClick={() => toggleAddToJobsDrawer(true)}
+                  AddFolderClick={() => toggleAddToFolderDrawer(true)}
+                  ChangeOwnerShipClick={() => toggleChangeOwnershipDrawer(true)}
+                  setSelectedCandidateUsers={setSelectedCandidates}
+                  showDeleteIcon={false}
+                />
               </div>
             </div>
-          )}
-          <div
-            style={{
-              overflow: "hidden",
-              flex: 1,
-              maxHeight: "calc(100vh - 194px)",
-            }}
-          >
-            <CandidateTable
-              header={candidateTableHeader}
-              data={filteredCandidates}
-              setSelectedCandidateUser={setSelectedCandidate}
-              AddJobClick={() => toggleAddToJobsDrawer(true)}
-              AddFolderClick={() => toggleAddToFolderDrawer(true)}
-              ChangeOwnerShipClick={() => toggleChangeOwnershipDrawer(true)}
-              setSelectedCandidateUsers={setSelectedCandidates} 
-              showDeleteIcon = {false}
-            />
+          </div>
+
+          <div className="sourcing-pagination-div">
+            <div
+              style={{
+                flex: 1,
+                display: "flex",
+                justifyContent: "center",
+              }}
+            >
+              <PaginationComponent
+                totalPages={5}
+                currentPage={currentPage}
+                onPageChange={handlePageChange}
+              />
+            </div>
           </div>
         </div>
-      </div>
 
-      <div className="sourcing-pagination-div">
-        <div
-          style={{
-            flex: 1,
-            display: "flex",
-            justifyContent: "center",
-          }}
-        >
-          <PaginationComponent
-            totalPages={5}
-            currentPage={currentPage}
-            onPageChange={handlePageChange}
+        {isColumnSelectorOpen && (
+          <ColumnSelector
+            isOpen={isColumnSelectorOpen}
+            onClose={() => setIsColumnSelectorOpen(false)}
+            selectedColumns={selectedColumns}
+            // setSelectedColumns={setSelectedColumns}
           />
-        </div>
+        )}
       </div>
 
       <CreateCandidateModal
@@ -636,12 +656,6 @@ const Candidates = ({ isDrawerOpen }) => {
         open={Boolean(anchorAddConditionEl)}
         onClose={handleSearchableMenuClose}
         menuItems={searchableMenuItems} // Pass dynamic items
-      />
-      <ColumnSelector
-        isOpen={isColumnSelectorOpen}
-        onClose={() => setIsColumnSelectorOpen(false)}
-        selectedColumns={selectedColumns}
-        // setSelectedColumns={setSelectedColumns}
       />
 
       {/* 🔹 Filter Menu */}
