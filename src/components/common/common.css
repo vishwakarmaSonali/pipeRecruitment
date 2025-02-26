@@ -772,6 +772,7 @@
 .datepicker-dropdown-container {
   position: absolute;
   width: 100%;
+  max-width: 484px;
   background-color: var(--white);
   box-shadow: 0px 4px 12px 0px #0000001a;
   margin-top: 4px;
