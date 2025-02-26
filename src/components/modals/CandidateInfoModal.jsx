@@ -20,15 +20,18 @@ import { ReactComponent as DeleteIcon } from "../../pages/Recruitment/Candidates
 import {
   attachmentListData,
   attachmentsHeaderData,
+  candidateDetailsData,
   candidateJobData,
   comapnyListing,
   commonStyle,
+  contactDetails,
   educationData,
   experienceData,
   historyData,
   historyHeaderData,
   jobData,
   jobsTableHeaderData,
+  professionalDetails,
 } from "../../helpers/config";
 import CandidateDetails from "../candidate/CandidateDetails";
 import CandidateInfoSkills from "../candidate/CandidateInfoSkills";
@@ -67,59 +70,6 @@ import { ReactComponent as OriginalResumeIcon } from "../../assets/images/resume
 import { ReactComponent as CvIcon } from "../../assets/images/resume/cv.svg";
 import { ReactComponent as ReportIcon } from "../../assets/images/resume/report.svg";
 import CalendarComponent from "../candidate/CalendarComponent";
-
-const skillData = [
-  {
-    id: 1,
-    name: "UI Design",
-    rating: "08",
-  },
-  {
-    id: 2,
-    name: "UX Design",
-    rating: "09",
-  },
-  {
-    id: 3,
-    name: "Figma",
-    rating: "09",
-  },
-  {
-    id: 4,
-    name: "Sketch",
-    rating: "05",
-  },
-  {
-    id: 5,
-    name: "InVision",
-    rating: "06",
-  },
-  {
-    id: 6,
-    name: "Wireframe",
-    rating: "08",
-  },
-  {
-    id: 7,
-    name: "Prototype",
-    rating: "07",
-  },
-  {
-    id: 8,
-    name: "Web Design",
-    rating: "09",
-  },
-  {
-    id: 9,
-    name: "Mobile Design",
-    rating: "08",
-  },
-  {
-    id: 10,
-    name: "Responsive Design",
-    rating: "10",
-  },
-];
 
 const candidateInfoTabs = [
   {
@@ -216,17 +166,6 @@ const allLabelData = [
   },
 ];
 
-const candidateDetailsData = {
-  "First Name": "Priya",
-  "Last Name": "Sharma",
-  "Candidate Reference": "P5L9B",
-  Gender: "Female",
-  "Date of Birth": "September 14, 1990",
-  Location: "Mumbai, India",
-  Nationality: "Indian",
-  Languages: ["English", "Hindi"],
-};
-
 const placementDetails = {
   "Employment Status": "Hired",
   "Hired Date": "2025-01-26T08:14:00+05:30",
@@ -238,31 +177,6 @@ const placementDetails = {
     name: "UpTech",
     position: "UI Designer",
   },
-};
-
-const contactDetails = {
-  "Phone Number": "919664866848",
-  "Email Id": "priya.s@designscape.com",
-  "Social Links": {
-    linkedin_url: "http://www.linkedin.com/in/himanshu-singh-861209b8",
-    twitter_url: null,
-    github_url: null,
-    facebook_url: null,
-  },
-};
-
-const professionalDetails = {
-  Skills: skillData,
-  Domain: "Technology & IT",
-  "Years of Experience": "2 years",
-  "Highest Qualification": "Bachelor of Design (B.Des)",
-  "Current Job Title": "UI/UX Designer",
-  "Current Employer": "DesignScape Studios",
-  "Current Salary": "₹ 50,0000",
-  "Expected Salary": "₹ 64,0000",
-  "Notice Period": null,
-  "GDPR Consent": false,
-  "Email Consent": false,
 };
 
 const feedBackData = [
@@ -721,12 +635,13 @@ const CandidateInfoModal = ({ visible, onClose }) => {
               style={{ gap: 12, padding: "0px 16px", overflow: "auto" }}
             >
               <div
-                className="flex-1 display-column"
+                className="flex-1 display-column "
                 style={{ gap: 12, overflowY: "auto", marginBottom: "10px" }}
               >
                 <ProfessionalDetails
                   details={candidateDetailsData}
                   label={"Candidate Details"}
+                  editable={true}
                 />
                 <ProfessionalDetails
                   label={"Contact Details"}
@@ -744,10 +659,12 @@ const CandidateInfoModal = ({ visible, onClose }) => {
                 <CandidateInfoExperience
                   label={"Experience Details"}
                   data={experienceData}
+                  editable={true}
                 />
                 <CandidateInfoExperience
                   label={"Education Details"}
                   data={educationData}
+                  editable={true}
                 />
                 <CandidateInfoJobs
                   label={"Jobs"}

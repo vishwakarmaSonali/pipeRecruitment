@@ -46,6 +46,7 @@ import CandidateTable from "../../../components/candidate/CandidateTable";
 import { candidateTableHeader } from "../../../helpers/config";
 import PaginationComponent from "../../../components/common/PaginationComponent";
 import { truncate } from "lodash";
+import CandidateOverviewDrawer from "../../../components/candidate/CandidateOverviewDrawer";
 
 const Candidates = ({ isDrawerOpen }) => {
   const dispatch = useDispatch();
@@ -76,6 +77,12 @@ const Candidates = ({ isDrawerOpen }) => {
     useState(false);
   const [filtersApplied, setFiltersApplied] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [candidateOverviewDrawerOpen, setCandidateOverviewFilterDrawerOpen] =
+    useState(false);
+
+  const toggleCandidateOverviewDrawer = (open) => {
+    setCandidateOverviewFilterDrawerOpen(open);
+  };
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
@@ -569,6 +576,7 @@ const Candidates = ({ isDrawerOpen }) => {
                   ChangeOwnerShipClick={() => toggleChangeOwnershipDrawer(true)}
                   setSelectedCandidateUsers={setSelectedCandidates}
                   showDeleteIcon={false}
+                  eyeClickOn={() => toggleCandidateOverviewDrawer(true)}
                 />
               </div>
             </div>
@@ -698,6 +706,10 @@ const Candidates = ({ isDrawerOpen }) => {
         anchorEl={anchorCreateCandidtaeEl}
         open={Boolean(anchorCreateCandidtaeEl)}
         onClose={handleCloseMenu}
+      />
+      <CandidateOverviewDrawer
+        isOpen={candidateOverviewDrawerOpen}
+        onClose={() => toggleCandidateOverviewDrawer(false)}
       />
     </div>
   );

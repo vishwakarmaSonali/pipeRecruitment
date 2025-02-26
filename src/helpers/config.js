@@ -224,6 +224,21 @@ export const commonStyle = {
       padding: "0px !important",
     },
   },
+  sx120: {
+    boxShadow: "-1px 4px 18px 0px #0000002E",
+    borderRadius: "12px",
+    width: "120px",
+    padding: "0px !important",
+    marginTop: "10px",
+    fontFamily: "'Ubuntu', sans-serif",
+    fontSize: "12px",
+    lineHeight: "13.79px",
+    color: "#151B23",
+    boxSizing: "border-box !important",
+    "& .MuiMenu-list": {
+      padding: "0px !important",
+    },
+  },
 };
 
 export const comapnyListing = [
@@ -843,11 +858,99 @@ export const archivedCandidateHeader = [
   "Candidate Name",
   "Owner",
   "Archived Date",
-  
 ];
 
 export const archivedColumnMapping = {
   "Candidate Name": "candidate_name",
- "Owner":"owner",
- "Archived Date":"archived_date"
+  Owner: "owner",
+  "Archived Date": "archived_date",
+};
+
+export const candidateDetailsData = {
+  "First Name": "Priya",
+  "Last Name": "Sharma",
+  "Candidate Reference": "P5L9B",
+  Gender: "Female",
+  "Date of Birth": "September 14, 1990",
+  Location: "Mumbai, India",
+  Nationality: "Indian",
+  Languages: ["English", "Hindi"],
+};
+
+export const contactDetails = {
+  "Phone Number": "919664866848",
+  "Email Id": "priya.s@designscape.com",
+  "Social Links": {
+    linkedin_url: "http://www.linkedin.com/in/himanshu-singh-861209b8",
+    twitter_url: null,
+    github_url: null,
+    facebook_url: null,
+  },
+};
+
+export const skillData = [
+  {
+    id: 1,
+    name: "UI Design",
+    rating: "08",
+  },
+  {
+    id: 2,
+    name: "UX Design",
+    rating: "09",
+  },
+  {
+    id: 3,
+    name: "Figma",
+    rating: "09",
+  },
+  {
+    id: 4,
+    name: "Sketch",
+    rating: "05",
+  },
+  {
+    id: 5,
+    name: "InVision",
+    rating: "06",
+  },
+  {
+    id: 6,
+    name: "Wireframe",
+    rating: "08",
+  },
+  {
+    id: 7,
+    name: "Prototype",
+    rating: "07",
+  },
+  {
+    id: 8,
+    name: "Web Design",
+    rating: "09",
+  },
+  {
+    id: 9,
+    name: "Mobile Design",
+    rating: "08",
+  },
+  {
+    id: 10,
+    name: "Responsive Design",
+    rating: "10",
+  },
+];
+
+export const professionalDetails = {
+  Skills: skillData,
+  Domain: "Technology & IT",
+  "Years of Experience": "2 years",
+  "Highest Qualification": "Bachelor of Design (B.Des)",
+  "Current Job Title": "UI/UX Designer",
+  "Current Employer": "DesignScape Studios",
+  "Current Salary": "₹ 50,0000",
+  "Expected Salary": "₹ 64,0000",
+  "Notice Period": null,
+  "GDPR Consent": false,
+  "Email Consent": false,
 };

@@ -424,3 +424,24 @@ textarea {
   flex-direction: column;
   gap: 8px;
 }
+
+/* candidate overview drawer  */
+.candidate-overview-drawer {
+  min-width: 1000px;
+  max-width: 1000px;
+  height: 100%;
+  padding: 20px;
+  background-color: var(--white);
+  overflow-x: hidden !important;
+  border-top-left-radius: 8px !important;
+  border-bottom-left-radius: 8px !important;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  box-sizing: border-box;
+}
+
+.candidate-overview-container {
+  column-count: 2;
+  column-gap: 12px;
+}

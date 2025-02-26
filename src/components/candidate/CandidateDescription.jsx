@@ -8,7 +8,7 @@ import { ReactComponent as CancleIcon } from "../../assets/icons/close-circle.sv
 import HtmlViewComponent from "../common/HtmlViewComponent";
 import { demoDescriptionText } from "../../helpers/config";
 
-const CandidateDescription = ({ label, data }) => {
+const CandidateDescription = ({ label, data, editable }) => {
   const [collapse, setCollapse] = useState(true);
   const [description, setDescription] = useState(demoDescriptionText);
   const [edit, setEdit] = useState(false);
@@ -20,14 +20,16 @@ const CandidateDescription = ({ label, data }) => {
           <h3 className="font-16-medium color-dark-black text-uppercase">
             {label}
           </h3>
-          <button
-            className={`${
-              collapse ? "arrow-icon-btn-collpase" : "arrow-icon-btn"
-            }`}
-            onClick={() => setCollapse(!collapse)}
-          >
-            <ArrowIcon />
-          </button>
+          {editable && (
+            <button
+              className={`${
+                collapse ? "arrow-icon-btn-collpase" : "arrow-icon-btn"
+              }`}
+              onClick={() => setCollapse(!collapse)}
+            >
+              <ArrowIcon />
+            </button>
+          )}
         </div>
       </div>
       {collapse && (
@@ -71,13 +73,15 @@ const CandidateDescription = ({ label, data }) => {
                 className="font-14-regular color-dark-black"
                 dangerouslySetInnerHTML={{ __html: description }}
               ></p>
-              <button
-                className="edit-details-btn"
-                style={{ alignSelf: "flex-start" }}
-                onClick={() => setEdit(true)}
-              >
-                <EditIcon />
-              </button>
+              {editable && (
+                <button
+                  className="edit-details-btn"
+                  style={{ alignSelf: "flex-start" }}
+                  onClick={() => setEdit(true)}
+                >
+                  <EditIcon />
+                </button>
+              )}
             </div>
           )}
         </>

@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import "./index.css";
 import { ReactComponent as Logo } from "../../assets/icons/logo.svg";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { ReactComponent as DropDown } from "../../assets/icons/arrowDown.svg";
 import { profileImage } from "../../helpers/assets";
 import Badge from "@mui/material/Badge";
@@ -21,13 +21,34 @@ import { commonStyle } from "../../helpers/config";
 
 const Navbar = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const inputRef = useRef(null);
   const [activeLink, setActiveLink] = useState("/");
   const [showSearch, setShowSearch] = useState(false);
   const [searchValue, setSearchValue] = useState("");
   const [drawerOpen, setdrawerOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
+  const [anchorE2, setAnchorE2] = useState(null);
+  const [anchorE3, setAnchorE3] = useState(null);
   const open = Boolean(anchorEl);
+  const openCandidates = Boolean(anchorE2);
+  const openUsers = Boolean(anchorE3);
+
+  const handleCandidateMenuClick = (event) => {
+    setAnchorE2(event.currentTarget);
+  };
+
+  const handleCandidateMenuClose = () => {
+    setAnchorE2(null);
+  };
+
+  const handleUserMenuClick = (event) => {
+    setAnchorE3(event.currentTarget);
+  };
+
+  const handleUserMenuClose = () => {
+    setAnchorE3(null);
+  };
 
   const handleMenuClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -63,11 +84,23 @@ const Navbar = () => {
         >
           Home
         </Link>
-        <Link to="#" className="nav-common-link-text">
+        <Link
+          aria-controls={openUsers ? "basic-menu" : undefined}
+          aria-haspopup="true"
+          aria-expanded={openUsers ? "true" : undefined}
+          onClick={handleUserMenuClick}
+          className="nav-common-link-text"
+        >
           Users
           <DropDown />
         </Link>
-        <Link to="/candidates" className="nav-common-link-text">
+        <Link
+          aria-controls={openCandidates ? "basic-menu" : undefined}
+          aria-haspopup="true"
+          aria-expanded={openCandidates ? "true" : undefined}
+          onClick={handleCandidateMenuClick}
+          className="nav-common-link-text"
+        >
           Candidates
           <DropDown />
         </Link>
@@ -184,6 +217,83 @@ const Navbar = () => {
             </button>
             <button className="common-menu-item-btn">
               <LogoutIcon /> Log Out
+            </button>
+          </div>
+        </Menu>
+        <Menu
+          anchorEl={anchorE2}
+          open={openCandidates}
+          onClose={handleCandidateMenuClose}
+          PaperProps={{
+            sx: commonStyle.sx120,
+          }}
+          aria-controls={openCandidates ? "basic-menu" : undefined}
+          aria-haspopup="true"
+          aria-expanded={openCandidates ? "true" : undefined}
+        >
+          <div className="display-column">
+            <button
+              className="common-menu-item-btn"
+              onClick={() => {
+                handleCandidateMenuClose();
+                navigate("/candidates");
+              }}
+            >
+              Candidates
+            </button>
+            <button
+              className="common-menu-item-btn"
+              onClick={() => {
+                handleCandidateMenuClose();
+              }}
+            >
+              Folders
+            </button>
+            <button
+              className="common-menu-item-btn"
+              onClick={() => {
+                handleCandidateMenuClose();
+              }}
+            >
+              Placements
+            </button>
+          </div>
+        </Menu>
+        <Menu
+          anchorEl={anchorE3}
+          open={openUsers}
+          onClose={handleUserMenuClose}
+          PaperProps={{
+            sx: commonStyle.sx,
+          }}
+          aria-controls={openUsers ? "basic-menu" : undefined}
+          aria-haspopup="true"
+          aria-expanded={openUsers ? "true" : undefined}
+        >
+          <div className="display-column">
+            <button
+              className="common-menu-item-btn"
+              onClick={() => {
+                handleUserMenuClose();
+              }}
+            >
+              Recruiters
+            </button>
+            <button
+              className="common-menu-item-btn"
+              onClick={() => {
+                handleUserMenuClose();
+              }}
+            >
+              Teams
+            </button>
+            <button
+              className="common-menu-item-btn"
+              onClick={() => {
+                handleUserMenuClose();
+              }}
+            >
+              Clients
             </button>
           </div>
         </Menu>

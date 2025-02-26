@@ -40,6 +40,7 @@ const CandidateTable = ({
   ChangeOwnerShipClick,
   deleteIconClick,
   showDeleteIcon,
+  eyeClickOn,
 }) => {
   const navigate = useNavigate();
   const { modals, setModalVisibility } = useModal();
@@ -184,7 +185,13 @@ const CandidateTable = ({
                               </span>
                               {!showDeleteIcon ? (
                                 <>
-                                  <button className="eye-icon">
+                                  <button
+                                    className="eye-icon"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      eyeClickOn();
+                                    }}
+                                  >
                                     <EyeIcon />
                                   </button>
                                   <button

@@ -9,7 +9,7 @@ import AddEducationDetailsModal from "../modals/AddEducationDetailsModal";
 import { useModal } from "../common/ModalProvider";
 import AddExperienceDetailsModal from "../modals/AddExperienceDetailsModal";
 
-const CandidateInfoExperience = ({ label, data }) => {
+const CandidateInfoExperience = ({ label, data, editable }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [collapse, setCollapse] = useState(true);
   const [educationModalVisible, setEducationModalVisible] = useState(false);
@@ -51,16 +51,18 @@ const CandidateInfoExperience = ({ label, data }) => {
           <p className="font-14-medium color-dark-black">
             {item?.position} at {item?.company}
           </p>
-          <button
-            className="edit-details-btn"
-            onClick={(e) => {
-              e.stopPropagation();
-              setSelectedExperienceDetails(item);
-              setExperienceModalVisible(true);
-            }}
-          >
-            <EditIcon />
-          </button>
+          {editable && (
+            <button
+              className="edit-details-btn"
+              onClick={(e) => {
+                e.stopPropagation();
+                setSelectedExperienceDetails(item);
+                setExperienceModalVisible(true);
+              }}
+            >
+              <EditIcon />
+            </button>
+          )}
         </div>
         <div className="display-flex-justify align-center">
           <p className="font-14-regular color-dark-black">{item?.location}</p>
@@ -83,47 +85,20 @@ const CandidateInfoExperience = ({ label, data }) => {
           <p className="font-14-medium color-dark-black">
             {item?.degree} at {item?.course}
           </p>
-          <button
-            className="edit-details-btn"
-            onClick={(e) => {
-              e.stopPropagation();
-              setSelectedEducationDetails(item);
-              setTimeout(() => {
-                setEducationModalVisible(true);
-              }, 300);
-            }}
-          >
-            <EditIcon />
-          </button>
-          {/* <button
-            aria-controls={open ? "basic-menu" : undefined}
-            aria-haspopup="true"
-            aria-expanded={open ? "true" : undefined}
-            onClick={handleMenuClick}
-          >
-            <MoreIcon width={14} height={14} />
-          </button>
-          <Menu
-            anchorEl={anchorEl}
-            open={open}
-            onClose={handleMenuClose}
-            PaperProps={{
-              sx: commonStyle.sx,
-            }}
-            transformOrigin={{
-              vertical: "top",
-              horizontal: "right",
-            }}
-            anchorOrigin={{
-              vertical: "bottom",
-              horizontal: "right",
-            }}
-          >
-            <div className="display-column">
-              <button className="common-menu-item-btn">Edit</button>
-              <button className="common-menu-item-btn">Delete</button>
-            </div>
-          </Menu> */}
+          {editable && (
+            <button
+              className="edit-details-btn"
+              onClick={(e) => {
+                e.stopPropagation();
+                setSelectedEducationDetails(item);
+                setTimeout(() => {
+                  setEducationModalVisible(true);
+                }, 300);
+              }}
+            >
+              <EditIcon />
+            </button>
+          )}
         </div>
         <div className="display-flex-justify align-center">
           <p className="font-14-regular color-dark-black">{item?.collage}</p>
@@ -142,28 +117,32 @@ const CandidateInfoExperience = ({ label, data }) => {
             <h3 className="font-16-medium color-dark-black text-uppercase">
               {label}
             </h3>
-            <button
-              className={`${
-                collapse ? "arrow-icon-btn-collpase" : "arrow-icon-btn"
-              }`}
-              onClick={() => setCollapse(!collapse)}
-            >
-              <ArrowIcon />
-            </button>
+            {editable && (
+              <button
+                className={`${
+                  collapse ? "arrow-icon-btn-collpase" : "arrow-icon-btn"
+                }`}
+                onClick={() => setCollapse(!collapse)}
+              >
+                <ArrowIcon />
+              </button>
+            )}
           </div>
-          <button
-            className="add-details-btn"
-            onClick={(e) => {
-              e.stopPropagation();
-              if (label === "Experience Details") {
-                setExperienceModalVisible(true);
-              } else {
-                setEducationModalVisible(true);
-              }
-            }}
-          >
-            + Add
-          </button>
+          {editable && (
+            <button
+              className="add-details-btn"
+              onClick={(e) => {
+                e.stopPropagation();
+                if (label === "Experience Details") {
+                  setExperienceModalVisible(true);
+                } else {
+                  setEducationModalVisible(true);
+                }
+              }}
+            >
+              + Add
+            </button>
+          )}
         </div>
         {collapse && (
           <>
