@@ -31,6 +31,9 @@ import CandidateInfoJobs from "../../../components/candidate/CandidateInfoJobs";
 import CandidateInfoHistory from "../../../components/candidate/CandidateInfoHistory";
 import CandidateInfoModal from "../../../components/modals/CandidateInfoModal";
 import { useModal } from "../../../components/common/ModalProvider";
+import { ReactComponent as OriginalResumeIcon } from "../../../assets/images/resume/original.svg";
+import { ReactComponent as CvIcon } from "../../../assets/images/resume/cv.svg";
+import { ReactComponent as ReportIcon } from "../../../assets/images/resume/report.svg";
 
 const candidateInfoTabs = [
   {
@@ -76,6 +79,30 @@ const candidateInfoTabs = [
     // icon: <AttachmentIcon />,
     count: "06",
     selected: false,
+  },
+];
+
+const resumeTabs = [
+  {
+    id: 1,
+    name: "Original",
+    desc: "View candidate’s original resume",
+    icon: <OriginalResumeIcon />,
+    navigate: "#",
+  },
+  {
+    id: 2,
+    name: "Custom CV",
+    desc: "Create and modify candidate’s custom CV",
+    icon: <CvIcon />,
+    navigate: "#",
+  },
+  {
+    id: 3,
+    name: "Report",
+    desc: "Create and modify candidate’s report",
+    icon: <ReportIcon />,
+    navigate: "#",
   },
 ];
 

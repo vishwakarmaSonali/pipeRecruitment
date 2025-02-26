@@ -45,6 +45,7 @@ import { useNavigate } from "react-router-dom";
 import CandidateTable from "../../../components/candidate/CandidateTable";
 import { candidateTableHeader } from "../../../helpers/config";
 import PaginationComponent from "../../../components/common/PaginationComponent";
+import { truncate } from "lodash";
 
 const Candidates = ({ isDrawerOpen }) => {
   const dispatch = useDispatch();
@@ -210,29 +211,7 @@ const Candidates = ({ isDrawerOpen }) => {
           onClick: () => (clearAllFilters(), handleSettingsClose()),
         },
       ];
-  // 🔍 Map formatted column names to actual data keys
-  const columnMapping = {
-    "Candidate Name": "candidate_name",
-    "Candidate First Name": "candidate_first_name",
-    "Candidate Last Name": "candidate_last_name",
-    "Reference Id": "reference_id",
-    Location: "location",
-    Gender: "gender",
-    Diploma: "diploma",
-    University: "university",
-    "Current Company": "current_company",
-    "Current Position": "current_position",
-    Email: "email",
-    Birthdate: "birthDate",
-    "Candidate Address": "candidate_address",
-    "Employment Status": "employment_status",
-    "Contact Number": "phone",
-    "Hired Date": "hired_date",
-    "Start Date": "start_date",
-    "ATS score": "ats_score",
-    "Created Date": "created_at",
-    "Created By": "created_by",
-  };
+
   // 🔍 Searchable Menu Items
   const initialSearchableItems = [
     {
@@ -417,25 +396,6 @@ const Candidates = ({ isDrawerOpen }) => {
   //   });
   // };
 
-  // ✅ Handle Candidate Selection
-  const handleCandidateSelection = (id) => {
-    setSelectedCandidates((prevSelected) =>
-      prevSelected.includes(id)
-        ? prevSelected.filter((candidateId) => candidateId !== id)
-        : [...prevSelected, id]
-    );
-  };
-
-  // ✅ Select/Deselect All Candidates
-  const handleSelectAll = () => {
-    if (selectedCandidates.length === filteredCandidates.length) {
-      setSelectedCandidates([]); // Deselect all
-    } else {
-      setSelectedCandidates(
-        filteredCandidates.map((candidate) => candidate.id)
-      ); // Select all
-    }
-  };
 
   // Function to handle opening the dropdown menu
   const handleClick = (event) => {
@@ -458,32 +418,7 @@ const Candidates = ({ isDrawerOpen }) => {
   const handleCloseBulkAction = () => {
     setAnchorBulkActionEl(null);
   };
-  const handleFilterMenuOpen = (event) => {
-    setAnchorFilterMenuEl(event.currentTarget);
-  };
 
-  const handleFilterMenuClose = () => {
-    setAnchorFilterMenuEl(null);
-  };
-  // ✅ Handle Bulk Action Click (Customize as Needed)
-  const handleBulkAction = () => {
-    alert(`Performing bulk action on ${selectedCandidates.length} candidates!`);
-  };
-
-  // Function to generate a random color
-  const getRandomColor = () => {
-    const colors = [
-      "#D4C158",
-      "#8282D8",
-      "#9BCD6A",
-      "#D458A0",
-      "#CDA26A",
-      "#38658E",
-      "#6D58D4",
-      "#CD6ABC",
-    ];
-    return colors[Math.floor(Math.random() * colors.length)];
-  };
 
   return (
     <div className="sourcing-main-container">
@@ -623,6 +558,8 @@ const Candidates = ({ isDrawerOpen }) => {
               AddJobClick={() => toggleAddToJobsDrawer(true)}
               AddFolderClick={() => toggleAddToFolderDrawer(true)}
               ChangeOwnerShipClick={() => toggleChangeOwnershipDrawer(true)}
+              setSelectedCandidateUsers={setSelectedCandidates} 
+              showDeleteIcon = {false}
             />
           </div>
         </div>

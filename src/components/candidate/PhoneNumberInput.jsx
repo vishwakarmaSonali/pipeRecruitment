@@ -35,7 +35,7 @@ const PhoneNumberInput = ({ selectedCountry, setSelectedCountry, phoneNumber, se
 
   return (
     <div className="relative w-full">
-      <div className="flex items-center border border-gray-300 rounded-lg px-3  bg-white w-full py-3 border-none h-[38px]">
+      <div className="flex items-center border-1 border-customGrey1 rounded-lg px-3  bg-white w-full py-3  h-[38px]">
         {/* Country Dropdown Trigger */}
         <div
           className="relative cursor-pointer flex items-center"

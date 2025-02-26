@@ -9,6 +9,9 @@ import { format } from "date-fns";
 import SkillSearchDropdown from "../AutocompleteDropdowns/SkillDropdown";
 import LocationSearchDropdown from "../AutocompleteDropdowns/LocationSearchDropDown";
 import NationalitySearchDropdown from "../AutocompleteDropdowns/NationalitySearchDropDown";
+import CommonTextInput from "../common/CommonTextInput";
+import CurrencySelector from "../common/CurrencyInput";
+import DateTimePicker from "../common/DateTimePicker";
 
 const CandidateFilterDrawer = ({
   isOpen,
@@ -24,7 +27,7 @@ const CandidateFilterDrawer = ({
   const [industry, setIndustry] = useState([]);
   const [experience, setExperience] = useState({ from: "", to: "" });
   const [languages, setLanguages] = useState([]);
-  const [nationality, setNationality] = useState(null);
+  const [nationality, setNationality] = useState([]);
   const [pipelineStage, setPipelineStage] = useState([]);
   const [searchText, setSearchText] = useState("");
   const [selectedLanguages, setSelectedLanguages] = useState([]);
@@ -32,8 +35,12 @@ const CandidateFilterDrawer = ({
   const [selectedFrequencies, setSelectedFrequencies] = useState([]);
   const [selectedLabels, setSelectedLabels] = useState([]);
   const [selectedSources, setSelectedSources] = useState([]);
-  const [lastContactedDate, setLastContactedDate] = useState(format(today, "yyyy-MM-dd"));
-  const [lastUpdatedDate, setLastUpdatedDate] = useState(format(today, "yyyy-MM-dd"));
+  const [lastContactedDate, setLastContactedDate] = useState(
+    format(today, "yyyy-MM-dd")
+  );
+  const [lastUpdatedDate, setLastUpdatedDate] = useState(
+    format(today, "yyyy-MM-dd")
+  );
   const [showContactedCalendar, setShowContactedCalendar] = useState(false);
   const [showUpdatedCalendar, setShowUpdatedCalendar] = useState(false);
   const [selectedDate, setSelectedDate] = useState(format(today, "yyyy-MM-dd"));
@@ -42,6 +49,22 @@ const CandidateFilterDrawer = ({
   const [skillSuggestions, setSkillSuggestions] = useState([]);
   const [showSkillDropdown, setShowSkillDropdown] = useState(false);
   const [selectedLocations, setSelectedLocations] = useState([]); // Ensure it's an array
+  const [currentSalaryCurrency, setCurrentSalaryCurrency] = useState({
+    code: "USD",
+    name: "US Dollar",
+    symbol: "US$",
+    flag: "🇺🇸",
+  });
+
+  const [expectedSalaryCurrency, setExpectedSalaryCurrency] = useState({
+    code: "GBP",
+    name: "British Pound",
+    symbol: "£",
+    flag: "🇬🇧",
+  });
+
+  const [currentSalary, setCurrentSalary] = useState("");
+  const [expectedSalary, setExpectedSalary] = useState("");
 
   const radiusOptions = [
     { id: 1, type: "Kilometer" },
@@ -114,12 +137,12 @@ const CandidateFilterDrawer = ({
     setNationality(selectedItem);
   };
   const handleLastContactedDateSelect = (date) => {
-    setLastContactedDate(date); 
-    setShowContactedCalendar(false)
+    setLastContactedDate(date);
+    setShowContactedCalendar(false);
   };
   const handleLastUpdatedDateSelect = (date) => {
-    setLastUpdatedDate(date); 
-    setShowUpdatedCalendar(false)
+    setLastUpdatedDate(date);
+    setShowUpdatedCalendar(false);
   };
 
   useEffect(() => {
@@ -259,26 +282,30 @@ const CandidateFilterDrawer = ({
               <label className="font-12-regular color-dark-black">
                 Basic Information
               </label>
-            <div className="border-1 rounded-[8px]">
-            <input
-                type="text"
-                placeholder="Candidate Name"
-                className="filter-input border-1"
-                value={localFilters.candidateName || ""}
-                onChange={(e) => handleInputChange(e, "candidateName")}
-                onKeyDown={(e) => handleKeyDown(e, "candidateName")}
-              />
-            </div>
+              <div className="">
+                <CommonTextInput
+                  type="text"
+                  placeholder="Candidate Name"
+                  className="filter-input border-1"
+                  value={localFilters.candidateName || ""}
+                  onChange={(e) => handleInputChange(e, "candidateName")}
+                  onKeyDown={(e) => handleKeyDown(e, "candidateName")}
+                />
+              </div>
               <CustomDropdown
                 options={languageOptions} // List of available options
-                placeholder="Select Languages" // Placeholder text
+                placeholder="Languages" // Placeholder text
                 selectedValues={selectedLanguages} // State to track selected options
                 onChange={setSelectedLanguages} // Function to update state
-                optionKey="language" // Key to display in the dropdown
+                optionKey="Language" // Key to display in the dropdown
                 multiSelect={true} // Enable multiple selections
                 showCheckbox={true} // Show checkboxes for selection
               />
-
+              <LocationSearchDropdown
+                selectedLocations={selectedLocations}
+                setSelectedLocations={setSelectedLocations}
+                placeholder={"Location"}
+              />
               <div>
                 {/* <CustomDropdown
                   options={nationalityOptions}
@@ -287,27 +314,28 @@ const CandidateFilterDrawer = ({
                   onChange={handleNationalityChange}
                   optionKey="nationality"
                 /> */}
-                <NationalitySearchDropdown 
-                 selectedNationalities={nationality} 
-                 setSelectedNationalities={handleNationalityChange} 
-                 placeholder={"Nationality"}
-                 multipleSelect={true}
-                 />
+
+                <NationalitySearchDropdown
+                  selectedNationalities={nationality}
+                  setSelectedNationalities={handleNationalityChange}
+                  placeholder={"Nationality"}
+                  multipleSelect={true}
+                />
               </div>
             </div>
             <div className="display-column-6">
               <label className="font-12-regular color-dark-black">
                 Experience & Qualifications
               </label>
-              <div className="border-1 rounded-[8px]">
-              <input
-                type="text"
-                placeholder="Enter company"
-                className="filter-input"
-                value={localFilters.company || ""}
-                onChange={(e) => handleInputChange(e, "company")}
-                onKeyDown={(e) => handleKeyDown(e, "company")}
-              />
+              <div className="">
+                <CommonTextInput
+                  type="text"
+                  placeholder="Enter company"
+                  className="filter-input"
+                  value={localFilters.company || ""}
+                  onChange={(e) => handleInputChange(e, "company")}
+                  onKeyDown={(e) => handleKeyDown(e, "company")}
+                />
               </div>
               {localFilters.companyList?.length > 0 && (
                 <div className="inputItemsDiv">
@@ -324,17 +352,16 @@ const CandidateFilterDrawer = ({
                   ))}
                 </div>
               )}
- <div className="border-1 rounded-[8px]">
-
-              <input
-                type="text"
-                placeholder="Education level"
-                className="filter-input"
-                value={localFilters.educationLevel || ""}
-                onChange={(e) => handleInputChange(e, "educationLevel")}
-                onKeyDown={(e) => handleKeyDown(e, "educationLevel")}
-              />
- </div>
+              <div className="">
+                <CommonTextInput
+                  type="text"
+                  placeholder="Education level"
+                  className="filter-input"
+                  value={localFilters.educationLevel || ""}
+                  onChange={(e) => handleInputChange(e, "educationLevel")}
+                  onKeyDown={(e) => handleKeyDown(e, "educationLevel")}
+                />
+              </div>
               {localFilters.educationLevelList?.length > 0 && (
                 <div className="inputItemsDiv">
                   {localFilters.educationLevelList?.map(
@@ -352,21 +379,19 @@ const CandidateFilterDrawer = ({
                   )}
                 </div>
               )}
-                 <SkillSearchDropdown
-              selectedSkills={selectedSkills} 
-              setSelectedSkills={setSelectedSkills} 
-            />
-            <div className="border-1 rounded-[8px]">
-
-              <input
-                type="text"
-                placeholder="University/Institution"
-                className="filter-input"
-                value={localFilters.school || ""}
-                onChange={(e) => handleInputChange(e, "school")}
-                onKeyDown={(e) => handleKeyDown(e, "school")}
+              <SkillSearchDropdown
+                selectedSkills={selectedSkills}
+                setSelectedSkills={setSelectedSkills}
               />
-            </div>
+              <div className="">
+                <CommonTextInput
+                  type="text"
+                  placeholder="University/Institution"
+                  value={localFilters.school || ""}
+                  onChange={(e) => handleInputChange(e, "school")}
+                  onKeyDown={(e) => handleKeyDown(e, "school")}
+                />
+              </div>
               {localFilters.schoolList?.length > 0 && (
                 <div className="inputItemsDiv">
                   {localFilters.schoolList?.map((schoolsDataItem, index) => (
@@ -382,17 +407,16 @@ const CandidateFilterDrawer = ({
                   ))}
                 </div>
               )}
-               <div className="border-1 rounded-[8px]">
-
-              <input
-                type="text"
-                placeholder="Degree"
-                className="filter-input"
-                value={localFilters.degree || ""}
-                onChange={(e) => handleInputChange(e, "degree")}
-                onKeyDown={(e) => handleKeyDown(e, "degree")}
-              />
-               </div>
+              <div className="">
+                <CommonTextInput
+                  type="text"
+                  placeholder="Degree"
+                  className="filter-input"
+                  value={localFilters.degree || ""}
+                  onChange={(e) => handleInputChange(e, "degree")}
+                  onKeyDown={(e) => handleKeyDown(e, "degree")}
+                />
+              </div>
               {localFilters.degreeList?.length > 0 && (
                 <div className="inputItemsDiv">
                   {localFilters.degreeList?.map((degreesItem, index) => (
@@ -415,34 +439,33 @@ const CandidateFilterDrawer = ({
                 Years of Experience
               </label>
               <div className="flex space-x-2">
-              <div className="border-1 rounded-[8px]">
-                <input
-                  type="text"
-                  placeholder="From"
-                  className="filter-input"
-                  value={experience.from}
-                  onChange={(e) => handleExperienceChange(e, "from")}
-                  onKeyDown={(e) => {
-                    if (!/^[0-9]$/.test(e.key) && e.key !== "Backspace") {
-                      e.preventDefault();
-                    }
-                  }}
-                />
+                <div className="flex-1">
+                  <CommonTextInput
+                    type="text"
+                    placeholder="From"
+                    className="filter-input"
+                    value={experience.from}
+                    onChange={(e) => handleExperienceChange(e, "from")}
+                    onKeyDown={(e) => {
+                      if (!/^[0-9]$/.test(e.key) && e.key !== "Backspace") {
+                        e.preventDefault();
+                      }
+                    }}
+                  />
                 </div>
-                <div className="border-1 rounded-[8px]">
-
-                <input
-                  type="text"
-                  placeholder="To"
-                  className="filter-input"
-                  value={experience.to}
-                  onChange={(e) => handleExperienceChange(e, "to")}
-                  onKeyDown={(e) => {
-                    if (!/^[0-9]$/.test(e.key) && e.key !== "Backspace") {
-                      e.preventDefault();
-                    }
-                  }}
-                />
+                <div className="flex-1">
+                  <CommonTextInput
+                    type="text"
+                    placeholder="To"
+                    className="filter-input"
+                    value={experience.to}
+                    onChange={(e) => handleExperienceChange(e, "to")}
+                    onKeyDown={(e) => {
+                      if (!/^[0-9]$/.test(e.key) && e.key !== "Backspace") {
+                        e.preventDefault();
+                      }
+                    }}
+                  />
                 </div>
               </div>
               {experience.from && experience.to && (
@@ -463,35 +486,68 @@ const CandidateFilterDrawer = ({
               <label className="font-12-regular color-dark-black">
                 Job-Related
               </label>
-                <LocationSearchDropdown 
-              selectedLocations={selectedLocations} 
-              setSelectedLocations={setSelectedLocations} 
-              placeholder={"Preferred Location"}
-            />
-
-              <CustomDropdown
-                options={domainOptions} // List of available domain options
-                placeholder="Select Domains" // Placeholder text
-                selectedValues={selectedDomains} // State to track selected domains
-                onChange={setSelectedDomains} // Function to update state
-                optionKey="stageName" // Key to display in the dropdown
-                multiSelect={true} // Enable multiple selections
-                showCheckbox={true} // Show checkboxes for selection
-              />
+              <CommonTextInput
+                  type="text"
+                  placeholder="Work Model"
+                  className="filter-input"
+                  value={localFilters.workmodel || ""}
+                  onChange={(e) => handleInputChange(e, "workmodel")}
+                  onKeyDown={(e) => handleKeyDown(e, "workmodel")}
+                />
+                 <label className="font-12-regular mt-[7px] color-dark-black ">
+                Expected Salary
+              </label>
+                   <div className="flex items-center space-x-2">
+              
+                <div className="flex-1">
+                  <CustomDropdown
+                    options={frequencyOptions} // List of available frequencies
+                    placeholder="Frequency" // Placeholder text
+                    selectedValues={selectedFrequencies} // State to track selected frequencies
+                    onChange={setSelectedFrequencies} // Function to update state
+                    optionKey="frequency" // Key to display in the dropdown
+                    multiSelect={false} // Enable multiple selections
+                    showCheckbox={false} // Show checkboxes for selection
+                  />
+                  
+                </div>
+                
+              </div>
+              <div className="flex items-center space-x-2">
+                <div className=" flex-1">
+                <CurrencySelector
+                    label="Minimum"
+                    selectedCurrency={currentSalaryCurrency}
+                    setSelectedCurrency={setCurrentSalaryCurrency}
+                    salary={currentSalary}
+                    setSalary={setCurrentSalary}
+                  />
+                </div>
+                <div className=" flex-1">
+                <CurrencySelector
+                    label="Maximum"
+                    selectedCurrency={expectedSalaryCurrency}
+                    setSelectedCurrency={setExpectedSalaryCurrency}
+                    salary={expectedSalary}
+                    setSalary={setExpectedSalary}
+                  />
+                </div>
+              </div>
             </div>
-            <div className="display-column-6 ">
+        
+            {/* <div className="display-column-6 ">
               <label className="font-12-regular color-dark-black">
                 Education
               </label>
-              <div className="border-1 rounded-[8px]">
-              <input
-                type="text"
-                placeholder="Enter Major"
-                className="filter-input"
-                value={localFilters.major || ""}
-                onChange={(e) => handleInputChange(e, "major")}
-                onKeyDown={(e) => handleKeyDown(e, "major")}
-              />
+              <div className="">
+                <CommonTextInput
+                  type="text"
+                  placeholder="Enter Major"
+                  className="filter-input"
+                  value={localFilters.major || ""}
+                  onChange={(e) => handleInputChange(e, "major")}
+                  onKeyDown={(e) => handleKeyDown(e, "major")}
+                />
               </div>
               {localFilters.majorList?.length > 0 && (
                 <div className="inputItemsDiv">
@@ -508,17 +564,16 @@ const CandidateFilterDrawer = ({
                   ))}
                 </div>
               )}
-               <div className="border-1 rounded-[8px]">
-
-              <input
-                type="text"
-                placeholder="Enter School"
-                className="filter-input"
-                value={localFilters.school || ""}
-                onChange={(e) => handleInputChange(e, "school")}
-                onKeyDown={(e) => handleKeyDown(e, "school")}
-              />
-               </div>
+              <div className="">
+                <CommonTextInput
+                  type="text"
+                  placeholder="Enter School"
+                  className="filter-input"
+                  value={localFilters.school || ""}
+                  onChange={(e) => handleInputChange(e, "school")}
+                  onKeyDown={(e) => handleKeyDown(e, "school")}
+                />
+              </div>
               {localFilters.schoolList?.length > 0 && (
                 <div className="inputItemsDiv">
                   {localFilters.schoolList?.map((schoolsDataItem, index) => (
@@ -534,17 +589,16 @@ const CandidateFilterDrawer = ({
                   ))}
                 </div>
               )}
-               <div className="border-1 rounded-[8px]">
-
-              <input
-                type="text"
-                placeholder="Enter Degree"
-                className="filter-input"
-                value={localFilters.degree || ""}
-                onChange={(e) => handleInputChange(e, "degree")}
-                onKeyDown={(e) => handleKeyDown(e, "degree")}
-              />
-               </div>
+              <div className="">
+                <CommonTextInput
+                  type="text"
+                  placeholder="Enter Degree"
+                  className="filter-input"
+                  value={localFilters.degree || ""}
+                  onChange={(e) => handleInputChange(e, "degree")}
+                  onKeyDown={(e) => handleKeyDown(e, "degree")}
+                />
+              </div>
               {localFilters.degreeList?.length > 0 && (
                 <div className="inputItemsDiv">
                   {localFilters.degreeList?.map((degreesItem, index) => (
@@ -560,111 +614,33 @@ const CandidateFilterDrawer = ({
                   ))}
                 </div>
               )}
-            </div>
-            <div className="display-column-6 pb-3 border-b ">
-              <label className="font-12-regular color-dark-black">
-                Expected Salary
-              </label>
-              <div className="flex items-center space-x-2">
-              <div className="border-1 rounded-[8px] flex-1">
-                <input
-                  type="text"
-                  placeholder="Enter Major"
-                  className="filter-input"
-                  value={localFilters.major || ""}
-                  onChange={(e) => handleInputChange(e, "major")}
-                  onKeyDown={(e) => handleKeyDown(e, "major")}
-                />
-                </div>
-                <div className="border-1 rounded-[8px] flex-1">
-                <input
-                  type="text"
-                  placeholder="Enter Major"
-                  className="filter-input"
-                  value={localFilters.major || ""}
-                  onChange={(e) => handleInputChange(e, "major")}
-                  onKeyDown={(e) => handleKeyDown(e, "major")}
-                />
-                </div>
-              </div>
-
-              <div className="flex items-center space-x-2">
-              <div className="border-1 rounded-[8px] flex-1">
-                <input
-                  type="text"
-                  placeholder="Enter Major"
-                  className="filter-input"
-                  value={localFilters.major || ""}
-                  onChange={(e) => handleInputChange(e, "major")}
-                  onKeyDown={(e) => handleKeyDown(e, "major")}
-                />
-                </div>
-                <div className="flex-1">
-                <CustomDropdown
-                  options={frequencyOptions} // List of available frequencies
-                  placeholder="Select Frequency" // Placeholder text
-                  selectedValues={selectedFrequencies} // State to track selected frequencies
-                  onChange={setSelectedFrequencies} // Function to update state
-                  optionKey="frequency" // Key to display in the dropdown
-                  multiSelect={false} // Enable multiple selections
-                  showCheckbox={false} // Show checkboxes for selection
-                />
-                </div>
-              </div>
-            </div>
+            </div> */}
+           
             <div className="display-column-6 pb-3 border-b ">
               <label className="font-12-regular color-dark-black">Date</label>
-              <div className="border-1 rounded-[8px]">
-
-              <input
-                type="text"
-                placeholder="Last Contacted"
-                // className="filter-input"
-                className="filter-input"
-                value={
-                  lastContactedDate
-                    ? format(lastContactedDate, "yyyy-MM-dd")
-                    : ""
-                }
-                onFocus={() => setShowContactedCalendar(true)}
-                readOnly
-              />
-</div>
-              {showContactedCalendar && (
-                <div className=" z-10 bg-white mt-1">
-                  <CustomCalendar onDateSelect={handleLastContactedDateSelect} />
-                </div>
-              )}
-              <div className="date-picker-container"></div>
-              <div className="border-1 rounded-[8px] flex-1">
-
-              <input
-                type="text"
-                placeholder="Last Updated"
-                className="filter-input"
-                value={
-                  lastUpdatedDate
-                    ? format(lastUpdatedDate, "yyyy-MM-dd")
-                    : ""
-                }
-                onFocus={() => setShowUpdatedCalendar(true)}
-                readOnly
-              />
-              </div>
-               {showUpdatedCalendar && (
-                <div className=" z-10 bg-white mt-1">
-                  <CustomCalendar onDateSelect={handleLastUpdatedDateSelect} />
-                </div>
-              )}
+           <DateTimePicker
+                    initialDate={lastContactedDate}
+                    onDateSelect={handleLastContactedDateSelect}
+                    dob={false}
+                    placeholder="Last Contacted"
+                  />
+              <DateTimePicker
+                    initialDate={lastContactedDate}
+                    onDateSelect={handleLastContactedDateSelect}
+                    dob={false}
+                    placeholder="Last Updated"
+                  />
+            
+            
             </div>
             <div className="display-column-6">
               <label className="font-12-regular color-dark-black">
-                Job-Related
+                Miscellaneous
               </label>
 
               <CustomDropdown
                 options={labelOptions}
-                placeholder="Select Labels"
+                placeholder="Labels"
                 selectedValues={selectedLabels}
                 onChange={setSelectedLabels}
                 optionKey="label"
@@ -673,7 +649,7 @@ const CandidateFilterDrawer = ({
               />
               <CustomDropdown
                 options={sourceOptions}
-                placeholder="Select Source"
+                placeholder="Source"
                 selectedValues={selectedSources}
                 onChange={setSelectedSources}
                 optionKey="source"

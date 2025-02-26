@@ -32,6 +32,8 @@ import CommonDeleteModal from "../../../components/modals/CommonDeleteModal";
 import AddToJobsDrawer from "../../../components/candidate/AddToJobsDrawer";
 import AddToFolderDrawer from "../../../components/candidate/AddToFolderDrawer";
 import AddLabelDrawer from "../../../components/candidate/AddLabelDrawer";
+import CandidateTable from "../../../components/candidate/CandidateTable";
+import { candidateTableHeader } from "../../../helpers/config";
 
 const companies = [
   {
@@ -86,7 +88,7 @@ const IndividualFilterCandidateListPage = ({ isDrawerOpen }) => {
   const [selectedSearchableOption, setSelectedSearchableOption] = useState("");
   const [originalConditions, setOriginalConditions] = useState([]);
   const [conditions, setConditions] = useState([]); // Store multiple conditions
-
+  const [selectedCandidate, setSelectedCandidate] = useState(null);
   // 🔍 Map formatted column names to actual data keys
   const columnMapping = {
     "Candidate Name": "candidate_name",
@@ -504,114 +506,22 @@ const IndividualFilterCandidateListPage = ({ isDrawerOpen }) => {
         </div>
         {/* here */}
         {activeTab == "candidates" ? (
-          <div className="flex-1 bg-grey-90 flex flex-col overflow-hidden">
-            {/* Table Wrapper with Horizontal Scroll */}
-
-            <div className="overflow-auto px-[10px] bg-white shadow-md flex-grow h-[calc(100vh)]">
-              <table className="min-w-full divide-y divide-gray-200">
-                {/* Table Header */}
-                <thead className="sticky top-0 bg-white z-[50px]">
-                <tr className="text-left text-gray-600 font-semibold">
-                  {/* Checkbox Column for Selecting All */}
-                  <th className="px-2 py-3 font-ubuntu font-medium text-m text-customBlue justify-center text-left ml-10 max-w-[380px] sticky top-0 bg-blueBg z-[50]">
-                    <div
-                      className={`w-[20px] h-[20px] border-1 border-customBlue bg-white rounded-[6px] flex items-center justify-center cursor-pointer`}
-                      onClick={() =>
-                        setSelectedCandidates(
-                          selectedCandidates.length ===
-                            filteredCandidates.length
-                            ? []
-                            : filteredCandidates.map((c) => c.id)
-                        )
-                      }
-                    >
-                      {selectedCandidates.length ===
-                      filteredCandidates.length ? (
-                        <img src={Tick} alt="Selected" />
-                      ) : null}
-                    </div>
-                  </th>
-
-                  {/* ✅ Dynamically Generate Column Headers from selectedColumns */}
-                  {selectedColumns.map((columnName) => (
-                    <th
-                      key={columnName}
-                      className="px-2 py-3 font-ubuntu font-medium text-m text-customBlue justify-center text-left ml-10 max-w-[380px] p-0 bg-blueBg  min-w-[230px]"
-                    >
-                      {columnName}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-
-                {/* ✅ Table Body */}
-                <tbody className="divide-y overflow-auto divide-gray-200">
-                  {filteredCandidates.map((candidate) => (
-                    <tr key={candidate.id} className="hover:bg-gray-50">
-                      {/* Checkbox Column for Selecting Candidates */}
-                      <td className="pr-0">
-                        <div
-                          className={`w-[20px] h-[20px] border-1 m-0  border-customBlue bg-white rounded-[6px] flex items-center justify-center cursor-pointer`}
-                          onClick={() =>
-                            setSelectedCandidates((prev) =>
-                              prev.includes(candidate.id)
-                                ? prev.filter((id) => id !== candidate.id)
-                                : [...prev, candidate.id]
-                            )
-                          }
-                        >
-                          {selectedCandidates.includes(candidate.id) ? (
-                            <img src={Tick} alt="Selected" />
-                          ) : null}
-                        </div>
-                      </td>
-
-                      {/* ✅ Dynamically Show Data for Selected Columns */}
-                      {selectedColumns.map((columnName) => {
-                        const key = columnMapping[columnName]; // Get actual key from mapping
-                        return (
-                          <td
-                            key={key}
-                            className="px-2 py-3 font-ubuntu font-normal text-m text-customBlue max-w-full text-left  justify-between"
-                          >
-                            {columnName === "Candidate Name" ? (
-                              <div
-                                className="flex items-center gap-2 "
-                                onMouseEnter={() =>
-                                  setHoveredCandidate(candidate.id)
-                                }
-                                onMouseLeave={() => setHoveredCandidate(null)}
-                              >
-                                {/* Display Initials */}
-                                <div
-                                  className="w-[28px] h-[28px] flex items-center justify-center rounded-full bg-customBlue text-white font-bold text-sm"
-                                  style={{ backgroundColor: getRandomColor() }}
-                                >
-                                  {candidate.candidate_first_name?.charAt(0)}
-                                  {candidate.candidate_last_name?.charAt(0)}
-                                </div>
-
-                                {/* Display Candidate Name */}
-                                <span>{candidate[key] || "-"}</span>
-
-                                {/* ✅ Show Eye Icon on Hover */}
-                                {hoveredCandidate === candidate.id && (
-                                
-                           <DeleteIcon />
-                                )}
-                              </div>
-                            ) : (
-                              candidate[key] || "-"
-                            )}
-                          </td>
-                        );
-                      })}
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+              <div
+              style={{
+                overflow: "hidden",
+                flex: 1,
+                maxHeight: "calc(100vh - 194px)",
+              }}
+            >
+              <CandidateTable
+                header={candidateTableHeader}
+                data={filteredCandidates}
+                setSelectedCandidateUser={setSelectedCandidate}
+                setSelectedCandidateUsers={setSelectedCandidates}
+                showDeleteIcon={true}
+                deleteIconClick={()=>setModalVisibility("removeUserModalVisible", true)}
+              />
             </div>
-          </div>
         ) : (
           <div>{HorizontalCompanyList()}</div>
         )}
@@ -646,6 +556,15 @@ const IndividualFilterCandidateListPage = ({ isDrawerOpen }) => {
         description={"Are you sure you want to delete this folder?"}
         onClose={() => {
           setModalVisibility("categoryDeleteModalVisible", false);
+        }}
+        onClickDelete={deleteCategory}
+      />
+       <CommonDeleteModal
+        visible={modals?.removeUserModalVisible}
+        title={"Remove User"}
+        description={"Are you sure you want to delete this user?"}
+        onClose={() => {
+          setModalVisibility("removeUserModalVisible", false);
         }}
         onClickDelete={deleteCategory}
       />

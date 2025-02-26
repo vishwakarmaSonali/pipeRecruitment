@@ -838,3 +838,16 @@ export const columnMapping = {
   "Created Date": "created_at",
   "Created By": "created_by",
 };
+
+export const archivedCandidateHeader = [
+  "Candidate Name",
+  "Owner",
+  "Archived Date",
+  
+];
+
+export const archivedColumnMapping = {
+  "Candidate Name": "candidate_name",
+ "Owner":"owner",
+ "Archived Date":"archived_date"
+};

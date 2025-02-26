@@ -80,15 +80,18 @@ const AddToJobsDropdown = ({ placeholder, selectedJobs, setSelectedJobs }) => {
       data.id === item.id ? { ...data, selected: false } : data
     );
     setJobStatusData(updatedData);
-    setSelectedJobStatus(selectedJobStatus.filter((status) => status.id !== item.id));
+    setSelectedJobStatus(
+      selectedJobStatus.filter((status) => status.id !== item.id)
+    );
   };
 
   // ✅ Toggle Company Selection (Allow multiple)
   const toggleCompanySelection = (company) => {
-    setSelectedJobs((prev) =>
-      prev.some((c) => c.name === company.name)
-        ? prev.filter((c) => c.name !== company.name) // Remove if already selected
-        : [...prev, company] // Add if not selected
+    setSelectedJobs(
+      (prev) =>
+        prev.some((c) => c.name === company.name)
+          ? prev.filter((c) => c.name !== company.name) // Remove if already selected
+          : [...prev, company] // Add if not selected
     );
   };
 
@@ -96,21 +99,36 @@ const AddToJobsDropdown = ({ placeholder, selectedJobs, setSelectedJobs }) => {
     <div className="relative w-full" ref={dropdownRef}>
       {/* Dropdown Input */}
       <div
-        className="w-full px-[12px] py-[10px] border flex justify-between items-center cursor-pointer bg-white border-customGrey1 rounded-[8px] text-sm font-ubuntu text-customBlue"
+        className="common-dropdown"
         onClick={() => setIsModalOpen(!isModalOpen)}
       >
-        <span className="text-gray-600">{placeholder}</span>
-        <DropArrow className="w-[14px] h-[14px]" />
+        <span className="common-dropdown-text color-grey">{placeholder}</span>
+        <DropArrow
+          width={14}
+          height={14}
+          fill="customBlue"
+          className={`transition-transform ${
+            isModalOpen ? "rotate-180" : "rotate-0"
+          }`}
+        />
       </div>
 
       {/* Selected Items Display */}
-      {(selectedJobs.length > 0) && (
-        <div className="mt-2 flex flex-wrap gap-2" onClick={() => setIsModalOpen(!isModalOpen)}>
-         
+      {selectedJobs.length > 0 && (
+        <div
+          className="mt-2 flex flex-wrap gap-2"
+          onClick={() => setIsModalOpen(!isModalOpen)}
+        >
           {selectedJobs.map((company, index) => (
-            <div key={index} className="flex items-center px-2 py-1 border rounded-md text-sm"  >
+            <div
+              key={index}
+              className="flex items-center px-2 py-1 border rounded-md text-sm"
+            >
               <span>{company.name}</span>
-              <button className="ml-2 text-red-500" onClick={() => toggleCompanySelection(company)}>
+              <button
+                className="ml-2 text-red-500"
+                onClick={() => toggleCompanySelection(company)}
+              >
                 ✕
               </button>
             </div>
@@ -121,11 +139,11 @@ const AddToJobsDropdown = ({ placeholder, selectedJobs, setSelectedJobs }) => {
       {/* Dropdown Modal */}
       {isModalOpen && (
         <div className="absolute top-full left-0 w-full z-50 mt-2 p-4 bg-white rounded-lg shadow-lg border border-gray-300">
-        <div className="display-column" style={{ gap: 10 }}>
-          <CommonSearchBox
-            value={searchValue}
-            onChange={(e) => setSearchValue(e.target.value)}
-          />
+          <div className="display-column" style={{ gap: 10 }}>
+            <CommonSearchBox
+              value={searchValue}
+              onChange={(e) => setSearchValue(e.target.value)}
+            />
             <CommonDropdown
               options={jobStatusData}
               placeholder="Job Status"
@@ -134,69 +152,67 @@ const AddToJobsDropdown = ({ placeholder, selectedJobs, setSelectedJobs }) => {
               type={"jobStatus"}
               handleMultiSelectHandler={handleMultiSelectHandler}
             />
-          <div
-            className="display-flex"
-            style={{ gap: 6, flexWrap: "wrap" }}
-          >
-            {selectedJobStatus?.map((item) => {
-              return (
-                <div className="selected-job-status-label">
-                  <div
-                    style={{
-                      width: 14,
-                      height: 14,
-                      borderRadius: 100,
-                      backgroundColor: item?.color,
-                    }}
-                  />
-                  <span className="font-12-regular color-dark-black">
-                    {item?.type}
-                  </span>
-                  <button onClick={() => removeStatusHandler(item)}>
-                    <LabelClose />
-                  </button>
-                </div>
-              )})}
+            <div className="display-flex" style={{ gap: 6, flexWrap: "wrap" }}>
+              {selectedJobStatus?.map((item) => {
+                return (
+                  <div className="selected-job-status-label">
+                    <div
+                      style={{
+                        width: 14,
+                        height: 14,
+                        borderRadius: 100,
+                        backgroundColor: item?.color,
+                      }}
+                    />
+                    <span className="font-12-regular color-dark-black">
+                      {item?.type}
+                    </span>
+                    <button onClick={() => removeStatusHandler(item)}>
+                      <LabelClose />
+                    </button>
+                  </div>
+                );
+              })}
             </div>
-        </div>
-        <div
-          className="display-column"
-          style={{ gap: 10, maxHeight: 256, overflowY: "auto" }}
-        >
-          {companies?.map((item, index) => {
-            return (
-              <div key={index} className="job-compony-list-item" onClick={() => toggleCompanySelection(item)}>
+          </div>
+          <div
+            className="display-column"
+            style={{ gap: 10, maxHeight: 256, overflowY: "auto" }}
+          >
+            {companies?.map((item, index) => {
+              return (
                 <div
-                  className="display-flex align-center"
-                  style={{ gap: 6 }}
+                  key={index}
+                  className="job-compony-list-item"
+                  onClick={() => toggleCompanySelection(item)}
                 >
-                  <div className="w-h-32">
-                    <span>{item?.initials}</span>
+                  <div className="display-flex align-center" style={{ gap: 6 }}>
+                    <div className="w-h-32">
+                      <span>{item?.initials}</span>
                     </div>
-                  <div className="display-column" style={{ gap: 4 }}>
-                    <p className="font-14-medium color-dark-black">
-                      {item?.name}
-                    </p>
-                    <p className="font-10-regular color-dark-black">
-                      {item?.location}
-                    </p>
+                    <div className="display-column" style={{ gap: 4 }}>
+                      <p className="font-14-medium color-dark-black">
+                        {item?.name}
+                      </p>
+                      <p className="font-10-regular color-dark-black">
+                        {item?.location}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="display-flex align-center" style={{ gap: 8 }}>
+                    <div
+                      className="w-h-14"
+                      style={{ backgroundColor: "#98D4DF" }}
+                    />
+                    <button>
+                      {selectedJobs.some((c) => c.name === item.name) && (
+                        <TickCircle />
+                      )}
+                    </button>
                   </div>
                 </div>
-                <div
-                  className="display-flex align-center"
-                  style={{ gap: 8 }}
-                >
-                  <div
-                    className="w-h-14"
-                    style={{ backgroundColor: "#98D4DF" }}
-                  />
-                  <button>
-                  {selectedJobs.some((c) => c.name === item.name) &&  <TickCircle />}
-                  </button>
-            </div>
-              </div>
-            );
-          })}
+              );
+            })}
           </div>
         </div>
       )}

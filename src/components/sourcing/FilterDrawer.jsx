@@ -9,6 +9,7 @@ import LocationSearchDropdown from "../AutocompleteDropdowns/LocationSearchDropD
 import SkillSearchDropdown from "../AutocompleteDropdowns/SkillDropdown";
 import OrganizationSearchDropdown from "../AutocompleteDropdowns/OrganizationSearchDropDown";
 import CommonDropdown from "../common/CommonDropdown";
+import CommonTextInput from "../common/CommonTextInput";
 const FilterDrawer = ({ isOpen, onClose, onApply, onReset, filters }) => {
   const [localFilters, setLocalFilters] = useState(filters);
   const [isVisible, setIsVisible] = useState(isOpen);
@@ -163,8 +164,8 @@ const FilterDrawer = ({ isOpen, onClose, onApply, onReset, filters }) => {
 
             <div className="display-column-6 ">
               <label className="font-12-regular color-dark-black">Radius</label>
-              <div className="border-1 rounded-[8px]">
-                <input
+              <div className="">
+                <CommonTextInput
                   type="text"
                   placeholder="Enter distance"
                   className="filter-input"
@@ -184,7 +185,7 @@ const FilterDrawer = ({ isOpen, onClose, onApply, onReset, filters }) => {
                 onChange={setRadius}
                 optionKey="type"
               />
-              {radius && (
+              {/* {radius && (
                 <div className="inputItemsDiv">
                   <div className="inputed-item">
                     {localFilters.radius} {radius?.type}
@@ -196,7 +197,7 @@ const FilterDrawer = ({ isOpen, onClose, onApply, onReset, filters }) => {
                     </button>
                   </div>
                 </div>
-              )}
+              )} */}
             </div>
 
             <div className="display-column-6">
@@ -216,8 +217,8 @@ const FilterDrawer = ({ isOpen, onClose, onApply, onReset, filters }) => {
                 Years of Experience
               </label>
               <div className="flex space-x-2">
-                <div className="border-1 rounded-[8px] flex-1">
-                  <input
+                <div className="flex-1">
+                  <CommonTextInput
                     type="text"
                     placeholder="From"
                     className="filter-input"
@@ -230,8 +231,8 @@ const FilterDrawer = ({ isOpen, onClose, onApply, onReset, filters }) => {
                     }}
                   />
                 </div>
-                <div className="border-1 rounded-[8px] flex-1">
-                  <input
+                <div className="flex-1">
+                  <CommonTextInput
                     type="text"
                     placeholder="To"
                     className="filter-input"
@@ -262,7 +263,7 @@ const FilterDrawer = ({ isOpen, onClose, onApply, onReset, filters }) => {
 
             <div className="display-column-6 ">
               <label className="font-12-regular color-dark-black">Skills</label>
-              <div className="border-1 rounded-[8px]">
+              <div className="">
                 <SkillSearchDropdown
                   selectedSkills={selectedSkills}
                   setSelectedSkills={setSelectedSkills}
@@ -271,12 +272,10 @@ const FilterDrawer = ({ isOpen, onClose, onApply, onReset, filters }) => {
             </div>
 
             <div className="display-column-6 ">
-              <label className="font-12-regular color-dark-black">
-                Industry
-              </label>
+              <label className="font-12-regular color-dark-black">Domain</label>
               <CommonDropdown
                 options={industryOptions}
-                placeholder="Select Industry"
+                placeholder="Select Domain"
                 selectedValue={industry}
                 onChange={setIndustry}
                 optionKey="industryType"
@@ -301,8 +300,8 @@ const FilterDrawer = ({ isOpen, onClose, onApply, onReset, filters }) => {
               <label className="font-12-regular color-dark-black">
                 Education
               </label>
-              <div className="border-1 rounded-[8px]">
-                <input
+              <div>
+                <CommonTextInput
                   type="text"
                   placeholder="Enter Major"
                   className="filter-input"
@@ -326,8 +325,8 @@ const FilterDrawer = ({ isOpen, onClose, onApply, onReset, filters }) => {
                   ))}
                 </div>
               )}
-              <div className="border-1 rounded-[8px]">
-                <input
+              <div>
+                <CommonTextInput
                   type="text"
                   placeholder="Enter School"
                   className="filter-input"
@@ -351,8 +350,8 @@ const FilterDrawer = ({ isOpen, onClose, onApply, onReset, filters }) => {
                   ))}
                 </div>
               )}
-              <div className="border-1 rounded-[8px]">
-                <input
+              <div>
+                <CommonTextInput
                   type="text"
                   placeholder="Enter Degree"
                   className="filter-input"

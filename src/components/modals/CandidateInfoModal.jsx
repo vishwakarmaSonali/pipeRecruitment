@@ -63,6 +63,10 @@ import { ReactComponent as CloseIcon } from "../../assets/icons/closeModal.svg";
 import { useNavigate } from "react-router-dom";
 import AddToFolderModal from "./AddToFolderModal";
 import { uptech } from "../../helpers/assets";
+import { ReactComponent as OriginalResumeIcon } from "../../assets/images/resume/original.svg";
+import { ReactComponent as CvIcon } from "../../assets/images/resume/cv.svg";
+import { ReactComponent as ReportIcon } from "../../assets/images/resume/report.svg";
+import CalendarComponent from "../candidate/CalendarComponent";
 
 const skillData = [
   {
@@ -157,6 +161,30 @@ const candidateInfoTabs = [
     id: 8,
     name: "History",
     selected: false,
+  },
+];
+
+const resumeTabs = [
+  {
+    id: 1,
+    name: "Original",
+    desc: "View candidate’s original resume",
+    icon: <OriginalResumeIcon />,
+    navigate: "#",
+  },
+  {
+    id: 2,
+    name: "Custom CV",
+    desc: "Create and modify candidate’s custom CV",
+    icon: <CvIcon />,
+    navigate: "#",
+  },
+  {
+    id: 3,
+    name: "Report",
+    desc: "Create and modify candidate’s report",
+    icon: <ReportIcon />,
+    navigate: "#",
   },
 ];
 
@@ -909,6 +937,54 @@ const CandidateInfoModal = ({ visible, onClose }) => {
                   data={historyData}
                 />
               </div>
+            </div>
+          )}
+
+          {selectedCandidateTab === "Resume" && (
+            <div
+              className="display-flex justify-center flex-1"
+              style={{
+                gap: 20,
+                padding: 16,
+                alignItems: "flex-start",
+              }}
+            >
+              {resumeTabs?.map((item) => {
+                return (
+                  <button
+                    className="resume-tab-item"
+                    onClick={() => navigate(item?.navigate)}
+                    key={item?.id}
+                  >
+                    <div>{item?.icon}</div>
+                    <div
+                      className="display-column"
+                      style={{
+                        gap: 6,
+
+                        alignItems: "flex-start",
+                      }}
+                    >
+                      <p className="font-14-regular color-dark-black">
+                        {item?.name}
+                      </p>
+                      <p className="font-12-regular color-grey">{item?.desc}</p>
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+          )}
+
+          {selectedCandidateTab === "Calendar" && (
+            <div
+              className="flex-1 display-column"
+              style={{
+                padding: "10px 16px",
+                overflow: "hidden",
+              }}
+            >
+              <CalendarComponent />
             </div>
           )}
 

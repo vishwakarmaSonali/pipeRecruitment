@@ -64,11 +64,12 @@ const TitleSearchDropdown = ({
   };
 
   return (
-    <div className="relative ">
+    <div className="relative  ">
       <input
         type="text"
         placeholder="Job Title"
-        className="filter-input border"
+        className="filter-input "
+        style={{border:"1px solid #f3f4f4"}}
         value={!allowMultiple && selectedTitles.length > 0 ? selectedTitles[0] : titleQuery}
         onChange={(e) => {
           setTitleQuery(e.target.value);
@@ -79,11 +80,11 @@ const TitleSearchDropdown = ({
 
       {/* Title Suggestions Dropdown */}
       {showTitleDropdown && titleSuggestions.length > 0 && (
-        <div className="flex flex-col  bg-white border border-borderGrey rounded-lg shadow-sm max-h-[460px] overflow-auto z-50 text-sm">
+        <div className="flex flex-col  bg-white border border-customGrey1 rounded-lg shadow-sm max-h-[460px] overflow-auto z-50 text-sm">
           {titleSuggestions.map((title, index) => (
             <div
               key={index}
-              className="px-2 py-2 flex  gap-2 hover:bg-customGrey1 cursor-pointer"
+              className="px-2 py-2 flex  gap-2 hover:bg-blueBg cursor-pointer"
               onClick={() => handleSelectTitle(title)}
             >
               {title}

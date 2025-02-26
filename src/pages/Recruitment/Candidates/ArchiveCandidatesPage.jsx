@@ -43,11 +43,18 @@ import AddToJobsDrawer from "../../../components/candidate/AddToJobsDrawer";
 import MergeDuplicateModal from "../../../components/modals/MergeDuplicateModal";
 import DeleteCandidateDrawer from "../../../components/candidate/DeleteCandidateDrawer";
 import { notifySuccess } from "../../../helpers/utils";
-
+import CandidateTable from "../../../components/candidate/CandidateTable";
+import {
+  archivedCandidateHeader,
+  candidateTableHeader,
+} from "../../../helpers/config";
+import CandidateTable1 from "../../../components/candidate/ArchivedCandidateTable";
+import ArchiveCandidateTable from "../../../components/candidate/ArchivedCandidateTable";
 const ArchiveCandidates = ({ isDrawerOpen }) => {
   const dispatch = useDispatch();
   const [candidateList, setCandidateList] = useState(archivedCandidates);
   const [selectedCandidates, setSelectedCandidates] = useState([]);
+  const [selectedCandidate, setSelectedCandidate] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState("Candidates");
   const selectedColumns = useSelector((state) => state.columns.selected); // Get selected columns from Redux
   const savedFilters = useSelector((state) => state.filters.filters); // Get saved filters from Redux
@@ -460,29 +467,6 @@ const ArchiveCandidates = ({ isDrawerOpen }) => {
     );
   };
 
-  const getInitials = (name) => {
-    if (!name) return "";
-    const nameParts = name.split(" ");
-    const initials = nameParts
-      .map((part) => part[0].toUpperCase()) // Take the first letter of each part
-      .join(""); // Combine them
-    return initials.substring(0, 2); // Limit to 2 initials
-  };
-  // Function to generate a random color
-  const getRandomColor = () => {
-    const colors = [
-      "#D4C158",
-      "#8282D8",
-      "#9BCD6A",
-      "#D458A0",
-      "#CDA26A",
-      "#38658E",
-      "#6D58D4",
-      "#CD6ABC",
-    ];
-    return colors[Math.floor(Math.random() * colors.length)];
-  };
-
   const handleArchive = (id) => {
     console.log(`Archiving candidate with ID: ${id}`);
     // TODO: Implement API call or state update to archive candidate
@@ -493,7 +477,6 @@ const ArchiveCandidates = ({ isDrawerOpen }) => {
     if (id) {
       setDeleteMessage("This candidate profile");
       setDeletingCandidates([id]); // Only delete this one user
-
     } else if (selectedCandidates.length === 1) {
       setDeleteMessage("Selected candidate profile");
       setDeletingCandidates([...selectedCandidates]); // Single selected user
@@ -507,11 +490,9 @@ const ArchiveCandidates = ({ isDrawerOpen }) => {
   // 🔥 Handle Confirm Delete (Filters Out Deleted Candidates)
   const handleConfirmDelete = (id) => {
     if (id) {
-       notifySuccess("Candidate has been permanently deleted.")
-       
+      notifySuccess("Candidate has been permanently deleted.");
     } else if (selectedCandidates.length === 1) {
-          notifySuccess("Selected candidate has been permanently deleted.")
-          
+      notifySuccess("Selected candidate has been permanently deleted.");
     }
     setCandidateList((prev) =>
       prev.filter((candidate) => !deletingCandidates.includes(candidate.id))
@@ -567,122 +548,16 @@ const ArchiveCandidates = ({ isDrawerOpen }) => {
         <div className="flex-1 bg-grey-90 flex flex-col overflow-hidden">
           {/* Table Wrapper with Horizontal Scroll */}
 
-          <div className="overflow-auto px-[10px] bg-white shadow-md flex-grow h-[calc(100vh)]">
-            <table className="min-w-full divide-y divide-gray-200">
-              {/* Table Header */}
-              <thead className="sticky top-0 bg-white z-[50px]">
-                <tr className="text-left text-gray-600 font-semibold">
-                  {/* Checkbox Column for Selecting All */}
-                  <th className="th-title sticky top-0 bg-blueBg z-[50]">
-                    <div
-                      className={`w-[20px] h-[20px] border-1 border-customBlue bg-white rounded-[6px] flex items-center justify-center cursor-pointer`}
-                      onClick={() =>
-                        setSelectedCandidates(
-                          selectedCandidates.length ===
-                            filteredCandidates.length
-                            ? []
-                            : filteredCandidates.map((c) => c.id)
-                        )
-                      }
-                    >
-                      {selectedCandidates.length ===
-                      filteredCandidates.length ? (
-                        <img src={Tick} alt="Selected" />
-                      ) : null}
-                    </div>
-                  </th>
-
-                  {/* ✅ Dynamically Generate Column Headers from selectedColumns */}
-                  {["Candidate Name", "Owner", "Archived Date", "Actions"].map(
-                    (columnName) => (
-                      <th
-                        key={columnName}
-                        className="th-title p-0 bg-blueBg max-w-[240px] min-w-[230px]"
-                      >
-                        {columnName}
-                      </th>
-                    )
-                  )}
-                </tr>
-              </thead>
-
-              {/* ✅ Table Body */}
-              <tbody className="divide-y overflow-auto divide-gray-200">
-                {archivedCandidates.map((candidate) => (
-                  <tr key={candidate.id} className="hover:bg-gray-50">
-                    {/* Checkbox Column for Selecting Candidates */}
-                    <td className="pr-0">
-                      <div
-                        className={`w-[20px] h-[20px] border-1 m-0 border-customBlue bg-white rounded-[6px] flex items-center justify-center cursor-pointer`}
-                        onClick={() =>
-                          setSelectedCandidates((prev) =>
-                            prev.includes(candidate.id)
-                              ? prev.filter((id) => id !== candidate.id)
-                              : [...prev, candidate.id]
-                          )
-                        }
-                      >
-                        {selectedCandidates.includes(candidate.id) ? (
-                          <img src={Tick} alt="Selected" />
-                        ) : null}
-                      </div>
-                    </td>
-
-                    {/* Dynamically Show Data for Selected Columns */}
-                    {["Candidate Name", "Owner", "Archived Date"].map(
-                      (columnName) => {
-                        const key = columnMapping[columnName]; // Get actual key from mapping
-                        return (
-                          <td key={key} className="td-text px-1 justify-center">
-                            {columnName === "Candidate Name" ? (
-                              <div className="flex items-center gap-2">
-                                {/* Display Initials */}
-                                <div
-                                  className="w-[28px] h-[28px] flex items-center justify-center rounded-full bg-customBlue text-white font-bold text-sm"
-                                  style={{ backgroundColor: getRandomColor() }}
-                                >
-                                  {getInitials(candidate?.candidate_name)}
-                                </div>
-                                {/* Display Candidate Name */}
-                                <span>{candidate[key] || "-"}</span>
-                              </div>
-                            ) : (
-                              candidate[key] || "-"
-                            )}
-                          </td>
-                        );
-                      }
-                    )}
-
-                    {/* Actions Column */}
-                    <td className="td-text px-1 justify-center">
-                      <div className="flex gap-2">
-                        {/* Archive Button */}
-                        <Tooltip title="Restore">
-                          <button
-                            className="px-2 py-1  text-white rounded-md"
-                            onClick={() => handleArchive(candidate.id)}
-                          >
-                            <ArchiveIcon />
-                          </button>
-                        </Tooltip>
-
-                        {/* Delete Button */}
-                        <Tooltip title="Delete Permanently">
-                          <button
-                            className="px-2 py-1 bg-red-500 text-white rounded-md "
-                            onClick={() => handleDelete(candidate.id)}
-                          >
-                            <DeleteIcon />
-                          </button>
-                        </Tooltip>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+          <ArchiveCandidateTable
+            header={archivedCandidateHeader}
+            data={archivedCandidates}
+            setSelectedCandidateUser={setSelectedCandidate}
+            // AddJobClick={() => toggleAddToJobsDrawer(true)}
+            // AddFolderClick={() => toggleAddToFolderDrawer(true)}
+            // ChangeOwnerShipClick={() => toggleChangeOwnershipDrawer(true)}
+            setSelectedCandidateUsers={setSelectedCandidates}
+            showDeleteIcon={false}
+          />
         </div>
         {/* filter div */}
       </div>
@@ -774,7 +649,7 @@ const ArchiveCandidates = ({ isDrawerOpen }) => {
         isOpen={addToJobsDrawerOpen}
         onClose={() => toggleAddToJobsDrawer(false)}
       />
-   <DeleteCandidateDrawer
+      <DeleteCandidateDrawer
         isOpen={deleteCandidateDrawerOpen}
         onClose={() => setDeleteCandidateDrawerOpen(false)}
         deleteMessage={deleteMessage} // Pass message dynamically

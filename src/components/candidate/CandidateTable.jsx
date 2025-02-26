@@ -23,6 +23,7 @@ import { ReactComponent as AddJobIcon } from "../../pages/Recruitment/Candidates
 import { ReactComponent as AddFolderIcon } from "../../pages/Recruitment/Candidates/assets/addFolder.svg";
 import { ReactComponent as MarkProfileIcon } from "../../pages/Recruitment/Candidates/assets/profile-tick.svg";
 import { ReactComponent as DownloadIcon } from "../../pages/Recruitment/Candidates/assets/download.svg";
+import { ReactComponent as DeleteIcon } from "../../assets/icons/delete.svg";
 import { ReactComponent as ArchiveIcon } from "../../pages/Recruitment/Candidates/assets/archive.svg";
 import CandidateInfoModal from "../modals/CandidateInfoModal";
 import { useModal } from "../common/ModalProvider";
@@ -33,9 +34,12 @@ const CandidateTable = ({
   header,
   data,
   setSelectedCandidateUser,
+  setSelectedCandidateUsers,
   AddJobClick,
   AddFolderClick,
   ChangeOwnerShipClick,
+  deleteIconClick,
+  showDeleteIcon,
 }) => {
   const navigate = useNavigate();
   const { modals, setModalVisibility } = useModal();
@@ -87,6 +91,11 @@ const CandidateTable = ({
                           onClick={(e) => {
                             e.stopPropagation();
                             setSelectedCandidates(
+                              selectedCandidates.length === data.length
+                                ? []
+                                : data.map((c) => c.id)
+                            );
+                            setSelectedCandidateUsers(
                               selectedCandidates.length === data.length
                                 ? []
                                 : data.map((c) => c.id)
@@ -145,6 +154,11 @@ const CandidateTable = ({
                                       ? prev.filter((id) => id !== candidate.id)
                                       : [...prev, candidate.id]
                                   );
+                                  setSelectedCandidateUsers((prev) =>
+                                    prev.includes(candidate.id)
+                                      ? prev.filter((id) => id !== candidate.id)
+                                      : [...prev, candidate.id]
+                                  );
                                 }}
                               >
                                 {selectedCandidates.includes(candidate.id) && (
@@ -168,27 +182,44 @@ const CandidateTable = ({
                               <span className="font-14-regular truncate-text ">
                                 {candidate[key] || "-"}
                               </span>
-                              <button className="eye-icon">
-                                <EyeIcon />
-                              </button>
-                              <button
-                                aria-controls={open ? "basic-menu" : undefined}
-                                aria-haspopup="true"
-                                aria-expanded={open ? "true" : undefined}
-                                className={`eye-icon ${
-                                  open &&
-                                  candidate?.id === selectedCandidate?.id &&
-                                  "opacity-1"
-                                }`}
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  setSelectedCandidate(candidate);
-                                  setSelectedCandidateUser(candidate);
-                                  handleMenuClick(e);
-                                }}
-                              >
-                                <MoreIcon stroke="#151B23" />
-                              </button>
+                              {!showDeleteIcon ? (
+                                <>
+                                  <button className="eye-icon">
+                                    <EyeIcon />
+                                  </button>
+                                  <button
+                                    aria-controls={
+                                      open ? "basic-menu" : undefined
+                                    }
+                                    aria-haspopup="true"
+                                    aria-expanded={open ? "true" : undefined}
+                                    className={`eye-icon ${
+                                      open &&
+                                      candidate?.id === selectedCandidate?.id &&
+                                      "opacity-1"
+                                    }`}
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      setSelectedCandidate(candidate);
+                                      setSelectedCandidateUser(candidate);
+                                      handleMenuClick(e);
+                                    }}
+                                  >
+                                    <MoreIcon stroke="#151B23" />
+                                  </button>
+                                </>
+                              ) : (
+                                <button
+                                  className="eye-icon"
+                                  onClick={(e) => {
+                                    // handleMenuClose();
+                                    deleteIconClick();
+                                    e.stopPropagation();
+                                  }}
+                                >
+                                  <DeleteIcon />
+                                </button>
+                              )}
                             </div>
                           </TableCell>
                         );

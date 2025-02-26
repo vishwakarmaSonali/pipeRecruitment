@@ -19,13 +19,13 @@ import { ReactComponent as Arrowup } from "../../assets/icons/arrow-up.svg";
 import { ReactComponent as CalendarIcon } from "../../assets/icons/calendar-2.svg";
 import { convertToISO, formatDate } from "../../helpers/utils";
 
-const DateTimePicker = ({ onDateSelect, initialDate, showTime }) => {
+const DateTimePicker = ({ onDateSelect, initialDate, showTime, dob,placeholder = "Date fo Birth" }) => {
   const dropdownRef = useRef(null);
   const today = new Date();
   const initialMonth = initialDate ? new Date(initialDate) : today;
   const todayDate = format(today, "yyyy-MM-dd");
   const [currentMonth, setCurrentMonth] = useState(initialMonth);
-  const selectedInitialDate = format(initialMonth, "yyyy-MM-dd");
+  const selectedInitialDate = dob ? "" : format(initialMonth, "yyyy-MM-dd");
   const [selectedDate, setSelectedDate] = useState(selectedInitialDate);
   const [isOpen, setIsOpen] = useState(false);
 
@@ -190,8 +190,15 @@ const DateTimePicker = ({ onDateSelect, initialDate, showTime }) => {
       <input
         type="text"
         readOnly
+        placeholder={dob ? "Date of Birth" : placeholder}
         className="common-input"
-        value={combineDateTime ? combineDateTime : ""}
+        value={
+          combineDateTime
+            ? combineDateTime === "Invalid Date"
+              ? ""
+              : combineDateTime
+            : ""
+        }
         onClick={() => setIsOpen(!isOpen)}
         style={{ cursor: "pointer" }}
       />

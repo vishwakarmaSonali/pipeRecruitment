@@ -34,6 +34,10 @@ import HeaderWithActions from "./CandidateHeader";
 import { createCandidates } from "../../actions/candidateActions";
 import { useNavigate } from "react-router-dom";
 import TitleSearchDropdown from "../AutocompleteDropdowns/TitleSearchDropDown";
+import CommonTextInput from "../common/CommonTextInput";
+import { genderOption } from "../../helpers/config";
+import CommonDropdown from "../common/CommonDropdown";
+import { DateTimePickerTabs } from "@mui/x-date-pickers";
 import DateTimePicker from "../common/DateTimePicker";
 const genderOptions = [
   { id: 1, label: "Female" },
@@ -83,7 +87,7 @@ const CreateCandidateForm = () => {
   const [showUpdatedCalendar, setShowUpdatedCalendar] = useState(false);
   const [selectedDate, setSelectedDate] = useState(today);
   const [showCalendar, setShowCalendar] = useState(false);
-  const [selectedGender, setSelectedGender] = useState([]);
+  const [selectedGender, setSelectedGender] = useState("");
   const [nationality, setNationality] = useState([]);
   const [frequency, setFrequency] = useState(null);
   const [currentSalaryCurrency, setCurrentSalaryCurrency] = useState({
@@ -124,6 +128,11 @@ const CreateCandidateForm = () => {
   const handleNationalityChange = (selectedItem) => {
     setNationality(selectedItem);
   };
+
+  const handleDateSelect = (date) => {
+    setDateofbirth(date);
+  };
+
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -253,7 +262,7 @@ const CreateCandidateForm = () => {
     setSelectedTitle("None");
     setFirstName("");
     setLastName("");
-    setSelectedGender([]);
+    setSelectedGender("");
     setDateofbirth(null); // Reset date of birth
     setSelectedLocations([]);
     setSelectedNationality([]);
@@ -292,10 +301,7 @@ const CreateCandidateForm = () => {
   };
 
   return (
-    <div
-      className="w-full h-screen bg-white overflow-hidden overscroll-none"
-      style={{ boxSizing: "border-box" }}
-    >
+    <div className="sourcing-main-container">
       <Navbar />
       <HeaderWithActions
         title="Create Candidate"
@@ -304,357 +310,335 @@ const CreateCandidateForm = () => {
         onPrimaryClick={handleCreate}
         onSecondaryClick={handleDiscard}
       />
-      <div
-        className="overflow-auto flex-grow h-[calc(80vh-20px)] bg-grey-90 "
-        style={{ flex: 1, display: "flex", flexDirection: "column" }}
-      >
-        <div className="main-container-candidateForm overflow-auto">
-          {/* Candidate details block starts */}
-          <div className="flex justify-between ">
-            <div className=" bg-red-900 flex flex-1 max-w-[350px]">
-              <span className="items-start font-ubuntu text-xl font-medium">
-                Candidate details
-              </span>
-            </div>
-            <div className="flex flex-1 flex-col items-center">
-              {/* profile image picker */}
-              <div
-                className="candidate-upload-img-div bg-green-500 "
-                onClick={() => document.getElementById("file-input").click()}
-              >
-                {!!imagePreview ? (
-                  <img src={imagePreview} className={`common-img `} />
-                ) : (
-                  <GallaryEdit />
-                )}
-                <input
-                  type="file"
-                  id="file-input"
-                  style={{
-                    display: "none",
-                  }}
-                  accept="image/*"
-                  onChange={handleImageChange}
-                />
-              </div>
-              <div className="w-full">
-                <div className="display-flex gap-[10px] mt-[10px]">
-                  <div className="flex-1">
-                    <DropdownWithInput
-                      selectedTitle={selectedTitle}
-                      setSelectedTitle={setSelectedTitle}
-                      firstName={firstName}
-                      setFirstName={setFirstName}
-                    />
-                  </div>
-                  <div className="flex-1 border-1 rounded-[8px]">
-                    <input
-                      placeholder="Last Name"
-                      className="filter-input"
-                      value={lastName}
-                      onChange={(e) => setLastName(e.target.value)}
-                    />
-                  </div>
-                </div>
-                <div className="display-flex gap-[10px] mt-[10px]">
-                  <div className="flex-1">
-                    <CustomDropdown
-                      options={genderOptions}
-                      placeholder="Gender"
-                      selectedValues={selectedGender}
-                      onChange={(selected) => setSelectedGender(selected)}
-                      optionKey="label"
-                    />
-                  </div>
-                  <div className="flex-1 relative">
-                  <DateTimePicker
-                          initialDate={dateofbirth}
-                          onDateSelect={handleDateOfBirthSelect}
-                          showTime={false}
-                          showIcon={true}
-                        />
-
-                    {showUpdatedCalendar && (
-                      <div className="absolute w-[100%] z-10 bg-white mt-1">
-                        {/* <CustomCalendar
-                          onDateSelect={handleDateOfBirthSelect}
-                          initialDate={dateofbirth}
-                        /> */}
-                       
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-                <div className="display-flex gap-[10px] mt-[10px]">
-                  <div className="flex-1">
-                    <LocationSearchDropdown
-                      selectedLocations={selectedLocations}
-                      setSelectedLocations={setSelectedLocations}
-                      placeholder={"Location"}
-                    />
-                  </div>
-                  <div className="flex-1">
-                    {/* <CustomDropdown
-                  options={nationalityOptions}
-                  placeholder="Select Nationality"
-                  selectedValue={nationality}
-                  onChange={handleNationalityChange}
-                  optionKey="nationality"
-                /> */}
-                    <NationalitySearchDropdown
-                      selectedNationalities={selectedNationality}
-                      setSelectedNationalities={setSelectedNationality}
-                      placeholder={"Nationality"}
-                      multipleSelect={false}
-                    />
-                  </div>
-                </div>
-                <div className="display-flex gap-[10px] mt-[10px]">
-                  <div className="flex-1  rounded-[8px]">
-                    <CustomDropdown
-                      options={nationalityOptions}
-                      placeholder="Add to folder"
-                      selectedValues={nationality}
-                      onChange={setNationality}
-                      optionKey="nationality"
-                      multiSelect={true}
-                      showCheckbox={false}
-                    />
-                  </div>
-                  <div className="flex-1 rounded-[8px]">
-                    {/* <input
-                      placeholder="Add to Jobs"
-                      className="filter-input flex-1 border rounded-[8px]"
-                    /> */}
-                    <AddToJobsDropdown
-                      placeholder={"Add to jobs"}
-                      selectedJobs={selectedJobs}
-                      setSelectedJobs={setSelectedJobs}
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
+      <div className="create-candidate-main-container">
+        {/* Candidate details block starts */}
+        <div className="display-flex-justify">
+          <div className="flex-1 max-w-[350px]">
+            <span className="font-16-medium color-dark-black">
+              Candidate details
+            </span>
           </div>
-          {/* Candidate details block ends */}
-          {/* Contact details block starts */}
-          <div className="flex justify-between mt-[26px]">
-            <div className=" bg-red-900 flex flex-1 max-w-[350px]">
-              <span className="items-start font-ubuntu text-xl font-medium">
-                Contact details
-              </span>
-            </div>
-            <div className="flex flex-1 flex-col items-center">
-              <div className="w-full">
-                <div className="display-flex gap-[10px] mt-[10px]">
-                  <div className="flex-1">
-                    <PhoneNumberInput
-                      selectedCountry={selectedCountry}
-                      setSelectedCountry={setSelectedCountry}
-                      phoneNumber={phoneNumber}
-                      setPhoneNumber={setPhoneNumber}
-                    />
-                  </div>
-                  <div className="flex-1 border-1 rounded-[8px]">
-                    <input
-                      placeholder="Email Id"
-                      className="filter-input"
-                      type="email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          {/* Contact details block ends */}
-          {/* Candidate description block starts */}
-          <div className="flex justify-between mt-[26px]">
-            <div className=" flex flex-1 max-w-[350px]">
-              <span className="items-start font-ubuntu text-xl font-medium">
-                Candidate description
-              </span>
-            </div>
-            <div style={{ width: "100%", flex: 1 }}>
-              <HtmlViewComponent
-                value={description}
-                onChange={setDescription}
-                placeholder="Add Description"
-                // className='w-[100%]'
+          <div
+            className="display-column align-center flex-1"
+            style={{ gap: 24 }}
+          >
+            {/* profile image picker */}
+            <div
+              className="candidate-upload-img-div bg-green-500 "
+              onClick={() => document.getElementById("file-input").click()}
+            >
+              {!!imagePreview ? (
+                <img src={imagePreview} className={`common-img `} />
+              ) : (
+                <GallaryEdit />
+              )}
+              <input
+                type="file"
+                id="file-input"
+                style={{
+                  display: "none",
+                }}
+                accept="image/*"
+                onChange={handleImageChange}
               />
             </div>
+            <div className="w-full display-column" style={{ gap: 10 }}>
+              <div className="display-flex gap-[10px] ">
+                <div className="flex-1">
+                  <DropdownWithInput
+                    selectedTitle={selectedTitle}
+                    setSelectedTitle={setSelectedTitle}
+                    firstName={firstName}
+                    setFirstName={setFirstName}
+                  />
+                </div>
+                <div className="flex-1">
+                  <CommonTextInput
+                    type={"text"}
+                    placeholder="Last Name"
+                    value={lastName}
+                    onChange={(e) => setLastName(e.target.value)}
+                  />
+                </div>
+              </div>
+              <div className="display-flex gap-[10px] ">
+                <div className="flex-1">
+                  <CommonDropdown
+                    options={genderOption}
+                    placeholder="Gender"
+                    selectedValue={selectedGender}
+                    onChange={setSelectedGender}
+                    optionKey="type"
+                    candidateInfo={true}
+                  />
+                </div>
+                <div className="flex-1">
+                  <DateTimePicker
+                    initialDate={dateofbirth}
+                    onDateSelect={handleDateSelect}
+                    dob={true}
+                  />
+                </div>
+              </div>
+
+              <div className="display-flex gap-[10px] ">
+                <div className="flex-1">
+                  <LocationSearchDropdown
+                    selectedLocations={selectedLocations}
+                    setSelectedLocations={setSelectedLocations}
+                    placeholder={"Location"}
+                  />
+                </div>
+                <div className="flex-1">
+                  <NationalitySearchDropdown
+                    selectedNationalities={selectedNationality}
+                    setSelectedNationalities={setSelectedNationality}
+                    placeholder={"Nationality"}
+                    multipleSelect={false}
+                  />
+                </div>
+              </div>
+              <div className="display-flex gap-[10px] ">
+                <div className="flex-1 ">
+                  <CustomDropdown
+                    options={nationalityOptions}
+                    placeholder="Add to folder"
+                    selectedValues={nationality}
+                    onChange={setNationality}
+                    optionKey="nationality"
+                    multiSelect={true}
+                    showCheckbox={false}
+                  />
+                </div>
+                <div className="flex-1">
+                  <AddToJobsDropdown
+                    placeholder={"Add to jobs"}
+                    selectedJobs={selectedJobs}
+                    setSelectedJobs={setSelectedJobs}
+                  />
+                </div>
+              </div>
+            </div>
           </div>
-          {/* Candidate description block ends */}
-          {/* Skills block starts */}
-          <div className="flex justify-between mt-[26px]">
-            <div className=" flex flex-1 max-w-[350px]">
-              <span className="items-start font-ubuntu text-xl font-medium">
-                Skills
-              </span>
-            </div>
-            <div className="flex flex-1 ">
-              <TagManager tags={skills} setTags={setSkills} />
+        </div>
+        {/* Candidate details block ends */}
+        {/* Contact details block starts */}
+        <div className="display-flex-justify">
+          <div className="flex-1 max-w-[350px]">
+            <span className="font-16-medium color-dark-black">
+              Contact details
+            </span>
+          </div>
+          <div className="flex-1">
+            <div className="w-full">
+              <div className="display-flex gap-[10px] mt-[10px]">
+                <div className="flex-1">
+                  <PhoneNumberInput
+                    selectedCountry={selectedCountry}
+                    setSelectedCountry={setSelectedCountry}
+                    phoneNumber={phoneNumber}
+                    setPhoneNumber={setPhoneNumber}
+                  />
+                </div>
+                <div className="flex-1 ">
+              
+                  <CommonTextInput
+                    type="email"
+                    placeholder="Email Id"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                  />
+                </div>
+              </div>
             </div>
           </div>
-          {/* Skills block ends */}
-          {/* Professional details block starts */}
-          <div className="flex justify-between mt-[26px] ">
-            <div className=" bg-red-900 flex flex-1 max-w-[350px]">
-              <span className="items-start font-ubuntu text-xl font-medium">
-                Professional details
-              </span>
-            </div>
-            <div className="flex flex-1 flex-col items-center">
-              <div className="w-full">
-                <div className="display-flex gap-[10px] mt-[10px]">
-                  <div className="flex-1 border-1 rounded-[8px]">
-                    <input
-                      placeholder="Years of Experience"
-                      className="filter-input"
-                      type="number"
-                      value={yearsOfExp}
-                      onChange={(e) => setYearsOfExp(e.target.value)}
-                    />
-                  </div>
-                  <div className="flex-1 border-1 rounded-[8px]">
-                    <input
+        </div>
+        {/* Contact details block ends */}
+        {/* Candidate description block starts */}
+        <div className="display-flex-justify">
+          <div className="flex-1 max-w-[350px]">
+            <span className="font-16-medium color-dark-black">
+              Candidate description
+            </span>
+          </div>
+          <div style={{ width: "100%", flex: 1 }}>
+            <HtmlViewComponent
+              value={description}
+              onChange={setDescription}
+              placeholder="Add Description"
+              // className='w-[100%]'
+            />
+          </div>
+        </div>
+        {/* Candidate description block ends */}
+        {/* Skills block starts */}
+        <div className="display-flex-justify">
+          <div className="flex-1 max-w-[350px]">
+            <span className="font-16-medium color-dark-black">Skills</span>
+          </div>
+          <div className="flex-1 ">
+            <TagManager tags={skills} setTags={setSkills} />
+          </div>
+        </div>
+        {/* Skills block ends */}
+        {/* Professional details block starts */}
+        <div className="display-flex-justify">
+          <div className="flex-1 max-w-[350px]">
+            <span className="font-16-medium color-dark-black">
+              Professional details
+            </span>
+          </div>
+          <div className="flex-1">
+            <div className="w-full">
+              <div className="display-flex gap-[10px] mt-[10px]">
+                <div className="flex-1">
+                   <CommonTextInput
+                   type="text"
+                     placeholder="Years of Experience"
+                     value={yearsOfExp}
+                     onChange={(e) => {
+                      const inputValue = e.target.value;
+                      if (/^[0-9.]*$/.test(inputValue)) {
+                        setYearsOfExp(inputValue);
+                      }
+                    }}
+                  />
+                </div>
+                <div className="flex-1 ">
+                 
+                     <CommonTextInput
+                   type="text"
                       placeholder="Highest Qualification"
-                      className="filter-input"
-                      type="text"
                       value={highestQualification}
                       onChange={(e) => setHighestQualification(e.target.value)}
-                    />
-                  </div>
+                  />
                 </div>
-                <div className="display-flex gap-[10px] mt-[10px]">
-                  <div className="flex-1 ">
-                    <CustomDropdown
-                      options={frequencyOptions}
-                      placeholder="Domain"
-                      selectedValue={frequency}
-                      onChange={setFrequency}
-                      optionKey="frequency"
-                    />
-                  </div>
-                  <div className="flex-1 "></div>
+              </div>
+              <div className="display-flex gap-[10px] mt-[10px]">
+                <div className="flex-1 ">
+                  <CustomDropdown
+                    options={frequencyOptions}
+                    placeholder="Domain"
+                    selectedValue={frequency}
+                    onChange={setFrequency}
+                    optionKey="frequency"
+                  />
                 </div>
-                <div className="display-flex gap-[10px] mt-[10px]">
-                  <div className="flex-1 ">
-                    <TitleSearchDropdown
-                      placeholder={"Current Job Title"}
-                      selectedTitles={selectedTitles}
-                      setSelectedTitles={setSelectedTitles}
-                      allowMultiple={false}
-                    />
-                  </div>
-                  <div className="flex-1 border-1 rounded-[8px]">
-                    <input
-                      placeholder="Current Employer"
-                      className="filter-input"
-                      type="text"
-                      value={currentEmployer}
-                      onChange={(e) => setCurrentEmployer(e.target.value)}
-                    />
-                  </div>
+                <div className="flex-1 "></div>
+              </div>
+              <div className="display-flex gap-[10px] mt-[10px]">
+                <div className="flex-1 ">
+                  <TitleSearchDropdown
+                    placeholder={"Current Job Title"}
+                    selectedTitles={selectedTitles}
+                    setSelectedTitles={setSelectedTitles}
+                    allowMultiple={false}
+                  />
                 </div>
-                {/* salary details */}
-                <div className="display-flex gap-[10px] mt-[10px]">
-                  <div className="flex-1  rounded-[8px]">
-                    <CustomDropdown
-                      options={frequencyOptions}
-                      placeholder="Salary Frequency"
-                      selectedValue={frequency}
-                      onChange={setFrequency}
-                      optionKey="frequency"
-                    />
-                  </div>
-                  <div className="flex-1 rounded-[8px]">
-                    <CurrencySelector
-                      label="Current Salary"
-                      selectedCurrency={currentSalaryCurrency}
-                      setSelectedCurrency={setCurrentSalaryCurrency}
-                      salary={currentSalary}
-                      setSalary={setCurrentSalary}
-                    />
-                  </div>
-                  <div className="flex-1 rounded-[8px]">
-                    <CurrencySelector
-                      label="Expected Salary"
-                      selectedCurrency={expectedSalaryCurrency}
-                      setSelectedCurrency={setExpectedSalaryCurrency}
-                      salary={expectedSalary}
-                      setSalary={setExpectedSalary}
-                    />
-                  </div>
+                <div className="flex-1">
+             
+                     <CommonTextInput
+                  placeholder="Current Employer"
+                  
+                  type="text"
+                  value={currentEmployer}
+                  onChange={(e) => setCurrentEmployer(e.target.value)}
+                  />
+                </div>
+              </div>
+              {/* salary details */}
+              <div className="display-flex gap-[10px] mt-[10px]">
+                <div className="flex-1  rounded-[8px]">
+                  <CustomDropdown
+                    options={frequencyOptions}
+                    placeholder="Salary Frequency"
+                    selectedValue={frequency}
+                    onChange={setFrequency}
+                    optionKey="frequency"
+                  />
+                </div>
+                <div className="flex-1">
+                  <CurrencySelector
+                    label="Current Salary"
+                    selectedCurrency={currentSalaryCurrency}
+                    setSelectedCurrency={setCurrentSalaryCurrency}
+                    salary={currentSalary}
+                    setSalary={setCurrentSalary}
+                  />
+                </div>
+                <div className="flex-1 rounded-[8px]">
+                  <CurrencySelector
+                    label="Expected Salary"
+                    selectedCurrency={expectedSalaryCurrency}
+                    setSelectedCurrency={setExpectedSalaryCurrency}
+                    salary={expectedSalary}
+                    setSalary={setExpectedSalary}
+                  />
                 </div>
               </div>
             </div>
           </div>
-          {/* Professional details block ends */}
-
-          {/* Languages block starts */}
-          <div className="flex justify-between mt-[26px]">
-            <div className=" flex flex-1 max-w-[350px]">
-              <span className="items-start font-ubuntu text-xl font-medium">
-                Languages
-              </span>
-            </div>
-            <div className="flex flex-1 ">
-              <LanguageListManager
-                selectedLanguages={languages}
-                setSelectedLanguages={setLanguages}
-              />
-            </div>
-          </div>
-          {/* Languages block ends */}
-          {/* Social links block starts */}
-          <div className="flex justify-between mt-[26px]">
-            <div className=" flex flex-1 max-w-[350px]">
-              <span className="items-start font-ubuntu text-xl font-medium">
-                Social links
-              </span>
-            </div>
-            <div className="flex flex-1 ">
-              <SocialLinksManager
-                selectedSocialLinks={socialLinks}
-                setSelectedSocialLinks={setSocialLinks}
-              />
-            </div>
-          </div>
-          {/* Social links block ends */}
-          {/* Experience details block starts */}
-          <div className="flex justify-between mt-[26px]">
-            <div className=" flex flex-1 max-w-[350px]">
-              <span className="items-start font-ubuntu text-xl font-medium">
-                Experience details
-              </span>
-            </div>
-            <div className="flex flex-1 ">
-              <ExperienceDetailsManager
-                setExperienceDetails={setExperience}
-                experienceDetails={experience}
-              />
-            </div>
-          </div>
-          {/* Experience details block ends */}
-          {/* Education details block starts */}
-          <div className="flex justify-between mt-[26px]">
-            <div className=" flex flex-1 max-w-[350px]">
-              <span className="items-start font-ubuntu text-xl font-medium">
-                Education details
-              </span>
-            </div>
-            <div className="flex flex-1 ">
-              <EducationDetailsManager
-                educationDetails={education}
-                setEducationDetails={setEducation}
-              />
-            </div>
-          </div>
-          {/* Education details block ends */}
         </div>
+        {/* Professional details block ends */}
+
+        {/* Languages block starts */}
+        <div className="display-flex-justify">
+          <div className="flex-1 max-w-[350px]">
+            <span className="font-16-medium color-dark-black">Languages</span>
+          </div>
+          <div className="flex-1 ">
+            <LanguageListManager
+              selectedLanguages={languages}
+              setSelectedLanguages={setLanguages}
+            />
+          </div>
+        </div>
+        {/* Languages block ends */}
+        {/* Social links block starts */}
+        <div className="display-flex-justify">
+          <div className="flex-1 max-w-[350px]">
+            <span className="font-16-medium color-dark-black">
+              Social links
+            </span>
+          </div>
+          <div className="flex-1">
+            <SocialLinksManager
+              selectedSocialLinks={socialLinks}
+              setSelectedSocialLinks={setSocialLinks}
+            />
+          </div>
+        </div>
+        {/* Social links block ends */}
+        {/* Experience details block starts */}
+        <div className="display-flex-justify">
+          <div className="flex-1 max-w-[350px]">
+            <span className="font-16-medium color-dark-black">
+              Experience details
+            </span>
+          </div>
+          <div className="flex-1 ">
+            <ExperienceDetailsManager
+              setExperienceDetails={setExperience}
+              experienceDetails={experience}
+            />
+          </div>
+        </div>
+        {/* Experience details block ends */}
+        {/* Education details block starts */}
+        <div className="display-flex-justify" style={{ marginBottom: 20 }}>
+          <div className="flex-1 max-w-[350px]">
+            <span className="font-16-medium color-dark-black">
+              Education details
+            </span>
+          </div>
+          <div className="flex-1">
+            <EducationDetailsManager
+              educationDetails={education}
+              setEducationDetails={setEducation}
+            />
+          </div>
+        </div>
+        {/* Education details block ends */}
       </div>
     </div>
   );

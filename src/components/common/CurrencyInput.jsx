@@ -59,7 +59,7 @@ const CurrencySelector = ({
   return (
     <div className="relative ">
       {/* Input Field with Currency Selector */}
-      <div className="flex items-center border border-gray-300 px-2 rounded-md cursor-pointer bg-white py-3 border-none h-[38px]">
+      <div className="flex items-center   px-2 rounded-md cursor-pointer bg-white py-3  h-[38px]" style={{border:'1px solid #f3f4f4'}}>
       <div
           className="flex items-center cursor-pointer"
         onClick={() => setShowDropdown(!showDropdown)}
@@ -78,7 +78,7 @@ const CurrencySelector = ({
         </div>
         <input
           type="text"
-          className=" flex-1 outline-none border-none text-sm text-customBlue font-ubuntu ml-1"
+          className=" flex-1 outline-none border-none text-sm text-customBlue font-ubuntu ml-1  placeholder:text-customGray"
           placeholder={label}
           value={salary}
           onChange={(e) => setSalary(e.target.value)}

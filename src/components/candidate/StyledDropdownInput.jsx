@@ -31,10 +31,11 @@ const DropdownWithInput = ({
         <input
           type="text"
           placeholder="First Name"
-          className="flex-1 normal-input"
+          className="flex-1 normal-input placeholder:text-customGray"
           value={firstName}
           onChange={(e) => setFirstName(e.target.value)}
         />
+        
       </div>
 
       {isOpen && (

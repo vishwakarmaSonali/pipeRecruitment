@@ -66,10 +66,10 @@ const CustomDropdown = ({
 
   return (
     <div className="relative w-full" ref={dropdownRef}>
-      <div className="w-full px-2 border min-h-[38px] flex justify-between items-center bg-white border-customGrey1 rounded-[8px] text-sm text-customBlue placeholder:text-borderGrey">
+      <div className="w-full px-2  min-h-[38px] flex justify-between items-center bg-white border-1 border-customGrey1 rounded-[8px] text-sm text-customBlue placeholder:text-customGray">
         <input
           type="text"
-          className="flex-1 outline-none border-none bg-transparent"
+          className="flex-1 outline-none border-none bg-transparent  text-sm text-customBlue placeholder:text-customGray"
           value={inputValue}
           onChange={handleInputChange}
           placeholder={placeholder}
@@ -119,11 +119,7 @@ const CustomDropdown = ({
                   key={index}
                   onClick={() => handleSelect(option)}
                   className={`px-[12px] py-2 flex items-center gap-2 cursor-pointer transition 
-              ${
-                isSelected
-                  ? "bg-blueBg"
-                  : "hover:bg-blueBg"
-              }`}
+              ${isSelected ? "bg-blueBg" : "hover:bg-blueBg"}`}
                 >
                   {showCheckbox && multiSelect && (
                     <div

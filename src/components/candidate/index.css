@@ -286,3 +286,141 @@ textarea {
 .opacity-1 {
   opacity: 1;
 }
+
+.create-candidate-main-container {
+  max-width: 1200px;
+  width: 100%;
+  margin: 0px auto;
+  box-sizing: border-box;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 26px;
+}
+
+/* calendar component style */
+.calendar-container {
+  display: flex;
+  height: 100%;
+  position: relative;
+  overflow: auto;
+}
+
+.candidate-sidebar {
+  max-width: 280px;
+  width: 100%;
+  overflow: auto;
+  position: sticky;
+  top: 0px;
+}
+
+.candidate-calendar-sidebar-header {
+  padding: 7px 10px;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+}
+
+.calendar-event-list-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+
+.candidate-calendar {
+  flex: 1;
+  overflow: auto;
+  overflow-x: hidden;
+  border-top: 1px solid #d7d7d7;
+  border-bottom: 1px solid #d7d7d7;
+}
+
+.candidate-calendar-days {
+  background-color: var(--white);
+  display: flex;
+  height: 38px;
+  align-items: center;
+  border: 1px solid #d7d7d7;
+  border-top: none;
+}
+
+.candidate-cell {
+  flex: 1;
+  padding: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  border: 1px solid #d7d7d7;
+}
+
+.candidate-calendar-row:not(:last-child) .candidate-cell {
+  border-bottom: none;
+}
+
+.candidate-cell:not(:last-child) {
+  border-right: none;
+}
+
+.candidate-calendar-row:first-child .candidate-cell {
+  border-top: none;
+}
+
+.candidate-calendar-row:last-child .candidate-cell {
+  border-bottom: none;
+}
+
+.candidate-cell:last-child {
+  border-right: 1px solid #d7d7d7;
+}
+
+.candidate-cell-date {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 100px;
+  font-family: "Ubuntu";
+  font-weight: 500;
+  font-size: 10.36px;
+  line-height: 11.9px;
+  color: #151b23;
+}
+
+.position-sticky {
+  position: sticky;
+  top: 0px;
+}
+
+.candidate-cell-date.today-date {
+  background-color: #1761d81f;
+}
+
+.candidate-calendar-body {
+  display: flex;
+  flex-direction: column;
+  height: calc(100% - 38px);
+}
+
+.candidate-calendar-row {
+  display: flex;
+  flex: 1;
+}
+
+.calendar-event-list {
+  padding: 12px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.event-list {
+  overflow: auto;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}

@@ -60,6 +60,7 @@ const SkillSearchDropdown = ({ selectedSkills = [], setSelectedSkills }) => {
         type="text"
         placeholder="Skills"
         className="filter-input"
+        style={{border:"1px solid #f3f4f4"}}
         value={skillQuery}
         onChange={(e) => setSkillQuery(e.target.value)}
         onFocus={() => setShowSkillDropdown(true)}
