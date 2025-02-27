@@ -332,6 +332,8 @@ export const experienceData = [
     location: "Mumbai, Maharastra, India",
     startDate: "March 2021",
     endDate: "February 2022",
+    description:
+      "<p>At DesignScape Studios, I have been responsible for leading end-to-end design processes for various web and mobile applications. My role involves conducting user research, wireframing, prototyping, and usability testing to create seamless and engaging user experiences.</p><p><br></p><p><strong>Key Responsibilities &amp; Achievements:</strong></p><ul><li>Led user research initiatives, conducting interviews and usability tests to gather insights.</li><li>Designed high-fidelity wireframes, UI mockups, and interactive prototypes using Figma and Adobe XD.</li><li>Developed and maintained design systems to ensure consistency across products.</li><li>Worked closely with developers, product managers, and stakeholders to bring designs to life.</li><li>Conducted A/B testing and user feedback analysis to refine designs and improve usability.</li><li>Organized and participated in design thinking workshops, fostering a culture of innovation.</li></ul><p><br></p><p>Through this role, I have honed my skills in responsive design, accessibility standards, and user psychology while also taking part in mentoring junior designers and streamlining the design workflow.</p>",
   },
   {
     id: 2,
@@ -340,6 +342,8 @@ export const experienceData = [
     location: "Bangalore, Karnataka, India",
     startDate: "July 2019",
     endDate: "February 2021",
+    description:
+      "<p>At DesignScape Studios, I have been responsible for leading end-to-end design processes for various web and mobile applications. My role involves conducting user research, wireframing, prototyping, and usability testing to create seamless and engaging user experiences.</p><p><br></p><p><strong>Key Responsibilities &amp; Achievements:</strong></p><ul><li>Led user research initiatives, conducting interviews and usability tests to gather insights.</li><li>Designed high-fidelity wireframes, UI mockups, and interactive prototypes using Figma and Adobe XD.</li><li>Developed and maintained design systems to ensure consistency across products.</li><li>Worked closely with developers, product managers, and stakeholders to bring designs to life.</li><li>Conducted A/B testing and user feedback analysis to refine designs and improve usability.</li><li>Organized and participated in design thinking workshops, fostering a culture of innovation.</li></ul><p><br></p><p>Through this role, I have honed my skills in responsive design, accessibility standards, and user psychology while also taking part in mentoring junior designers and streamlining the design workflow.</p>",
   },
 ];
 
@@ -351,6 +355,8 @@ export const educationData = [
     collage: "National Institute of Design (NID), Ahmedabad",
     startDate: "September 2015",
     endDate: "May 2019",
+    description:
+      "<p>At DesignScape Studios, I have been responsible for leading end-to-end design processes for various web and mobile applications. My role involves conducting user research, wireframing, prototyping, and usability testing to create seamless and engaging user experiences.</p><p><br></p><p><strong>Key Responsibilities &amp; Achievements:</strong></p><ul><li>Led user research initiatives, conducting interviews and usability tests to gather insights.</li><li>Designed high-fidelity wireframes, UI mockups, and interactive prototypes using Figma and Adobe XD.</li><li>Developed and maintained design systems to ensure consistency across products.</li><li>Worked closely with developers, product managers, and stakeholders to bring designs to life.</li><li>Conducted A/B testing and user feedback analysis to refine designs and improve usability.</li><li>Organized and participated in design thinking workshops, fostering a culture of innovation.</li></ul><p><br></p><p>Through this role, I have honed my skills in responsive design, accessibility standards, and user psychology while also taking part in mentoring junior designers and streamlining the design workflow.</p>",
   },
 ];
 
@@ -877,6 +883,11 @@ export const candidateDetailsData = {
   Languages: ["English", "Hindi"],
 };
 
+export const language = {
+  English: "Advanced",
+  Hindi: "Native",
+};
+
 export const contactDetails = {
   "Phone Number": "919664866848",
   "Email Id": "priya.s@designscape.com",
@@ -954,3 +965,18 @@ export const professionalDetails = {
   "GDPR Consent": false,
   "Email Consent": false,
 };
+
+export const candidateDescription = {
+  candidateDescription:
+    "<p>A creative and user-focused UI/UX Designer with 3+ years of experience in crafting intuitive digital experiences. Adept at creating wireframes, prototypes, and high-fidelity designs for web and mobile applications. Skilled in translating business goals and user needs into functional and visually appealing interfaces. Priya is known for her strong attention to detail, collaborative approach, and ability to deliver innovative design solutions.</p>",
+};
+
+export const customCVData = [
+  {
+    id: 1,
+    cvName: "UpTech",
+    resumeInfo: {
+      name: "",
+    },
+  },
+];

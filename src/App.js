@@ -27,6 +27,10 @@ import ArchiveCandidates from "./pages/Recruitment/Candidates/ArchiveCandidatesP
 import FolderAddCandidates from "./pages/Recruitment/Candidates/FoldersList";
 import IndividualFilterCandidateListPage from "./pages/Recruitment/Candidates/IndividualFolderCandidateList";
 import MergeDuplicateCandidatesPage from "./pages/Recruitment/Candidates/MergeDuplicateCandidates";
+import OriginalResumePage from "./pages/resume/OriginalResumePage";
+import CustomCvPage from "./pages/resume/CustomCvPage";
+import ReportPage from "./pages/resume/ReportPage";
+
 const router = createBrowserRouter([
   {
     path: "/",
@@ -86,11 +90,23 @@ const router = createBrowserRouter([
   },
   {
     path: "/individual-folder/:folderId",
-    element: <IndividualFilterCandidateListPage/>,
+    element: <IndividualFilterCandidateListPage />,
+  },
+  {
+    path: "/candidate/original-resume",
+    element: <OriginalResumePage />,
+  },
+  {
+    path: "/candidate/custom-cv",
+    element: <CustomCvPage />,
+  },
+  {
+    path: "/candidate/report",
+    element: <CustomCvPage />,
   },
   {
     path: "/merge-candidate",
-    element: <MergeDuplicateCandidatesPage/>,
+    element: <MergeDuplicateCandidatesPage />,
   },
 ]);
 

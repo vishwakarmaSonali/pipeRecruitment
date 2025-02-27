@@ -264,7 +264,7 @@ const Navbar = () => {
           open={openUsers}
           onClose={handleUserMenuClose}
           PaperProps={{
-            sx: commonStyle.sx,
+            sx: commonStyle.sx120,
           }}
           aria-controls={openUsers ? "basic-menu" : undefined}
           aria-haspopup="true"

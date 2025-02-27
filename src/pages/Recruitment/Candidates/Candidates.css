@@ -112,6 +112,14 @@
   margin: 0px;
 }
 
+.font-18-medium {
+  font-family: "Ubuntu";
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 27px;
+  margin: 0px;
+}
+
 .font-16-regular {
   font-family: "Ubuntu";
   font-size: 16px;

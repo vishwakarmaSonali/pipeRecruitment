@@ -11,6 +11,7 @@ import { demoDescriptionText } from "../../helpers/config";
 const CandidateDescription = ({ label, data, editable }) => {
   const [collapse, setCollapse] = useState(true);
   const [description, setDescription] = useState(demoDescriptionText);
+  console.log(">>>>>>>>>>>>.description", description);
   const [edit, setEdit] = useState(false);
 
   return (

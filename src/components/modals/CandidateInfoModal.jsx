@@ -70,6 +70,8 @@ import { ReactComponent as OriginalResumeIcon } from "../../assets/images/resume
 import { ReactComponent as CvIcon } from "../../assets/images/resume/cv.svg";
 import { ReactComponent as ReportIcon } from "../../assets/images/resume/report.svg";
 import CalendarComponent from "../candidate/CalendarComponent";
+import CommonButton from "../common/CommonButton";
+import CancelButton from "../common/CancelButton";
 
 const candidateInfoTabs = [
   {
@@ -120,21 +122,19 @@ const resumeTabs = [
     name: "Original",
     desc: "View candidate’s original resume",
     icon: <OriginalResumeIcon />,
-    navigate: "#",
+    navigate: "/candidate/original-resume",
   },
   {
     id: 2,
     name: "Custom CV",
     desc: "Create and modify candidate’s custom CV",
     icon: <CvIcon />,
-    navigate: "#",
   },
   {
     id: 3,
     name: "Report",
     desc: "Create and modify candidate’s report",
     icon: <ReportIcon />,
-    navigate: "#",
   },
 ];
 
@@ -295,6 +295,7 @@ const CandidateInfoModal = ({ visible, onClose }) => {
   const labelMenuOpen = Boolean(labelAnchor);
   const feedBackMenuOpen = Boolean(anchorE2);
   const open = Boolean(anchorEl);
+  const [selectedResumeTab, setSelectedResumeTab] = useState(1);
 
   const handleLabelMenuClick = (event) => {
     setLabelAnchor(event.currentTarget);
@@ -436,6 +437,76 @@ const CandidateInfoModal = ({ visible, onClose }) => {
       setModalVisibility("animatedModal", false);
     }, 600);
   };
+
+  const resumeBackHandler = () => {
+    setSelectedResumeTab(1);
+  };
+
+  const renderCustomCVHeaderComponent = () => {
+    return (
+      <div className="resume-header-div position-sticky">
+        <p className="font-22-medium color-dark-black">All Custom CV</p>
+        <div className="display-flex" style={{ gap: 8 }}>
+          <CancelButton title={"Back"} onClick={resumeBackHandler} />
+          <CommonButton
+            title={"Create Custom CV"}
+            onClick={() => navigate("/candidate/custom-cv")}
+          />
+        </div>
+      </div>
+    );
+  };
+
+  const renderReportHeaderComponent = () => {
+    return (
+      <div className="resume-header-div position-sticky">
+        <p className="font-22-medium color-dark-black">All Reports</p>
+        <div className="display-flex" style={{ gap: 8 }}>
+          <CancelButton title={"Back"} onClick={resumeBackHandler} />
+          <CommonButton title={"Create Report"} />
+        </div>
+      </div>
+    );
+  };
+
+  const renderEmptyCustomCVComponent = () => {
+    return (
+      <div
+        className="display-column justify-center align-center"
+        style={{ gap: 4, maxWidth: 400 }}
+      >
+        <CvIcon />
+        <div className="display-column" style={{ gap: 8 }}>
+          <p className="font-14-medium color-dark-black text-center">
+            No Custom CV
+          </p>
+          <p className="font-14-regular color-grey text-center">
+            Start building CV of your choice.
+          </p>
+        </div>
+      </div>
+    );
+  };
+
+  const renderEmptyReportComponent = () => {
+    return (
+      <div
+        className="display-column justify-center align-center"
+        style={{ gap: 4, maxWidth: 400 }}
+      >
+        <ReportIcon />
+        <div className="display-column" style={{ gap: 8 }}>
+          <p className="font-14-medium color-dark-black text-center">
+            No Reports
+          </p>
+          <p className="font-14-regular color-grey text-center">
+            Start building reports of your choice.
+          </p>
+        </div>
+      </div>
+    );
+  };
+
   return (
     <>
       <Modal
@@ -646,15 +717,21 @@ const CandidateInfoModal = ({ visible, onClose }) => {
                 <ProfessionalDetails
                   label={"Contact Details"}
                   details={contactDetails}
+                  editable={true}
                 />
-                <CandidateDescription label={"Candidate Description"} />
+                <CandidateDescription
+                  label={"Candidate Description"}
+                  editable={true}
+                />
                 <ProfessionalDetails
                   label={"Professional Details"}
                   details={professionalDetails}
+                  editable={true}
                 />
                 <ProfessionalDetails
                   label={"Placement Details"}
                   details={placementDetails}
+                  editable={true}
                 />
                 <CandidateInfoExperience
                   label={"Experience Details"}
@@ -858,38 +935,66 @@ const CandidateInfoModal = ({ visible, onClose }) => {
           )}
 
           {selectedCandidateTab === "Resume" && (
-            <div
-              className="display-flex justify-center flex-1"
-              style={{
-                gap: 20,
-                padding: 16,
-                alignItems: "flex-start",
-              }}
-            >
-              {resumeTabs?.map((item) => {
-                return (
-                  <button
-                    className="resume-tab-item"
-                    onClick={() => navigate(item?.navigate)}
-                    key={item?.id}
-                  >
-                    <div>{item?.icon}</div>
-                    <div
-                      className="display-column"
-                      style={{
-                        gap: 6,
+            <div className="display-flex flex-1">
+              {selectedResumeTab === 1 && (
+                <div
+                  className="display-flex justify-center flex-1"
+                  style={{
+                    gap: 20,
+                    padding: 16,
+                    alignItems: "flex-start",
+                  }}
+                >
+                  {resumeTabs?.map((item) => {
+                    return (
+                      <button
+                        className="resume-tab-item"
+                        onClick={() => {
+                          if (item?.id === 1) {
+                            navigate(item?.navigate);
+                          } else {
+                            setSelectedResumeTab(item?.id);
+                          }
+                        }}
+                        key={item?.id}
+                      >
+                        <div>{item?.icon}</div>
+                        <div
+                          className="display-column"
+                          style={{
+                            gap: 6,
 
-                        alignItems: "flex-start",
-                      }}
-                    >
-                      <p className="font-14-regular color-dark-black">
-                        {item?.name}
-                      </p>
-                      <p className="font-12-regular color-grey">{item?.desc}</p>
-                    </div>
-                  </button>
-                );
-              })}
+                            alignItems: "flex-start",
+                          }}
+                        >
+                          <p className="font-14-regular color-dark-black">
+                            {item?.name}
+                          </p>
+                          <p className="font-12-regular color-grey">
+                            {item?.desc}
+                          </p>
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
+              {selectedResumeTab === 2 && (
+                <div className="flex-1 display-column">
+                  {renderCustomCVHeaderComponent()}
+                  <div className="flex-1 display-flex align-center justify-center">
+                    {renderEmptyCustomCVComponent()}
+                  </div>
+                </div>
+              )}
+              {selectedResumeTab === 3 && (
+                <div className="flex-1 display-column">
+                  {renderReportHeaderComponent()}
+                  <div className="flex-1 display-flex align-center justify-center">
+                    {renderEmptyReportComponent()}
+                  </div>
+                </div>
+              )}
             </div>
           )}
 

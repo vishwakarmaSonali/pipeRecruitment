@@ -101,7 +101,8 @@
 }
 
 .divider-line {
-  height: 1px;
+  min-height: 1px;
+  max-height: 1px;
   background-color: #d7d7d7;
   width: 100%;
 }

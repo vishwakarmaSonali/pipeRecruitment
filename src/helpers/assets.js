@@ -18,6 +18,7 @@ export const userImage = require("../assets/images/userImage.png");
 export const priyaImage = require("../assets/images/priya.png");
 export const priya = require("../assets/images/priyaImage.png");
 export const grown = require("../assets/images/grown.png");
+export const xBoot = require("../assets/images/xBoot.png");
 
 //extension images
 export const pdf = require("../assets/images/Extension/pdf_4726010.png");
