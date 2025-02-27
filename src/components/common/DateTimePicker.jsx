@@ -19,7 +19,13 @@ import { ReactComponent as Arrowup } from "../../assets/icons/arrow-up.svg";
 import { ReactComponent as CalendarIcon } from "../../assets/icons/calendar-2.svg";
 import { convertToISO, formatDate } from "../../helpers/utils";
 
-const DateTimePicker = ({ onDateSelect, initialDate, showTime, dob,placeholder = "Date fo Birth" }) => {
+const DateTimePicker = ({
+  onDateSelect,
+  initialDate,
+  showTime,
+  dob,
+  placeholder = "Date fo Birth",
+}) => {
   const dropdownRef = useRef(null);
   const today = new Date();
   const initialMonth = initialDate ? new Date(initialDate) : today;
@@ -28,6 +34,13 @@ const DateTimePicker = ({ onDateSelect, initialDate, showTime, dob,placeholder =
   const selectedInitialDate = dob ? "" : format(initialMonth, "yyyy-MM-dd");
   const [selectedDate, setSelectedDate] = useState(selectedInitialDate);
   const [isOpen, setIsOpen] = useState(false);
+  const [viewMode, setViewMode] = useState("calendar"); // "year", "month", "calendar"
+  const [selectedYear, setSelectedYear] = useState(
+    format(currentMonth, "yyyy")
+  );
+  const [selectedMonth, setSelectedMonth] = useState(
+    format(currentMonth, "MMMM")
+  );
 
   const handleDateClick = (date) => {
     setSelectedDate(date);
@@ -96,16 +109,122 @@ const DateTimePicker = ({ onDateSelect, initialDate, showTime, dob,placeholder =
     );
   };
 
+  // const renderHeader = () => {
+  //   return (
+  //     <div className="calendar-header">
+  //       <button onClick={() => setCurrentMonth(subMonths(currentMonth, 1))}>
+  //         <LeftArrow width={20} height={20} />
+  //       </button>
+  //       <span
+  //         className="clickable-title"
+  //         onClick={() => setViewMode("year")} // Open Year Selection
+  //       >{format(currentMonth, "MMMM yyyy")}</span>
+  //       <button onClick={() => setCurrentMonth(addMonths(currentMonth, 1))}>
+  //         <RightArrow width={20} height={20} />
+  //       </button>
+  //     </div>
+  //   );
+  // };
   const renderHeader = () => {
     return (
-      <div className="calendar-header">
+      <div className="calendar-header cursor-pointer">
         <button onClick={() => setCurrentMonth(subMonths(currentMonth, 1))}>
           <LeftArrow width={20} height={20} />
         </button>
-        <span>{format(currentMonth, "MMMM yyyy")}</span>
+        <span
+          className="clickable-title"
+          onClick={() => setViewMode("year")} // Open Year View first
+        >
+          {selectedMonth} {selectedYear}
+        </span>
         <button onClick={() => setCurrentMonth(addMonths(currentMonth, 1))}>
           <RightArrow width={20} height={20} />
         </button>
+      </div>
+    );
+  };
+
+  const renderYearSelector = () => {
+    const startYear = new Date().getFullYear() - 30;
+    const endYear = new Date().getFullYear() + 10;
+    const years = Array.from({ length: 24 }, (_, i) => startYear + i);
+
+    return (
+      <div className="year-selector overflow-auto">
+        <div className="calendar-header mb-4">
+          <button onClick={() => setViewMode("calendar")}>
+            <LeftArrow />
+          </button>
+          <span className="current-year">{selectedYear}</span>
+          <button onClick={() => setViewMode("calendar")}>
+          <RightArrow width={20} height={20} />
+        </button>
+        </div>
+
+        <div className="year-grid">
+          {years.map((year) => (
+            <button
+              key={year}
+              className={`year-button ${
+                selectedYear === String(year) ? "selected" : ""
+              }`}
+              onClick={() => {
+                setSelectedYear(year);
+                setViewMode("month"); // Move to Month Selection
+              }}
+            >
+              {year}
+            </button>
+          ))}
+        </div>
+      </div>
+    );
+  };
+
+  const renderMonthSelector = () => {
+    const months = [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December",
+    ];
+
+    return (
+      <div className="month-selector">
+        <div className="calendar-header mb-4">
+          <button onClick={() => setViewMode("year")}>
+            <LeftArrow />
+          </button>
+          <span className="clickable-title">{selectedYear}</span>
+          <button onClick={() => setViewMode("year")}>
+          <RightArrow width={20} height={20} />
+        </button>
+        </div>
+        <div className="month-grid">
+          {months.map((month, index) => (
+            <button
+              key={month}
+              className={`month-button ${
+                month === selectedMonth ? "selected" : ""
+              }`}
+              onClick={() => {
+                setSelectedMonth(month);
+                setCurrentMonth(new Date(selectedYear, index, 1));
+                setViewMode("calendar"); // Move Back to Calendar View
+              }}
+            >
+              {month}
+            </button>
+          ))}
+        </div>
       </div>
     );
   };
@@ -205,10 +324,17 @@ const DateTimePicker = ({ onDateSelect, initialDate, showTime, dob,placeholder =
       {isOpen && (
         <div ref={dropdownRef} className="datepicker-dropdown-container">
           <div className="date-picker-calendar">
-            {renderHeader()}
-            {renderDays()}
-            {renderCells()}
+            {viewMode === "year" && renderYearSelector()}
+            {viewMode === "month" && renderMonthSelector()}
+            {viewMode === "calendar" && (
+              <>
+                {renderHeader()}
+                {renderDays()}
+                {renderCells()}
+              </>
+            )}
           </div>
+
           {showTime && (
             <>
               <div className="divider-line" />

@@ -328,8 +328,7 @@
   background-color: var(--grey);
 }
 
-.phone-input-div {
-}
+.phone-input-div {}
 
 .phone-input-style {
   width: 100%;
@@ -644,7 +643,8 @@
 
 /* Style the select dropdown */
 .ql-align {
-  appearance: none; /* Hide default browser styling */
+  appearance: none;
+  /* Hide default browser styling */
   background: transparent;
   border: none;
   font-size: 14px;
@@ -716,6 +716,7 @@
   0% {
     transform: rotate(0deg);
   }
+
   100% {
     transform: rotate(360deg);
   }
@@ -821,4 +822,56 @@
   font-family: "Ubuntu";
   font-weight: 400;
   color: var(--dark-black);
+}
+
+/* year dropdown calendaer date time picker component */
+.year-selector,
+.month-selector {
+  padding: 12px;
+  text-align: center;
+  font-family: "Ubuntu";
+  font-size: 14px;
+  color: var(--dark-black);
+}
+
+.year-header,
+.month-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  font-family: "Ubuntu";
+  font-size: 14px;
+  color: #007bff
+}
+
+.year-grid,
+.month-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  font-family: "Ubuntu";
+}
+
+.year-button,
+.month-button {
+  /* padding: 12px; */
+  padding-top: 10px;
+  padding-bottom: 10px;
+  border: 1px solid #D7D7D7;
+  background-color: white;
+  cursor: pointer;
+  border-radius: 8px;
+  align-items: center;
+  text-align: center;
+  font-family: "Ubuntu";
+
+}
+
+.year-button.selected,
+.month-button.selected {
+  background-color: #1761D81A;
+  color: var(--dark-black);
+  font-family: "Ubuntu";
+  border: 1px solid #1761D8;
 }
