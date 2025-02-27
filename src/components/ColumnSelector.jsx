@@ -3,6 +3,7 @@ import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { ReactComponent as DropArrow } from "../assets/icons/arrowDown.svg";
 import { ReactComponent as CloseIcon } from "../assets/icons/closeModal.svg";
 import { ReactComponent as SearchIcon } from "../assets/icons/sourcingIcons/search-normal.svg"; // MUI Search Icon
+import { ReactComponent as ColumnArrangeIcon } from "../assets/icons/columnIcon.svg"; // MUI Search Icon
 import Tick from "../assets/icons/sourcingIcons/tick.svg";
 import { useDispatch, useSelector } from "react-redux";
 import { candidates } from "../helpers/dataCandidates";
@@ -130,7 +131,8 @@ const ColumnSelector = ({ isOpen, onClose, setSelectedColumns }) => {
         {...listeners}
         className="font-ubuntu text-m text-customBlue gap-[8px] px-[12px] py-[12px] max-h-[40px]"
       >
-        <span style={{ cursor: "grab" }}></span> {column}
+        <ColumnArrangeIcon />
+        <span style={{ cursor: "grab" }}>{column}</span> 
         <button
           className="remove-btn text-customBlue"
           onClick={(e) => {

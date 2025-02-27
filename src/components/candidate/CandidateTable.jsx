@@ -292,7 +292,7 @@ const CandidateTable = ({
           >
             <EditUser /> Change Ownership
           </button>
-          <button className="common-menu-item-btn">
+          <button className="common-menu-item-btn" onClick={()=>navigate("/merge-candidate")}>
             <MergeDuplicateIcon /> Merge Duplicate
           </button>
           <button className="common-menu-item-btn">

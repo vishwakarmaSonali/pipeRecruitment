@@ -98,7 +98,7 @@ const FavoriteFolders = () => {
             <div className="flex items-center justify-between border-t pt-[10px]" >
               {/* ✅ Checkbox & ⭐ Star Button */}
               <div className="flex items-center space-x-2">
-                <div className="w-5 h-5 border border-gray-400 bg-white rounded-md flex items-center justify-center cursor-pointer">
+                <div className="w-5 h-5  rounded-[6px] flex items-center justify-center cursor-pointer"  style={{border:"1px solid #151B23"}}>
                   <img src={Tick} alt="Selected" />
                 </div>
                 <button onClick={() => toggleStar(folder.id)}>

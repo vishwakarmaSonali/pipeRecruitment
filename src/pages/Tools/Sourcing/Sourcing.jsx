@@ -2,7 +2,7 @@ import React, { useState,  useEffect ,useRef} from "react";
 import { Menu, MenuItem, ListItemIcon, Typography } from "@mui/material";
 import { css } from "@emotion/react";
 import "./Sourcing.css";
-import ProfileAdd from "../../../assets/icons/sourcingIcons/profile-add.svg";
+import ProfileAdd1 from "../../../assets/icons/sourcingIcons/profile-add.svg";
 import jobIcon from "../../../assets/icons/sourcingIcons/briefcase.svg";
 import { ReactComponent as Tick } from "../../../assets/icons/sourcingIcons/tick.svg";
 import { ReactComponent as FolderAdd } from "../../../assets/icons/sourcingIcons/folder-add.svg";
@@ -19,12 +19,12 @@ import { useDispatch, useSelector } from "react-redux";
 import ShimmerEffectCandidateCard from "../../../components/sourcing/ShimmerEffectCandidateCard";
 import FilterDrawer from "../../../components/sourcing/FilterDrawer";
 import { useModal } from "../../../components/common/ModalProvider";
-import AddToJobsModal from "../../../components/modals/AddToJobsModal";
-import AddToFolderModal from "../../../components/modals/AddToFolderModal";
 import CreateFolderModal from "../../../components/modals/CreateFolderModal";
 import AddToJobsDrawer from "../../../components/candidate/AddToJobsDrawer";
 import AddToFolderDrawer from "../../../components/candidate/AddToFolderDrawer";
-
+import { ReactComponent as AddToJobsIcon } from "../../../assets/icons/sourcingIcons/briefcase.svg";
+import { ReactComponent as AddtoFolderIcon } from "../../../assets/icons/sourcingIcons/folder-add.svg";
+import { ReactComponent as ProfileAdd } from "../../../assets/icons/sourcingIcons/profile-add.svg";
 
 const candidates = [
   {
@@ -107,8 +107,8 @@ const BulkActionView = ({
   onClickAddJob,
   onClickFolder,
 }) => {
+
   const [anchorEl, setAnchorEl] = useState(null);
-  const [modalOpen, setModalOpen] = useState(false);
   const open = Boolean(anchorEl);
 
   // Function to calculate the number of applied filters
@@ -188,7 +188,7 @@ const BulkActionView = ({
       >
         <MenuItem onClick={handleClose} css={menuItemStyle}>
           <ListItemIcon>
-            <img src={ProfileAdd} alt="Add to candidate" />
+           <ProfileAdd />
           </ListItemIcon>
           <Typography
             sx={{ fontSize: "14px", fontFamily: "'Ubuntu', sans-serif" }}
@@ -203,7 +203,7 @@ const BulkActionView = ({
           }}
         >
           <ListItemIcon>
-            <img src={jobIcon} alt="Add to jobs" />
+          <AddToJobsIcon />
           </ListItemIcon>
           <Typography
             sx={{ fontSize: "14px", fontFamily: "'Ubuntu', sans-serif" }}
@@ -218,7 +218,7 @@ const BulkActionView = ({
           }}
         >
           <ListItemIcon>
-            <FolderAdd />
+           <FolderAdd stroke="#151B23" />,
           </ListItemIcon>
           <Typography
             sx={{ fontSize: "14px", fontFamily: "'Ubuntu', sans-serif" }}
@@ -260,6 +260,24 @@ const NoFiltersScreen = ({ onStartSearching }) => {
   );
 };
 const Sourcing = () => {
+   const bulkMenuItems = [
+      {
+        label: "Add to Candidate",
+        icon: <ProfileAdd />,
+        onClick: () => setAddToJobsDrawerOpen(true),
+      },
+      {
+        label: "Add to folder",
+        icon: <AddtoFolderIcon stroke="#151B23" />,
+        onClick: () => setAddToFolderDrawerOpen(true),
+      },
+      {
+        label: "Add to jobs",
+        icon:  <AddToJobsIcon /> ,
+        onClick: () => setAddToFolderDrawerOpen(true),
+      },
+    
+    ];
   const dispatch = useDispatch();
   const {
     fetchMoreLoading,
@@ -277,13 +295,10 @@ const Sourcing = () => {
   );
   const [selectedCandidates, setSelectedCandidates] = useState([]);
   const [filtersApplied, setFiltersApplied] = useState(false);
-  const [isJobModalOpen, setIsJobModalOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [resultsPerPage, setResultsPerPage] = useState(20);
   const dropdownRef = useRef(null);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const perPageLimit = 100;
-
   const [filters, setFilters] = useState({
     jobTitle: "",
     locations: "",

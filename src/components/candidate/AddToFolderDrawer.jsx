@@ -115,7 +115,7 @@ const AddToFolderDrawer = ({ isOpen, onClose, onApply, onReset }) => {
                   {item.isEditable ? (
                     <input
                       type="text"
-                      className="border-b border-gray-400 outline-none bg-transparent text-black"
+                      className="border-b border-customGrey1 outline-none bg-transparent text-black px-2 py-2 max-h-[30px]" 
                       value={item.name}
                       autoFocus
                       onChange={(e) => handleEditFolder(item.id, e.target.value)}
@@ -143,14 +143,15 @@ const AddToFolderDrawer = ({ isOpen, onClose, onApply, onReset }) => {
         <div className=" py-4 bg-white bottom-0">
           <div className="flex justify-between space-x-4">
             <button
-              className="w-1/2 border border-buttonBLue text-buttonBLue flex justify-center items-center py-[12px] rounded-[8px] btn-text h-[40px]"
-              onClick={onReset}
+              className="w-1/2  text-buttonBLue flex justify-center items-center py-[12px] rounded-[8px] btn-text h-[40px]"
+              style={{border:"1px solid #1761D8" }}
+              onClick={onClose}
             >
               Cancel
             </button>
             <button
               className="w-1/2 text-white bg-buttonBLue flex justify-center items-center py-[12px] rounded-[8px] btn-text h-[40px]"
-              onClick={onReset}
+              onClick={onClose}
             >
               Save
             </button>

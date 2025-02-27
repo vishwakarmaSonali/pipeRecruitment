@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "../../components/filterModal/FilterModal.css";
+import { ReactComponent as DropArrow } from "../../assets/icons/arrowDown.svg";
+
 
 const TitleSearchDropdown = ({
   selectedTitles = [],
   setSelectedTitles,
   allowMultiple = true, // Single or Multiple selection
+  showIcon =false
 }) => {
   const [titleQuery, setTitleQuery] = useState("");
   const [titleSuggestions, setTitleSuggestions] = useState([]);
@@ -65,11 +68,12 @@ const TitleSearchDropdown = ({
 
   return (
     <div className="relative  ">
-      <input
+ <div className="filter-input "  style={{border:"1px solid #f3f4f4"}}>
+ <input
         type="text"
         placeholder="Job Title"
-        className="filter-input "
-        style={{border:"1px solid #f3f4f4"}}
+        className="border-none outline-none px-2 "
+       
         value={!allowMultiple && selectedTitles.length > 0 ? selectedTitles[0] : titleQuery}
         onChange={(e) => {
           setTitleQuery(e.target.value);
@@ -77,7 +81,8 @@ const TitleSearchDropdown = ({
         }}
         onFocus={() => setShowTitleDropdown(true)}
       />
-
+{showIcon && <DropArrow />}
+ </div>
       {/* Title Suggestions Dropdown */}
       {showTitleDropdown && titleSuggestions.length > 0 && (
         <div className="flex flex-col  bg-white border border-customGrey1 rounded-lg shadow-sm max-h-[460px] overflow-auto z-50 text-sm">

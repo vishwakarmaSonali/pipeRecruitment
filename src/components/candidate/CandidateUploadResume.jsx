@@ -13,6 +13,7 @@ import { jobOptions, historyResumeData } from "../../helpers/config";
 import CommonButton from "../../components/common/CommonButton";
 import { useNavigate } from "react-router-dom";
 import ResumeHistoryTable from "../../components/candidate/ResumeHistoryTable";
+import TitleSearchDropdown from "../AutocompleteDropdowns/TitleSearchDropDown";
 const CreateCandidateUploadResume = () => {
     const fileInputRef = useRef();
     const navigate = useNavigate();
@@ -21,6 +22,8 @@ const CreateCandidateUploadResume = () => {
     const [folderValue, setFolderValue] = useState("");
     const [files, setFiles] = useState([]);
     const [isDragging, setIsDragging] = useState(false);
+
+      const [selectedTitles, setSelectedTitles] = useState([]); // Ensure it's an array
   const handleCreate = () => {
     console.log("Create button clicked");
     // Add your logic here
@@ -111,8 +114,15 @@ const CreateCandidateUploadResume = () => {
 
           {/* Dropdowns */}
           <div className="space-y-3">
-            <CommonDropdown placeholder={"Select Job (optional)"} />
-            <CommonDropdown placeholder={"Select Folder (optional)"} />
+            {/* <CommonDropdown placeholder={"Select Job (optional)"} /> */}
+            <TitleSearchDropdown
+                    placeholder={"Select Job (optional)"}
+                    selectedTitles={selectedTitles}
+                    setSelectedTitles={setSelectedTitles}
+                    allowMultiple={false}
+                    showIcon={true}
+                  />
+            <CommonDropdown placeholder={"Select Folder (optional)"} options={[]} />
           </div>
         </div>
         <div className="resumeContainers mt-[12px]">

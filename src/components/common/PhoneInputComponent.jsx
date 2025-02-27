@@ -36,6 +36,7 @@ const PhoneInputComponent = ({ phone, onChange }) => {
         buttonStyle={{
           border: "none",
           outline: "none",
+         
         }}
       />
     </div>

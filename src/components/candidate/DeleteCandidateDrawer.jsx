@@ -42,7 +42,7 @@ const DeleteCandidateDrawer = ({ isOpen, onClose, deleteMessage, onConfirmDelete
             type="text"
             value={deleteConfirmation}
             onChange={(e) => setDeleteConfirmation(e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md mt-2"
+            className="w-full px-3 py-2 border border-gray-300 rounded-[8px] mt-2 font-ubuntu text-m"
             placeholder="DELETE"
           />
         </div>

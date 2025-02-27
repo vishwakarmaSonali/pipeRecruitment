@@ -161,17 +161,17 @@ const IndividualFilterCandidateListPage = ({ isDrawerOpen }) => {
     {
       label: "Add candidates",
       icon: <AddCandidate />,
-      onClick: () => setModalVisibility("AddCandidatesToFolderVisible", true),
+      onClick: () => (setModalVisibility("AddCandidatesToFolderVisible", true),handleSettingsClose()),
     },
     {
       label: "Share Folder",
       icon: <ShareFolder />,
-      onClick: () => setModalVisibility("AddCandidatesToFolderVisible", true),
+      onClick: () => (setModalVisibility("AddCandidatesToFolderVisible", true),handleSettingsClose()),
     },
     {
       label: "Export",
       icon: <ExportIcon stroke="#151B23" />,
-      // onClick: () => setChangeOwnershipDrawerOpen(true),
+      onClick: () => handleSettingsClose(),
     },
 
     {
@@ -182,7 +182,7 @@ const IndividualFilterCandidateListPage = ({ isDrawerOpen }) => {
     {
       label: "Delete Folder",
       icon: <DeleteIcon />,
-      onClick: () => navigate("/archive-candidates"),
+      onClick: () => (setModalVisibility('categoryDeleteModalVisible',true),handleSettingsClose()) ,
     },
   ];
   const bulkActionMenuItems = [
@@ -589,7 +589,16 @@ const IndividualFilterCandidateListPage = ({ isDrawerOpen }) => {
         isOpen={addLabelDrawerOpen}
         onClose={() => toggleAddLabelDrawer(false)}
       />
-
+   <CommonDeleteModal
+        visible={modals?.categoryDeleteModalVisible}
+        title={"Delete Folder"}
+        description={"Are you sure you want to delete this folder?"}
+        onClose={() => {
+          setModalVisibility("categoryDeleteModalVisible", false);
+          // setSelectedItem(null);
+        }}
+        // onClickDelete={deleteCategory}
+      />
       {/* Menu for Bulk Actions */}
     </div>
   );

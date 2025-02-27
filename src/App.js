@@ -26,6 +26,7 @@ import CandidateUploadResumeCsvJsonPage from "./components/candidate/CandidateUp
 import ArchiveCandidates from "./pages/Recruitment/Candidates/ArchiveCandidatesPage";
 import FolderAddCandidates from "./pages/Recruitment/Candidates/FoldersList";
 import IndividualFilterCandidateListPage from "./pages/Recruitment/Candidates/IndividualFolderCandidateList";
+import MergeDuplicateCandidatesPage from "./pages/Recruitment/Candidates/MergeDuplicateCandidates";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -86,6 +87,10 @@ const router = createBrowserRouter([
   {
     path: "/individual-folder/:folderId",
     element: <IndividualFilterCandidateListPage/>,
+  },
+  {
+    path: "/merge-candidate",
+    element: <MergeDuplicateCandidatesPage/>,
   },
 ]);
 

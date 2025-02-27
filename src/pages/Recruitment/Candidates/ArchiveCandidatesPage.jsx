@@ -26,9 +26,7 @@ import GlobalMenu from "../../../components/GlobalMenu/GlobalMenu";
 import SearchableMenu from "../../../components/SearchableMenu/SearchableMenu";
 import FilterMenu from "../../../components/FilterMenu/FilterMenu";
 import SaveFiltersModal from "../../../components/modals/SaveFiltersModal";
-import EditColumnModal from "../../../components/modals/EditColumns";
 import {
-  candidates,
   archivedCandidates,
 } from "../../../helpers/dataCandidates";
 import { updateFilterAsync } from "../../../store/filterSlice";
@@ -50,8 +48,11 @@ import {
 } from "../../../helpers/config";
 import CandidateTable1 from "../../../components/candidate/ArchivedCandidateTable";
 import ArchiveCandidateTable from "../../../components/candidate/ArchivedCandidateTable";
+import PaginationComponent from "../../../components/common/PaginationComponent";
+import { useNavigate } from "react-router-dom";
 const ArchiveCandidates = ({ isDrawerOpen }) => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [candidateList, setCandidateList] = useState(archivedCandidates);
   const [selectedCandidates, setSelectedCandidates] = useState([]);
   const [selectedCandidate, setSelectedCandidate] = useState(null);
@@ -69,6 +70,7 @@ const ArchiveCandidates = ({ isDrawerOpen }) => {
     useState(false);
   const [filtersApplied, setFiltersApplied] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
 
   const [filters, setFilters] = useState({
     jobTitle: "",
@@ -102,7 +104,7 @@ const ArchiveCandidates = ({ isDrawerOpen }) => {
             label: "Merge Duplicate",
             icon: <MergeDuplicateIcon />,
             onClick: () =>
-              setModalVisibility("mergeDuplicateModalVisible", true),
+              navigate("/merge-candidate")
           },
         ]
       : []),
@@ -334,137 +336,8 @@ const ArchiveCandidates = ({ isDrawerOpen }) => {
   const handleCloseBulkAction = () => {
     setAnchorBulkActionEl(null);
   };
-
-  const PaginationFooter = () => {
-    const [currentPage, setCurrentPage] = useState(1);
-    const [resultsPerPage, setResultsPerPage] = useState(20);
-    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-    const totalPages = 1154;
-    const dropdownRef = useRef(null);
-
-    const handlePageClick = (page) => {
-      setCurrentPage(page);
-    };
-
-    const handleResultsChange = (value) => {
-      setResultsPerPage(value);
-      setIsDropdownOpen(false);
-      setCurrentPage(1); // Reset to first page when changing results per page
-    };
-
-    // ✅ Close dropdown when clicking outside
-    useEffect(() => {
-      function handleClickOutside(event) {
-        if (
-          dropdownRef.current &&
-          !dropdownRef.current.contains(event.target)
-        ) {
-          setIsDropdownOpen(false);
-        }
-      }
-      document.addEventListener("mousedown", handleClickOutside);
-      return () => {
-        document.removeEventListener("mousedown", handleClickOutside);
-      };
-    }, []);
-
-    return (
-      <div className="fixed bottom-0 w-screen bg-gray-100 py-2 flex items-center justify-between px-6 shadow-md">
-        <div className="w-1/4"></div>
-        {/* Pagination Controls */}
-        <div className="flex items-center space-x-4 justify-center w-1/2">
-          {/* Previous Page Button */}
-          <button
-            className={`px-3 py-1 rounded-md ${
-              currentPage === 1
-                ? "text-gray-400 cursor-not-allowed"
-                : "text-black"
-            }`}
-            onClick={() => handlePageClick(currentPage - 1)}
-            disabled={currentPage === 1}
-          >
-            <img src={LeftArrow} alt="leftArrow" />
-          </button>
-
-          {/* Page Numbers */}
-          <div className="flex items-center space-x-2 text-gray-700">
-            {[1, 2, 3, 4].map((page) => (
-              <button
-                key={page}
-                className={`px-3 py-1 rounded-md ${
-                  currentPage === page
-                    ? "text-blue-600 font-ubuntu font-medium text-sm"
-                    : "text-gray-700 font-ubuntu font-medium text-sm"
-                }`}
-                onClick={() => handlePageClick(page)}
-              >
-                {page}
-              </button>
-            ))}
-
-            {/* Ellipsis */}
-            <span className="text-gray-500">...</span>
-
-            {/* Last Page Number */}
-            <button
-              className={`px-3 py-1 rounded-md ${
-                currentPage === totalPages
-                  ? "text-blue-600 font-ubuntu font-medium text-sm"
-                  : "text-gray-700 font-ubuntu font-medium text-sm"
-              }`}
-              onClick={() => handlePageClick(totalPages)}
-            >
-              {totalPages}
-            </button>
-          </div>
-
-          {/* Next Page Button */}
-          <button
-            className={`px-3 py-1 rounded-md ${
-              currentPage === totalPages
-                ? "text-gray-400 cursor-not-allowed"
-                : "text-black"
-            }`}
-            onClick={() => handlePageClick(currentPage + 1)}
-            disabled={currentPage === totalPages}
-          >
-            <img src={RightArrow} alt="leftArrow" />
-          </button>
-        </div>
-
-        {/* Results Per Page Dropdown */}
-        <div
-          className="relative flex items-center space-x-2 justify-end w-1/4"
-          ref={dropdownRef}
-        >
-          <span className="text-sm font-ubuntu text-customGray">
-            Results per page
-          </span>
-          <button
-            className="border border-customGray rounded-md px-2 py-1 gap-1 text-sm font-ubuntu focus:outline-none focus:ring-0 relative items-center flex"
-            onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-          >
-            {resultsPerPage}
-            <DropArrow fill="customBlue" />
-          </button>
-
-          {/* Dropdown Menu (Positioned Above) */}
-          {isDropdownOpen && (
-            <div className="absolute bottom-full mb-2 right-0 w-16 text-sm font-ubuntu bg-white shadow-lg rounded-lg overflow-hidden z-50">
-              {[10, 20, 30, 40, 50].map((option) => (
-                <button
-                  key={option}
-                  className="block w-full text-center px-4 py-2 text-customBlue hover:bg-gray-100"
-                  onClick={() => handleResultsChange(option)}
-                >
-                  {option}
-                </button>
-              ))}
-            </div>
-          )}
-        </div>
-      </div>
-    );
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
   };
 
   const handleArchive = (id) => {
@@ -502,17 +375,14 @@ const ArchiveCandidates = ({ isDrawerOpen }) => {
   };
   return (
     <div
-      className="w-full h-screen bg-white overflow-hidden overscroll-none"
-      style={{ boxSizing: "border-box" }}
+      className="sourcing-main-container"
+      // style={{ boxSizing: "border-box" }}
     >
       <Navbar />
       <div
         className=" bg-grey-90"
         style={{ flex: 1, display: "flex", flexDirection: "column" }}
       >
-        {/* <Header title={"Candidates"} onFilterSelect={applySavedFilter} /> */}
-
-        {/* Tabs Section */}
 
         <div className="flex items-center justify-between p-[17px]">
           <span className="font-ubuntu font-medium text-custom-large">
@@ -545,10 +415,15 @@ const ArchiveCandidates = ({ isDrawerOpen }) => {
             </div>
           )}
         </div>
-        <div className="flex-1 bg-grey-90 flex flex-col overflow-hidden">
-          {/* Table Wrapper with Horizontal Scroll */}
-
-          <ArchiveCandidateTable
+        <div className="flex-1 bg-grey-90 flex flex-col">
+        <div
+            style={{
+              overflow: "hidden",
+              flex: 1,
+              maxHeight: "calc(100vh - 194px)",
+            }}
+          >
+              <ArchiveCandidateTable
             header={archivedCandidateHeader}
             data={archivedCandidates}
             setSelectedCandidateUser={setSelectedCandidate}
@@ -558,10 +433,24 @@ const ArchiveCandidates = ({ isDrawerOpen }) => {
             setSelectedCandidateUsers={setSelectedCandidates}
             showDeleteIcon={false}
           />
-        </div>
-        {/* filter div */}
+          </div>
+          </div>
       </div>
-      <PaginationFooter />
+      <div className="sourcing-pagination-div">
+        <div
+          style={{
+            flex: 1,
+            display: "flex",
+            justifyContent: "center",
+          }}
+        >
+          <PaginationComponent
+            totalPages={5}
+            currentPage={currentPage}
+            onPageChange={handlePageChange}
+          />
+        </div>
+      </div>
       {/* Menu for Bulk Actions */}
 
       <CreateCandidateModal

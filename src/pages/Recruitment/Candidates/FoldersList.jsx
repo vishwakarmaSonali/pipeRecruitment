@@ -488,7 +488,8 @@ const FolderAddCandidates = ({ isDrawerOpen }) => {
                             {item === "Folder Name" && (
                               <>
                            <div
-                      className="w-[20px] h-[20px] border border-gray-400 rounded-md flex items-center justify-center cursor-pointer mr-[46px]"
+                           style={{border:"1px solid #151B23"}}
+                      className="w-[20px] h-[20px] rounded-[6px] flex items-center justify-center cursor-pointer mr-[46px]"
                       onClick={() => {
                         // Select All or Deselect All
                         if (selectedRows.length === foldersCandidates.length) {
@@ -525,7 +526,8 @@ const FolderAddCandidates = ({ isDrawerOpen }) => {
                               {row?.folder_name && (
                                 <div className="flex items-center">
                                   <div
-                                    className="w-[20px] h-[20px] border border-gray-400 rounded-md flex items-center justify-center cursor-pointer mr-[10px]"
+                                  style={{border:"1px solid #151B23"}}
+                                    className="w-[20px] h-[20px]  rounded-[6px] flex items-center justify-center cursor-pointer mr-[10px]"
                                     onClick={() => toggleCheckbox(row.id)}
                                   >
                                     {selectedRows.includes(row.id) && (

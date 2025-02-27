@@ -28,7 +28,7 @@ const AddSkillsModal = ({ visible, onClose, setTags, tags }) => {
       setTags([...tags, { name: newSkill, score: newScore }]);
       setNewSkill("");
       setNewScore("");
-      handleBackdropClick();
+     onClose()
     }
   };
 
@@ -77,7 +77,7 @@ const AddSkillsModal = ({ visible, onClose, setTags, tags }) => {
             style={{ gap: 8, justifyContent: "center" }}
           >
             <CancelButton title={"Cancel"} onClick={resetData} />
-            <CommonButton title={"Add"} onClick={handleAddTag} />
+            <CommonButton title={"Add"} onClick={handleAddTag} disabled={!newSkill.trim() || !newScore.trim()}  />
           </div>
         </div>
       </div>

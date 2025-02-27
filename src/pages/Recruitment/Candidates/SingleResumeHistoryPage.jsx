@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React from "react";
 import "./Candidates.css";
 import Sidebar from "../../../components/sidebar/Sidebar";
 import Header from "../../../components/Header/Header";
@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { Avatar, Chip } from "@mui/material";
 import RefreshButton from "../../../components/common/RefreshButton";
 import ResumeUploadInfoTable from "../../../components/candidate/ResumeUploadInfoTable";
-import { historyResumeData, resumeUploadedData } from "../../../helpers/config";
+import {  resumeUploadedData } from "../../../helpers/config";
 const SingleResumeHistoryPage = () => {
   const navigate = useNavigate();
 

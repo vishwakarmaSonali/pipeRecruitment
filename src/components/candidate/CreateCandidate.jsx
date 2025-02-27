@@ -60,6 +60,13 @@ const frequencyOptions = [
   { id: 6, frequency: "Quaterly" },
   { id: 7, frequency: "Anually" },
 ];
+const domainOptions = [
+  { id: 1, frequency: "Technology & IT" },
+  { id: 2, frequency: "Healthcare & Life Sciences" },
+  { id: 3, frequency: "Manufacturing & Engineering" },
+  { id: 4, frequency: "Media & Entertainment" },
+
+];
 const CreateCandidateForm = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -401,7 +408,7 @@ const CreateCandidateForm = () => {
               <div className="display-flex gap-[10px] ">
                 <div className="flex-1 ">
                   <CustomDropdown
-                    options={nationalityOptions}
+                    options={[]}
                     placeholder="Add to folder"
                     selectedValues={nationality}
                     onChange={setNationality}
@@ -433,12 +440,13 @@ const CreateCandidateForm = () => {
             <div className="w-full">
               <div className="display-flex gap-[10px] mt-[10px]">
                 <div className="flex-1">
-                  <PhoneNumberInput
+                  {/* <PhoneNumberInput
                     selectedCountry={selectedCountry}
                     setSelectedCountry={setSelectedCountry}
                     phoneNumber={phoneNumber}
                     setPhoneNumber={setPhoneNumber}
-                  />
+                  /> */}
+                <PhoneInputComponent phone={phoneNumber} onChange={setPhoneNumber} />
                 </div>
                 <div className="flex-1 ">
               
@@ -517,7 +525,7 @@ const CreateCandidateForm = () => {
               <div className="display-flex gap-[10px] mt-[10px]">
                 <div className="flex-1 ">
                   <CustomDropdown
-                    options={frequencyOptions}
+                    options={domainOptions}
                     placeholder="Domain"
                     selectedValue={frequency}
                     onChange={setFrequency}
