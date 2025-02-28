@@ -27,13 +27,14 @@ const NationalitySearchDropdown = ({
       debounceTimeout.current = setTimeout(async () => {
         try {
           const response = await axios.get(
-            `http://3.110.81.44/api/candidate-profiles/suggest/nationality?query=${nationalityQuery}`
+            `http://3.110.81.44/api/nationality/suggest?query=${nationalityQuery}`
           );
-          console.log("Nationality API Response:", response?.data?.suggestions);
+          console.log("Nationality API Response:", response?.data);
 
-          const suggestions = Array.isArray(response?.data?.suggestions)
-            ? response.data.suggestions
+          const suggestions = Array.isArray(response?.data)
+            ? response.data
             : [];
+console.log("suggestionsssss>>>>",suggestions);
 
           setNationalitySuggestions(suggestions);
           setShowNationalityDropdown(true);
@@ -91,9 +92,9 @@ const NationalitySearchDropdown = ({
             <div
               key={index}
               className="normal-list-item-div"
-              onClick={() => handleSelectNationality(nationality)}
+              onClick={() => handleSelectNationality(nationality?.name)}
             >
-              <p className="font-12-regular color-dark-black">{nationality}</p>
+              <p className="font-12-regular color-dark-black">{nationality?.name}</p>
             </div>
           ))}
         </div>
@@ -107,7 +108,7 @@ const NationalitySearchDropdown = ({
               key={index}
               className="inputed-item flex items-center px-2 py-1 border rounded-md"
             >
-              {nationality}
+              {nationality?.name}
               <button
                 className="ml-2 text-red-500 hover:text-red-700"
                 onClick={() =>

@@ -1,7 +1,7 @@
 import React from "react";
 import CommonLoader from "./CommonLoader";
 
-const DeleteButton = ({ onClick, disabled, btnStyle, isLoading }) => {
+const DeleteButton = ({ onClick, disabled, btnStyle, isLoading,btnTitle }) => {
   return (
     <button
       disabled={disabled}
@@ -9,7 +9,7 @@ const DeleteButton = ({ onClick, disabled, btnStyle, isLoading }) => {
       style={btnStyle}
       onClick={onClick}
     >
-      {isLoading ? <CommonLoader /> : "Delete"}
+      {isLoading ? <CommonLoader /> :btnTitle?btnTitle: "Delete"}
     </button>
   );
 };

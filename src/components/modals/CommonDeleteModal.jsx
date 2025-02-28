@@ -15,6 +15,7 @@ const CommonDeleteModal = ({
   title,
   description,
   isLoading,
+  btnTitle
 }) => {
   const [modalAnimation, setModalAnimation] = useState(false);
 
@@ -58,7 +59,7 @@ const CommonDeleteModal = ({
               onClick={onClose}
               disabled={isLoading}
             />
-            <DeleteButton onClick={onClickDelete} />
+            <DeleteButton onClick={onClickDelete} btnTitle={btnTitle} />
           </div>
         </div>
       </div>

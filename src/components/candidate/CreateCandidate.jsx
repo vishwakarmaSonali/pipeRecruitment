@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Navbar from "../navbar/Navbar";
 import Profile from "../../assets/images/profile.png";
 import "./index.css";
@@ -39,6 +39,7 @@ import { genderOption } from "../../helpers/config";
 import CommonDropdown from "../common/CommonDropdown";
 import { DateTimePickerTabs } from "@mui/x-date-pickers";
 import DateTimePicker from "../common/DateTimePicker";
+import { fetchDomains } from "../../actions/dropdownAction";
 const genderOptions = [
   { id: 1, label: "Female" },
   { id: 2, label: "Male" },
@@ -60,17 +61,18 @@ const frequencyOptions = [
   { id: 6, frequency: "Quaterly" },
   { id: 7, frequency: "Anually" },
 ];
-const domainOptions = [
-  { id: 1, frequency: "Technology & IT" },
-  { id: 2, frequency: "Healthcare & Life Sciences" },
-  { id: 3, frequency: "Manufacturing & Engineering" },
-  { id: 4, frequency: "Media & Entertainment" },
 
-];
 const CreateCandidateForm = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const today = new Date();
+  const { data, loading, error } = useSelector((state) => state.domains);
+  // Ensure `data` is available and formatted properly
+  const domainOptions =
+    data?.map((item) => ({
+      id: item.id,
+      name: item.name, // Adjust the key based on API response
+    })) || [];
   const [description, setDescription] = useState("");
   const [profileImages, setProfileImage] = useState("");
   const [imagePreview, setImagePreview] = useState("");
@@ -135,6 +137,10 @@ const CreateCandidateForm = () => {
   const handleNationalityChange = (selectedItem) => {
     setNationality(selectedItem);
   };
+
+  useEffect(() => {
+    dispatch(fetchDomains());
+  }, [dispatch]);
 
   const handleDateSelect = (date) => {
     setDateofbirth(date);
@@ -446,10 +452,12 @@ const CreateCandidateForm = () => {
                     phoneNumber={phoneNumber}
                     setPhoneNumber={setPhoneNumber}
                   /> */}
-                <PhoneInputComponent phone={phoneNumber} onChange={setPhoneNumber} />
+                  <PhoneInputComponent
+                    phone={phoneNumber}
+                    onChange={setPhoneNumber}
+                  />
                 </div>
                 <div className="flex-1 ">
-              
                   <CommonTextInput
                     type="email"
                     placeholder="Email Id"
@@ -500,11 +508,11 @@ const CreateCandidateForm = () => {
             <div className="w-full">
               <div className="display-flex gap-[10px] mt-[10px]">
                 <div className="flex-1">
-                   <CommonTextInput
-                   type="text"
-                     placeholder="Years of Experience"
-                     value={yearsOfExp}
-                     onChange={(e) => {
+                  <CommonTextInput
+                    type="text"
+                    placeholder="Years of Experience"
+                    value={yearsOfExp}
+                    onChange={(e) => {
                       const inputValue = e.target.value;
                       if (/^[0-9.]*$/.test(inputValue)) {
                         setYearsOfExp(inputValue);
@@ -513,12 +521,11 @@ const CreateCandidateForm = () => {
                   />
                 </div>
                 <div className="flex-1 ">
-                 
-                     <CommonTextInput
-                   type="text"
-                      placeholder="Highest Qualification"
-                      value={highestQualification}
-                      onChange={(e) => setHighestQualification(e.target.value)}
+                  <CommonTextInput
+                    type="text"
+                    placeholder="Highest Qualification"
+                    value={highestQualification}
+                    onChange={(e) => setHighestQualification(e.target.value)}
                   />
                 </div>
               </div>
@@ -526,10 +533,10 @@ const CreateCandidateForm = () => {
                 <div className="flex-1 ">
                   <CustomDropdown
                     options={domainOptions}
-                    placeholder="Domain"
-                    selectedValue={frequency}
+                    placeholder="Select Domain"
+                    selectedValues={frequency} // Ensure it's properly handled
                     onChange={setFrequency}
-                    optionKey="frequency"
+                    optionKey="name" // Ensure this matches the key in `domainOptions`
                   />
                 </div>
                 <div className="flex-1 "></div>
@@ -544,13 +551,11 @@ const CreateCandidateForm = () => {
                   />
                 </div>
                 <div className="flex-1">
-             
-                     <CommonTextInput
-                  placeholder="Current Employer"
-                  
-                  type="text"
-                  value={currentEmployer}
-                  onChange={(e) => setCurrentEmployer(e.target.value)}
+                  <CommonTextInput
+                    placeholder="Current Employer"
+                    type="text"
+                    value={currentEmployer}
+                    onChange={(e) => setCurrentEmployer(e.target.value)}
                   />
                 </div>
               </div>

@@ -12,6 +12,9 @@ import NationalitySearchDropdown from "../AutocompleteDropdowns/NationalitySearc
 import CommonTextInput from "../common/CommonTextInput";
 import CurrencySelector from "../common/CurrencyInput";
 import DateTimePicker from "../common/DateTimePicker";
+import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import { fetchLabels } from "../../actions/dropdownAction";
 
 const CandidateFilterDrawer = ({
   isOpen,
@@ -20,6 +23,7 @@ const CandidateFilterDrawer = ({
   onReset,
   filters,
 }) => {
+  const dispatch = useDispatch();
   const today = new Date();
   const [localFilters, setLocalFilters] = useState(filters || {});
   const [checkedColumns, setCheckedColumns] = useState([]);
@@ -119,12 +123,12 @@ const CandidateFilterDrawer = ({
     { id: 7, frequency: "Quarterly" },
     { id: 8, frequency: "Yearly (Annually)" },
   ];
-  const labelOptions = [
-    { id: 1, label: "Urgent" },
-    { id: 2, label: "High Priority" },
-    { id: 3, label: "Medium Priority" },
-    { id: 4, label: "Low Priority" },
-  ];
+  // const labelOptions = [
+  //   { id: 1, label: "Urgent" },
+  //   { id: 2, label: "High Priority" },
+  //   { id: 3, label: "Medium Priority" },
+  //   { id: 4, label: "Low Priority" },
+  // ];
 
   const sourceOptions = [
     { id: 1, source: "LinkedIn" },
@@ -132,6 +136,20 @@ const CandidateFilterDrawer = ({
     { id: 3, source: "Referral" },
     { id: 4, source: "Company Website" },
   ];
+  const { data, loading, error } = useSelector((state) => state.labels);
+  // Ensure `data` is available and formatted properly
+  const labelOptions =
+    data?.map((item) => ({
+      id: item.id,
+      name: item.name, // Adjust the key based on API response
+    })) || [];
+    console.log("labelOptions",labelOptions);
+    
+  useEffect(() => {
+    console.log("called",);
+    
+    dispatch(fetchLabels());
+  }, [dispatch]);
 
   const handleNationalityChange = (selectedItem) => {
     setNationality(selectedItem);
@@ -643,7 +661,7 @@ const CandidateFilterDrawer = ({
                 placeholder="Labels"
                 selectedValues={selectedLabels}
                 onChange={setSelectedLabels}
-                optionKey="label"
+                optionKey="name"
                 multiSelect={true}
                 showCheckbox={true}
               />

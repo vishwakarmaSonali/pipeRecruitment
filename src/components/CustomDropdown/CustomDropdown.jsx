@@ -15,6 +15,7 @@ const CustomDropdown = ({
   const [inputValue, setInputValue] = useState("");
   const [filteredOptions, setFilteredOptions] = useState(options);
   const dropdownRef = useRef(null);
+console.log(options,"options<<<<<<<<<<<<<<<<<");
 
   useEffect(() => {
     if (!multiSelect && selectedValues) {

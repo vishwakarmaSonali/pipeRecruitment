@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "../../components/filterModal/FilterModal.css";
 import { ReactComponent as CloseIcon } from "../../assets/icons/drawerClose.svg";
 import { ReactComponent as FolderIcon } from "../../assets/icons/sourcingIcons/folder-add.svg";
@@ -7,8 +7,12 @@ import { ReactComponent as TickCircle } from "../../assets/icons/tick-circle.svg
 import { Drawer } from "@mui/material";
 import CommonSearchBox from "../common/CommonSearchBox";
 import CommonButton from "../common/CommonButton";
+import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
+import { fetchLabels } from "../../actions/dropdownAction";
 
 const ChangeOwnershipDrawer = ({ isOpen, onClose, onApply, onReset }) => {
+  const dispatch = useDispatch();
     const initialUsers = [
         { id: 1, name: "Julien", avatar: "J", isOwner: false },
         { id: 2, name: "xBoost", avatar: "X", isOwner: false },
@@ -26,6 +30,16 @@ const ChangeOwnershipDrawer = ({ isOpen, onClose, onApply, onReset }) => {
       const [users, setUsers] = useState(initialUsers);
       const [searchValue, setSearchValue] = useState("");
       const [selectedUser, setSelectedUser] = useState(null);
+      const { data, loading, error } = useSelector((state) => state.labels);
+      // Ensure `data` is available and formatted properly
+      const domainOptions =
+        data?.map((item) => ({
+          id: item.id,
+          name: item.name, // Adjust the key based on API response
+        })) || [];
+          useEffect(() => {
+            dispatch(fetchLabels());
+          }, [dispatch]);
   const handleSelect = (user) => {
     if (!user.isOwner) {
       setSelectedUser(selectedUser === user.id ? null : user.id);

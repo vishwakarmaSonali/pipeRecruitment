@@ -157,8 +157,8 @@ const DateTimePicker = ({
           </button>
           <span className="current-year">{selectedYear}</span>
           <button onClick={() => setViewMode("calendar")}>
-          <RightArrow width={20} height={20} />
-        </button>
+            <RightArrow width={20} height={20} />
+          </button>
         </div>
 
         <div className="year-grid">
@@ -205,8 +205,8 @@ const DateTimePicker = ({
           </button>
           <span className="clickable-title">{selectedYear}</span>
           <button onClick={() => setViewMode("year")}>
-          <RightArrow width={20} height={20} />
-        </button>
+            <RightArrow width={20} height={20} />
+          </button>
         </div>
         <div className="month-grid">
           {months.map((month, index) => (

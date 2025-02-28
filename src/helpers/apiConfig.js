@@ -4,3 +4,5 @@ export const candidateSearchApiEndPoint = "api/candidate-profiles/search";
 export const candidateSerachByIdApiEndPOint =
   "api/candidate-profiles/candidates";
 export const createCandidateManuallyEndpoint = "api/candidate-profiles/candidates"
+export const getDomainEndpoint = "api/domains"
+export const getLabelEndpoint = "api/labels"

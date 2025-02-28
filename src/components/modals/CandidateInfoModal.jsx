@@ -72,6 +72,9 @@ import { ReactComponent as ReportIcon } from "../../assets/images/resume/report.
 import CalendarComponent from "../candidate/CalendarComponent";
 import CommonButton from "../common/CommonButton";
 import CancelButton from "../common/CancelButton";
+import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
+import { fetchLabels } from "../../actions/dropdownAction";
 
 const candidateInfoTabs = [
   {
@@ -242,6 +245,7 @@ const enrichUserProfileData = [
 ];
 
 const CandidateInfoModal = ({ visible, onClose }) => {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const { modals, setModalVisibility } = useModal();
   const [candidateTabs, setCandidateTabs] = useState(candidateInfoTabs);
@@ -250,7 +254,6 @@ const CandidateInfoModal = ({ visible, onClose }) => {
   const [randomColor, setRandomColor] = useState([]);
   const [writeText, setWriteText] = useState("");
   const [selectedLabelData, setSelectedLabelData] = useState([]);
-  const [labelData, setLabelData] = useState(allLabelData);
   const [deleteNoteModalVisible, setDeleteNoteModalVisible] = useState(false);
   const [noteModalVisible, setNoteModalVisible] = useState(false);
   const [folders, setFolders] = useState([]);
@@ -259,7 +262,7 @@ const CandidateInfoModal = ({ visible, onClose }) => {
     comapnyListing[0]
   );
   const [enrichUserProfileVisible, setEnrichUserProfileVisible] =
-    useState(false);
+  useState(false);
   const [
     enrichUserProfileSocialAddModalVisible,
     setEnrichUserProfileSocialAddModalVisible,
@@ -269,34 +272,64 @@ const CandidateInfoModal = ({ visible, onClose }) => {
     setEnrichUserProfileInfoModalVisible,
   ] = useState(false);
   const [notRightProfileModalVisible, setNotRightProfileModalVisible] =
-    useState(false);
+  useState(false);
   const [
     verifiedEnrichProfileModalVisible,
     setVerifiedEnrichProfileModalVisible,
   ] = useState(false);
   const [selectedEnrichUserProfile, setSelectedEnrichUserProfile] =
-    useState(null);
-
+  useState(null);
+  
   const [attachementUploadModalVisible, setAttachmentUploadModalVisible] =
-    useState(false);
+  useState(false);
   const [attachmentData, setAttachmentData] = useState([]);
-
+  
   const attachmentDeleteHandler = (id) => {
     const updatedData = attachmentData?.filter((item) => item?.id !== id);
     setAttachmentData(updatedData);
   };
-
+  
   const [addToJobsModalVisible, setAddToJobsModalVisible] = useState(false);
-
+  
   const [addToFolderModalVisible, setAddToFolderModalVisible] = useState(false);
-
+  
   const [anchorE2, setAnchorE2] = useState(null);
   const [labelAnchor, setLabelAnchor] = useState(null);
   const labelMenuOpen = Boolean(labelAnchor);
   const feedBackMenuOpen = Boolean(anchorE2);
   const open = Boolean(anchorEl);
   const [selectedResumeTab, setSelectedResumeTab] = useState(1);
+  const { data, loading, error } = useSelector((state) => state.labels);
+  // Ensure `data` is available and formatted properly
+  const labelOptions =
+  data?.map((item) => ({
+    id: item.id,
+    name: item.name, // Adjust the key based on API response
+    color:item.color
+  })) || [];
+  console.log("labelOptions",labelOptions);
+  const [labelData, setLabelData] = useState(labelOptions);
+    
+  useEffect(() => {
+    console.log("called",);
+    
+    dispatch(fetchLabels());
+  }, [dispatch]);
 
+  useEffect(() => {
+    if (data) {
+      const formattedData = data.map((item) => ({
+        _id: item._id,
+        name: item.name,
+        color: item.color,
+        selected: false, // Ensure default state is false
+      }));
+  
+      console.log("Formatted labelData from Redux:", formattedData); // ✅ Debugging
+      setLabelData(formattedData);
+    }
+  }, [data]);
+  
   const handleLabelMenuClick = (event) => {
     setLabelAnchor(event.currentTarget);
   };
