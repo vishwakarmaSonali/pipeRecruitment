@@ -29,6 +29,7 @@ import CustomCandidateDescription from "../../components/resume/customizable-fie
 import CustomCandidateDetails from "../../components/resume/customizable-fields/CustomCandidateDetails";
 import CustomSkills from "../../components/resume/customizable-fields/CustomSkills";
 import AddSkillsModal from "../../components/modals/AddSkillsModal";
+import CustomLanguage from "../../components/resume/customizable-fields/CustomLanguage";
 
 const CustomCvPage = () => {
   const navigate = useNavigate();
@@ -81,6 +82,17 @@ const CustomCvPage = () => {
   const removeSkillsHandler = (id, index) => {
     const updatedData = candidateSkillData?.filter((item, i) => index !== i);
     setCandidateSkillData(updatedData);
+  };
+
+  const [candidateLanguageVisible, setCandidateLanguageVisible] =
+    useState(true);
+  const [candidateLanguageData, setCandidateLanguageData] = useState([]);
+
+  const addLanguageHandler = (data) => {
+    setCandidateLanguageData([
+      ...candidateLanguageData,
+      { id: candidateLanguageData?.length + 1, ...data },
+    ]);
   };
 
   const [watermark, setWatermark] = useState(false);
@@ -186,6 +198,14 @@ const CustomCvPage = () => {
             data={candidateSkillData}
             addSkill={() => setAddSkillModalVisible(true)}
             removeSkill={(id, index) => removeSkillsHandler(id, index)}
+          />
+          <CustomLanguage
+            on={candidateLanguageVisible}
+            onToggle={() =>
+              setCandidateLanguageVisible(!candidateLanguageVisible)
+            }
+            addLanguage={addLanguageHandler}
+            data={candidateLanguageData}
           />
         </div>
         <div className="flex-1 cv-view-container">

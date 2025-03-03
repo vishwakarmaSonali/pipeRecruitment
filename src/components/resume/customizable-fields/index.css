@@ -1,0 +1,9 @@
+.custom-add-language-container {
+  border: 1px solid #d7d7d7;
+  padding: 8px;
+  border-radius: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  transition: all 300ms;
+}

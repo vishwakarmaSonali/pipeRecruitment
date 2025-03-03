@@ -1063,3 +1063,5 @@ export const customizeCandidateDetailsFields = [
     value: "",
   },
 ];
+
+export const proficiency = ["Beginner", "Intermediate", "Advanced", "Native"];
