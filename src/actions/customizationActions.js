@@ -1,5 +1,9 @@
 import axios from "axios";
-import { BASE_URL, getLabelEndpoint } from "../helpers/apiConfig";
+import {
+  BASE_URL,
+  getDomainEndpoint,
+  getLabelEndpoint,
+} from "../helpers/apiConfig";
 import {
   CATEGORY_CUSTOMIZATION_REQUEST,
   CATEGORY_FIELD_CUSTOMIZATION_REQUEST,
@@ -17,6 +21,18 @@ import {
   DELETE_LABEL_REQUEST,
   DELETE_LABEL_SUCCESS,
   DELETE_LABEL_FAILURE,
+  FETCH_DOMAIN_REQUEST,
+  FETCH_DOMAIN_SUCCESS,
+  FETCH_DOMAIN_FAILURE,
+  ADD_DOMAIN_REQUEST,
+  ADD_DOMAIN_FAILURE,
+  ADD_DOMAIN_SUCCESS,
+  UPDATE_DOMAIN_REQUEST,
+  UPDATE_DOMAIN_FAILURE,
+  UPDATE_DOMAIN_SUCCESS,
+  DELETE_DOMAIN_FAILURE,
+  DELETE_DOMAIN_REQUEST,
+  DELETE_DOMAIN_SUCCESS,
 } from "./actionsType";
 
 export const categoryDraggableFuction = (data) => {
@@ -189,6 +205,149 @@ export const addLabel = (token, data) => {
       } else {
         dispatch({
           type: ADD_LABEL_FAILURE,
+        });
+        return error.message;
+      }
+    }
+  };
+};
+
+export const fetchAllDomains = (token) => {
+  return async (dispatch) => {
+    dispatch({ type: FETCH_DOMAIN_REQUEST });
+    try {
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      };
+      const response = await axios.get(
+        `${BASE_URL}${getDomainEndpoint}`,
+        config
+      );
+
+      dispatch({
+        type: FETCH_DOMAIN_SUCCESS,
+        domainData: response?.data,
+      });
+      return response.data;
+    } catch (error) {
+      if (error?.response?.data) {
+        dispatch({
+          type: FETCH_DOMAIN_FAILURE,
+        });
+        return error?.response?.data?.message;
+      } else {
+        dispatch({
+          type: FETCH_DOMAIN_FAILURE,
+        });
+        return error.message;
+      }
+    }
+  };
+};
+
+export const addDomain = (token, data) => {
+  return async (dispatch) => {
+    dispatch({ type: ADD_DOMAIN_REQUEST });
+    try {
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      };
+      const response = await axios.post(
+        `${BASE_URL}${getDomainEndpoint}`,
+        JSON.stringify(data),
+        config
+      );
+      dispatch({
+        type: ADD_DOMAIN_SUCCESS,
+        data: response?.data,
+      });
+      return response?.data;
+    } catch (error) {
+      if (error?.response?.data) {
+        dispatch({
+          type: ADD_DOMAIN_FAILURE,
+        });
+        return error?.response?.data?.message;
+      } else {
+        dispatch({
+          type: ADD_DOMAIN_FAILURE,
+        });
+        return error.message;
+      }
+    }
+  };
+};
+
+export const updateDomain = (token, id, data) => {
+  return async (dispatch) => {
+    dispatch({ type: UPDATE_DOMAIN_REQUEST });
+    try {
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      };
+      const response = await axios.put(
+        `${BASE_URL}${getDomainEndpoint}/${id}`,
+        JSON.stringify(data),
+        config
+      );
+      dispatch({
+        type: UPDATE_DOMAIN_SUCCESS,
+        data: response?.data,
+        id: id,
+      });
+      return response;
+    } catch (error) {
+      if (error?.response?.data) {
+        dispatch({
+          type: UPDATE_DOMAIN_FAILURE,
+        });
+        return error?.response?.data?.message;
+      } else {
+        dispatch({
+          type: UPDATE_DOMAIN_FAILURE,
+        });
+        return error.message;
+      }
+    }
+  };
+};
+
+export const deleteDomain = (token, id) => {
+  return async (dispatch) => {
+    dispatch({ type: DELETE_DOMAIN_REQUEST });
+    try {
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      };
+      const response = await axios.delete(
+        `${BASE_URL}${getDomainEndpoint}/${id}`,
+        config
+      );
+      dispatch({
+        type: DELETE_DOMAIN_SUCCESS,
+        id: id,
+      });
+      return response?.data;
+    } catch (error) {
+      if (error?.response?.data) {
+        dispatch({
+          type: DELETE_DOMAIN_FAILURE,
+        });
+        return error?.response?.data?.message;
+      } else {
+        dispatch({
+          type: DELETE_DOMAIN_FAILURE,
         });
         return error.message;
       }

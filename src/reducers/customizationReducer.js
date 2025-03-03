@@ -15,6 +15,18 @@ import {
   ADD_LABEL_REQUEST,
   ADD_LABEL_SUCCESS,
   ADD_LABEL_FAILURE,
+  FETCH_DOMAIN_REQUEST,
+  FETCH_DOMAIN_SUCCESS,
+  FETCH_DOMAIN_FAILURE,
+  ADD_DOMAIN_FAILURE,
+  ADD_DOMAIN_REQUEST,
+  ADD_DOMAIN_SUCCESS,
+  UPDATE_DOMAIN_REQUEST,
+  UPDATE_DOMAIN_FAILURE,
+  UPDATE_DOMAIN_SUCCESS,
+  DELETE_DOMAIN_FAILURE,
+  DELETE_DOMAIN_REQUEST,
+  DELETE_DOMAIN_SUCCESS,
 } from "../actions/actionsType";
 import { defaultCategoryData } from "../helpers/config";
 
@@ -25,6 +37,11 @@ const initialState = {
   updateLabelLoading: false,
   deleteLabelLoading: false,
   addLabelLoading: false,
+  fetchDomainLoading: false,
+  domainData: [],
+  updateDomainLoading: false,
+  deleteDomainLoading: false,
+  addDomainLoading: false,
 };
 
 const customizationReducer = (state = initialState, action) => {
@@ -133,7 +150,7 @@ const customizationReducer = (state = initialState, action) => {
       return {
         ...state,
         addLabelLoading: false,
-        labelData: [action?.data?.resp, ...state.labelData],
+        labelData: [...state.labelData, action?.data?.resp],
       };
     case ADD_LABEL_FAILURE:
       return {
@@ -141,6 +158,85 @@ const customizationReducer = (state = initialState, action) => {
         addLabelLoading: false,
       };
 
+    case FETCH_DOMAIN_REQUEST:
+      return {
+        ...state,
+        fetchDomainLoading: true,
+      };
+    case FETCH_DOMAIN_SUCCESS:
+      return {
+        ...state,
+        fetchDomainLoading: false,
+        domainData: action?.domainData,
+      };
+    case FETCH_DOMAIN_FAILURE:
+      return {
+        ...state,
+        fetchDomainLoading: false,
+      };
+
+    case ADD_DOMAIN_REQUEST:
+      return {
+        ...state,
+        addDomainLoading: true,
+      };
+    case ADD_DOMAIN_SUCCESS:
+      return {
+        ...state,
+        addDomainLoading: false,
+        domainData: [...state.domainData, action?.data?.resp],
+      };
+    case ADD_DOMAIN_FAILURE:
+      return {
+        ...state,
+        addDomainLoading: false,
+      };
+
+    case UPDATE_DOMAIN_REQUEST:
+      return {
+        ...state,
+        updateDomainLoading: true,
+      };
+    case UPDATE_DOMAIN_SUCCESS:
+      return {
+        ...state,
+        updateDomainLoading: false,
+        domainData: state?.domainData?.map((item) => {
+          if (item?._id === action?.id) {
+            return {
+              ...item,
+              name: action?.data?.name,
+              createdAt: action?.data?.createdAt,
+            };
+          } else {
+            return { ...item };
+          }
+        }),
+      };
+    case UPDATE_DOMAIN_FAILURE:
+      return {
+        ...state,
+        updateDomainLoading: false,
+      };
+
+    case DELETE_DOMAIN_REQUEST:
+      return {
+        ...state,
+        deleteDomainLoading: true,
+      };
+    case DELETE_DOMAIN_SUCCESS:
+      return {
+        ...state,
+        deleteDomainLoading: false,
+        domainData: state?.domainData?.filter(
+          (item) => item?._id !== action?.id
+        ),
+      };
+    case DELETE_DOMAIN_FAILURE:
+      return {
+        ...state,
+        deleteDomainLoading: false,
+      };
     default:
       return state;
   }

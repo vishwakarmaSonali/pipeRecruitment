@@ -29,6 +29,10 @@ import {
   fetchAllLabels,
   updateLabel,
   addLabel,
+  fetchAllDomains,
+  addDomain,
+  updateDomain,
+  deleteDomain,
 } from "../../../actions/customizationActions";
 import CommonDeleteModal from "../../../components/modals/CommonDeleteModal";
 import AddFieldDrawer from "../../../components/candidate/AddFieldDrawer";
@@ -52,11 +56,11 @@ const candidateCustomizationsTabs = [
     name: "Labels",
     selected: false,
   },
-  // {
-  //   id: 3,
-  //   name: "Domains",
-  //   selected: false,
-  // },
+  {
+    id: 3,
+    name: "Domains",
+    selected: false,
+  },
 ];
 
 const CandidateCustomization = () => {
@@ -68,6 +72,11 @@ const CandidateCustomization = () => {
     updateLabelLoading,
     deleteLabelLoading,
     addLabelLoading,
+    domainData,
+    updateDomainLoading,
+    deleteDomainLoading,
+    addDomainLoading,
+    fetchDomainLoading,
   } = useSelector((state) => state?.customization);
   const { token } = useSelector((state) => state?.auth);
   const { modals, setModalVisibility } = useModal();
@@ -81,7 +90,6 @@ const CandidateCustomization = () => {
   const [selectedCategory, setSelectedCategory] = useState({});
   const [selectedItem, setSelectedItem] = useState(null);
   const [selectedFieldItem, setSelectedFieldItem] = useState(null);
-  const [fieldsData, setFieldsData] = useState([]);
   const [anchorEl, setAnchorEl] = useState(null);
   const [anchorE2, setAnchorE2] = useState(null);
   const [addCategoryBtnDisable, setAddCategoryBtnDisable] = useState(false);
@@ -91,15 +99,26 @@ const CandidateCustomization = () => {
   const inputRefs = useRef({});
   const [errorMessages, setErrorMessages] = useState({});
   const [addFieldDrawerOpen, setAddFieldDrawerOpen] = useState(false);
-  const [addLabelBtnDisable, setAddLabelBtnDisable] = useState(false);
   const [editingIndex, setEditingIndex] = useState(null);
   const [tempLabel, setTempLabel] = useState(null);
   const [defaultColorList, setDefaultColorList] = useState([]);
   const [colorPickerVisible, setColorPickerVisible] = useState(false);
   const [originalLabel, setOriginalLabel] = useState(null);
-  const [deleteLabelIndex, setDeleteLabelIndex] = useState(null);
   const [selectedLabelId, setSelectedLabelId] = useState(null);
   const [addNewLabel, setAddNewLabel] = useState(false);
+  const [tempDomain, setTempDomain] = useState(null);
+  const [addNewDomain, setAddNewDomain] = useState(false);
+  const [selectedDomainId, setSelectedDomainId] = useState(null);
+
+  const reset = () => {
+    setAddNewLabel(false);
+    setSelectedLabelId(null);
+    setSelectedDomainId(null);
+    setAddNewDomain(false);
+    setTempDomain(null);
+    setTempLabel(null);
+    setEditingIndex(null);
+  };
 
   const addNewLabelHandler = () => {
     const newLabel = { name: "Label Name", color: "#000000" };
@@ -107,11 +126,24 @@ const CandidateCustomization = () => {
     setAddNewLabel(true);
   };
 
+  const addNewDomainHandler = () => {
+    const newLabel = { name: "Domain Name" };
+    setTempDomain(newLabel);
+    setAddNewDomain(true);
+  };
+
   const editLabel = (index, id) => {
     if (!addNewLabel) {
       setEditingIndex(index);
       setTempLabel({ ...labelData[index] });
       setOriginalLabel({ ...labelData[index] });
+    }
+  };
+
+  const editDomain = (index) => {
+    if (!addNewDomain) {
+      setEditingIndex(index);
+      setTempDomain({ ...domainData[index] });
     }
   };
 
@@ -134,6 +166,30 @@ const CandidateCustomization = () => {
       if (response?.status === 200) {
         setEditingIndex(null);
         setColorPickerVisible(false);
+      } else {
+        notifyError(response);
+      }
+    });
+  };
+
+  const saveDomain = () => {
+    const isDuplicate = domainData?.some(
+      (domain, index) =>
+        domain.name === tempDomain.name && index !== editingIndex
+    );
+
+    if (isDuplicate) {
+      alert("Domain with this name already exists!");
+      return;
+    }
+
+    const id = tempDomain?._id;
+    const httpBody = {
+      name: tempDomain?.name,
+    };
+    dispatch(updateDomain(token, id, httpBody)).then((response) => {
+      if (response?.status === 200) {
+        setEditingIndex(null);
       } else {
         notifyError(response);
       }
@@ -166,6 +222,30 @@ const CandidateCustomization = () => {
     });
   };
 
+  const addDomainFunction = () => {
+    const isDuplicate = domainData?.some(
+      (domain) => domain.name === tempDomain.name
+    );
+
+    if (isDuplicate) {
+      alert("Domain with this name already exists!");
+      return;
+    }
+
+    const httpBody = {
+      name: tempDomain?.name,
+    };
+    dispatch(addDomain(token, httpBody)).then((response) => {
+      if (response?.success) {
+        setEditingIndex(null);
+        setAddNewDomain(false);
+        notifySuccess(response?.message);
+      } else {
+        notifyError(response);
+      }
+    });
+  };
+
   const cancelEdit = () => {
     setAddNewLabel(false);
     setTempLabel(originalLabel);
@@ -173,11 +253,29 @@ const CandidateCustomization = () => {
     setColorPickerVisible(false);
   };
 
+  const cancelEditDomain = () => {
+    setAddNewDomain(false);
+    setTempDomain(originalLabel);
+    setEditingIndex(null);
+  };
+
   const deleteLabelFunction = (id) => {
     dispatch(deleteLabel(token, id)).then((response) => {
       if (response?.status) {
         setEditingIndex(null);
         setModalVisibility("labelDeleteModalVisible", false);
+        notifySuccess(response?.message);
+      } else {
+        notifyError(response);
+      }
+    });
+  };
+
+  const deleteDomainFunction = (id) => {
+    dispatch(deleteDomain(token, id)).then((response) => {
+      if (response?.status) {
+        setEditingIndex(null);
+        setModalVisibility("domainDeleteModalVisible", false);
         notifySuccess(response?.message);
       } else {
         notifyError(response);
@@ -209,6 +307,7 @@ const CandidateCustomization = () => {
   };
 
   const selectedTabHandler = (id) => {
+    reset();
     const updatedData = candidateTabs?.map((item) => {
       if (item?.id === id) {
         return { ...item, selected: true };
@@ -391,6 +490,7 @@ const CandidateCustomization = () => {
 
   useEffect(() => {
     dispatch(fetchAllLabels(token));
+    dispatch(fetchAllDomains(token));
   }, []);
 
   return (
@@ -774,20 +874,343 @@ const CandidateCustomization = () => {
                 icon={<AddIcon stroke="white" />}
               />
             </div>
-            {addNewLabel && (
-              <div className="mb-4">
+            <div className="display-column" style={{ gap: 8 }}>
+              {labelData?.length > 0 ? (
+                <div className="display-column" style={{ gap: 8 }}>
+                  {labelData?.map((label, index) => (
+                    <div key={index}>
+                      <div
+                        className={`customize-label-item ${
+                          editingIndex === index && "selected-category-item"
+                        }`}
+                      >
+                        <div className="flex items-center gap-2 flex-1">
+                          <LableIcon
+                            fill={
+                              editingIndex === index
+                                ? tempLabel?.color
+                                : label.color
+                            }
+                          />
+                          {editingIndex === index ? (
+                            <input
+                              type="text"
+                              value={tempLabel?.name}
+                              onChange={(e) =>
+                                setTempLabel({
+                                  ...tempLabel,
+                                  name: e.target.value,
+                                })
+                              }
+                              className={`customize-category-input ${
+                                editingIndex === index &&
+                                "selected-customize-category-input"
+                              }`}
+                              autoFocus
+                              onFocus={(e) =>
+                                setTimeout(() => {
+                                  e.target.select();
+                                  e.target.focus();
+                                }, 0)
+                              }
+                            />
+                          ) : (
+                            <span className="font-14-regular color-grey">
+                              {label?.name}
+                            </span>
+                          )}
+                        </div>
+                        <div className="flex items-center" style={{ gap: 8 }}>
+                          {editingIndex === index ? (
+                            <>
+                              <CancelIcon
+                                className="cursor-pointer"
+                                onClick={cancelEdit}
+                              />
+                              {updateLabelLoading ? (
+                                <CommonLoader className={"loader-black"} />
+                              ) : (
+                                <RightIcon
+                                  className=" cursor-pointer"
+                                  onClick={saveLabel}
+                                />
+                              )}
+                            </>
+                          ) : (
+                            <>
+                              <EditIcon
+                                className="cursor-pointer"
+                                onClick={() => editLabel(index, label?._id)}
+                              />
+                              <DeleteIcon
+                                className="cursor-pointer"
+                                onClick={() => {
+                                  setSelectedLabelId(label?._id);
+                                  setModalVisibility(
+                                    "labelDeleteModalVisible",
+                                    true
+                                  );
+                                }}
+                              />
+                            </>
+                          )}
+                        </div>
+                      </div>
+
+                      {editingIndex === index && (
+                        <div className="select-label-color-div">
+                          <p className="font-14-regular color-grey">
+                            Select Label Color
+                          </p>
+                          <div className="default-color-div">
+                            {defaultColorList?.map((item, idx) => (
+                              <button
+                                className={`default-color-btn ${
+                                  item === tempLabel.color
+                                    ? "selected-color-btn"
+                                    : ""
+                                }`}
+                                key={idx}
+                                onClick={() =>
+                                  setTempLabel({ ...tempLabel, color: item })
+                                }
+                              >
+                                <LableIcon width={36} height={36} fill={item} />
+                              </button>
+                            ))}
+                            <button onClick={() => setColorPickerVisible(true)}>
+                              <AddCircleIcon />
+                            </button>
+                          </div>
+                          {colorPickerVisible && (
+                            <div style={{ alignSelf: "center" }}>
+                              <HexColorPicker
+                                color={tempLabel.color}
+                                onChange={(color) =>
+                                  setTempLabel({ ...tempLabel, color })
+                                }
+                              />
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="font-14-regular color-grey">
+                  No labels added yet. Start by creating labels to categorize
+                  and organize your candidates.
+                </p>
+              )}
+              {addNewLabel && (
+                <div className="display-column" style={{ gap: 8 }}>
+                  <div
+                    className={`customize-label-item ${"selected-category-item"}`}
+                  >
+                    <div className="flex items-center gap-2 flex-1">
+                      <LableIcon fill={tempLabel?.color} />
+
+                      <input
+                        type="text"
+                        value={tempLabel?.name}
+                        onChange={(e) =>
+                          setTempLabel({
+                            ...tempLabel,
+                            name: e.target.value,
+                          })
+                        }
+                        className={`customize-category-input ${"selected-customize-category-input"}`}
+                        autoFocus
+                        onFocus={(e) =>
+                          setTimeout(() => {
+                            e.target.select();
+                            e.target.focus();
+                          }, 0)
+                        }
+                      />
+                    </div>
+                    <div className="flex items-center" style={{ gap: 8 }}>
+                      <CancelIcon
+                        className="cursor-pointer"
+                        onClick={cancelEdit}
+                      />
+                      {addLabelLoading ? (
+                        <CommonLoader className={"loader-black"} />
+                      ) : (
+                        <RightIcon
+                          className=" cursor-pointer"
+                          onClick={addLabelFunction}
+                        />
+                      )}
+                    </div>
+                  </div>
+
+                  {true && (
+                    <div className="select-label-color-div">
+                      <p className="font-14-regular color-grey">
+                        Select Label Color
+                      </p>
+                      <div className="default-color-div">
+                        {defaultColorList?.map((item, idx) => (
+                          <button
+                            className={`default-color-btn ${
+                              item === tempLabel?.color
+                                ? "selected-color-btn"
+                                : ""
+                            }`}
+                            key={idx}
+                            onClick={() =>
+                              setTempLabel({ ...tempLabel, color: item })
+                            }
+                          >
+                            <LableIcon width={36} height={36} fill={item} />
+                          </button>
+                        ))}
+                        <button onClick={() => setColorPickerVisible(true)}>
+                          <AddCircleIcon />
+                        </button>
+                      </div>
+                      {colorPickerVisible && (
+                        <div style={{ alignSelf: "center" }}>
+                          <HexColorPicker
+                            color={tempLabel?.color}
+                            onChange={(color) =>
+                              setTempLabel({ ...tempLabel, color })
+                            }
+                          />
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {selectedCandidateTab === "Domains" && (
+        <div className="candidate-customization-container">
+          <p className="font-16-medium color-dark-black">
+            {selectedCandidateTab}
+          </p>
+          <div className="display-column" style={{ gap: 10 }}>
+            <p className="font-14-regular color-grey">
+              Create and manage domains to categorize and organize industries
+              for streamlined filtering and classification.
+            </p>
+            <ul className="font-14-regular color-grey customize-summary-field-ul">
+              <li>
+                Changes made here will be reflected across all users in your
+                account.
+              </li>
+            </ul>
+          </div>
+          <div className="label-main-container">
+            <div style={{ alignSelf: "flex-start" }}>
+              <CommonAddButton
+                title={"Add Domain"}
+                disable={editingIndex !== null || addNewDomain}
+                onClick={addNewDomainHandler}
+                icon={<AddIcon stroke="white" />}
+              />
+            </div>
+            <div className="display-column" style={{ gap: 8 }}>
+              {domainData?.length > 0 ? (
+                <div className="display-column" style={{ gap: 8 }}>
+                  {domainData?.map((domain, index) => (
+                    <div key={index}>
+                      <div
+                        className={`customize-label-item ${
+                          editingIndex === index && "selected-category-item"
+                        }`}
+                      >
+                        <div className="flex items-center gap-2 flex-1">
+                          {editingIndex === index ? (
+                            <input
+                              type="text"
+                              value={tempDomain?.name}
+                              onChange={(e) =>
+                                setTempDomain({
+                                  ...tempDomain,
+                                  name: e.target.value,
+                                })
+                              }
+                              className={`customize-category-input ${
+                                editingIndex === index &&
+                                "selected-customize-category-input"
+                              }`}
+                              autoFocus
+                              onFocus={(e) =>
+                                setTimeout(() => {
+                                  e.target.select();
+                                  e.target.focus();
+                                }, 0)
+                              }
+                            />
+                          ) : (
+                            <span className="font-14-regular color-grey">
+                              {domain?.name}
+                            </span>
+                          )}
+                        </div>
+                        <div className="flex items-center" style={{ gap: 8 }}>
+                          {editingIndex === index ? (
+                            <>
+                              <CancelIcon
+                                className="cursor-pointer"
+                                onClick={cancelEdit}
+                              />
+                              {updateDomainLoading ? (
+                                <CommonLoader className={"loader-black"} />
+                              ) : (
+                                <RightIcon
+                                  className=" cursor-pointer"
+                                  onClick={saveDomain}
+                                />
+                              )}
+                            </>
+                          ) : (
+                            <>
+                              <EditIcon
+                                className="cursor-pointer"
+                                onClick={() => editDomain(index)}
+                              />
+                              <DeleteIcon
+                                className="cursor-pointer"
+                                onClick={() => {
+                                  setSelectedDomainId(domain?._id);
+                                  setModalVisibility(
+                                    "domainDeleteModalVisible",
+                                    true
+                                  );
+                                }}
+                              />
+                            </>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="font-14-regular color-grey">
+                  No labels added yet. Start by creating labels to categorize
+                  and organize your candidates.
+                </p>
+              )}
+              {addNewDomain && (
                 <div
                   className={`customize-label-item ${"selected-category-item"}`}
                 >
                   <div className="flex items-center gap-2 flex-1">
-                    <LableIcon fill={tempLabel?.color} />
-
                     <input
                       type="text"
-                      value={tempLabel?.name}
+                      value={tempDomain?.name}
                       onChange={(e) =>
-                        setTempLabel({
-                          ...tempLabel,
+                        setTempDomain({
+                          ...tempDomain,
                           name: e.target.value,
                         })
                       }
@@ -804,188 +1227,20 @@ const CandidateCustomization = () => {
                   <div className="flex items-center" style={{ gap: 8 }}>
                     <CancelIcon
                       className="cursor-pointer"
-                      onClick={cancelEdit}
+                      onClick={cancelEditDomain}
                     />
-                    {addLabelLoading ? (
+                    {addDomainLoading ? (
                       <CommonLoader className={"loader-black"} />
                     ) : (
                       <RightIcon
-                        className=" cursor-pointer"
-                        onClick={addLabelFunction}
+                        className="cursor-pointer"
+                        onClick={addDomainFunction}
                       />
                     )}
                   </div>
                 </div>
-
-                {true && (
-                  <div className="select-label-color-div">
-                    <p className="font-14-regular color-grey">
-                      Select Label Color
-                    </p>
-                    <div className="default-color-div">
-                      {defaultColorList?.map((item, idx) => (
-                        <button
-                          className={`default-color-btn ${
-                            item === tempLabel?.color
-                              ? "selected-color-btn"
-                              : ""
-                          }`}
-                          key={idx}
-                          onClick={() =>
-                            setTempLabel({ ...tempLabel, color: item })
-                          }
-                        >
-                          <LableIcon width={36} height={36} fill={item} />
-                        </button>
-                      ))}
-                      <button onClick={() => setColorPickerVisible(true)}>
-                        <AddCircleIcon />
-                      </button>
-                    </div>
-                    {colorPickerVisible && (
-                      <div style={{ alignSelf: "center" }}>
-                        <HexColorPicker
-                          color={tempLabel?.color}
-                          onChange={(color) =>
-                            setTempLabel({ ...tempLabel, color })
-                          }
-                        />
-                      </div>
-                    )}
-                  </div>
-                )}
-              </div>
-            )}
-
-            {labelData?.length > 0 ? (
-              <div>
-                {labelData?.map((label, index) => (
-                  <div key={index} className="mb-4">
-                    <div
-                      className={`customize-label-item ${
-                        editingIndex === index && "selected-category-item"
-                      }`}
-                    >
-                      <div className="flex items-center gap-2 flex-1">
-                        <LableIcon
-                          fill={
-                            editingIndex === index
-                              ? tempLabel?.color
-                              : label.color
-                          }
-                        />
-                        {editingIndex === index ? (
-                          <input
-                            type="text"
-                            value={tempLabel?.name}
-                            onChange={(e) =>
-                              setTempLabel({
-                                ...tempLabel,
-                                name: e.target.value,
-                              })
-                            }
-                            className={`customize-category-input ${
-                              editingIndex === index &&
-                              "selected-customize-category-input"
-                            }`}
-                            autoFocus
-                            onFocus={(e) =>
-                              setTimeout(() => {
-                                e.target.select();
-                                e.target.focus();
-                              }, 0)
-                            }
-                          />
-                        ) : (
-                          <span className="font-14-regular color-grey">
-                            {label?.name}
-                          </span>
-                        )}
-                      </div>
-                      <div className="flex items-center" style={{ gap: 8 }}>
-                        {editingIndex === index ? (
-                          <>
-                            <CancelIcon
-                              className="cursor-pointer"
-                              onClick={cancelEdit}
-                            />
-                            {updateLabelLoading ? (
-                              <CommonLoader className={"loader-black"} />
-                            ) : (
-                              <RightIcon
-                                className=" cursor-pointer"
-                                onClick={saveLabel}
-                              />
-                            )}
-                          </>
-                        ) : (
-                          <>
-                            <EditIcon
-                              className="cursor-pointer"
-                              onClick={() => editLabel(index, label?._id)}
-                            />
-                            <DeleteIcon
-                              className="cursor-pointer"
-                              onClick={() => {
-                                setDeleteLabelIndex(index);
-                                setSelectedLabelId(label?._id);
-                                setModalVisibility(
-                                  "labelDeleteModalVisible",
-                                  true
-                                );
-                              }}
-                            />
-                          </>
-                        )}
-                      </div>
-                    </div>
-
-                    {editingIndex === index && (
-                      <div className="select-label-color-div">
-                        <p className="font-14-regular color-grey">
-                          Select Label Color
-                        </p>
-                        <div className="default-color-div">
-                          {defaultColorList?.map((item, idx) => (
-                            <button
-                              className={`default-color-btn ${
-                                item === tempLabel.color
-                                  ? "selected-color-btn"
-                                  : ""
-                              }`}
-                              key={idx}
-                              onClick={() =>
-                                setTempLabel({ ...tempLabel, color: item })
-                              }
-                            >
-                              <LableIcon width={36} height={36} fill={item} />
-                            </button>
-                          ))}
-                          <button onClick={() => setColorPickerVisible(true)}>
-                            <AddCircleIcon />
-                          </button>
-                        </div>
-                        {colorPickerVisible && (
-                          <div style={{ alignSelf: "center" }}>
-                            <HexColorPicker
-                              color={tempLabel.color}
-                              onChange={(color) =>
-                                setTempLabel({ ...tempLabel, color })
-                              }
-                            />
-                          </div>
-                        )}
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <p className="font-14-regular color-grey">
-                No labels added yet. Start by creating labels to categorize and
-                organize your candidates.
-              </p>
-            )}
+              )}
+            </div>
           </div>
         </div>
       )}
@@ -1009,10 +1264,24 @@ const CandidateCustomization = () => {
         }
         onClose={() => {
           setModalVisibility("labelDeleteModalVisible", false);
-          setDeleteLabelIndex(null);
+          setSelectedLabelId(null);
         }}
         onClickDelete={() => deleteLabelFunction(selectedLabelId)}
         isLoading={deleteLabelLoading}
+      />
+
+      <CommonDeleteModal
+        visible={modals?.domainDeleteModalVisible}
+        title={"Delete Domain"}
+        description={
+          "Are you sure you want to delete this domain? Any used instances will be also removed."
+        }
+        onClose={() => {
+          setModalVisibility("domainDeleteModalVisible", false);
+          setSelectedDomainId(null);
+        }}
+        onClickDelete={() => deleteDomainFunction(selectedDomainId)}
+        isLoading={deleteDomainLoading}
       />
       <AddFieldDrawer
         visible={addFieldDrawerOpen}
