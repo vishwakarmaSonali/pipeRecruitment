@@ -44,8 +44,9 @@ const CustomCandidateDetails = ({ on, onToggle, fields, onChange, onHide }) => {
 
       <div className="divider-line" />
       <div className="details-container">
-        {Object.entries(fields).map(([key, value]) => {
-          return (
+        {Object.entries(fields)
+          .sort((a, b) => (a[1]?.order || 0) - (b[1]?.order || 0)) // Sort based on order
+          .map(([key, value]) => (
             <div key={key} className="detail-row" style={{ gap: 12 }}>
               <p className="font-14-medium color-dark-black flex-1">{key}</p>
               <div className="flex-2">
@@ -61,8 +62,7 @@ const CustomCandidateDetails = ({ on, onToggle, fields, onChange, onHide }) => {
                 onToggle={() => onChange(key, "hide", !value.hide)}
               />
             </div>
-          );
-        })}
+          ))}
       </div>
     </div>
   );

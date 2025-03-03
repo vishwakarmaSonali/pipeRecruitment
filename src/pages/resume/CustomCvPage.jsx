@@ -27,6 +27,8 @@ import CandidateEmpoymentComponent from "../../components/resume/CandidateEmpoym
 import CandidateEducationComponent from "../../components/resume/CandidateEducationComponent";
 import CustomCandidateDescription from "../../components/resume/customizable-fields/CustomCandidateDescription";
 import CustomCandidateDetails from "../../components/resume/customizable-fields/CustomCandidateDetails";
+import CustomSkills from "../../components/resume/customizable-fields/CustomSkills";
+import AddSkillsModal from "../../components/modals/AddSkillsModal";
 
 const CustomCvPage = () => {
   const navigate = useNavigate();
@@ -34,6 +36,7 @@ const CustomCvPage = () => {
   const [candidateDescriptionVisible, setCandidateDescriptionVisible] =
     useState(true);
   const [candidateDetailsVisible, setCandidateDetailsVisible] = useState(true);
+  const [candidateSkillsVisible, setCandidateSkillsVisible] = useState(true);
 
   const mappedCandidateDetailsFields = customizeCandidateDetailsFields.reduce(
     (acc, field) => {
@@ -59,6 +62,25 @@ const CustomCvPage = () => {
       ...prevFields,
       [label]: { ...prevFields[label], [key]: newValue }, // Update 'value' or 'hide'
     }));
+  };
+
+  const [candidateSkillData, setCandidateSkillData] = useState(skillData);
+  const [addSkillModalVisible, setAddSkillModalVisible] = useState(false);
+
+  const addSkillHandler = (value) => {
+    setCandidateSkillData([
+      ...candidateSkillData,
+      {
+        id: candidateSkillData?.length + 1,
+        name: value?.name,
+        rating: value?.score,
+      },
+    ]);
+  };
+
+  const removeSkillsHandler = (id, index) => {
+    const updatedData = candidateSkillData?.filter((item, i) => index !== i);
+    setCandidateSkillData(updatedData);
   };
 
   const [watermark, setWatermark] = useState(false);
@@ -158,6 +180,13 @@ const CustomCvPage = () => {
             fields={candidateDetailsFields}
             onChange={handleChangeToggleCandidateDetails}
           />
+          <CustomSkills
+            on={candidateSkillsVisible}
+            onToggle={() => setCandidateSkillsVisible(!candidateSkillsVisible)}
+            data={candidateSkillData}
+            addSkill={() => setAddSkillModalVisible(true)}
+            removeSkill={(id, index) => removeSkillsHandler(id, index)}
+          />
         </div>
         <div className="flex-1 cv-view-container">
           <div id="resume" className="resume-container">
@@ -177,7 +206,12 @@ const CustomCvPage = () => {
                       data={candidateDetailsFields}
                     />
                   )}
-                  <CandidateSkillsComponent title={"Skills"} data={skillData} />
+                  {candidateSkillsVisible && (
+                    <CandidateSkillsComponent
+                      title={"Skills"}
+                      data={candidateSkillData}
+                    />
+                  )}
                   <CandidateDetailsComponent
                     title={"Language"}
                     data={language}
@@ -234,6 +268,11 @@ const CustomCvPage = () => {
           </div>
         </div>
       </div>
+      <AddSkillsModal
+        visible={addSkillModalVisible}
+        onClose={() => setAddSkillModalVisible(false)}
+        setSkillValue={(value) => addSkillHandler(value)}
+      />
     </div>
   );
 };

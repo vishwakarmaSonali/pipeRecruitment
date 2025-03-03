@@ -5,7 +5,7 @@ import CommonButton from "../common/CommonButton";
 import CommonTextInput from "../common/CommonTextInput";
 import CancelButton from "../common/CancelButton";
 
-const AddSkillsModal = ({ visible, onClose, setTags, tags }) => {
+const AddSkillsModal = ({ visible, onClose, setTags, tags, setSkillValue }) => {
   const [newSkill, setNewSkill] = useState("");
   const [newScore, setNewScore] = useState("");
   const [modalAnimation, setModalAnimation] = useState(false);
@@ -25,10 +25,13 @@ const AddSkillsModal = ({ visible, onClose, setTags, tags }) => {
 
   const handleAddTag = () => {
     if (newSkill.trim() !== "" && newScore.trim() !== "") {
-      setTags([...tags, { name: newSkill, score: newScore }]);
+      if (!!tags) {
+        setTags([...tags, { name: newSkill, score: newScore }]);
+      }
+      setSkillValue({ name: newSkill, score: newScore });
       setNewSkill("");
       setNewScore("");
-     onClose()
+      onClose();
     }
   };
 
@@ -77,7 +80,11 @@ const AddSkillsModal = ({ visible, onClose, setTags, tags }) => {
             style={{ gap: 8, justifyContent: "center" }}
           >
             <CancelButton title={"Cancel"} onClick={resetData} />
-            <CommonButton title={"Add"} onClick={handleAddTag} disabled={!newSkill.trim() || !newScore.trim()}  />
+            <CommonButton
+              title={"Add"}
+              onClick={handleAddTag}
+              disabled={!newSkill.trim() || !newScore.trim()}
+            />
           </div>
         </div>
       </div>
