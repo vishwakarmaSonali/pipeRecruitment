@@ -9,20 +9,45 @@ import LanguageSearchDropdown from "../../AutocompleteDropdowns/LanguageSearchDr
 import { ReactComponent as EditIcon } from "../../../pages/Recruitment/Candidates/assets/edit.svg";
 import { ReactComponent as DeleteIcon } from "../../../pages/Recruitment/Candidates/assets/delete.svg";
 
-const CustomLanguage = ({ on, onToggle, addLanguage, data }) => {
+const CustomLanguage = ({
+  on,
+  onToggle,
+  addLanguage,
+  data,
+  onDelete,
+  onUpdate,
+}) => {
   const [addLanguageFieldVisible, setAddLanguageFieldVisible] = useState(false);
   const [proficiencyValue, setProficiencyValue] = useState("");
   const [languageValue, setLanguageValue] = useState("");
+  const [editIndex, setEditIndex] = useState(null);
 
   const resetData = () => {
     setProficiencyValue("");
     setLanguageValue("");
     setAddLanguageFieldVisible(false);
+    setEditIndex(null);
   };
 
   const handleAddLanguage = () => {
-    addLanguage({ proficiency: proficiencyValue, language: languageValue });
+    if (editIndex !== null) {
+      // Update existing entry
+      onUpdate(editIndex, {
+        proficiency: proficiencyValue,
+        language: languageValue,
+      });
+    } else {
+      // Add new entry
+      addLanguage({ proficiency: proficiencyValue, language: languageValue });
+    }
     resetData();
+  };
+
+  const handleEdit = (index) => {
+    setEditIndex(index);
+    setLanguageValue(data[index]?.language);
+    setProficiencyValue(data[index]?.proficiency);
+    setAddLanguageFieldVisible(true);
   };
 
   const renderAddLanguage = () => {
@@ -34,9 +59,7 @@ const CustomLanguage = ({ on, onToggle, addLanguage, data }) => {
             optionKey="name"
             placeholder="Language"
             selectedData={languageValue}
-            onSelect={(value) => {
-              setLanguageValue(value?.name);
-            }}
+            onSelect={(value) => setLanguageValue(value?.name)}
           />
           <CommonDropdown
             options={proficiency}
@@ -52,7 +75,7 @@ const CustomLanguage = ({ on, onToggle, addLanguage, data }) => {
         >
           <CancelButton title={"Cancel"} onClick={resetData} />
           <CommonButton
-            title={"Add"}
+            title={editIndex !== null ? "Update" : "Add"}
             onClick={handleAddLanguage}
             disabled={!languageValue || !proficiencyValue}
           />
@@ -60,6 +83,7 @@ const CustomLanguage = ({ on, onToggle, addLanguage, data }) => {
       </div>
     );
   };
+
   return (
     <div className="candidate-details-main-container">
       <div className="display-flex-justify align-center">
@@ -72,10 +96,12 @@ const CustomLanguage = ({ on, onToggle, addLanguage, data }) => {
       </div>
       <div className="divider-line" />
       <div className="display-column" style={{ gap: 20 }}>
-        {data?.length > 0 &&
-          data?.map((item, index) => {
-            return (
-              <div key={index} className="display-flex-justify">
+        {data?.map((item, index) => (
+          <div key={index} className="display-flex-justify">
+            {editIndex === index ? (
+              <div className="flex-1">{renderAddLanguage()}</div>
+            ) : (
+              <>
                 <div className="display-column" style={{ gap: 8 }}>
                   <p className="font-14-medium color-dark-black">
                     {item?.language}
@@ -88,24 +114,26 @@ const CustomLanguage = ({ on, onToggle, addLanguage, data }) => {
                   className="display-flex"
                   style={{ gap: 8, alignSelf: "flex-start" }}
                 >
-                  <button>
+                  <button onClick={() => onDelete(index)}>
                     <DeleteIcon />
                   </button>
-                  <button>
+                  <button onClick={() => handleEdit(index)}>
                     <EditIcon />
                   </button>
                 </div>
-              </div>
-            );
-          })}
-        {addLanguageFieldVisible && renderAddLanguage()}
-        <button
-          className="add-details-btn"
-          disabled={addLanguageFieldVisible}
-          onClick={() => setAddLanguageFieldVisible(true)}
-        >
-          + Add
-        </button>
+              </>
+            )}
+          </div>
+        ))}
+        {addLanguageFieldVisible && editIndex === null && renderAddLanguage()}
+        {!addLanguageFieldVisible && (
+          <button
+            className="add-details-btn"
+            onClick={() => setAddLanguageFieldVisible(true)}
+          >
+            + Add
+          </button>
+        )}
       </div>
     </div>
   );

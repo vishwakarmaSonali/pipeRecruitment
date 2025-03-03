@@ -30,6 +30,7 @@ import CustomCandidateDetails from "../../components/resume/customizable-fields/
 import CustomSkills from "../../components/resume/customizable-fields/CustomSkills";
 import AddSkillsModal from "../../components/modals/AddSkillsModal";
 import CustomLanguage from "../../components/resume/customizable-fields/CustomLanguage";
+import CandidateLanguageComponent from "../../components/resume/CandidateLanguageComponent";
 
 const CustomCvPage = () => {
   const navigate = useNavigate();
@@ -93,6 +94,23 @@ const CustomCvPage = () => {
       ...candidateLanguageData,
       { id: candidateLanguageData?.length + 1, ...data },
     ]);
+  };
+
+  const languageDeleteHandler = (index) => {
+    const updatedData = candidateLanguageData?.filter((item, i) => index !== i);
+    setCandidateLanguageData(updatedData);
+  };
+
+  const handleLanguageUpdate = (index, item) => {
+    const updatedData = candidateLanguageData?.map((data, i) => {
+      if (i == index) {
+        return { ...item };
+      } else {
+        return { ...data };
+      }
+    });
+
+    setCandidateLanguageData(updatedData);
   };
 
   const [watermark, setWatermark] = useState(false);
@@ -206,6 +224,8 @@ const CustomCvPage = () => {
             }
             addLanguage={addLanguageHandler}
             data={candidateLanguageData}
+            onDelete={(index) => languageDeleteHandler(index)}
+            onUpdate={(index, value) => handleLanguageUpdate(index, value)}
           />
         </div>
         <div className="flex-1 cv-view-container">
@@ -232,10 +252,12 @@ const CustomCvPage = () => {
                       data={candidateSkillData}
                     />
                   )}
-                  <CandidateDetailsComponent
-                    title={"Language"}
-                    data={language}
-                  />
+                  {candidateLanguageVisible && (
+                    <CandidateLanguageComponent
+                      title={"Language"}
+                      data={candidateLanguageData}
+                    />
+                  )}
                 </div>
               )}
 

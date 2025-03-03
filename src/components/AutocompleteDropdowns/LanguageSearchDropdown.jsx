@@ -11,7 +11,7 @@ const LanguageSearchDropdown = ({
   onSelect,
   selectedData,
 }) => {
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState(selectedData || "");
   const [filteredOptions, setFilteredOptions] = useState([]);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [selectedOptions, setSelectedOptions] = useState(null);
