@@ -13,7 +13,7 @@ export const notifySuccess = (success) => {
 export const notifyError = (error) => {
   toast.dismiss();
   toast.error(error, {
-    position: "top-center",
+    position: "bottom-right",
     autoClose: 2000,
   });
 };

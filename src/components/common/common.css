@@ -328,7 +328,8 @@
   background-color: var(--grey);
 }
 
-.phone-input-div {}
+.phone-input-div {
+}
 
 .phone-input-style {
   width: 100%;
@@ -731,6 +732,15 @@
   animation: spin 1s linear infinite;
 }
 
+.loader-black {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(0, 0, 0, 0.4) !important;
+  border-top: 2px solid black !important;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
 .common-switch-container {
   display: flex;
   align-items: center;
@@ -842,7 +852,7 @@
   margin-bottom: 10px;
   font-family: "Ubuntu";
   font-size: 14px;
-  color: #007bff
+  color: #007bff;
 }
 
 .year-grid,
@@ -858,20 +868,19 @@
   /* padding: 12px; */
   padding-top: 10px;
   padding-bottom: 10px;
-  border: 1px solid #D7D7D7;
+  border: 1px solid #d7d7d7;
   background-color: white;
   cursor: pointer;
   border-radius: 8px;
   align-items: center;
   text-align: center;
   font-family: "Ubuntu";
-
 }
 
 .year-button.selected,
 .month-button.selected {
-  background-color: #1761D81A;
+  background-color: #1761d81a;
   color: var(--dark-black);
   font-family: "Ubuntu";
-  border: 1px solid #1761D8;
+  border: 1px solid #1761d8;
 }

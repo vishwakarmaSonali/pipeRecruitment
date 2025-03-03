@@ -548,5 +548,5 @@
   align-items: center;
   column-gap: 100px;
   row-gap: 26px;
-  justify-content: space-between;
+  flex-wrap: wrap;
 }

@@ -1,8 +1,8 @@
 import React from "react";
 import "./common.css";
 
-const CommonLoader = () => {
-  return <div className="loader" />;
+const CommonLoader = ({ className }) => {
+  return <div className={`loader ${className}`} />;
 };
 
 export default CommonLoader;
