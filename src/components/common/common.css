@@ -767,7 +767,7 @@
 }
 
 .translate-x-end {
-  transform: translateX(calc(46px - 20px));
+  transform: translateX(calc(46px - 24px));
 }
 
 .selected-options-item {
@@ -883,4 +883,12 @@
   color: var(--dark-black);
   font-family: "Ubuntu";
   border: 1px solid #1761d8;
+}
+
+.common-switch {
+  min-width: 46px;
+  max-width: 46px;
+  height: 24px;
+  border-radius: 100px;
+  padding: 2px;
 }

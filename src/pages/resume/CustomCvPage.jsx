@@ -14,6 +14,8 @@ import CandidateDescrtiptionComponent from "../../components/resume/CandidateDes
 import {
   candidateDescription,
   candidateDetailsData,
+  customizeCandidateDetailsFields,
+  demoDescriptionText,
   educationData,
   experienceData,
   language,
@@ -23,9 +25,42 @@ import CandidateDetailsComponent from "../../components/resume/CandidateDetailsC
 import CandidateSkillsComponent from "../../components/resume/CandidateSkillsComponent";
 import CandidateEmpoymentComponent from "../../components/resume/CandidateEmpoymentComponent";
 import CandidateEducationComponent from "../../components/resume/CandidateEducationComponent";
+import CustomCandidateDescription from "../../components/resume/customizable-fields/CustomCandidateDescription";
+import CustomCandidateDetails from "../../components/resume/customizable-fields/CustomCandidateDetails";
 
 const CustomCvPage = () => {
   const navigate = useNavigate();
+  const [description, setDescription] = useState(demoDescriptionText);
+  const [candidateDescriptionVisible, setCandidateDescriptionVisible] =
+    useState(true);
+  const [candidateDetailsVisible, setCandidateDetailsVisible] = useState(true);
+
+  const mappedCandidateDetailsFields = customizeCandidateDetailsFields.reduce(
+    (acc, field) => {
+      acc[field.label] = {
+        value: field.value,
+        type: field.type,
+        options: field.options,
+        order: field.order,
+        default: field.default,
+        hide: field.hide,
+      };
+      return acc;
+    },
+    {}
+  );
+
+  const [candidateDetailsFields, setCandidateDetailsFields] = useState(
+    mappedCandidateDetailsFields
+  );
+
+  const handleChangeToggleCandidateDetails = (label, key, newValue) => {
+    setCandidateDetailsFields((prevFields) => ({
+      ...prevFields,
+      [label]: { ...prevFields[label], [key]: newValue }, // Update 'value' or 'hide'
+    }));
+  };
+
   const [watermark, setWatermark] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -103,21 +138,45 @@ const CustomCvPage = () => {
       <Navbar />
       {renderHeaderComponent()}
       <div className="flex-1 display-flex" style={{ overflow: "auto" }}>
-        <div className="flex-1"></div>
+        <div
+          className="flex-1 display-column"
+          style={{ padding: 16, gap: 12, overflowY: "auto" }}
+        >
+          <CustomCandidateDescription
+            description={description}
+            setDescription={setDescription}
+            on={candidateDescriptionVisible}
+            onToggle={() =>
+              setCandidateDescriptionVisible(!candidateDescriptionVisible)
+            }
+          />
+          <CustomCandidateDetails
+            on={candidateDetailsVisible}
+            onToggle={() =>
+              setCandidateDetailsVisible(!candidateDetailsVisible)
+            }
+            fields={candidateDetailsFields}
+            onChange={handleChangeToggleCandidateDetails}
+          />
+        </div>
         <div className="flex-1 cv-view-container">
           <div id="resume" className="resume-container">
             <div className="resume-main-container">
               {renderResumeHeaderComponent()}
               {currentPage == 1 && (
                 <div className="display-column" style={{ gap: 20 }}>
-                  <CandidateDescrtiptionComponent
-                    title={"Candidate Description"}
-                    data={candidateDescription?.candidateDescription}
-                  />
-                  <CandidateDetailsComponent
-                    title={"Candidate Details"}
-                    data={candidateDetailsData}
-                  />
+                  {candidateDescriptionVisible && (
+                    <CandidateDescrtiptionComponent
+                      title={"Candidate Description"}
+                      data={description}
+                    />
+                  )}
+                  {candidateDetailsVisible && (
+                    <CandidateDetailsComponent
+                      title={"Candidate Details"}
+                      data={candidateDetailsFields}
+                    />
+                  )}
                   <CandidateSkillsComponent title={"Skills"} data={skillData} />
                   <CandidateDetailsComponent
                     title={"Language"}

@@ -153,7 +153,7 @@ const CandidateCustomization = () => {
     );
 
     if (isDuplicate) {
-      alert("Label with this name already exists!");
+      notifyError("Label with this name already exists!");
       return;
     }
 
@@ -179,7 +179,7 @@ const CandidateCustomization = () => {
     );
 
     if (isDuplicate) {
-      alert("Domain with this name already exists!");
+      notifyError("Domain with this name already exists!");
       return;
     }
 
@@ -202,7 +202,7 @@ const CandidateCustomization = () => {
     );
 
     if (isDuplicate) {
-      alert("Label with this name already exists!");
+      notifyError("Label with this name already exists!");
       return;
     }
 
@@ -228,7 +228,7 @@ const CandidateCustomization = () => {
     );
 
     if (isDuplicate) {
-      alert("Domain with this name already exists!");
+      notifyError("Domain with this name already exists!");
       return;
     }
 
@@ -899,7 +899,7 @@ const CandidateCustomization = () => {
                               onChange={(e) =>
                                 setTempLabel({
                                   ...tempLabel,
-                                  name: e.target.value,
+                                  name: e.target.value?.trimStart(),
                                 })
                               }
                               className={`customize-category-input ${
@@ -1017,7 +1017,7 @@ const CandidateCustomization = () => {
                         onChange={(e) =>
                           setTempLabel({
                             ...tempLabel,
-                            name: e.target.value,
+                            name: e.target.value?.trimStart(),
                           })
                         }
                         className={`customize-category-input ${"selected-customize-category-input"}`}
@@ -1134,7 +1134,7 @@ const CandidateCustomization = () => {
                               onChange={(e) =>
                                 setTempDomain({
                                   ...tempDomain,
-                                  name: e.target.value,
+                                  name: e.target.value?.trimStart(),
                                 })
                               }
                               className={`customize-category-input ${
@@ -1211,7 +1211,7 @@ const CandidateCustomization = () => {
                       onChange={(e) =>
                         setTempDomain({
                           ...tempDomain,
-                          name: e.target.value,
+                          name: e.target.value?.trimStart(),
                         })
                       }
                       className={`customize-category-input ${"selected-customize-category-input"}`}

@@ -247,6 +247,8 @@ const enrichUserProfileData = [
 const CandidateInfoModal = ({ visible, onClose }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { labelData } = useSelector((state) => state?.customization);
+  const [labelsData, setLabelsData] = useState(labelData);
   const { modals, setModalVisibility } = useModal();
   const [candidateTabs, setCandidateTabs] = useState(candidateInfoTabs);
   const [selectedCandidateTab, setSelectedCandidateTab] = useState("Summary");
@@ -262,7 +264,7 @@ const CandidateInfoModal = ({ visible, onClose }) => {
     comapnyListing[0]
   );
   const [enrichUserProfileVisible, setEnrichUserProfileVisible] =
-  useState(false);
+    useState(false);
   const [
     enrichUserProfileSocialAddModalVisible,
     setEnrichUserProfileSocialAddModalVisible,
@@ -272,27 +274,27 @@ const CandidateInfoModal = ({ visible, onClose }) => {
     setEnrichUserProfileInfoModalVisible,
   ] = useState(false);
   const [notRightProfileModalVisible, setNotRightProfileModalVisible] =
-  useState(false);
+    useState(false);
   const [
     verifiedEnrichProfileModalVisible,
     setVerifiedEnrichProfileModalVisible,
   ] = useState(false);
   const [selectedEnrichUserProfile, setSelectedEnrichUserProfile] =
-  useState(null);
-  
+    useState(null);
+
   const [attachementUploadModalVisible, setAttachmentUploadModalVisible] =
-  useState(false);
+    useState(false);
   const [attachmentData, setAttachmentData] = useState([]);
-  
+
   const attachmentDeleteHandler = (id) => {
     const updatedData = attachmentData?.filter((item) => item?.id !== id);
     setAttachmentData(updatedData);
   };
-  
+
   const [addToJobsModalVisible, setAddToJobsModalVisible] = useState(false);
-  
+
   const [addToFolderModalVisible, setAddToFolderModalVisible] = useState(false);
-  
+
   const [anchorE2, setAnchorE2] = useState(null);
   const [labelAnchor, setLabelAnchor] = useState(null);
   const labelMenuOpen = Boolean(labelAnchor);
@@ -300,36 +302,13 @@ const CandidateInfoModal = ({ visible, onClose }) => {
   const open = Boolean(anchorEl);
   const [selectedResumeTab, setSelectedResumeTab] = useState(1);
   const { data, loading, error } = useSelector((state) => state.labels);
-  // Ensure `data` is available and formatted properly
-  const labelOptions =
-  data?.map((item) => ({
-    id: item.id,
-    name: item.name, // Adjust the key based on API response
-    color:item.color
-  })) || [];
-  console.log("labelOptions",labelOptions);
-  const [labelData, setLabelData] = useState(labelOptions);
-    
+
   useEffect(() => {
-    console.log("called",);
-    
+    console.log("called");
+
     dispatch(fetchLabels());
   }, [dispatch]);
 
-  useEffect(() => {
-    if (data) {
-      const formattedData = data.map((item) => ({
-        _id: item._id,
-        name: item.name,
-        color: item.color,
-        selected: false, // Ensure default state is false
-      }));
-  
-      console.log("Formatted labelData from Redux:", formattedData); // ✅ Debugging
-      setLabelData(formattedData);
-    }
-  }, [data]);
-  
   const handleLabelMenuClick = (event) => {
     setLabelAnchor(event.currentTarget);
   };
@@ -369,8 +348,8 @@ const CandidateInfoModal = ({ visible, onClose }) => {
   };
 
   const labelHandler = (id) => {
-    const updatedData = labelData?.map((item) => {
-      if (item?.id === id) {
+    const updatedData = labelsData?.map((item) => {
+      if (item?._id === id) {
         return { ...item, selected: !item?.selected };
       } else {
         return { ...item };
@@ -378,7 +357,7 @@ const CandidateInfoModal = ({ visible, onClose }) => {
     });
     const filterLableData = updatedData?.filter((item) => item?.selected);
     setSelectedLabelData(filterLableData);
-    setLabelData(updatedData);
+    setLabelsData(updatedData);
   };
 
   const renderFeedback = (item) => {
@@ -608,11 +587,11 @@ const CandidateInfoModal = ({ visible, onClose }) => {
                       }}
                     >
                       <div className="display-column">
-                        {labelData?.map((item) => {
+                        {labelsData?.map((item) => {
                           return (
                             <button
                               className="label-item"
-                              onClick={() => labelHandler(item?.id)}
+                              onClick={() => labelHandler(item?._id)}
                             >
                               <LabelIcon fill={item?.color} />
                               <span

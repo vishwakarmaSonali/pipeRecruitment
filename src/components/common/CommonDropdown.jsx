@@ -61,15 +61,13 @@ const CommonDropdown = ({
   }, [isOpen]);
 
   const handleSelect = (option) => {
-    if (option && optionKey in option) {
+    if (option && typeof option === "object" && optionKey in option) {
       setSelectedOption(option[optionKey]); // Update displayed text
       setSelectedColor(option.color || "");
-      if (candidateInfo) {
-        onChange(option[optionKey]); // Pass the entire object back to parent component
-      } else {
-        onChange(option); // Pass the entire object back to parent component
-      }
+      onChange(candidateInfo ? option[optionKey] : option);
     } else {
+      setSelectedOption(option);
+      onChange(option);
     }
     setIsOpen(false);
   };
@@ -117,7 +115,7 @@ const CommonDropdown = ({
   };
 
   const normalListItem = (item, index) => {
-    const itemValue = item?.industryType || item?.type || item?.status;
+    const itemValue = item?.industryType || item?.type || item?.status || item;
     const selectedItem = itemValue === selectedOption;
     return (
       <div
