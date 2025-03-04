@@ -27,6 +27,7 @@ const MonthYearPicker = ({
   onSelect,
   month,
   year,
+  iconVisible,
 }) => {
   const [selectedMonth, setSelectedMonth] = useState(month);
   const [selectedYear, setSelectedYear] = useState(year);
@@ -81,7 +82,7 @@ const MonthYearPicker = ({
             >
               {!!selectedMonth ? selectedMonth : "Month"}
             </span>
-            <CalendarIcon />
+            {iconVisible && <CalendarIcon />}
           </div>
 
           {isMonthOpen && (
@@ -129,7 +130,7 @@ const MonthYearPicker = ({
             >
               {!!selectedYear ? selectedYear : "Year"}
             </span>
-            <CalendarIcon />
+            {iconVisible && <CalendarIcon />}
           </div>
 
           {isYearOpen && (
@@ -146,7 +147,7 @@ const MonthYearPicker = ({
                     onSelect({ month: selectedMonth, year });
                   }}
                   className={`px-3 py-2 hover:bg-gray-100 cursor-pointer font-12-regular color-dark-black ${
-                    year === selectedYear && "selected-item-common-bg"
+                    year == selectedYear && "selected-item-common-bg"
                   }`}
                 >
                   {year}

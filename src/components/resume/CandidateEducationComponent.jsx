@@ -17,14 +17,20 @@ const CandidateEducationComponent = ({ title, data }) => {
                   className="font-12-regular color-dark-black"
                   style={{ fontWeight: 500 }}
                 >
-                  {item?.degree} at {item?.course}
+                  {item?.degree} in {item?.major}
                 </p>
                 <p className="font-12-regular color-dark-black">
-                  {item?.collage}
+                  {item?.university}
                 </p>
                 <p className="font-12-regular color-blue">
-                  {item?.startDate} - {item?.endDate}
+                  {`${item?.startDate?.month} ${item?.startDate?.year} -
+                      ${item?.endDate?.month} ${item?.endDate?.year}`}
                 </p>
+                {!!item?.grade && (
+                  <p className="font-12-regular color-dark-black">
+                    {item?.grade}
+                  </p>
+                )}
               </div>
               <div
                 className="font-12-regular color-grey description-div"

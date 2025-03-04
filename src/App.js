@@ -30,6 +30,7 @@ import MergeDuplicateCandidatesPage from "./pages/Recruitment/Candidates/MergeDu
 import OriginalResumePage from "./pages/resume/OriginalResumePage";
 import CustomCvPage from "./pages/resume/CustomCvPage";
 import ReportPage from "./pages/resume/ReportPage";
+import CustomReportPage from "./pages/resume/CustomReportPage";
 
 const router = createBrowserRouter([
   {
@@ -102,7 +103,7 @@ const router = createBrowserRouter([
   },
   {
     path: "/candidate/report",
-    element: <CustomCvPage />,
+    element: <CustomReportPage />,
   },
   {
     path: "/merge-candidate",

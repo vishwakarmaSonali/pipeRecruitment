@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Quill } from "react-quill";
 import { ReactComponent as HeadingIcon } from "../../assets/icons/smallcaps.svg";
 import { ReactComponent as ArrowIcon } from "../../assets/icons/arrowDown.svg";
@@ -24,22 +24,29 @@ const CustomRedo = () => (
   </svg>
 );
 
-function undoChange() {
-  this.quill.history.undo();
-}
-function redoChange() {
-  this.quill.history.redo();
+const undoChange = function () {
+  if (this.quill) {
+    this.quill.history.undo();
+  }
+};
+
+const redoChange = function () {
+  if (this.quill) {
+    this.quill.history.redo();
+  }
+};
+
+// Ensure Quill is available before importing formats
+if (typeof window !== "undefined" && Quill) {
+  const Size = Quill.import("formats/size");
+  Size.whitelist = ["extra-small", "small", "medium", "large"];
+  Quill.register(Size, true);
 }
 
-// Add sizes to whitelist and register them
-const Size = Quill.import("formats/size");
-Size.whitelist = ["extra-small", "small", "medium", "large"];
-Quill.register(Size, true);
-
-// Modules object for setting up the Quill editor
-export const modules = (props) => ({
+// Modules for setting up Quill editor
+export const modules = (toolbarId) => ({
   toolbar: {
-    container: "#" + props,
+    container: `#${toolbarId}`,
     handlers: {
       undo: undoChange,
       redo: redoChange,
@@ -74,6 +81,7 @@ const CustomSizeDropdown = ({ quill }) => {
     setSelectedSize(size);
     setOpen(false);
   };
+
   return (
     <div className="custom-dropdown-size">
       <button className="custom-dropdown-toggle" onClick={() => setOpen(!open)}>
@@ -112,8 +120,8 @@ const CustomSizeDropdown = ({ quill }) => {
 export const QuillToolbar = ({ toolbarId, quill }) => {
   return (
     <>
-      {toolbarId !== undefined && (
-        <div id={toolbarId}>
+      {toolbarId && (
+        <div id={`${toolbarId}`}>
           <span className="ql-formats">
             <CustomSizeDropdown quill={quill} />
             <button className="ql-bold" />
@@ -135,4 +143,5 @@ export const QuillToolbar = ({ toolbarId, quill }) => {
     </>
   );
 };
+
 export default QuillToolbar;

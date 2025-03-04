@@ -33,8 +33,10 @@ import CustomLanguage from "../../components/resume/customizable-fields/CustomLa
 import CandidateLanguageComponent from "../../components/resume/CandidateLanguageComponent";
 import CustomEducationDetails from "../../components/resume/customizable-fields/CustomEducationDetails";
 import CustomExperienceDetails from "../../components/resume/customizable-fields/CustomExperienceDetails";
+import CustomNotes from "../../components/resume/customizable-fields/CustomNotes";
+import CandidateNoteComponent from "../../components/resume/CandidateNoteComponent";
 
-const CustomCvPage = () => {
+const CustomReportPage = () => {
   const navigate = useNavigate();
   const [description, setDescription] = useState(demoDescriptionText);
   const [candidateDescriptionVisible, setCandidateDescriptionVisible] =
@@ -173,8 +175,12 @@ const CustomCvPage = () => {
     setCandidateExperienceData(updatedData);
   };
 
+  const [candidateNoteVisible, setCandidateNoteVisible] = useState(true);
+  const [note, setNote] = useState([]);
+
   const [watermark, setWatermark] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
+  const [totalPage, setTotalPage] = useState(5);
 
   const backHandler = () => {
     navigate(-1);
@@ -205,7 +211,7 @@ const CustomCvPage = () => {
   const renderHeaderComponent = () => {
     return (
       <div className="resume-header-div position-sticky">
-        <p className="font-22-medium color-dark-black">Edit Custom CV</p>
+        <p className="font-22-medium color-dark-black">Edit Report</p>
         <div className="display-flex" style={{ gap: 8 }}>
           <CancelButton title={"Back"} onClick={backHandler} />
           <CommonButton title={"Save"} />
@@ -228,17 +234,6 @@ const CustomCvPage = () => {
               <img src={xBoot} className="common-img" />
             </div>
             <span className="font-18-medium color-dark-black">xBoost</span>
-          </div>
-          <div className="display-column" style={{ gap: 4 }}>
-            <p className="font-10-regular color-dark-black text-right">
-              Olivia Carter
-            </p>
-            <p className="font-10-regular color-dark-black text-right">
-              oliviacarter@mail.com
-            </p>
-            <p className="font-10-regular color-dark-black text-right">
-              +1 (555) 987-6543
-            </p>
           </div>
         </div>
         <div className="resume-header-divider" />
@@ -307,12 +302,73 @@ const CustomCvPage = () => {
             onUpdate={(index, data) => handleEducationUpdate(index, data)}
             onDelete={(index) => educationDeleteHandler(index)}
           />
+          <CustomNotes
+            on={candidateNoteVisible}
+            onToggle={() => setCandidateNoteVisible(!candidateNoteVisible)}
+            note={note}
+            setNote={setNote}
+          />
         </div>
         <div className="flex-1 cv-view-container">
           <div id="resume" className="resume-container">
             <div className="resume-main-container">
               {renderResumeHeaderComponent()}
               {currentPage == 1 && (
+                <div className="display-column flex-1">
+                  <div
+                    className="flex-1 display-column  justify-center"
+                    style={{ gap: 12 }}
+                  >
+                    <p className="font-40-bold color-blue">
+                      {candidateDetailsFields?.["First Name"]?.value}{" "}
+                      {candidateDetailsFields?.["Last Name"]?.value}
+                    </p>
+                    <p className="font-16-regular color-dark-black">
+                      {candidateDetailsFields?.["Current Job Title"]?.value}
+                    </p>
+                  </div>
+                  <div className="display-flex">
+                    <div className="display-column flex-1" style={{ gap: 4 }}>
+                      <p
+                        className="font-10-regular color-dark-blak"
+                        style={{ fontWeight: 500 }}
+                      >
+                        Prepared By
+                      </p>
+                      <p className="font-10-regular color-dark-blak">
+                        Olivia Carter
+                      </p>
+                      <p className="font-10-regular color-dark-blak">xBoost</p>
+                    </div>
+                    <div className="display-column flex-1" style={{ gap: 4 }}>
+                      <p
+                        className="font-10-regular color-dark-blak"
+                        style={{ fontWeight: 500 }}
+                      >
+                        Contact
+                      </p>
+                      <p className="font-10-regular color-dark-blak">
+                        oliviacarter@mail.com
+                      </p>
+                      <p className="font-10-regular color-dark-blak">
+                        +1 (555) 987-6543
+                      </p>
+                    </div>
+                    <div className="display-column flex-1" style={{ gap: 4 }}>
+                      <p
+                        className="font-10-regular color-dark-blak"
+                        style={{ fontWeight: 500 }}
+                      >
+                        Date
+                      </p>
+                      <p className="font-10-regular color-dark-blak">
+                        January 12, 2025
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
+              {currentPage == 2 && (
                 <div className="display-column" style={{ gap: 20 }}>
                   {candidateDescriptionVisible && (
                     <CandidateDescrtiptionComponent
@@ -341,18 +397,22 @@ const CustomCvPage = () => {
                 </div>
               )}
 
-              {currentPage === 2 && candidateExperienceVisible && (
+              {currentPage === 3 && candidateExperienceVisible && (
                 <CandidateEmpoymentComponent
                   title={"Employment"}
                   data={candidatExperienceData}
                 />
               )}
 
-              {currentPage === 3 && candidateEducationVisible && (
+              {currentPage === 4 && candidateEducationVisible && (
                 <CandidateEducationComponent
                   title={"Education"}
                   data={candidateEductionData}
                 />
+              )}
+
+              {currentPage === 5 && candidateNoteVisible && (
+                <CandidateNoteComponent title={"Notes"} data={note} />
               )}
 
               {watermark && <div className="water-mark-style">XBoost</div>}
@@ -360,7 +420,7 @@ const CustomCvPage = () => {
 
             <div className="resume-footer-div">
               <p className="font-12-regular" style={{ color: "#D7D7D7" }}>
-                Page {currentPage} / 3
+                Page {currentPage} / {totalPage}
               </p>
             </div>
           </div>
@@ -380,10 +440,10 @@ const CustomCvPage = () => {
               </button>
               <div style={{ minWidth: 61 }}>
                 <p className="font-12-regular color-dark-black">
-                  Page {currentPage} / 3
+                  Page {currentPage} / {totalPage}
                 </p>
               </div>
-              <button onClick={nextPage} disabled={currentPage === 3}>
+              <button onClick={nextPage} disabled={currentPage === totalPage}>
                 <ArrowLeft />
               </button>
             </div>
@@ -399,4 +459,4 @@ const CustomCvPage = () => {
   );
 };
 
-export default CustomCvPage;
+export default CustomReportPage;

@@ -33,7 +33,7 @@ icons["list"]["bullet"] = ReactDOMServer.renderToStaticMarkup(
   <UnorderListIcon stroke="#151B23" />
 );
 
-const HtmlViewComponent = ({ value, onChange, placeholder }) => {
+const HtmlViewComponent = ({ value, onChange, placeholder, toolbarId }) => {
   const quillRef = useRef(null);
   const [quillInstance, setQuillInstance] = useState(null);
 
@@ -46,14 +46,14 @@ const HtmlViewComponent = ({ value, onChange, placeholder }) => {
 
   return (
     <div className="editor-main-div">
-      <QuillToolbar toolbarId="t1" quill={quillInstance} />
+      <QuillToolbar toolbarId={toolbarId} quill={quillInstance} />
       <ReactQuill
         ref={quillRef}
         theme="snow"
         value={value}
         onChange={onChange}
         placeholder={placeholder}
-        modules={modules("t1")}
+        modules={modules(toolbarId)}
       />
     </div>
   );

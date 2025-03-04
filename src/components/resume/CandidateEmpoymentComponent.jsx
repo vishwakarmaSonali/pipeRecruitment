@@ -23,7 +23,12 @@ const CandidateEmpoymentComponent = ({ title, data }) => {
                   {item?.location}
                 </p>
                 <p className="font-12-regular color-blue">
-                  {item?.startDate} - {item?.endDate}
+                  {`${item?.startDate?.month} ${item?.startDate?.year} -
+                      ${
+                        item?.endDate === "Present"
+                          ? item?.endDate
+                          : item?.endDate?.month + " " + item?.endDate?.year
+                      }`}
                 </p>
               </div>
               <div

@@ -134,6 +134,7 @@ const CreateCandidateFormModal = ({ visible, onClose }) => {
               <HtmlViewComponent
                 value={description}
                 onChange={setDescription}
+                toolbarId={"t1"}
               />
 
               {/* <button type="submit" className="submit-btn">

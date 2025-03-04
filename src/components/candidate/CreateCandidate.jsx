@@ -482,7 +482,7 @@ const CreateCandidateForm = () => {
               value={description}
               onChange={setDescription}
               placeholder="Add Description"
-              // className='w-[100%]'
+              toolbarId={"t1"}
             />
           </div>
         </div>

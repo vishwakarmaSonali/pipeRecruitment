@@ -8,7 +8,10 @@ const LocationSearchDropdown = ({
   placeholder,
   multipleSelect = false,
 }) => {
-  const [locationQuery, setLocationQuery] = useState("");
+  const dropdownRef = useRef(null);
+  const [locationQuery, setLocationQuery] = useState(
+    selectedLocations?.length > 0 && !multipleSelect ? selectedLocations : ""
+  );
   const [locationSuggestions, setLocationSuggestions] = useState([]);
   const [showLocationDropdown, setShowLocationDropdown] = useState(false);
   const debounceTimeout = useRef(null);
@@ -29,7 +32,7 @@ const LocationSearchDropdown = ({
         isFetching.current = true; // Mark as fetching to prevent duplicate calls
         try {
           const response = await axios.get(
-            `http://3.110.81.44/api/candidate-profiles/suggest/location?query=${locationQuery}`
+            `http://3.110.81.44/api/source/suggest/location?query=${locationQuery}`
           );
           console.log("Location API Response:", response?.data?.suggestions);
 
@@ -77,8 +80,24 @@ const LocationSearchDropdown = ({
     setShowLocationDropdown(false); // Close dropdown
   };
 
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setShowLocationDropdown(false);
+      }
+    };
+
+    if (showLocationDropdown) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [showLocationDropdown]);
+
   return (
-    <div className="relative w-full">
+    <div className="relative w-full" ref={dropdownRef}>
       <input
         type="text"
         placeholder={placeholder}

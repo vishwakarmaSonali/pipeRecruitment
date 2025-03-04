@@ -475,7 +475,10 @@ const CandidateInfoModal = ({ visible, onClose }) => {
         <p className="font-22-medium color-dark-black">All Reports</p>
         <div className="display-flex" style={{ gap: 8 }}>
           <CancelButton title={"Back"} onClick={resumeBackHandler} />
-          <CommonButton title={"Create Report"} />
+          <CommonButton
+            title={"Create Report"}
+            onClick={() => navigate("/candidate/report")}
+          />
         </div>
       </div>
     );

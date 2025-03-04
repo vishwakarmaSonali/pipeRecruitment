@@ -34,6 +34,7 @@ const AddNoteModal = ({ visible, onClose, selectedNote }) => {
             value={noteText}
             onChange={setNoteText}
             placeholder={"Add Note"}
+            toolbarId={"t1"}
           />
         </div>
         <div

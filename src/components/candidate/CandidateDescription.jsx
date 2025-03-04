@@ -45,6 +45,7 @@ const CandidateDescription = ({ label, data, editable }) => {
                   value={description}
                   onChange={setDescription}
                   placeholder={"Add Description"}
+                  toolbarId={"t1"}
                 />
               </div>
               <div
