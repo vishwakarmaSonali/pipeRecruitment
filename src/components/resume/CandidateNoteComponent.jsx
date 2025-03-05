@@ -5,7 +5,7 @@ const CandidateNoteComponent = ({ title, data }) => {
   return (
     <div className="display-column" style={{ gap: 12 }}>
       <p className="font-14-medium" style={{ fontWeight: 700 }}>
-        {title}
+        Notes
       </p>
       <div className="divider-line" />
       <div

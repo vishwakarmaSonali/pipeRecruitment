@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import "./index.css";
 import CancelButton from "../../components/common/CancelButton";
 import CommonButton from "../../components/common/CommonButton";
@@ -12,13 +12,8 @@ import { ReactComponent as ArrowRight } from "../../assets/icons/arrow-right.svg
 import { xBoot } from "../../helpers/assets";
 import CandidateDescrtiptionComponent from "../../components/resume/CandidateDescrtiptionComponent";
 import {
-  candidateDescription,
-  candidateDetailsData,
   customizeCandidateDetailsFields,
   demoDescriptionText,
-  educationData,
-  experienceData,
-  language,
   skillData,
 } from "../../helpers/config";
 import CandidateDetailsComponent from "../../components/resume/CandidateDetailsComponent";
@@ -33,9 +28,15 @@ import CustomLanguage from "../../components/resume/customizable-fields/CustomLa
 import CandidateLanguageComponent from "../../components/resume/CandidateLanguageComponent";
 import CustomEducationDetails from "../../components/resume/customizable-fields/CustomEducationDetails";
 import CustomExperienceDetails from "../../components/resume/customizable-fields/CustomExperienceDetails";
+import ReactDOM from "react-dom";
 
 const CustomCvPage = () => {
   const navigate = useNavigate();
+
+  const backHandler = () => {
+    navigate(-1);
+  };
+
   const [description, setDescription] = useState(demoDescriptionText);
   const [candidateDescriptionVisible, setCandidateDescriptionVisible] =
     useState(true);
@@ -174,32 +175,109 @@ const CustomCvPage = () => {
   };
 
   const [watermark, setWatermark] = useState(false);
-  const [currentPage, setCurrentPage] = useState(1);
-
-  const backHandler = () => {
-    navigate(-1);
-  };
+  const [pages, setPages] = useState([]);
+  const [currentPage, setCurrentPage] = useState(0);
+  const pdfRef = useRef(null);
+  const PAGE_HEIGHT = 842;
+  const CONTENT_WIDTH = 500;
 
   const toggleWatermark = () => setWatermark(!watermark);
-  const nextPage = () => setCurrentPage((prev) => prev + 1);
-  const prevPage = () => setCurrentPage((prev) => (prev > 1 ? prev - 1 : 1));
+
+  const nextPage = () => {
+    if (currentPage < pages.length - 1) {
+      setCurrentPage((prev) => prev + 1);
+    }
+  };
+
+  const prevPage = () => {
+    if (currentPage > 0) {
+      setCurrentPage((prev) => prev - 1);
+    }
+  };
+
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === "ArrowLeft") prevPage();
+      if (e.key === "ArrowRight") nextPage();
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [currentPage]);
 
   const exportAsPDF = async () => {
-    const resume = document.getElementById("resume");
-    const canvas = await html2canvas(resume);
-    const imgData = canvas.toDataURL("image/png");
+    try {
+      const pdfDoc = await PDFDocument.create();
+      const pageWidth = 595;
+      const pageHeight = 842;
 
-    const pdfDoc = await PDFDocument.create();
-    const page = pdfDoc.addPage([595, 842]);
-    const image = await pdfDoc.embedPng(imgData);
-    page.drawImage(image, { x: 0, y: 0, width: 595, height: 842 });
+      // Create temporary container
+      const tempContainer = document.createElement("div");
+      tempContainer.style.position = "absolute";
+      tempContainer.style.left = "-9999px";
+      tempContainer.style.width = `${pageWidth}px`;
+      document.body.appendChild(tempContainer);
 
-    const pdfBytes = await pdfDoc.save();
-    const blob = new Blob([pdfBytes], { type: "application/pdf" });
-    const link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);
-    link.download = "resume.pdf";
-    link.click();
+      // Preserve original container reference
+      const originalContainer = pdfRef.current;
+
+      for (let i = 0; i < pages.length; i++) {
+        // Clone the original container
+        const clone = originalContainer?.cloneNode(true);
+
+        // Filter to show only current page content
+        const mainContainer = clone.querySelector(".resume-main-container");
+        mainContainer.innerHTML = "";
+
+        pages[i].forEach((section) => {
+          const sectionDiv = document.createElement("div");
+          sectionDiv.className = "document-section";
+          ReactDOM.render(section.component, sectionDiv);
+          mainContainer.appendChild(sectionDiv);
+        });
+
+        // Update page number
+        const footer = clone.querySelector(".resume-footer-div p");
+        if (footer) footer.textContent = `Page ${i + 1} / ${pages.length}`;
+
+        tempContainer.appendChild(clone);
+
+        // Capture with proper dimensions
+        const canvas = await html2canvas(clone, {
+          scale: 2,
+          useCORS: true,
+          logging: true,
+          width: pageWidth,
+          height: pageHeight,
+          windowWidth: pageWidth * 2,
+          windowHeight: pageHeight * 2,
+        });
+
+        const imgData = canvas.toDataURL("image/png");
+        const page = pdfDoc.addPage([pageWidth, pageHeight]);
+        const image = await pdfDoc.embedPng(imgData);
+        page.drawImage(image, {
+          x: 0,
+          y: 0,
+          width: pageWidth,
+          height: pageHeight,
+        });
+
+        tempContainer.removeChild(clone);
+      }
+
+      document.body.removeChild(tempContainer);
+
+      // Download PDF
+      const pdfBytes = await pdfDoc.save();
+      const blob = new Blob([pdfBytes], { type: "application/pdf" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = "resume.pdf";
+      link.click();
+    } catch (error) {
+      console.error("PDF generation failed:", error);
+    }
   };
 
   const renderHeaderComponent = () => {
@@ -221,7 +299,7 @@ const CustomCvPage = () => {
 
   const renderResumeHeaderComponent = () => {
     return (
-      <div className="display-column" style={{ gap: 14 }}>
+      <div className="resume-header">
         <div className="display-flex-justify">
           <div className="display-flex align-center" style={{ gap: 6 }}>
             <div className="w-h-32">
@@ -245,6 +323,200 @@ const CustomCvPage = () => {
       </div>
     );
   };
+
+  const allSections = [
+    candidateDescriptionVisible &&
+      !!description && {
+        component: (
+          <CandidateDescrtiptionComponent
+            title="Candidate Description"
+            data={description}
+          />
+        ),
+        rawData: description,
+        title: "Candidate Description",
+      },
+    candidateDetailsVisible && {
+      component: (
+        <CandidateDetailsComponent
+          title="Candidate Details"
+          data={candidateDetailsFields}
+        />
+      ),
+      title: "Candidate Details",
+    },
+    candidateSkillsVisible &&
+      candidateSkillData?.length > 0 && {
+        component: (
+          <CandidateSkillsComponent title="Skills" data={candidateSkillData} />
+        ),
+        title: "Skills",
+      },
+    candidateLanguageVisible &&
+      candidateLanguageData?.length && {
+        component: (
+          <CandidateLanguageComponent
+            title="Language"
+            data={candidateLanguageData}
+          />
+        ),
+        title: "Language",
+      },
+    candidateEducationVisible &&
+      candidateEductionData?.length > 0 && {
+        component: (
+          <CandidateEducationComponent
+            title="Education"
+            data={candidateEductionData}
+          />
+        ),
+        title: "Education",
+      },
+    candidateExperienceVisible &&
+      candidatExperienceData?.length && {
+        component: (
+          <CandidateEmpoymentComponent
+            title="Employment"
+            data={candidatExperienceData}
+          />
+        ),
+        title: "Employment",
+      },
+  ].filter(Boolean);
+
+  const renderToDiv = (component) => {
+    const div = document.createElement("div");
+    div.style.position = "absolute";
+    div.style.visibility = "hidden";
+    div.style.width = "595px"; // Match your container width
+    document.body.appendChild(div);
+
+    return new Promise((resolve) => {
+      ReactDOM.render(component, div, () => {
+        resolve(div);
+      });
+    });
+  };
+
+  const measureComponentHeight = async (component) => {
+    const container = await renderToDiv(
+      <div>
+        {renderResumeHeaderComponent()}
+        <div className="resume-main-container">{component}</div>
+        <div className="resume-footer-div">
+          <p className="font-12-regular" style={{ color: "#D7D7D7" }}>
+            Page {currentPage + 1} / {pages?.length}
+          </p>
+        </div>
+      </div>
+    );
+
+    const height = container.clientHeight;
+    ReactDOM.unmountComponentAtNode(container);
+    container.remove();
+    return height;
+  };
+
+  const splitSection = async (section) => {
+    const fullHeight = await measureComponentHeight(section.component);
+
+    if (fullHeight <= PAGE_HEIGHT) return [section];
+
+    if (section.rawData) {
+      const words = section.rawData.split(" ");
+      const splits = [];
+      let currentText = [];
+
+      for (const word of words) {
+        const testText = [...currentText, word].join(" ");
+        const testComponent = (
+          <CandidateDescrtiptionComponent
+            title={section.title}
+            data={testText}
+          />
+        );
+        const testHeight = await measureComponentHeight(testComponent);
+
+        if (testHeight + 20 > PAGE_HEIGHT) {
+          splits.push({
+            component: (
+              <CandidateDescrtiptionComponent
+                title={section.title}
+                data={currentText.join(" ")}
+              />
+            ),
+            rawData: currentText.join(" "),
+            title: section.title,
+          });
+          currentText = [word];
+        } else {
+          currentText.push(word);
+        }
+      }
+
+      if (currentText.length > 0) {
+        splits.push({
+          component: (
+            <CandidateDescrtiptionComponent
+              // title={section.title}
+              data={currentText.join(" ")}
+            />
+          ),
+          rawData: currentText.join(" "),
+          title: section.title,
+        });
+      }
+
+      return splits;
+    }
+
+    // For non-splittable components
+    return [section];
+  };
+
+  useEffect(() => {
+    const processPages = async () => {
+      let pages = [];
+      let currentPage = [];
+      let currentHeight = 0;
+
+      for (const section of allSections) {
+        const splits = await splitSection(section);
+
+        for (const split of splits) {
+          const height = await measureComponentHeight(split.component);
+
+          if (currentHeight + height > PAGE_HEIGHT) {
+            pages.push(currentPage);
+            currentPage = [];
+            currentHeight = 0;
+          }
+
+          currentPage.push(split);
+          currentHeight += height;
+        }
+      }
+
+      if (currentPage.length > 0) pages.push(currentPage);
+      setPages(pages);
+    };
+
+    processPages();
+  }, [
+    description,
+    candidatExperienceData,
+    candidateDetailsFields,
+    candidateEductionData,
+    candidateLanguageData,
+    candidateSkillData,
+    candidateEducationVisible,
+    candidateDetailsVisible,
+    candidateDescriptionVisible,
+    candidateSkillsVisible,
+    candidateLanguageVisible,
+    candidateExperienceVisible,
+  ]);
+
   return (
     <div className="sourcing-main-container">
       <Navbar />
@@ -309,61 +581,24 @@ const CustomCvPage = () => {
           />
         </div>
         <div className="flex-1 cv-view-container">
-          <div id="resume" className="resume-container">
+          <div className="resume-container">
+            {renderResumeHeaderComponent()}
             <div className="resume-main-container">
-              {renderResumeHeaderComponent()}
-              {currentPage == 1 && (
-                <div className="display-column" style={{ gap: 20 }}>
-                  {candidateDescriptionVisible && (
-                    <CandidateDescrtiptionComponent
-                      title={"Candidate Description"}
-                      data={description}
-                    />
-                  )}
-                  {candidateDetailsVisible && (
-                    <CandidateDetailsComponent
-                      title={"Candidate Details"}
-                      data={candidateDetailsFields}
-                    />
-                  )}
-                  {candidateSkillsVisible && (
-                    <CandidateSkillsComponent
-                      title={"Skills"}
-                      data={candidateSkillData}
-                    />
-                  )}
-                  {candidateLanguageVisible && (
-                    <CandidateLanguageComponent
-                      title={"Language"}
-                      data={candidateLanguageData}
-                    />
-                  )}
-                </div>
-              )}
-
-              {currentPage === 2 && candidateExperienceVisible && (
-                <CandidateEmpoymentComponent
-                  title={"Employment"}
-                  data={candidatExperienceData}
-                />
-              )}
-
-              {currentPage === 3 && candidateEducationVisible && (
-                <CandidateEducationComponent
-                  title={"Education"}
-                  data={candidateEductionData}
-                />
-              )}
-
-              {watermark && <div className="water-mark-style">XBoost</div>}
+              {pages?.length > 0 &&
+                pages[currentPage]?.map((section, index) => (
+                  <div key={index} className="document-section">
+                    {section.component}
+                  </div>
+                ))}
             </div>
-
             <div className="resume-footer-div">
               <p className="font-12-regular" style={{ color: "#D7D7D7" }}>
-                Page {currentPage} / 3
+                Page {currentPage + 1} / {pages?.length}
               </p>
             </div>
+            {watermark && <div className="water-mark-style">XBoost</div>}
           </div>
+
           <div
             className="display-flex-justify align-center"
             style={{ width: 600 }}
@@ -375,16 +610,23 @@ const CustomCvPage = () => {
               <CommonSwitch on={watermark} onToggle={toggleWatermark} />
             </div>
             <div className="display-flex align-center" style={{ gap: 8 }}>
-              <button onClick={prevPage} disabled={currentPage === 1}>
-                <ArrowRight />
+              <button onClick={prevPage} disabled={currentPage === 0}>
+                <ArrowRight fill={currentPage === 0 ? "#797979" : "#151B23"} />
               </button>
               <div style={{ minWidth: 61 }}>
                 <p className="font-12-regular color-dark-black">
-                  Page {currentPage} / 3
+                  Page {currentPage + 1} / {pages.length}
                 </p>
               </div>
-              <button onClick={nextPage} disabled={currentPage === 3}>
-                <ArrowLeft />
+              <button
+                onClick={nextPage}
+                disabled={currentPage === pages.length - 1}
+              >
+                <ArrowLeft
+                  fill={
+                    currentPage === pages.length - 1 ? "#797979" : "#151B23"
+                  }
+                />
               </button>
             </div>
           </div>

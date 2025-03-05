@@ -436,7 +436,7 @@ const CustomReportPage = () => {
             </div>
             <div className="display-flex align-center" style={{ gap: 8 }}>
               <button onClick={prevPage} disabled={currentPage === 1}>
-                <ArrowRight />
+                <ArrowRight fill="#151B23"/>
               </button>
               <div style={{ minWidth: 61 }}>
                 <p className="font-12-regular color-dark-black">
@@ -444,7 +444,7 @@ const CustomReportPage = () => {
                 </p>
               </div>
               <button onClick={nextPage} disabled={currentPage === totalPage}>
-                <ArrowLeft />
+                <ArrowLeft fill="#151B23"/>
               </button>
             </div>
           </div>

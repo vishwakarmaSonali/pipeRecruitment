@@ -67,6 +67,9 @@ const CreateCandidateForm = () => {
   const navigate = useNavigate();
   const today = new Date();
   const { data, loading, error } = useSelector((state) => state.domains);
+  const { token } = useSelector((state) => state?.auth);
+
+  console.log(">>>>>>>>>>>>>>>>>>>>>.token", token);
   // Ensure `data` is available and formatted properly
   console.log("data", data);
 
@@ -215,8 +218,8 @@ const CreateCandidateForm = () => {
   //   console.log("🚀 Candidate Data:", candidateData);
   // };
   const handleCreate = async () => {
-    const languageNames = languages?.map(lang => lang.name);
-console.log(languageNames,"langugaes name"); // ["hindi", "english"]
+    const languageNames = languages?.map((lang) => lang.name);
+    console.log(languageNames, "langugaes name"); // ["hindi", "english"]
     if (!firstName.trim() || !lastName.trim() || !email?.trim()) {
       alert("First Name,Last Name and Email Fields are required!");
       return;
@@ -233,7 +236,7 @@ console.log(languageNames,"langugaes name"); // ["hindi", "english"]
       ...(email && { email }),
       // ...(salutation && { salutation:selectedTitle }),  // ✅ Added missing `salutation`
       ...(dateofbirth && { date_of_birth: dateofbirth }), // ✅ Added `date_of_birth`
-      ...(selectedGender && { gender: selectedGender}), // ✅ Added `gender`
+      ...(selectedGender && { gender: selectedGender }), // ✅ Added `gender`
       ...(phoneNumber && {
         phone: phoneNumber,
         country_code: selectedCountry.dialCode || "+91", // ✅ Added `country_code`
@@ -262,7 +265,7 @@ console.log(languageNames,"langugaes name"); // ["hindi", "english"]
       ...(yearsOfExp && { years_of_experience: yearsOfExp }),
       ...(currentSalary && { current_salary: currentSalary }),
       ...(expectedSalary && { expected_salary: expectedSalary }),
-      ...(languages && {language:languageNames})
+      ...(languages && { language: languageNames }),
     };
     console.log(
       "candidateData>>>>>>>>>",
@@ -565,14 +568,14 @@ console.log(languageNames,"langugaes name"); // ["hindi", "english"]
               </div>
               <div className="display-flex gap-[10px] mt-[10px]">
                 <div className="flex-1 ">
-                <CustomDropdown
-  options={domainOptions} // Ensure it's an array of objects
-  placeholder="Select Domain"
-  selectedValues={selectedDomain} // Must be an object
-  onChange={setSelectedDomain} // Must store the full object
-  optionKey="name"
-  multiSelect={false}
-/>
+                  <CustomDropdown
+                    options={domainOptions} // Ensure it's an array of objects
+                    placeholder="Select Domain"
+                    selectedValues={selectedDomain} // Must be an object
+                    onChange={setSelectedDomain} // Must store the full object
+                    optionKey="name"
+                    multiSelect={false}
+                  />
                 </div>
                 <div className="flex-1 "></div>
               </div>

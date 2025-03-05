@@ -13,7 +13,6 @@
   flex-direction: column;
   gap: 20px;
   align-items: center;
-  height: 100%;
   box-sizing: border-box;
   overflow-y: auto;
 }
@@ -31,15 +30,19 @@
 
 .resume-main-container {
   flex: 1;
-  padding: 40px 40px 2px 40px;
+  padding: 14px 40px;
   display: flex;
   flex-direction: column;
   gap: 14px;
+  overflow: visible;
+
   box-sizing: border-box;
-  overflow: hidden;
 }
 
 .resume-footer-div {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
   padding: 12px 40px;
   background-color: #ffffff;
   display: flex;
@@ -66,4 +69,90 @@
   color: var(--dark-black);
   rotate: -36.32deg;
   opacity: 0.06;
+}
+
+.document-container {
+  width: 600px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.document-header {
+  text-align: center;
+  font-weight: bold;
+  padding: 10px 0;
+}
+
+.document-footer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 40px;
+  text-align: center;
+  font-weight: bold;
+  padding: 10px 0;
+  background: white;
+  border-top: 1px solid #ccc;
+}
+
+.document-content {
+  flex-grow: 1;
+  overflow: hidden;
+}
+
+.watermark {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 48px;
+  font-weight: bold;
+  color: rgba(200, 200, 200, 0.3);
+  pointer-events: none;
+  user-select: none;
+}
+
+.resume-header {
+  padding: 40px 40px 0px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.candidate-description {
+  /* Allow splitting across pages */
+  page-break-inside: auto;
+  /* Other print-specific rules */
+}
+
+.resume-container {
+  page-break-after: always;
+  page-break-inside: avoid;
+  min-height: 842px;
+  position: relative;
+}
+
+.document-section {
+  break-inside: avoid-page;
+}
+
+@media print {
+  body {
+    visibility: hidden;
+  }
+
+  .resume-container {
+    visibility: visible;
+    position: absolute;
+    left: 0;
+    top: 0;
+    box-shadow: none;
+    page-break-after: always;
+  }
+}
+
+.resume-container {
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
 }

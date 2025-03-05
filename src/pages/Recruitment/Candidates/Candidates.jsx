@@ -39,22 +39,32 @@ import { candidateTableHeader } from "../../../helpers/config";
 import PaginationComponent from "../../../components/common/PaginationComponent";
 import { truncate } from "lodash";
 import CandidateOverviewDrawer from "../../../components/candidate/CandidateOverviewDrawer";
-import { fetchCandidateDetails, fetchCandidates, fetchCandidatesList } from "../../../actions/candidateActions";
+import {
+  fetchCandidateDetails,
+  fetchCandidates,
+  fetchCandidatesList,
+} from "../../../actions/candidateActions";
 import CandidateInfoModal from "../../../components/modals/CandidateInfoModal";
 
 const Candidates = ({ isDrawerOpen }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  
+
   useEffect(() => {
     dispatch(fetchCandidatesList());
   }, [dispatch]);
-  const { candidatesListingData, loading, error } = useSelector((state) => state.candidates)
-  const { candidateDetails, candidateDetailsLoading, candidateDetailsError } = useSelector(
-    (state) => state.candidates || {} // Ensure default object to prevent undefined errors
-  );  console.log("candidateDetails>>>>>",candidateDetails);
-  
-  const [candidateList, setCandidateList] = useState(candidatesListingData?.results);
+  const { candidatesListingData, loading, error } = useSelector(
+    (state) => state.candidates
+  );
+  const { candidateDetails, candidateDetailsLoading, candidateDetailsError } =
+    useSelector(
+      (state) => state.candidates || {} // Ensure default object to prevent undefined errors
+    );
+  console.log("candidateDetails>>>>>", candidateDetails);
+
+  const [candidateList, setCandidateList] = useState(
+    candidatesListingData?.results
+  );
   const [selectedCandidates, setSelectedCandidates] = useState([]);
   const [selectedCandidate, setSelectedCandidate] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState("Candidates");
@@ -114,8 +124,7 @@ const Candidates = ({ isDrawerOpen }) => {
           {
             label: "Merge Duplicate",
             icon: <MergeDuplicateIcon />,
-            onClick: () =>
-              navigate("/merge-candidate")
+            onClick: () => navigate("/merge-candidate"),
           },
         ]
       : []),
@@ -143,7 +152,6 @@ const Candidates = ({ isDrawerOpen }) => {
   const toggleChangeOwnershipDrawer = (open) => {
     setChangeOwnershipDrawerOpen(open);
   };
-
 
   const [anchorCreateCandidtaeEl, setAnchorCreateCandidtaeEl] = useState(null);
 
@@ -399,33 +407,39 @@ const Candidates = ({ isDrawerOpen }) => {
   };
   useEffect(() => {
     if (candidatesListingData?.results) {
-      const formattedCandidates = candidatesListingData?.results.map((candidate) => ({
-        // id: candidate._id,
-        candidate_name: `${candidate.first_name || ""} ${candidate.last_name || ""}`.trim() || "N/A",
-        candidate_first_name: candidate.first_name || "N/A",
-        candidate_last_name: candidate.last_name || "N/A",
-        reference_id: candidate._id || "N/A",
-        location: candidate.location || "N/A",
-        gender: candidate.gender || "N/A",
-        diploma: candidate.education?.[0]?.degree || "N/A",
-        university: candidate.education?.[0]?.school || "N/A",
-        current_company: candidate.employment_history?.[0]?.company || "N/A",
-        current_position: candidate.employment_history?.[0]?.position || "N/A",
-        email: candidate.email || "N/A",
-        phone: candidate.phone || "N/A",
-        start_date: candidate.employment_history?.[0]?.start_date || "N/A",
-        // skills: candidate.skills?.map((skill) => skill.name).join(", ") || "N/A",
-        // photo_url: candidate.photo_url || "",
-      }));
-  
+      const formattedCandidates = candidatesListingData?.results.map(
+        (candidate) => ({
+          // id: candidate._id,
+          candidate_name:
+            `${candidate.first_name || ""} ${
+              candidate.last_name || ""
+            }`.trim() || "N/A",
+          candidate_first_name: candidate.first_name || "N/A",
+          candidate_last_name: candidate.last_name || "N/A",
+          reference_id: candidate._id || "N/A",
+          location: candidate.location || "N/A",
+          gender: candidate.gender || "N/A",
+          diploma: candidate.education?.[0]?.degree || "N/A",
+          university: candidate.education?.[0]?.school || "N/A",
+          current_company: candidate.employment_history?.[0]?.company || "N/A",
+          current_position:
+            candidate.employment_history?.[0]?.position || "N/A",
+          email: candidate.email || "N/A",
+          phone: candidate.phone || "N/A",
+          start_date: candidate.employment_history?.[0]?.start_date || "N/A",
+          // skills: candidate.skills?.map((skill) => skill.name).join(", ") || "N/A",
+          // photo_url: candidate.photo_url || "",
+        })
+      );
+
       console.log("Transformed Candidate Data: ", formattedCandidates);
       setCandidateList(formattedCandidates);
     }
   }, [candidatesListingData]);
-  
+
   const handleCandidateClick = (id) => {
-    console.log("selected candidate>>>>>>",id);
-    
+    console.log("selected candidate>>>>>>", id);
+
     setSelectedCandidateId(id); // Store candidate ID
     dispatch(fetchCandidateDetails(id)); // Fetch candidate details
     setModalVisibility("candidateInfoModalVisible", true);
@@ -572,18 +586,22 @@ const Candidates = ({ isDrawerOpen }) => {
                   maxHeight: "calc(100vh - 194px)",
                 }}
               >
-                <CandidateTable
-                  header={Object.keys(candidateList[0] || {})} // Dynamic headers
-                  data={candidateList}
-                  setSelectedCandidateUser={setSelectedCandidate}
-                  AddJobClick={() => toggleAddToJobsDrawer(true)}
-                  AddFolderClick={() => toggleAddToFolderDrawer(true)}
-                  ChangeOwnerShipClick={() => toggleChangeOwnershipDrawer(true)}
-                  setSelectedCandidateUsers={setSelectedCandidates}
-                  showDeleteIcon={false}
-                  eyeClickOn={() => toggleCandidateOverviewDrawer(true)}
-                  onCandidateClick={handleCandidateClick} // Pass function to handle clicks
-                />
+                {!!candidateList[0] && (
+                  <CandidateTable
+                    header={Object?.keys(candidateList[0] || {})} // Dynamic headers
+                    data={candidateList}
+                    setSelectedCandidateUser={setSelectedCandidate}
+                    AddJobClick={() => toggleAddToJobsDrawer(true)}
+                    AddFolderClick={() => toggleAddToFolderDrawer(true)}
+                    ChangeOwnerShipClick={() =>
+                      toggleChangeOwnershipDrawer(true)
+                    }
+                    setSelectedCandidateUsers={setSelectedCandidates}
+                    showDeleteIcon={false}
+                    eyeClickOn={() => toggleCandidateOverviewDrawer(true)}
+                    onCandidateClick={handleCandidateClick} // Pass function to handle clicks
+                  />
+                )}
               </div>
             </div>
           </div>
@@ -717,11 +735,11 @@ const Candidates = ({ isDrawerOpen }) => {
         isOpen={candidateOverviewDrawerOpen}
         onClose={() => toggleCandidateOverviewDrawer(false)}
       />
-          <CandidateInfoModal
-              visible={modals?.candidateInfoModalVisible}
-              onClose={() => setModalVisibility("candidateInfoModalVisible", false)}
-              candidate={candidateDetails?.data}
-            />
+      <CandidateInfoModal
+        visible={modals?.candidateInfoModalVisible}
+        onClose={() => setModalVisibility("candidateInfoModalVisible", false)}
+        candidate={candidateDetails?.data}
+      />
     </div>
   );
 };

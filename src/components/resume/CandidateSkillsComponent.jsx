@@ -5,7 +5,7 @@ const CandidateSkillsComponent = ({ title, data }) => {
   return (
     <div className="display-column" style={{ gap: 12 }}>
       <p className="font-14-medium" style={{ fontWeight: 700 }}>
-        {title}
+        Skills
       </p>
       <div className="divider-line" />
       <div className="display-flex" style={{ flexWrap: "wrap", gap: 6 }}>

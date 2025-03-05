@@ -186,7 +186,7 @@ const CalendarComponent = () => {
       <div className="candidate-sidebar">
         <div className="candidate-calendar-sidebar-header">
           <button onClick={() => setCurrentMonth(subMonths(currentMonth, 1))}>
-            <ArrowRight />
+            <ArrowRight fill="#151B23" />
           </button>
           <span
             className="font-14-regular color-dark-black text-center"
@@ -195,7 +195,7 @@ const CalendarComponent = () => {
             {formattedCurrentMonth}
           </span>
           <button onClick={() => setCurrentMonth(addMonths(currentMonth, 1))}>
-            <ArrowLeft />
+            <ArrowLeft fill="#151B23" />
           </button>
         </div>
 

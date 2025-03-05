@@ -78,7 +78,10 @@ const CandidateCustomization = () => {
     addDomainLoading,
     fetchDomainLoading,
   } = useSelector((state) => state?.customization);
+
   const { token } = useSelector((state) => state?.auth);
+
+  console.log(">>>>>>>>>>>>>>>>>>>>>.token", token);
   const { modals, setModalVisibility } = useModal();
   const [candidateTabs, setCandidateTabs] = useState(
     candidateCustomizationsTabs
