@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import "../../components/filterModal/FilterModal.css";
-
+import { BASE_URL,locationAutoCompleteSourceEndpoint} from "../../helpers/apiConfig";
 const LocationSearchDropdown = ({
   selectedLocations = [],
   setSelectedLocations,
@@ -32,7 +32,7 @@ const LocationSearchDropdown = ({
         isFetching.current = true; // Mark as fetching to prevent duplicate calls
         try {
           const response = await axios.get(
-            `http://3.110.81.44/api/source/suggest/location?query=${locationQuery}`
+            `${BASE_URL}${locationAutoCompleteSourceEndpoint}?query=${locationQuery}`
           );
           console.log("Location API Response:", response?.data?.suggestions);
 

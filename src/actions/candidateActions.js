@@ -1,9 +1,15 @@
 import axios from "axios";
-import { BASE_URL, createCandidateManuallyEndpoint } from "../helpers/apiConfig";
+import { BASE_URL, candidateSerachByIdApiEndPOint, createCandidateManuallyEndpoint, fetchCandidatesEndpoint } from "../helpers/apiConfig";
 import {
   CREATE_CANDIDATE_REQUEST,
   CREATE_CANDIDATE_FAILURE,
   CREATE_CANDIDATE_SUCCESS,
+  FETCH_CANDIDATES_REQUEST,
+  FETCH_CANDIDATES_SUCCESS,
+  FETCH_CANDIDATES_FAILURE,
+  CANDIDATE_DETAILS_REQUEST,
+CANDIDATE_DETAILS_SUCCESS,
+CANDIDATE_DETAILS_FAILURE,
 } from "./actionsType";
 import { useNavigate } from "react-router-dom";
 
@@ -45,4 +51,59 @@ export const createCandidates = (token, params) => {
       return error.response?.data?.message || "An error occurred while creating the candidate.";
     }
   };
+};
+export const fetchCandidatesList = (filters, page) => {
+  console.log("  `${BASE_URL}${fetchCandidatesEndpoint}?limit=100&page=1`",  `${BASE_URL}${fetchCandidatesEndpoint}?limit=100&page=1`);
+  return async (dispatch) => {
+    dispatch({ type: FETCH_CANDIDATES_REQUEST });
+
+    try {
+      const response = await axios.get(
+        `${BASE_URL}${fetchCandidatesEndpoint}?limit=100&page=1`,
+        {
+          headers: {
+            Authorization:
+              "Bearer 66f56b6053b71eda6b037ebd|WN81gB4IAkjY7pWTuq3DAnsKvvh2dDbfoQnb0KOlda3f443c",
+          },
+        }
+      );
+console.log("fetch candidates api response",response);
+
+      dispatch({
+        type: FETCH_CANDIDATES_SUCCESS,
+        candidateListData:response.data?.results,
+        page,
+        filters,
+        totalPage:response.data?.totalPages,
+        totalData:response.data?.total,
+        payload: response.data,
+      });
+    } catch (error) {
+      dispatch({
+        type: FETCH_CANDIDATES_FAILURE,
+        payload: error.message,
+      });
+    }
+  };
+};
+
+export const fetchCandidateDetails = (id) => async (dispatch) => {
+  console.log("${BASE_URL}${candidateSerachByIdApiEndPOint}${id}",`${BASE_URL}${candidateSerachByIdApiEndPOint}${id}`);
+  try {
+    dispatch({ type: CANDIDATE_DETAILS_REQUEST });
+
+    const response = await axios.get(  `${BASE_URL}${candidateSerachByIdApiEndPOint}${id}`,); // API call
+console.log("response in fetch candidate details>>>",id,"id>>>>>>>>>>>",response);
+
+    dispatch({
+      type: CANDIDATE_DETAILS_SUCCESS,
+      candidateDetailByIdData:response?.data,
+      payload: response.data,
+    });
+  } catch (error) {
+    dispatch({
+      type: CANDIDATE_DETAILS_FAILURE,
+      payload: error.response?.data?.message || error.message,
+    });
+  }
 };

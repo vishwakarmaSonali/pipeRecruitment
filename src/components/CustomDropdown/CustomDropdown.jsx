@@ -15,29 +15,44 @@ const CustomDropdown = ({
   const [inputValue, setInputValue] = useState("");
   const [filteredOptions, setFilteredOptions] = useState(options);
   const dropdownRef = useRef(null);
-console.log(options,"options<<<<<<<<<<<<<<<<<");
+  console.log(options, "options<<<<<<<<<<<<<<<<<");
 
   useEffect(() => {
     if (!multiSelect && selectedValues) {
-      setInputValue(selectedValues[optionKey] || "");
+      setInputValue(
+        typeof selectedValues === "object" && selectedValues !== null
+          ? selectedValues[optionKey] || ""
+          : selectedValues
+      );
     } else {
       setInputValue("");
     }
   }, [selectedValues, multiSelect, optionKey]);
-
   const handleSelect = (option) => {
-    if (multiSelect) {
-      const updatedSelection = selectedValues.includes(option)
-        ? selectedValues.filter((item) => item !== option)
-        : [...selectedValues, option];
+    if (Array.isArray(selectedValues)) { // Multi-select mode
+      const exists = selectedValues.some((item) => item.id === option.id);
+      
+      const updatedSelection = exists
+        ? selectedValues.filter((item) => item.id !== option.id) // Remove if exists
+        : [...selectedValues, option]; // Add if not exists
+  
       onChange(updatedSelection);
-    } else {
-      onChange(option);
-      setInputValue(option[optionKey]);
+    } else { // Single-select mode
+      if (selectedValues?.id === option.id) {
+        return; // Prevent selecting the same value again
+      }
+      
+      onChange({ ...option }); // Force new object reference
+      setInputValue(option[optionKey] || "");
       setIsOpen(false);
     }
   };
+  
 
+  console.log("selectedValues:", selectedValues);
+  console.log("Type of selectedValues:", typeof selectedValues);
+  console.log("Is Array:", Array.isArray(selectedValues));
+  
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -60,7 +75,7 @@ console.log(options,"options<<<<<<<<<<<<<<<<<");
     setIsOpen(true);
     setFilteredOptions(
       options.filter((option) =>
-        option[optionKey].toLowerCase().includes(value.toLowerCase())
+        option[optionKey]?.toLowerCase()?.includes(value?.toLowerCase())
       )
     );
   };
@@ -88,21 +103,19 @@ console.log(options,"options<<<<<<<<<<<<<<<<<");
         />
       </div>
       {selectedValues?.length > 0 && multiSelect && (
-        <div
-          className="flex flex-wrap gap-2 bg-white rounded-md mt-[10px] max-h-40"
-          onClick={() => setIsOpen(false)}
-        >
-          {selectedValues?.map((val, index) => (
-            <div key={index} className="inputed-item">
+        <div className="flex flex-wrap gap-2 bg-white rounded-md mt-[10px] max-h-40"  onClick={(e) => {
+          e.stopPropagation();
+         setIsOpen(false)
+        }}>
+          {selectedValues.map((val) => (
+            <div key={val.id} className="inputed-item">
               {val[optionKey]}
               <button
                 className="ml-2 text-customBlue"
-                onClick={(e) =>
-                  onChange(
-                    selectedValues.filter((item) => item !== val),
-                    e.stopPropagation()
-                  )
-                }
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onChange(selectedValues.filter((item) => item.id !== val.id));
+                }}
               >
                 ✕
               </button>
@@ -110,37 +123,48 @@ console.log(options,"options<<<<<<<<<<<<<<<<<");
           ))}
         </div>
       )}
-      {isOpen && (
-        <ul className="absolute left-0 w-full bg-white border border-borderGrey rounded-lg shadow-lg mt-1 max-h-40 overflow-auto z-50 text-sm">
-          {filteredOptions.length > 0 ? (
-            filteredOptions.map((option, index) => {
-              const isSelected = selectedValues?.includes(option);
-              return (
-                <li
-                  key={index}
-                  onClick={() => handleSelect(option)}
-                  className={`px-[12px] py-2 flex items-center gap-2 cursor-pointer transition 
-              ${isSelected ? "bg-blueBg" : "hover:bg-blueBg"}`}
-                >
-                  {showCheckbox && multiSelect && (
-                    <div
-                      className={`w-[20px] h-[20px] border border-customBlue bg-white rounded-[6px] flex items-center justify-center cursor-pointer`}
-                      onClick={() => handleSelect(option)}
-                    >
-                      {isSelected ? <img src={Tick} alt="Selected" /> : null}
-                    </div>
-                  )}
-                  <span>{option[optionKey]}</span>
-                </li>
-              );
-            })
-          ) : (
-            <li className="px-4 py-2 text-center text-customGray font-ubuntu">
-              No results found
-            </li>
-          )}
-        </ul>
-      )}
+
+{isOpen && (
+  <ul className="absolute left-0 w-full bg-white border border-borderGrey rounded-lg shadow-lg mt-1 max-h-40 overflow-auto z-50 text-sm">
+    {filteredOptions.length > 0 ? (
+      filteredOptions.map((option, index) => {
+        const isSelected = Array.isArray(selectedValues)
+        ? selectedValues.some((item) => item?.id === option?.id) // Multi-select
+        : typeof selectedValues === "object" && selectedValues !== null
+        ? selectedValues?.id === option?.id // Single-select (object)
+        : selectedValues === option[optionKey]; // If `selectedValues` is a string/number
+      
+        return (
+          <li
+            key={index}
+            onClick={() => handleSelect(option)}
+            className={`px-[12px] py-2 flex items-center gap-2 cursor-pointer transition 
+            ${isSelected ? "bg-blueBg" : "hover:bg-blueBg"}`}
+          >
+            {showCheckbox && multiSelect && (
+              <div
+                className={`w-[20px] h-[20px] border border-customBlue bg-white rounded-[6px] flex items-center justify-center cursor-pointer`}
+                onClick={() => handleSelect(option)}
+              >
+                {isSelected ? <img src={Tick} alt="Selected" /> : null}
+              </div>
+            )}
+            <span>
+              {typeof option[optionKey] === "string"
+                ? option[optionKey]
+                : JSON.stringify(option[optionKey])}
+            </span>
+          </li>
+        );
+      })
+    ) : (
+      <li className="px-4 py-2 text-center text-customGray font-ubuntu">
+        No results found
+      </li>
+    )}
+  </ul>
+)}
+
     </div>
   );
 };

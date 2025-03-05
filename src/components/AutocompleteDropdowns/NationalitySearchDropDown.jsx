@@ -103,24 +103,28 @@ console.log("suggestionsssss>>>>",suggestions);
       {/* Selected Nationalities List (Only for Multiple Selection) */}
       {multipleSelect && selectedNationalities.length > 0 && (
         <div className="inputItemsDiv mt-2 flex flex-wrap">
-          {selectedNationalities.map((nationality, index) => (
-            <div
-              key={index}
-              className="inputed-item flex items-center px-2 py-1 border rounded-md"
-            >
-              {nationality?.name}
-              <button
-                className="ml-2 text-red-500 hover:text-red-700"
-                onClick={() =>
-                  setSelectedNationalities(
-                    selectedNationalities.filter((_, i) => i !== index)
-                  )
-                }
+          {selectedNationalities.map((nationality, index) => {
+            console.log("selectedNationalitiesselectedNationalities",nationality);
+            
+            return (
+              <div
+                key={index}
+                className="inputed-item flex items-center px-2 py-1 border rounded-md"
               >
-                ✕
-              </button>
-            </div>
-          ))}
+                {nationality}
+                <button
+                  className="ml-2 text-red-500 hover:text-red-700"
+                  onClick={() =>
+                    setSelectedNationalities(
+                      selectedNationalities.filter((_, i) => i !== index)
+                    )
+                  }
+                >
+                  ✕
+                </button>
+              </div>
+            )
+          })}
         </div>
       )}
     </div>

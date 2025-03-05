@@ -100,7 +100,7 @@ export function formatPhoneNumber(phoneNumber) {
 
 export const getInitials = (name) => {
   return name
-    .split(" ")
+    .split("")
     .map((word) => word[0])
     .join("")
     .toUpperCase();

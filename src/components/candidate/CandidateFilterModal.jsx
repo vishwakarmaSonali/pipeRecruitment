@@ -36,7 +36,6 @@ const CandidateFilterDrawer = ({
   const [searchText, setSearchText] = useState("");
   const [selectedLanguages, setSelectedLanguages] = useState([]);
   const [selectedDomains, setSelectedDomains] = useState([]);
-  const [selectedFrequencies, setSelectedFrequencies] = useState([]);
   const [selectedLabels, setSelectedLabels] = useState([]);
   const [selectedSources, setSelectedSources] = useState([]);
   const [lastContactedDate, setLastContactedDate] = useState(
@@ -69,6 +68,7 @@ const CandidateFilterDrawer = ({
 
   const [currentSalary, setCurrentSalary] = useState("");
   const [expectedSalary, setExpectedSalary] = useState("");
+  const [selectedFrequencies, setSelectedFrequencies] = useState(null);
 
   const radiusOptions = [
     { id: 1, type: "Kilometer" },
@@ -89,30 +89,6 @@ const CandidateFilterDrawer = ({
     { id: 5, language: "Chinese" },
   ];
 
-  const nationalityOptions = [
-    { id: 1, nationality: "American" },
-    { id: 2, nationality: "Canadian" },
-    { id: 3, nationality: "British" },
-    { id: 4, nationality: "Australian" },
-    { id: 5, nationality: "Indian" },
-  ];
-  const domainOptions = [
-    { id: 1, stageName: "Information Technology (IT) & Software" },
-    { id: 2, stageName: "Finance & Banking" },
-    { id: 3, stageName: "Healthcare & Life Sciences" },
-    { id: 4, stageName: "Education & Training" },
-    { id: 5, stageName: "Manufacturing & Engineering" },
-    { id: 6, stageName: "Retail & E-Commerce" },
-    { id: 7, stageName: "Marketing & Advertising" },
-    { id: 8, stageName: "Legal & Compliance" },
-    { id: 9, stageName: "Automotive & Transportation" },
-    { id: 10, stageName: "Construction & Real Estate" },
-    { id: 11, stageName: "Government & Public Sector" },
-    { id: 12, stageName: "Energy & Utilities" },
-    { id: 13, stageName: "Media & Entertainment" },
-    { id: 14, stageName: "Hospitality & Travel" },
-    { id: 14, stageName: "Telecommunications" },
-  ];
   const frequencyOptions = [
     { id: 1, frequency: "Hourly" },
     { id: 2, frequency: "Daily" },
@@ -123,12 +99,6 @@ const CandidateFilterDrawer = ({
     { id: 7, frequency: "Quarterly" },
     { id: 8, frequency: "Yearly (Annually)" },
   ];
-  // const labelOptions = [
-  //   { id: 1, label: "Urgent" },
-  //   { id: 2, label: "High Priority" },
-  //   { id: 3, label: "Medium Priority" },
-  //   { id: 4, label: "Low Priority" },
-  // ];
 
   const sourceOptions = [
     { id: 1, source: "LinkedIn" },
@@ -140,14 +110,13 @@ const CandidateFilterDrawer = ({
   // Ensure `data` is available and formatted properly
   const labelOptions =
     data?.map((item) => ({
-      id: item.id,
+      id: item._id,
       name: item.name, // Adjust the key based on API response
     })) || [];
-    console.log("labelOptions",labelOptions);
-    
+
+
   useEffect(() => {
-    console.log("called",);
-    
+
     dispatch(fetchLabels());
   }, [dispatch]);
 
@@ -315,7 +284,7 @@ const CandidateFilterDrawer = ({
                 placeholder="Languages" // Placeholder text
                 selectedValues={selectedLanguages} // State to track selected options
                 onChange={setSelectedLanguages} // Function to update state
-                optionKey="Language" // Key to display in the dropdown
+                optionKey="language" // Key to display in the dropdown
                 multiSelect={true} // Enable multiple selections
                 showCheckbox={true} // Show checkboxes for selection
               />
@@ -505,35 +474,32 @@ const CandidateFilterDrawer = ({
                 Job-Related
               </label>
               <CommonTextInput
-                  type="text"
-                  placeholder="Work Model"
-                  className="filter-input"
-                  value={localFilters.workmodel || ""}
-                  onChange={(e) => handleInputChange(e, "workmodel")}
-                  onKeyDown={(e) => handleKeyDown(e, "workmodel")}
-                />
-                 <label className="font-12-regular mt-[7px] color-dark-black ">
+                type="text"
+                placeholder="Work Model"
+                className="filter-input"
+                value={localFilters.workmodel || ""}
+                onChange={(e) => handleInputChange(e, "workmodel")}
+                onKeyDown={(e) => handleKeyDown(e, "workmodel")}
+              />
+              <label className="font-12-regular mt-[7px] color-dark-black ">
                 Expected Salary
               </label>
-                   <div className="flex items-center space-x-2">
-              
+              <div className="flex items-center space-x-2">
                 <div className="flex-1">
                   <CustomDropdown
                     options={frequencyOptions} // List of available frequencies
                     placeholder="Frequency" // Placeholder text
-                    selectedValues={selectedFrequencies} // State to track selected frequencies
+                    selectedValues={selectedFrequencies} // State to track selected frequency
                     onChange={setSelectedFrequencies} // Function to update state
                     optionKey="frequency" // Key to display in the dropdown
-                    multiSelect={false} // Enable multiple selections
-                    showCheckbox={false} // Show checkboxes for selection
+                    multiSelect={false} // Single selection mode
+                    showCheckbox={false} // No checkboxes
                   />
-                  
                 </div>
-                
               </div>
               <div className="flex items-center space-x-2">
                 <div className=" flex-1">
-                <CurrencySelector
+                  <CurrencySelector
                     label="Minimum"
                     selectedCurrency={currentSalaryCurrency}
                     setSelectedCurrency={setCurrentSalaryCurrency}
@@ -542,7 +508,7 @@ const CandidateFilterDrawer = ({
                   />
                 </div>
                 <div className=" flex-1">
-                <CurrencySelector
+                  <CurrencySelector
                     label="Maximum"
                     selectedCurrency={expectedSalaryCurrency}
                     setSelectedCurrency={setExpectedSalaryCurrency}
@@ -552,7 +518,7 @@ const CandidateFilterDrawer = ({
                 </div>
               </div>
             </div>
-        
+
             {/* <div className="display-column-6 ">
               <label className="font-12-regular color-dark-black">
                 Education
@@ -633,23 +599,21 @@ const CandidateFilterDrawer = ({
                 </div>
               )}
             </div> */}
-           
+
             <div className="display-column-6 pb-3 border-b ">
               <label className="font-12-regular color-dark-black">Date</label>
-           <DateTimePicker
-                    initialDate={lastContactedDate}
-                    onDateSelect={handleLastContactedDateSelect}
-                    dob={false}
-                    placeholder="Last Contacted"
-                  />
               <DateTimePicker
-                    initialDate={lastContactedDate}
-                    onDateSelect={handleLastContactedDateSelect}
-                    dob={false}
-                    placeholder="Last Updated"
-                  />
-            
-            
+                initialDate={lastContactedDate}
+                onDateSelect={handleLastContactedDateSelect}
+                dob={false}
+                placeholder="Last Contacted"
+              />
+              <DateTimePicker
+                initialDate={lastContactedDate}
+                onDateSelect={handleLastContactedDateSelect}
+                dob={false}
+                placeholder="Last Updated"
+              />
             </div>
             <div className="display-column-6">
               <label className="font-12-regular color-dark-black">

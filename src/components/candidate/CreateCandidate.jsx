@@ -68,11 +68,14 @@ const CreateCandidateForm = () => {
   const today = new Date();
   const { data, loading, error } = useSelector((state) => state.domains);
   // Ensure `data` is available and formatted properly
+  console.log("data", data);
+
   const domainOptions =
     data?.map((item) => ({
-      id: item.id,
-      name: item.name, // Adjust the key based on API response
+      id: item._id, // Correct id reference
+      name: item.name,
     })) || [];
+
   const [description, setDescription] = useState("");
   const [profileImages, setProfileImage] = useState("");
   const [imagePreview, setImagePreview] = useState("");
@@ -80,6 +83,9 @@ const CreateCandidateForm = () => {
   const [firstName, setFirstName] = useState(""); // New state for First Name
   const [lastName, setLastName] = useState(""); // New state for First Name
   const [dateofbirth, setDateofbirth] = useState(null);
+  const [selectedDomain, setSelectedDomain] = useState(null); // Must be an object or null
+
+  const [selectedDomains, setSelectedDomains] = useState([]); // For multi-selection
 
   const [lastUpdatedDate, setLastUpdatedDate] = useState(
     format(today, "yyyy-MM-dd")
@@ -209,10 +215,17 @@ const CreateCandidateForm = () => {
   //   console.log("🚀 Candidate Data:", candidateData);
   // };
   const handleCreate = async () => {
-    if (!firstName.trim() || !lastName.trim()) {
-      alert("First Name and Last Name are required!");
+    const languageNames = languages?.map(lang => lang.name);
+console.log(languageNames,"langugaes name"); // ["hindi", "english"]
+    if (!firstName.trim() || !lastName.trim() || !email?.trim()) {
+      alert("First Name,Last Name and Email Fields are required!");
       return;
     }
+    // Parse selected location
+    const { city, state, country } =
+      selectedLocations.length > 0
+        ? parseLocation(selectedLocations[0])
+        : { city: "", state: "", country: "" };
 
     const candidateData = {
       first_name: firstName,
@@ -220,13 +233,14 @@ const CreateCandidateForm = () => {
       ...(email && { email }),
       // ...(salutation && { salutation:selectedTitle }),  // ✅ Added missing `salutation`
       ...(dateofbirth && { date_of_birth: dateofbirth }), // ✅ Added `date_of_birth`
-      ...(selectedGender && { gender: selectedGender.label.toLowerCase() }), // ✅ Added `gender`
+      ...(selectedGender && { gender: selectedGender}), // ✅ Added `gender`
       ...(phoneNumber && {
         phone: phoneNumber,
         country_code: selectedCountry.dialCode || "+91", // ✅ Added `country_code`
       }),
-      ...(selectedLocations.length > 0 && { city: selectedLocations[0] }),
-      // ...(selectedState && { state: selectedState }), // ✅ Added `state`
+      ...(city && { city }),
+      ...(state && { state }),
+      ...(country && { country }),
       ...(selectedCountry.name && { country: selectedCountry.name }),
       ...(selectedTitle !== "None" && { salutation: selectedTitle }),
       ...(skills.length > 0 && {
@@ -248,7 +262,16 @@ const CreateCandidateForm = () => {
       ...(yearsOfExp && { years_of_experience: yearsOfExp }),
       ...(currentSalary && { current_salary: currentSalary }),
       ...(expectedSalary && { expected_salary: expectedSalary }),
+      ...(languages && {language:languageNames})
     };
+    console.log(
+      "candidateData>>>>>>>>>",
+      candidateData,
+      "selectedLocations",
+      selectedLocations,
+      "selectedGender",
+      selectedGender
+    );
 
     try {
       const response = await dispatch(createCandidates(null, candidateData));
@@ -266,6 +289,17 @@ const CreateCandidateForm = () => {
       console.error("❌ API Error:", error);
       alert("Something went wrong. Please try again.");
     }
+  };
+  const parseLocation = (locationString) => {
+    if (!locationString) return { city: "", state: "", country: "" };
+
+    const parts = locationString.split(",").map((part) => part.trim());
+
+    return {
+      city: parts[0] || "", // First part is the city
+      state: parts[1] || "", // Second part is the state
+      country: parts[2] || "", // Third part is the country
+    };
   };
 
   // ✅ Reset Form
@@ -296,10 +330,10 @@ const CreateCandidateForm = () => {
       flag: "🇺🇸",
     }); // Reset salary currency
     setExpectedSalaryCurrency({
-      code: "GBP",
-      name: "British Pound",
-      symbol: "£",
-      flag: "🇬🇧",
+      code: "USD",
+      name: "US Dollar",
+      symbol: "US$",
+      flag: "🇺🇸",
     }); // Reset expected salary currency
     setYearsOfExp("");
     setHighestQualification("");
@@ -531,13 +565,14 @@ const CreateCandidateForm = () => {
               </div>
               <div className="display-flex gap-[10px] mt-[10px]">
                 <div className="flex-1 ">
-                  <CustomDropdown
-                    options={domainOptions}
-                    placeholder="Select Domain"
-                    selectedValues={frequency} // Ensure it's properly handled
-                    onChange={setFrequency}
-                    optionKey="name" // Ensure this matches the key in `domainOptions`
-                  />
+                <CustomDropdown
+  options={domainOptions} // Ensure it's an array of objects
+  placeholder="Select Domain"
+  selectedValues={selectedDomain} // Must be an object
+  onChange={setSelectedDomain} // Must store the full object
+  optionKey="name"
+  multiSelect={false}
+/>
                 </div>
                 <div className="flex-1 "></div>
               </div>

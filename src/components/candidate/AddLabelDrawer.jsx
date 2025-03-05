@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useEffect} from "react";
 import "../../components/filterModal/FilterModal.css";
 import { ReactComponent as CloseIcon } from "../../assets/icons/drawerClose.svg";
 import { ReactComponent as FolderIcon } from "../../assets/icons/sourcingIcons/folder-add.svg";
@@ -9,19 +9,26 @@ import CommonButton from "../common/CommonButton";
 import { ReactComponent as TickCircle } from "../../assets/icons/tick-circle.svg";
 import { ReactComponent as LabelIcon } from "../../assets/icons/labelIcon.svg";
 import { useNavigate } from "react-router-dom";
+import { fetchLabels } from "../../actions/dropdownAction";
+import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 
 const AddLabelDrawer = ({ isOpen, onClose, onApply, onReset }) => {
-  const navigate = useNavigate()
-  const [folderData, setFolderData] = useState([
-    { id: 1, name: "High Priority", strokeColor:'#F2AFAF' },
-    { id: 2, name: "Avialble",strokeColor: "#65D56E"},
-    { id: 3, name: "Important", strokeColor:'#6893D4' },
-    { id: 4, name: "Recently Placed",strokeColor:'#E9C328'  },
-    { id: 5, name: "Black Listed", strokeColor: "#EE3F3F"},
-  ]);
+  const navigate = useNavigate();
+  const dispatch = useDispatch()
   const [searchValue, setSearchValue] = useState("");
-  const [selectedFolder, setSelectedFolder] = useState(null);
-
+  const [labelData, setLabelData] = useState([]);
+  const [selectedLabels, setSelectedLabels] = useState([]);
+  
+  const { data, loading, error } = useSelector((state) => state.labels);
+  // Ensure `data` is available and formatted properly
+  const labelOptions =
+  data?.map((item) => ({
+    id: item.id,
+    name: item.name, // Adjust the key based on API response
+    color:item.color
+  })) || [];
+  const [folderData, setFolderData] = useState(labelOptions);
   // ✅ Generate Unique "New Folder" Name
   const generateUniqueFolderName = () => {
     let baseName = "New Folder";
@@ -70,14 +77,49 @@ const AddLabelDrawer = ({ isOpen, onClose, onApply, onReset }) => {
       )
     );
   };
- // ✅ Handle Folder Selection
- const handleSelectFolder = (id) => {
-  setSelectedFolder(selectedFolder === id ? null : id); // Toggle selection
-  // navigate("/folder-candidates")
-};
+
+  useEffect(() => {
+    console.log("called");
+
+    dispatch(fetchLabels());
+  }, [dispatch]);
+  useEffect(() => {
+    if (data && data.length > 0) {
+      const formattedData = data.map((item) => ({
+        _id: item._id,
+        name: item.name,
+        color: item.color,
+        selected: false, // Ensures labels start unselected
+      }));
+  
+      setLabelData(formattedData);
+    }
+  }, [data]);
+  const handleSelectLabel = (id) => {
+    setLabelData((prevLabelData) =>
+      prevLabelData.map((item) =>
+        item._id === id ? { ...item, selected: !item.selected } : item
+      )
+    );
+  
+    setSelectedLabels((prevSelectedLabels) => {
+      const isSelected = prevSelectedLabels.some((item) => item._id === id);
+  
+      if (isSelected) {
+        return prevSelectedLabels.filter((item) => item._id !== id); // Remove if already selected
+      } else {
+        const selectedItem = labelData.find((item) => item._id === id);
+        return selectedItem ? [...prevSelectedLabels, selectedItem] : prevSelectedLabels;
+      }
+    });
+  };
+  
   return (
     <Drawer anchor="right" open={isOpen} onClose={onClose}>
-      <div role="presentation" className="candidate-details-drawer w-[460px] flex flex-col h-full">
+      <div
+        role="presentation"
+        className="candidate-details-drawer w-[460px] flex flex-col h-full"
+      >
         {/* Header */}
         <div className="py-[20px]  flex justify-between items-center">
           <h2 className="font-24-medium color-dark-black">Add Label</h2>
@@ -100,37 +142,30 @@ const AddLabelDrawer = ({ isOpen, onClose, onApply, onReset }) => {
 
         {/* Folder List (Scrollable) */}
         <div className="flex-1 overflow-auto  mt-4">
-          {folderData?.length > 0 && (
+          {labelData?.length > 0 && (
             <div className="display-column space-y-2 ">
-              {folderData?.map((item) => (
-                <div key={item.id} className={`flex items-center justify-between p-2 rounded-md cursor-pointer transition ${
-                  selectedFolder === item.id ? "bg-blueBg" : ""
-                }`} onClick={() => handleSelectFolder(item.id)}>
-                <div className="items-center flex">
-                <LabelIcon className="mr-2" fill = {item.strokeColor}/>
+              {labelData?.map((item) => (
+                 <div
+                 key={item._id}
+                 className={`flex items-center justify-between p-2 rounded-md cursor-pointer transition ${
+                   selectedLabels.some((label) => label._id === item._id) ? "bg-blueBg" : ""
+                 }`}
+                  onClick={() => handleSelectLabel(item._id)}
+                >
+                  <div className="items-center flex">
+                    <LabelIcon className="mr-2" fill={item.color} />
+                      <span className="font-14-regular color-dark-black">
+                        {item.name}
+                      </span>
                   
-                  {/* ✅ Editable Input for NEW FOLDERS Only */}
-                  {item.isEditable ? (
-                    <input
-                      type="text"
-                      className="border-b border-gray-400 outline-none bg-transparent text-black"
-                      value={item.name}
-                      autoFocus
-                      onChange={(e) => handleEditFolder(item.id, e.target.value)}
-                      onBlur={() => handleBlur(item.id)} // Stop editing on blur
-                    />
-                  ) : (
-                    <span className="font-14-regular color-dark-black">
-                      {item.name}
-                    </span>
-                  )}
                   </div>
-                    {/* Tick Icon (when selected) */}
-                            {selectedFolder === item.id && (
-                             <div className="flex items-end">
-                               <TickCircle />
-                              </div>
-                            )}
+                  {/* Tick Icon (when selected) */}
+                  {selectedLabels.some((label) => label._id === item._id) && (
+
+                    <div className="flex items-end">
+                      <TickCircle />
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
@@ -141,8 +176,9 @@ const AddLabelDrawer = ({ isOpen, onClose, onApply, onReset }) => {
         <div className=" py-4 bg-white bottom-0">
           <div className="flex justify-between space-x-4">
             <button
-              className="w-1/2 border border-buttonBLue text-buttonBLue flex justify-center items-center py-[12px] rounded-[8px] btn-text h-[40px]"
+              className="w-1/2  text-buttonBLue flex justify-center items-center py-[12px] rounded-[8px] btn-text h-[40px]"
               onClick={onReset}
+              style = {{border:"1px solid #1761D8"}}
             >
               Cancel
             </button>
@@ -152,8 +188,6 @@ const AddLabelDrawer = ({ isOpen, onClose, onApply, onReset }) => {
             >
               Save
             </button>
-           
-           
           </div>
         </div>
       </div>

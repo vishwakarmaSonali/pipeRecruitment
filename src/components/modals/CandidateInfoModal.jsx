@@ -33,8 +33,6 @@ import {
   jobsTableHeaderData,
   professionalDetails,
 } from "../../helpers/config";
-import CandidateDetails from "../candidate/CandidateDetails";
-import CandidateInfoSkills from "../candidate/CandidateInfoSkills";
 import CompanyDropdown from "../common/CompanyDropdown";
 import CandidateLog from "../candidate/CandidateLog";
 import AddCommonCandidateInfo from "../candidate/AddCommonCandidateInfo";
@@ -141,33 +139,6 @@ const resumeTabs = [
   },
 ];
 
-const allLabelData = [
-  {
-    id: 1,
-    name: "High Priority",
-    color: "#F2AFAF",
-  },
-  {
-    id: 2,
-    name: "Available",
-    color: "#65D56E",
-  },
-  {
-    id: 3,
-    name: "Important",
-    color: "#6893D4",
-  },
-  {
-    id: 4,
-    name: "Recently Placed",
-    color: "#E9C328",
-  },
-  {
-    id: 5,
-    name: "Black Listed",
-    color: "#EE3F3F",
-  },
-];
 
 const placementDetails = {
   "Employment Status": "Hired",
@@ -244,7 +215,9 @@ const enrichUserProfileData = [
   },
 ];
 
-const CandidateInfoModal = ({ visible, onClose }) => {
+const CandidateInfoModal = ({ visible, onClose,candidate }) => {
+  console.log("cadidate data>>>>>>",candidate);
+  
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { labelData } = useSelector((state) => state?.customization);
@@ -551,7 +524,7 @@ const CandidateInfoModal = ({ visible, onClose }) => {
                 />
                 <div className="display-column" style={{ gap: 8 }}>
                   <p className="font-16-medium color-dark-black">
-                    Priya Sharma
+                   {candidate?.first_name}{" "}{candidate?.last_name}
                   </p>
                   <div
                     className="display-flex align-center"
