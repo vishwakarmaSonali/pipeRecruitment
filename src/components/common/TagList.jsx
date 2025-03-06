@@ -48,7 +48,10 @@ const TagManager = ({ tags, setTags }) => {
         visible={modals?.AddSkillModalVisible}
         onClose={() => setModalVisibility("AddSkillModalVisible", false)}
         setTags={setTags} // ✅ Pass setTags to update skills dynamically
+     
         tags={tags} // ✅ Pass current tag list
+        setSkillValue={(skill) => console.log("Skill Added:", skill)} // ✅ Pass a valid function
+
       />
     </div>
   );

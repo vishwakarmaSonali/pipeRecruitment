@@ -28,13 +28,12 @@ const AddSkillsModal = ({ visible, onClose, setTags, tags, setSkillValue }) => {
       if (!!tags) {
         setTags([...tags, { name: newSkill, score: newScore }]);
       }
-      setSkillValue({ name: newSkill, score: newScore });
       setNewSkill("");
       setNewScore("");
       onClose();
     }
   };
-
+  
   return (
     <Modal
       show={visible}

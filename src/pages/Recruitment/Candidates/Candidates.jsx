@@ -49,9 +49,9 @@ import CandidateInfoModal from "../../../components/modals/CandidateInfoModal";
 const Candidates = ({ isDrawerOpen }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-
+  const { token } = useSelector((state) => state.auth);
   useEffect(() => {
-    dispatch(fetchCandidatesList());
+    dispatch(fetchCandidatesList(token));
   }, [dispatch]);
   const { candidatesListingData, loading, error } = useSelector(
     (state) => state.candidates
@@ -60,7 +60,7 @@ const Candidates = ({ isDrawerOpen }) => {
     useSelector(
       (state) => state.candidates || {} // Ensure default object to prevent undefined errors
     );
-  console.log("candidateDetails>>>>>", candidateDetails);
+  console.log("candidateDetails>>>>>", candidateDetails?.candidate?.structuredCandidate);
 
   const [candidateList, setCandidateList] = useState(
     candidatesListingData?.results
@@ -441,7 +441,7 @@ const Candidates = ({ isDrawerOpen }) => {
     console.log("selected candidate>>>>>>", id);
 
     setSelectedCandidateId(id); // Store candidate ID
-    dispatch(fetchCandidateDetails(id)); // Fetch candidate details
+    dispatch(fetchCandidateDetails(id,token)); // Fetch candidate details
     setModalVisibility("candidateInfoModalVisible", true);
   };
   return (
@@ -738,7 +738,7 @@ const Candidates = ({ isDrawerOpen }) => {
       <CandidateInfoModal
         visible={modals?.candidateInfoModalVisible}
         onClose={() => setModalVisibility("candidateInfoModalVisible", false)}
-        candidate={candidateDetails?.data}
+        candidate={candidateDetails?.candidate}
       />
     </div>
   );

@@ -86,6 +86,8 @@ const CandidateCustomization = () => {
   const [candidateTabs, setCandidateTabs] = useState(
     candidateCustomizationsTabs
   );
+  console.log("token in candidate customization",token);
+  
   const [selectedCandidateTab, setSelectedCandidateTab] =
     useState("Summary Fields");
 

@@ -216,7 +216,7 @@ const enrichUserProfileData = [
 ];
 
 const CandidateInfoModal = ({ visible, onClose,candidate }) => {
-  console.log("cadidate data>>>>>>",candidate);
+  console.log("cadidate data>>>>>>",candidate?.raw_data);
   
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -274,7 +274,6 @@ const CandidateInfoModal = ({ visible, onClose,candidate }) => {
   const feedBackMenuOpen = Boolean(anchorE2);
   const open = Boolean(anchorEl);
   const [selectedResumeTab, setSelectedResumeTab] = useState(1);
-  const { data, loading, error } = useSelector((state) => state.labels);
 
   useEffect(() => {
     console.log("called");
@@ -524,7 +523,7 @@ const CandidateInfoModal = ({ visible, onClose,candidate }) => {
                 />
                 <div className="display-column" style={{ gap: 8 }}>
                   <p className="font-16-medium color-dark-black">
-                   {candidate?.first_name}{" "}{candidate?.last_name}
+                   {candidate?.raw_data.first_name}{" "}{candidate?.raw_data.last_name}
                   </p>
                   <div
                     className="display-flex align-center"

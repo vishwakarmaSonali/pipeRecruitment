@@ -1,5 +1,5 @@
 import axios from "axios";
-import { BASE_URL, candidateSerachByIdApiEndPOint, createCandidateManuallyEndpoint, fetchCandidatesEndpoint } from "../helpers/apiConfig";
+import { BASE_URL, candidateSerachByIdApiEndPOint, createCandidateManuallyEndpoint, fetchCandidatesDetailsEndpoint, fetchCandidatesEndpoint } from "../helpers/apiConfig";
 import {
   CREATE_CANDIDATE_REQUEST,
   CREATE_CANDIDATE_FAILURE,
@@ -52,20 +52,21 @@ export const createCandidates = (token, params) => {
     }
   };
 };
-export const fetchCandidatesList = (filters, page) => {
+export const fetchCandidatesList = (token,filters, page) => {
   console.log("  `${BASE_URL}${fetchCandidatesEndpoint}?limit=100&page=1`",  `${BASE_URL}${fetchCandidatesEndpoint}?limit=100&page=1`);
   return async (dispatch) => {
     dispatch({ type: FETCH_CANDIDATES_REQUEST });
 
     try {
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          ...(token && { Authorization: `Bearer ${token}` }) // ✅ Add token if available
+        }
+      };
       const response = await axios.get(
         `${BASE_URL}${fetchCandidatesEndpoint}?limit=100&page=1`,
-        {
-          headers: {
-            Authorization:
-              "Bearer 66f56b6053b71eda6b037ebd|WN81gB4IAkjY7pWTuq3DAnsKvvh2dDbfoQnb0KOlda3f443c",
-          },
-        }
+       config
       );
 console.log("fetch candidates api response",response);
 
@@ -87,12 +88,17 @@ console.log("fetch candidates api response",response);
   };
 };
 
-export const fetchCandidateDetails = (id) => async (dispatch) => {
-  console.log("${BASE_URL}${candidateSerachByIdApiEndPOint}${id}",`${BASE_URL}${candidateSerachByIdApiEndPOint}${id}`);
+export const fetchCandidateDetails = (id,token) => async (dispatch) => {
+  console.log("${BASE_URL}${candidateSerachByIdApiEndPOint}${id}",`${BASE_URL}${fetchCandidatesDetailsEndpoint}/${id}`);
   try {
     dispatch({ type: CANDIDATE_DETAILS_REQUEST });
-
-    const response = await axios.get(  `${BASE_URL}${candidateSerachByIdApiEndPOint}${id}`,); // API call
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+        ...(token && { Authorization: `Bearer ${token}` }) // ✅ Add token if available
+      }
+    };
+    const response = await axios.get(  `${BASE_URL}${fetchCandidatesDetailsEndpoint}/${id}`,config); // API call
 console.log("response in fetch candidate details>>>",id,"id>>>>>>>>>>>",response);
 
     dispatch({

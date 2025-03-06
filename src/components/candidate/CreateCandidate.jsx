@@ -9,7 +9,6 @@ import "react-phone-input-2/lib/material.css";
 import { ReactComponent as GallaryEdit } from "../../assets/icons/gallery-edit.svg";
 import { ReactComponent as Calendar2 } from "../../assets/icons/calendar-2.svg";
 import { useDispatch, useSelector } from "react-redux";
-
 import { profileImage } from "../../helpers/assets";
 import StyledDropdownInput from "./StyledDropdownInput";
 import DropdownWithInput from "./StyledDropdownInput";
@@ -66,12 +65,10 @@ const CreateCandidateForm = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const today = new Date();
-  const { data, loading, error } = useSelector((state) => state.domains);
   const { token } = useSelector((state) => state?.auth);
-
-  console.log(">>>>>>>>>>>>>>>>>>>>>.token", token);
+    const { data, loading, error } = useSelector((state) => state.domains);
   // Ensure `data` is available and formatted properly
-  console.log("data", data);
+  console.log("data>>>>>CreateCandidateForm>>>>token",  );
 
   const domainOptions =
     data?.map((item) => ({
@@ -217,82 +214,129 @@ const CreateCandidateForm = () => {
   //    dispatch(createCandidates(null,candidateData ));
   //   console.log("🚀 Candidate Data:", candidateData);
   // };
+
   const handleCreate = async () => {
-    const languageNames = languages?.map((lang) => lang.name);
-    console.log(languageNames, "langugaes name"); // ["hindi", "english"]
     if (!firstName.trim() || !lastName.trim() || !email?.trim()) {
-      alert("First Name,Last Name and Email Fields are required!");
+      alert("First Name, Last Name, and Email Fields are required!");
       return;
     }
+  
+    console.log("education:", education);
+  
     // Parse selected location
     const { city, state, country } =
       selectedLocations.length > 0
         ? parseLocation(selectedLocations[0])
         : { city: "", state: "", country: "" };
-
+  
+    // Extract language details
+    const formattedLanguages = languages?.length
+      ? languages.map((lang) => ({
+          name: lang.name,
+          proficiency: lang.level || "Basic",
+        }))
+      : undefined;
+  
+    // Extract education details with YYYY-MM-DD format
+    const formattedEducation = education?.length
+      ? education.map((edu) => ({
+          school: edu?.university || "N/A",
+          degree: edu?.degree || "N/A",
+          field_of_study: edu?.major || "N/A",
+          start_date:
+            edu?.startDate?.year && edu?.startDate?.month
+              ? format(new Date(`${edu.startDate.year}-${edu.startDate.month}-01`), "yyyy-MM-dd")
+              : undefined,
+          end_date:
+            edu?.endDate?.year && edu?.endDate?.month
+              ? format(new Date(`${edu.endDate.year}-${edu.endDate.month}-01`), "yyyy-MM-dd")
+              : undefined,
+        }))
+      : undefined;
+  
+    // Extract employment history with YYYY-MM-DD format
+    const formattedEmploymentHistory = experience?.length
+      ? experience.map((exp) => ({
+          company: exp.company || "N/A",
+          position: exp.position || "N/A",
+          start_date: exp.start_date
+            ? format(new Date(exp.start_date), "yyyy-MM-dd")
+            : undefined,
+          end_date: exp.end_date
+            ? format(new Date(exp.end_date), "yyyy-MM-dd")
+            : undefined, // If null, it's the current job
+          location: exp.location || "N/A",
+          current: !exp.end_date,
+          title: exp.title || "N/A",
+        }))
+      : undefined;
+  
+    // Extract social links
+    const formattedSocialLinks = socialLinks?.length
+      ? socialLinks.map((link) => ({
+          name: link.name || "N/A",
+          url: link.url || "",
+        }))
+      : undefined;
+  
+    // Build candidate data with **conditional inclusion**
     const candidateData = {
-      first_name: firstName,
-      last_name: lastName,
-      ...(email && { email }),
-      // ...(salutation && { salutation:selectedTitle }),  // ✅ Added missing `salutation`
-      ...(dateofbirth && { date_of_birth: dateofbirth }), // ✅ Added `date_of_birth`
-      ...(selectedGender && { gender: selectedGender }), // ✅ Added `gender`
-      ...(phoneNumber && {
-        phone: phoneNumber,
-        country_code: selectedCountry.dialCode || "+91", // ✅ Added `country_code`
-      }),
+      ...(profileImages && { profile_photo: profileImages }),
+      ...(selectedTitle !== "None" && { salutation: selectedTitle }),
+      ...(firstName && { first_name: firstName }),
+      ...(lastName && { last_name: lastName }),
+      ...(selectedGender && { gender: selectedGender }),
+      ...(dateofbirth && { date_of_birth: format(new Date(dateofbirth), "yyyy-MM-dd") }),
       ...(city && { city }),
       ...(state && { state }),
       ...(country && { country }),
       ...(selectedCountry.name && { country: selectedCountry.name }),
-      ...(selectedTitle !== "None" && { salutation: selectedTitle }),
+      ...(selectedNationality.length > 0 && { nationality: selectedNationality[0] }),
+      ...(selectedCountry.dialCode && { country_code: selectedCountry.dialCode }),
+      ...(phoneNumber && { phone: phoneNumber }),
+      ...(email && { email }),
+      ...(description && { description }),
       ...(skills.length > 0 && {
         skills: skills.map((skill) => ({
           name: skill.name,
           level: parseInt(skill.score, 10) || 1,
         })),
       }),
-      ...(description && { info: description }),
-      ...(selectedNationality.length > 0 && {
-        nationality: selectedNationality,
-      }),
-      ...(selectedJobs.length > 0 && { jobs: selectedJobs }),
-      showArray: [{ key: "value" }, { hasBool: true }], // ✅ Already included
-      // work_preference: { waaafh: true, aadf: false }, // ✅ Already included
-      ...(highestQualification && {
-        education_1: { [highestQualification]: "yes" },
-      }),
-      ...(yearsOfExp && { years_of_experience: yearsOfExp }),
-      ...(currentSalary && { current_salary: currentSalary }),
-      ...(expectedSalary && { expected_salary: expectedSalary }),
-      ...(languages && { language: languageNames }),
+      ...(yearsOfExp && { experience: parseInt(yearsOfExp, 10) }),
+      ...(highestQualification && { qualification: highestQualification }),
+      ...(selectedDomain?.name && { domain: selectedDomain.name }),
+      ...(selectedTitles.length > 0 && { title: selectedTitles[0] }),
+      ...(currentEmployer && { company: currentEmployer }),
+      ...(frequency && { salary_frequency: frequency }),
+      ...(currentSalary && { current_salary: parseInt(currentSalary, 10) }),
+      ...(currentSalaryCurrency?.code && { current_salary_currency: currentSalaryCurrency.code }),
+      ...(expectedSalary && { expected_salary: parseInt(expectedSalary, 10) }),
+      ...(expectedSalaryCurrency?.code && { expected_salary_currency: expectedSalaryCurrency.code }),
+      ...(formattedLanguages && { languages: formattedLanguages }),
+      ...(formattedSocialLinks && { social_links: formattedSocialLinks }),
+      ...(formattedEmploymentHistory && { employment_history: formattedEmploymentHistory }),
+      ...(formattedEducation && { education: formattedEducation }),
     };
-    console.log(
-      "candidateData>>>>>>>>>",
-      candidateData,
-      "selectedLocations",
-      selectedLocations,
-      "selectedGender",
-      selectedGender
-    );
-
+  
+    console.log("Final Candidate Data >>>", candidateData);
+  
     try {
-      const response = await dispatch(createCandidates(null, candidateData));
-      console.log("response>>>>", response);
-
+      const response = await dispatch(createCandidates(token, candidateData));
+      console.log("API Response >>>", response);
+  
       if (response?.success || response?.id) {
         alert("Candidate created successfully!");
-        navigate("/candidates"); // ✅ Navigate on success
+        navigate("/candidates");
       } else {
-        alert(
-          response?.message || "Failed to create candidate. Please try again."
-        );
+        alert(response?.message || "Failed to create candidate. Please try again.");
       }
     } catch (error) {
       console.error("❌ API Error:", error);
       alert("Something went wrong. Please try again.");
     }
   };
+  
+
   const parseLocation = (locationString) => {
     if (!locationString) return { city: "", state: "", country: "" };
 
