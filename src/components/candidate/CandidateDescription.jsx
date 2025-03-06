@@ -10,7 +10,7 @@ import { demoDescriptionText } from "../../helpers/config";
 
 const CandidateDescription = ({ label, data, editable }) => {
   const [collapse, setCollapse] = useState(true);
-  const [description, setDescription] = useState(demoDescriptionText);
+  const [description, setDescription] = useState(data);
   const [edit, setEdit] = useState(false);
 
   return (

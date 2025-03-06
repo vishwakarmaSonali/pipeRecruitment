@@ -153,6 +153,37 @@
 }
 
 .resume-container {
+  box-sizing: border-box;
+  background: white !important;
   -webkit-print-color-adjust: exact;
   print-color-adjust: exact;
+}
+
+/* Add this to prevent flash of hidden content */
+@media print {
+  body {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .resume-header {
+    background-color: red;
+  }
+}
+
+/* PDF container styling */
+.resume-container {
+  width: 595px !important;
+  min-height: 842px !important;
+  background: white !important;
+  box-sizing: border-box;
+  position: relative;
+  margin: 0 auto;
+}
+
+* {
+  color-adjust: exact !important;
+  -webkit-print-color-adjust: exact !important;
+  print-color-adjust: exact !important;
+  font-family: "Ubuntu", sans-serif !important; /* Use system font */
 }

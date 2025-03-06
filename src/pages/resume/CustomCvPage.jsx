@@ -30,13 +30,62 @@ import CustomEducationDetails from "../../components/resume/customizable-fields/
 import CustomExperienceDetails from "../../components/resume/customizable-fields/CustomExperienceDetails";
 import ReactDOM from "react-dom";
 
+import {
+  Document,
+  Page,
+  View,
+  Text,
+  StyleSheet,
+  PDFDownloadLink,
+  Image,
+} from "@react-pdf/renderer";
+
+// Create styles
+const styles = StyleSheet.create({
+  page: {
+    padding: 40,
+    fontFamily: "Helvetica",
+  },
+  header: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: "#000",
+    paddingBottom: 10,
+  },
+  section: {
+    marginBottom: 15,
+  },
+  sectionTitle: {
+    fontSize: 16,
+    fontWeight: "bold",
+    marginBottom: 8,
+  },
+  skillRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 5,
+  },
+  tableRow: {
+    flexDirection: "row",
+    borderBottomWidth: 1,
+    borderBottomColor: "#ddd",
+    paddingVertical: 5,
+  },
+  tableCell: {
+    flex: 1,
+    fontSize: 10,
+  },
+});
+
 const CustomCvPage = () => {
   const navigate = useNavigate();
 
   const backHandler = () => {
     navigate(-1);
   };
-
+  const [isMounted, setIsMounted] = useState(false);
   const [description, setDescription] = useState(demoDescriptionText);
   const [candidateDescriptionVisible, setCandidateDescriptionVisible] =
     useState(true);
@@ -205,28 +254,38 @@ const CustomCvPage = () => {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [currentPage]);
 
+  useEffect(() => {
+    setIsMounted(true);
+    return () => setIsMounted(false);
+  }, []);
+
   const exportAsPDF = async () => {
     try {
-      const pdfDoc = await PDFDocument.create();
-      const pageWidth = 595;
-      const pageHeight = 842;
+      if (!pdfRef.current) {
+        console.error("Resume container element not found!");
+        return;
+      }
 
-      // Create temporary container
+      const pdfDoc = await PDFDocument.create();
+      const pageWidth = 595; // A4 width in points
+      const pageHeight = 842; // A4 height in points
+
+      // Create a temporary container
       const tempContainer = document.createElement("div");
       tempContainer.style.position = "absolute";
       tempContainer.style.left = "-9999px";
-      tempContainer.style.width = `${pageWidth}px`;
       document.body.appendChild(tempContainer);
 
-      // Preserve original container reference
+      // Clone the resume container
       const originalContainer = pdfRef.current;
+      const clone = originalContainer.cloneNode(true);
 
+      // Process pages
       for (let i = 0; i < pages.length; i++) {
-        // Clone the original container
-        const clone = originalContainer?.cloneNode(true);
+        const pageClone = clone.cloneNode(true);
 
-        // Filter to show only current page content
-        const mainContainer = clone.querySelector(".resume-main-container");
+        // Update content dynamically
+        const mainContainer = pageClone.querySelector(".resume-main-container");
         mainContainer.innerHTML = "";
 
         pages[i].forEach((section) => {
@@ -236,21 +295,22 @@ const CustomCvPage = () => {
           mainContainer.appendChild(sectionDiv);
         });
 
-        // Update page number
-        const footer = clone.querySelector(".resume-footer-div p");
+        // Update footer
+        const footer = pageClone.querySelector(".resume-footer-div p");
         if (footer) footer.textContent = `Page ${i + 1} / ${pages.length}`;
 
-        tempContainer.appendChild(clone);
+        tempContainer.appendChild(pageClone);
 
-        // Capture with proper dimensions
-        const canvas = await html2canvas(clone, {
-          scale: 2,
+        // Capture with html2canvas
+        const canvas = await html2canvas(pageClone, {
+          scale: 3, // Increased scale for better quality
           useCORS: true,
-          logging: true,
+          backgroundColor: null, // Fix transparent background issues
           width: pageWidth,
           height: pageHeight,
-          windowWidth: pageWidth * 2,
-          windowHeight: pageHeight * 2,
+          windowWidth: pageWidth * 3,
+          windowHeight: pageHeight * 3,
+          scrollY: -window.scrollY, // Ensure correct positioning
         });
 
         const imgData = canvas.toDataURL("image/png");
@@ -263,7 +323,7 @@ const CustomCvPage = () => {
           height: pageHeight,
         });
 
-        tempContainer.removeChild(clone);
+        tempContainer.removeChild(pageClone);
       }
 
       document.body.removeChild(tempContainer);
@@ -289,9 +349,10 @@ const CustomCvPage = () => {
           <CommonButton title={"Save"} />
           <CommonButton
             title={"Export PDF"}
-            disabled={false}
+            disabled={!isMounted}
             onClick={exportAsPDF}
           />
+          <PDFExportButton />
         </div>
       </div>
     );
@@ -300,25 +361,73 @@ const CustomCvPage = () => {
   const renderResumeHeaderComponent = () => {
     return (
       <div className="resume-header">
-        <div className="display-flex-justify">
-          <div className="display-flex align-center" style={{ gap: 6 }}>
-            <div className="w-h-32">
-              <img src={xBoot} className="common-img" />
-            </div>
-            <span className="font-18-medium color-dark-black">xBoost</span>
+        <div
+          style={{
+            position: "relative",
+            width: "100%",
+            height: "40px", // Set a fixed height
+          }}
+        >
+          {/* Left Section: Logo + Text */}
+          <div
+            style={{
+              position: "absolute",
+              left: "0",
+              top: "50%",
+              transform: "translateY(-50%)",
+              display: "flex",
+              alignItems: "center",
+              gap: "6px",
+            }}
+          >
+            <img
+              src={xBoot}
+              className="common-img"
+              style={{
+                width: "32px",
+                height: "32px",
+                display: "block",
+              }}
+            />
+            <p
+              className="font-18-medium color-dark-black"
+              style={{ margin: 0 }}
+            >
+              xBoost
+            </p>
           </div>
-          <div className="display-column" style={{ gap: 4 }}>
-            <p className="font-10-regular color-dark-black text-right">
+
+          {/* Right Section: User Info */}
+          <div
+            style={{
+              position: "absolute",
+              right: "0",
+              top: "50%",
+              transform: "translateY(-50%)",
+              textAlign: "right",
+            }}
+          >
+            <p
+              className="font-10-regular color-dark-black"
+              style={{ margin: 0 }}
+            >
               Olivia Carter
             </p>
-            <p className="font-10-regular color-dark-black text-right">
+            <p
+              className="font-10-regular color-dark-black"
+              style={{ margin: 0 }}
+            >
               oliviacarter@mail.com
             </p>
-            <p className="font-10-regular color-dark-black text-right">
+            <p
+              className="font-10-regular color-dark-black"
+              style={{ margin: 0 }}
+            >
               +1 (555) 987-6543
             </p>
           </div>
         </div>
+
         <div className="resume-header-divider" />
       </div>
     );
@@ -517,6 +626,120 @@ const CustomCvPage = () => {
     candidateExperienceVisible,
   ]);
 
+  // Create PDF document component
+  const MyDocument = ({
+    description,
+    candidateDetailsFields,
+    candidateSkillData,
+    candidateLanguageData,
+    candidateEductionData,
+    candidatExperienceData,
+  }) => (
+    <Document>
+      <Page size="A4" style={styles.page}>
+        {/* Header */}
+        <View style={styles.header}>
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <Image src={xBoot} style={{ width: 32, height: 32 }} />
+            <Text style={{ fontSize: 18, marginLeft: 6 }}>xBoost</Text>
+          </View>
+          <View>
+            <Text style={{ fontSize: 10 }}>Olivia Carter</Text>
+            <Text style={{ fontSize: 10 }}>oliviacarter@mail.com</Text>
+            <Text style={{ fontSize: 10 }}>+1 (555) 987-6543</Text>
+          </View>
+        </View>
+
+        {/* Candidate Description */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Candidate Description</Text>
+          <Text style={{ fontSize: 12 }}>{description}</Text>
+        </View>
+
+        {/* Candidate Details */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Candidate Details</Text>
+          {Object.entries(candidateDetailsFields).map(([label, field]) => (
+            <View key={label} style={styles.tableRow}>
+              <Text style={styles.tableCell}>{label}</Text>
+              <Text style={styles.tableCell}>{field.value}</Text>
+            </View>
+          ))}
+        </View>
+
+        {/* Skills */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Skills</Text>
+          {candidateSkillData.map((skill, index) => (
+            <View key={index} style={styles.skillRow}>
+              <Text>{skill.name}</Text>
+              <Text>{skill.rating}/10</Text>
+            </View>
+          ))}
+        </View>
+
+        {/* Languages */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Languages</Text>
+          {candidateLanguageData.map((lang, index) => (
+            <View key={index} style={styles.skillRow}>
+              <Text>{lang.language}</Text>
+              <Text>{lang.proficiency}</Text>
+            </View>
+          ))}
+        </View>
+
+        {/* Education */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Education</Text>
+          {candidateEductionData.map((edu, index) => (
+            <View key={index} style={{ marginBottom: 8 }}>
+              <Text>{edu.degree}</Text>
+              <Text>{edu.institution}</Text>
+              <Text>{edu.duration}</Text>
+            </View>
+          ))}
+        </View>
+
+        {/* Experience */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Employment</Text>
+          {candidatExperienceData.map((exp, index) => (
+            <View key={index} style={{ marginBottom: 8 }}>
+              <Text>{exp.jobTitle}</Text>
+              <Text>{exp.company}</Text>
+              <Text>{exp.duration}</Text>
+            </View>
+          ))}
+        </View>
+      </Page>
+    </Document>
+  );
+
+  // Replace your exportAsPDF function with this
+  const PDFExportButton = () => (
+    <PDFDownloadLink
+      document={
+        <MyDocument
+          description={description}
+          candidateDetailsFields={candidateDetailsFields}
+          candidateSkillData={candidateSkillData}
+          candidateLanguageData={candidateLanguageData}
+          candidateEductionData={candidateEductionData}
+          candidatExperienceData={candidatExperienceData}
+        />
+      }
+      fileName="resume.pdf"
+    >
+      {({ loading }) => (
+        <CommonButton
+          title={loading ? "Generating..." : "Export PDF"}
+          disabled={loading || !isMounted}
+        />
+      )}
+    </PDFDownloadLink>
+  );
+
   return (
     <div className="sourcing-main-container">
       <Navbar />
@@ -581,7 +804,7 @@ const CustomCvPage = () => {
           />
         </div>
         <div className="flex-1 cv-view-container">
-          <div className="resume-container">
+          <div ref={pdfRef} className="resume-container">
             {renderResumeHeaderComponent()}
             <div className="resume-main-container">
               {pages?.length > 0 &&

@@ -160,7 +160,7 @@ const ProfessionalDetails = ({ details, label }) => {
     } else if (key === "Phone Number") {
       return formatPhoneNumber(`+${value}`);
     } else {
-      return value;
+      return value?.value;
     }
   };
 
@@ -189,7 +189,7 @@ const ProfessionalDetails = ({ details, label }) => {
                         <div className="candidate-info-skill-item">
                           {item?.name}{" "}
                           <span style={{ color: "#1761D8" }}>
-                            {item?.rating}
+                            {item?.level}
                           </span>
                         </div>
                       );
@@ -214,12 +214,15 @@ const ProfessionalDetails = ({ details, label }) => {
                       className="display-flex"
                       style={{ flexWrap: "wrap", gap: 6 }}
                     >
-                      {value?.map((item) => {
+                      {value?.data?.map((item, index) => {
                         return (
-                          <div className="candidate-info-skill-item">
+                          <div
+                            key={index}
+                            className="candidate-info-skill-item"
+                          >
                             {item?.name}{" "}
                             <span style={{ color: "#1761D8" }}>
-                              {item?.rating}
+                              {item?.level}
                             </span>
                           </div>
                         );

@@ -60,10 +60,13 @@ const Candidates = ({ isDrawerOpen }) => {
     useSelector(
       (state) => state.candidates || {} // Ensure default object to prevent undefined errors
     );
-  console.log("candidateDetails>>>>>", candidateDetails?.candidate?.structuredCandidate);
+  console.log(
+    "candidateDetails>>>>>",
+    candidateDetails?.candidate?.structuredCandidate
+  );
 
   const [candidateList, setCandidateList] = useState(
-    candidatesListingData?.results
+    candidatesListingData?.results || []
   );
   const [selectedCandidates, setSelectedCandidates] = useState([]);
   const [selectedCandidate, setSelectedCandidate] = useState(null);
@@ -419,14 +422,14 @@ const Candidates = ({ isDrawerOpen }) => {
           reference_id: candidate._id || "N/A",
           location: candidate.location || "N/A",
           gender: candidate.gender || "N/A",
-          diploma: candidate.education?.[0]?.degree || "N/A",
-          university: candidate.education?.[0]?.school || "N/A",
-          current_company: candidate.employment_history?.[0]?.company || "N/A",
-          current_position:
-            candidate.employment_history?.[0]?.position || "N/A",
+          // diploma: candidate.education?.[0]?.degree || "N/A",
+          // university: candidate.education?.[0]?.school || "N/A",
+          // current_company: candidate.employment_history?.[0]?.company || "N/A",
+          // current_position:
+          //   candidate.employment_history?.[0]?.position || "N/A",
           email: candidate.email || "N/A",
           phone: candidate.phone || "N/A",
-          start_date: candidate.employment_history?.[0]?.start_date || "N/A",
+          // start_date: candidate.employment_history?.[0]?.start_date || "N/A",
           // skills: candidate.skills?.map((skill) => skill.name).join(", ") || "N/A",
           // photo_url: candidate.photo_url || "",
         })
@@ -441,7 +444,7 @@ const Candidates = ({ isDrawerOpen }) => {
     console.log("selected candidate>>>>>>", id);
 
     setSelectedCandidateId(id); // Store candidate ID
-    dispatch(fetchCandidateDetails(id,token)); // Fetch candidate details
+    dispatch(fetchCandidateDetails(id, token)); // Fetch candidate details
     setModalVisibility("candidateInfoModalVisible", true);
   };
   return (

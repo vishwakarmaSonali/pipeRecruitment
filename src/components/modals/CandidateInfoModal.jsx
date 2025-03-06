@@ -139,7 +139,6 @@ const resumeTabs = [
   },
 ];
 
-
 const placementDetails = {
   "Employment Status": "Hired",
   "Hired Date": "2025-01-26T08:14:00+05:30",
@@ -215,15 +214,22 @@ const enrichUserProfileData = [
   },
 ];
 
-const CandidateInfoModal = ({ visible, onClose,candidate }) => {
-  console.log("cadidate data>>>>>>",candidate?.raw_data);
-  
+const CandidateInfoModal = ({ visible, onClose, candidate }) => {
+  console.log("cadidate data>>>>>>", candidate?.raw_data);
+  console.log(
+    "cadidate datastructuredCandidate",
+    candidate?.structuredCandidate
+  );
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { labelData } = useSelector((state) => state?.customization);
   const [labelsData, setLabelsData] = useState(labelData);
   const { modals, setModalVisibility } = useModal();
   const [candidateTabs, setCandidateTabs] = useState(candidateInfoTabs);
+  const [summaryStructuredData, setSummaryStructuredData] = useState(
+    candidate?.structuredCandidate || {}
+  );
   const [selectedCandidateTab, setSelectedCandidateTab] = useState("Summary");
   const [anchorEl, setAnchorEl] = useState(null);
   const [randomColor, setRandomColor] = useState([]);
@@ -523,7 +529,8 @@ const CandidateInfoModal = ({ visible, onClose,candidate }) => {
                 />
                 <div className="display-column" style={{ gap: 8 }}>
                   <p className="font-16-medium color-dark-black">
-                   {candidate?.raw_data.first_name}{" "}{candidate?.raw_data.last_name}
+                    {candidate?.raw_data.first_name}{" "}
+                    {candidate?.raw_data.last_name}
                   </p>
                   <div
                     className="display-flex align-center"
@@ -696,20 +703,53 @@ const CandidateInfoModal = ({ visible, onClose,candidate }) => {
                 className="flex-1 display-column "
                 style={{ gap: 12, overflowY: "auto", marginBottom: "10px" }}
               >
-                <ProfessionalDetails
-                  details={candidateDetailsData}
-                  label={"Candidate Details"}
-                  editable={true}
-                />
+                {Object.entries(summaryStructuredData)
+                  .sort((a, b) => (a[1]?.order || 0) - (b[1]?.order || 0))
+                  .map(([key, value]) => {
+                    const mappedCandidateDetailsFields = value?.fields?.reduce(
+                      (acc, field) => {
+                        acc[field.label] = {
+                          value: field.value,
+                          type: field.type,
+                          options: field.options,
+                          order: field.order,
+                          default: field.default,
+                          hide: field.hide,
+                        };
+                        return acc;
+                      },
+                      {}
+                    );
+                    if (key === "candidate_description") {
+                      return (
+                        <CandidateDescription
+                          label={value?.label}
+                          editable={true}
+                          data={value?.value}
+                        />
+                      );
+                    }
+                    {
+                      return (
+                        <ProfessionalDetails
+                          details={
+                            key === "skills"
+                              ? value
+                              : mappedCandidateDetailsFields
+                          }
+                          label={value?.label}
+                          editable={true}
+                        />
+                      );
+                    }
+                  })}
+
                 <ProfessionalDetails
                   label={"Contact Details"}
                   details={contactDetails}
                   editable={true}
                 />
-                <CandidateDescription
-                  label={"Candidate Description"}
-                  editable={true}
-                />
+
                 <ProfessionalDetails
                   label={"Professional Details"}
                   details={professionalDetails}
