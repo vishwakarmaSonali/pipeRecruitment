@@ -31,15 +31,51 @@ import OriginalResumePage from "./pages/resume/OriginalResumePage";
 import CustomCvPage from "./pages/resume/CustomCvPage";
 import ReportPage from "./pages/resume/ReportPage";
 import CustomReportPage from "./pages/resume/CustomReportPage";
+import LoginAdmin from "./pages/Login/Login";
+import { useSelector } from "react-redux";
+
+// 🔹 Protected Route Wrapper
+const ProtectedRoute = ({ element }) => {
+  const token = useSelector((state) => state.auth.token);
+  return token ? element : <Navigate to="/login" replace />;
+};
+
+// 🔹 Global Error Boundary (prevents app from crashing)
+class ErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
+  static getDerivedStateFromError() {
+    return { hasError: true };
+  }
+
+
+  render() {
+    if (this.state.hasError) {
+      return <h2>Oops! Something went wrong. Please refresh the page.</h2>;
+    }
+    return this.props.children;
+  }
+}
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Navigate to="/sourcing" replace />,
+    element: <Navigate to="/login" replace />,
   },
+  // {
+  //   path: "/sourcing",
+  //   element: <Navigate to="/sourcing" replace />,
+  // },
   {
     path: "/client",
     element: <Client />,
+  },
+  {
+    path: "/login",
+    element: <LoginAdmin />,
   },
   {
     path: "/sourcing",

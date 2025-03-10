@@ -2,47 +2,75 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "../../components/filterModal/FilterModal.css";
 import { ReactComponent as DropArrow } from "../../assets/icons/arrowDown.svg";
-
+import { BASE_URL, sourceTitleDropdown } from "../../helpers/apiConfig";
+import { useSelector } from "react-redux";
 
 const TitleSearchDropdown = ({
   selectedTitles = [],
   setSelectedTitles,
   allowMultiple = true, // Single or Multiple selection
-  showIcon =false
+  showIcon = false,
 }) => {
   const [titleQuery, setTitleQuery] = useState("");
   const [titleSuggestions, setTitleSuggestions] = useState([]);
   const [showTitleDropdown, setShowTitleDropdown] = useState(false);
-
   // Fetch title suggestions from API when the user types
+  const { token } = useSelector((state) => state?.auth);
+
   useEffect(() => {
+    // ✅ Retrieve token properly
+    console.log("Retrieved Token:", token);
+  
+    if (!token) {
+      console.error("❌ Token is missing! API call will not be made.");
+      return; // Stop execution if no token
+    }
+  
     if (titleQuery.length > 1) {
       const fetchTitles = async () => {
         try {
-          const response = await axios.get(
-            `http://3.110.81.44/api/candidate-profiles/suggest/title?query=${titleQuery}`
-          );
-          console.log("Title API Response:", response?.data?.suggestions);
+          // ✅ Ensure token is a valid string
+          const authToken = token?.trim();
+         const  token1 = `Bearer ${authToken}`
 
-          // Ensure response is an array
+          const config = {
+            headers: {
+              "Content-Type": "application/json",
+              // Authorization: `Bearer ${authToken}`,
+          
+              Authorization: token1
+            },
+          };
+  
+          console.log("Fetching titles with token:", `Bearer ${authToken}`);
+  
+          const response = await axios.get(
+            `${BASE_URL}${sourceTitleDropdown}?query=${encodeURIComponent(titleQuery)}`,
+            config
+          );
+  
+          console.log("Title API Response:", response?.data?.suggestions);
+  
+          // ✅ Ensure response is an array
           const suggestions = Array.isArray(response?.data?.suggestions)
             ? response.data.suggestions
             : [];
-
+  
           setTitleSuggestions(suggestions);
           setShowTitleDropdown(true);
         } catch (error) {
-          console.error("Error fetching titles:", error);
+          console.error("❌ Error fetching titles:", error.response?.data || error.message);
           setTitleSuggestions([]);
         }
       };
-
+  
       fetchTitles();
     } else {
       setTitleSuggestions([]);
       setShowTitleDropdown(false);
     }
-  }, [titleQuery]);
+  }, [titleQuery]); // ✅ Removed unnecessary dependencies to prevent unwanted re-renders
+  
 
   // Handle title selection
   const handleSelectTitle = (title) => {
@@ -68,21 +96,24 @@ const TitleSearchDropdown = ({
 
   return (
     <div className="relative  ">
- <div className="filter-input "  style={{border:"1px solid #f3f4f4"}}>
- <input
-        type="text"
-        placeholder="Job Title"
-        className="border-none outline-none px-2 "
-       
-        value={!allowMultiple && selectedTitles.length > 0 ? selectedTitles[0] : titleQuery}
-        onChange={(e) => {
-          setTitleQuery(e.target.value);
-          if (!allowMultiple) setSelectedTitles([]); // Allow retyping in single mode
-        }}
-        onFocus={() => setShowTitleDropdown(true)}
-      />
-{showIcon && <DropArrow />}
- </div>
+      <div className="filter-input " style={{ border: "1px solid #f3f4f4" }}>
+        <input
+          type="text"
+          placeholder="Job Title"
+          className="border-none outline-none px-2 "
+          value={
+            !allowMultiple && selectedTitles.length > 0
+              ? selectedTitles[0]
+              : titleQuery
+          }
+          onChange={(e) => {
+            setTitleQuery(e.target.value);
+            if (!allowMultiple) setSelectedTitles([]); // Allow retyping in single mode
+          }}
+          onFocus={() => setShowTitleDropdown(true)}
+        />
+        {showIcon && <DropArrow />}
+      </div>
       {/* Title Suggestions Dropdown */}
       {showTitleDropdown && titleSuggestions.length > 0 && (
         <div className="flex flex-col  bg-white border border-customGrey1 rounded-lg shadow-sm max-h-[460px] overflow-auto z-50 text-sm">
@@ -104,7 +135,10 @@ const TitleSearchDropdown = ({
           {selectedTitles.map((title, index) => (
             <div key={index} className="inputed-item">
               {title}
-              <button className="ml-2 text-customBlue" onClick={() => removeTitle(index)}>
+              <button
+                className="ml-2 text-customBlue"
+                onClick={() => removeTitle(index)}
+              >
                 ✕
               </button>
             </div>

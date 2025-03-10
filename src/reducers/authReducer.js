@@ -1,14 +1,40 @@
+import { LOGIN_FAILURE, LOGIN_REQUEST, LOGIN_SUCCESS, LOGOUT_USER } from "../actions/actionsType";
+
+
 const initialState = {
-  token:
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3Yzg1ZTI2ZTllNzEwMTFjOWZiZjlkOSIsInJvbGVzIjpbIm1hbmFnZXIxIl0sInBlcm1pc3Npb25zIjpbImV4dHJhY3QtcmVzdW1lIiwidmlldy11c2VycyIsImNyZWF0ZS11c2VyIiwidXBkYXRlLXVzZXIiLCJkZWxldGUtdXNlciIsInZpZXctcm9sZXMiLCJjcmVhdGUtcm9sZSIsInVwZGF0ZS1yb2xlIiwiZGVsZXRlLXJvbGUiLCJ2aWV3LXBlcm1pc3Npb25zIiwiY3JlYXRlLXBlcm1pc3Npb24iLCJ1cGRhdGUtcGVybWlzc2lvbiIsImRlbGV0ZS1wZXJtaXNzaW9uIiwic3VnZ2VzdC1jb3VudHJpZXMiLCJzdWdnZXN0LWN1cnJlbmNpZXMiLCJ2aWV3LWRvbWFpbnMiLCJjcmVhdGUtZG9tYWluIiwidXBkYXRlLWRvbWFpbiIsImRlbGV0ZS1kb21haW4iLCJzdWdnZXN0LWRvbWFpbnMiLCJ2aWV3LWZvbGRlcnMiLCJjcmVhdGUtZm9sZGVyIiwidXBkYXRlLWZvbGRlciIsImRlbGV0ZS1mb2xkZXIiLCJzZWFyY2gtZm9sZGVycyIsInZpZXctbGFiZWxzIiwiY3JlYXRlLWxhYmVsIiwidXBkYXRlLWxhYmVsIiwiZGVsZXRlLWxhYmVsIiwic3VnZ2VzdC1sYWJlbHMiLCJzdWdnZXN0LW5hdGlvbmFsaXRpZXMiXSwiaWF0IjoxNzQxMjM4MDMwLCJleHAiOjE3NDEyMzg5MzB9.DFnftDVnIVTnCvC2USm3O1WQQ-lTq1A9ZLcOElMOquw",
-  isLoading: false,
+  loading: false,
+  token: localStorage.getItem("token") || null,
+  refreshToken: localStorage.getItem("refreshToken") || null,
+  error: null,
+  token: null,
+  refreshToken: null,
+  user: null,
 };
 
-
 const authReducer = (state = initialState, action) => {
-  console.log("ststaer in auth reducer>>>>>>",state);
-  
   switch (action.type) {
+    case LOGIN_REQUEST:
+      return { ...state, loading: true };
+
+    case LOGIN_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        token: action.payload.accessToken,
+        refreshToken: action.payload.refreshToken,
+        error: null,
+      };
+
+    case LOGIN_FAILURE:
+      return { ...state, loading: false, error: action.payload };
+      case LOGOUT_USER:
+        return {
+          ...state,
+          token: null,
+          refreshToken: null,
+          user: null,
+        };
+      
     default:
       return state;
   }
