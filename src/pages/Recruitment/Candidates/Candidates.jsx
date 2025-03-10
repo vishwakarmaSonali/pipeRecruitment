@@ -45,6 +45,7 @@ import {
   fetchCandidatesList,
 } from "../../../actions/candidateActions";
 import CandidateInfoModal from "../../../components/modals/CandidateInfoModal";
+import { ReactComponent as Tick } from "../../../assets/icons/sourcingIcons/tick.svg";
 
 const Candidates = ({ isDrawerOpen }) => {
   const navigate = useNavigate();
@@ -53,12 +54,16 @@ const Candidates = ({ isDrawerOpen }) => {
   useEffect(() => {
     dispatch(fetchCandidatesList(token));
   }, [dispatch]);
-  const { candidatesListingData, loading, error } = useSelector(
-    (state) => state.candidates
-  );
+  const {
+    candidatesListingData,
+    fetchMoreLoading,
+    totalCandidateData,
+    totalCandidatePages,
+    candidateFilters,
+  } = useSelector((state) => state.candidates);
 
   const [candidateList, setCandidateList] = useState(
-    candidatesListingData?.results || []
+    candidatesListingData || []
   );
   const [selectedCandidates, setSelectedCandidates] = useState([]);
   const [selectedCandidate, setSelectedCandidate] = useState(null);
@@ -316,6 +321,12 @@ const Candidates = ({ isDrawerOpen }) => {
   const discardChanges = () => {
     setConditions([...originalConditions]);
   };
+
+  const handleResultsChange = (value) => {
+    setResultsPerPage(value);
+    setIsDropdownOpen(false);
+  };
+
   // ✅ Handle Filter Menu Apply
   const handleFilterApply = (filterOption, inputValue) => {
     if (!inputValue || inputValue.trim() === "") {
@@ -598,21 +609,76 @@ const Candidates = ({ isDrawerOpen }) => {
             </div>
           </div>
 
-          <div className="sourcing-pagination-div">
-            <div
-              style={{
-                flex: 1,
-                display: "flex",
-                justifyContent: "center",
-              }}
-            >
-              <PaginationComponent
-                totalPages={5}
-                currentPage={currentPage}
-                onPageChange={handlePageChange}
-              />
+          {candidateList?.length > 0 && (
+            <div className="sourcing-pagination-div">
+              <div
+                className="display-flex align-center"
+                style={{ gap: 6, flex: 0.5 }}
+              >
+                <div
+                  className={`candidate-card-checkbox`}
+                  onClick={setSelectedCandidate}
+                >
+                  {selectedCandidates?.length === candidateList?.length && (
+                    <Tick />
+                  )}
+                </div>
+                <p className="font-12-regular color-dark-black">
+                  {resultsPerPage * (currentPage - 1)} -{" "}
+                  {resultsPerPage * currentPage > totalCandidateData
+                    ? totalCandidateData
+                    : resultsPerPage * currentPage}{" "}
+                  of {totalCandidateData}
+                </p>
+              </div>
+              {totalCandidatePages > 1 && (
+                <div
+                  style={{
+                    flex: 1,
+                    display: "flex",
+                    justifyContent: "center",
+                  }}
+                >
+                  <PaginationComponent
+                    totalPages={totalCandidatePages}
+                    currentPage={currentPage}
+                    onPageChange={handlePageChange}
+                  />
+                </div>
+              )}
+              <div
+                className="relative flex items-center space-x-2 justify-end w-1/4"
+                ref={dropdownRef}
+              >
+                <span className="font-12-regular color-grey">
+                  Results per page
+                </span>
+                <button
+                  className="border border-customGray rounded-md px-2 py-1 gap-1 text-sm font-ubuntu focus:outline-none focus:ring-0 relative items-center flex"
+                  onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                >
+                  {resultsPerPage}
+                  <DropArrow fill="customBlue" />
+                </button>
+
+                {isDropdownOpen && (
+                  <div className="absolute bottom-full mb-2 right-0 w-16 text-sm font-ubuntu bg-white shadow-lg rounded-lg overflow-hidden z-50">
+                    {[10, 20, 30, 40, 50, 60, 70, 80, 90, 100].map((option) => (
+                      <button
+                        key={option}
+                        className={`block w-full text-center px-4 py-2 text-customBlue hover:bg-gray-100 ${
+                          option === resultsPerPage && "bg-gray-100"
+                        }`}
+                        onClick={() => handleResultsChange(option)}
+                      >
+                        {option}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
-          </div>
+          )}
         </div>
 
         {isColumnSelectorOpen && (
@@ -729,7 +795,10 @@ const Candidates = ({ isDrawerOpen }) => {
       />
       <CandidateInfoModal
         visible={modals?.candidateInfoModalVisible}
-        onClose={() => setModalVisibility("candidateInfoModalVisible", false)}
+        onClose={() => {
+          setModalVisibility("candidateInfoModalVisible", false);
+          setSelectedCandidateId(null);
+        }}
         // candidate={candidateDetails?.candidate}
         candidateId={selectedCandidateId}
       />

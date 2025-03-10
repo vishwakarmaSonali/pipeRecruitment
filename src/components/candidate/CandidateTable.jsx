@@ -34,7 +34,7 @@ const CandidateTable = ({
   deleteIconClick,
   showDeleteIcon,
   eyeClickOn,
-  onCandidateClick
+  onCandidateClick,
 }) => {
   const navigate = useNavigate();
   const { modals, setModalVisibility } = useModal();
@@ -53,9 +53,11 @@ const CandidateTable = ({
 
   // ✅ Format column headers (removes underscores & capitalizes words)
   const formatHeader = (header) => {
-    return header?.replace(/_/g, " ").replace(/\b\w/g, (char) => char.toUpperCase());
+    return header
+      ?.replace(/_/g, " ")
+      .replace(/\b\w/g, (char) => char.toUpperCase());
   };
-console.log("data im candidateTable",data);
+  console.log("data im candidateTable", data);
 
   return (
     <>
@@ -78,16 +80,25 @@ console.log("data im candidateTable",data);
               }}
             >
               {header?.map((item, index) => (
-                <TableCell key={index} className="font-14-regular" style={{ minWidth: 250 }}>
+                <TableCell
+                  key={index}
+                  className="font-14-regular"
+                  style={{ minWidth: 250 }}
+                >
                   <div className="display-flex align-center" style={{ gap: 6 }}>
                     {index === 0 && (
                       <button
                         className={`candidate-card-checkbox`}
                         onClick={(e) => {
                           e.stopPropagation();
-                          const allSelected = selectedCandidates.length === data.length;
-                          setSelectedCandidates(allSelected ? [] : data.map((c) => c._id));
-                          setSelectedCandidateUsers(allSelected ? [] : data.map((c) => c._id));
+                          const allSelected =
+                            selectedCandidates.length === data.length;
+                          setSelectedCandidates(
+                            allSelected ? [] : data.map((c) => c._id)
+                          );
+                          setSelectedCandidateUsers(
+                            allSelected ? [] : data.map((c) => c._id)
+                          );
                         }}
                       >
                         {selectedCandidates.length === data.length && <Tick />}
@@ -102,12 +113,11 @@ console.log("data im candidateTable",data);
 
           <TableBody>
             {data.map((candidate, index) => {
-        
               return (
                 <TableRow
                   key={index}
                   className="hover-row"
-                  onClick={() => onCandidateClick(candidate.reference_id)}
+                  onClick={() => onCandidateClick(candidate?._id)}
                   // onClick={() => {
                   //   setSelectedCandidate(candidate);
                   //   setSelectedCandidateUser(candidate);
@@ -116,25 +126,30 @@ console.log("data im candidateTable",data);
                 >
                   {header.map((columnName, index) => {
                     let value = candidate[columnName] || "-";
-  
+
                     // ✅ Convert "skills" array to a readable string
                     if (columnName === "skills" && Array.isArray(value)) {
-                      value = value.map((skill) => skill.name).join(", ") || "-";
+                      value =
+                        value.map((skill) => skill.name).join(", ") || "-";
                     }
-                
-  
+
                     // ✅ Convert "skills" array to a readable string
                     if (columnName === "skills" && Array.isArray(value)) {
-                      value = value.map((skill) => skill.name).join(", ") || "-";
+                      value =
+                        value.map((skill) => skill.name).join(", ") || "-";
                     }
-                  
+
                     // ✅ Convert "employment_history" to a readable string
-                    if (columnName === "employment_history" && Array.isArray(value)) {
-                      value = value
-                        .map((job) => `${job.position} at ${job.company}`)
-                        .join(", ") || "-";
+                    if (
+                      columnName === "employment_history" &&
+                      Array.isArray(value)
+                    ) {
+                      value =
+                        value
+                          .map((job) => `${job.position} at ${job.company}`)
+                          .join(", ") || "-";
                     }
-                  
+
                     // ✅ Convert objects to JSON string (fallback)
                     if (typeof value === "object" && value !== null) {
                       value = JSON.stringify(value);
@@ -143,7 +158,10 @@ console.log("data im candidateTable",data);
                     if (index === 0) {
                       return (
                         <TableCell key={index}>
-                          <div className="display-flex align-center" style={{ gap: 6 }}>
+                          <div
+                            className="display-flex align-center"
+                            style={{ gap: 6 }}
+                          >
                             <div
                               className={`candidate-card-checkbox`}
                               onClick={(e) => {
@@ -160,40 +178,59 @@ console.log("data im candidateTable",data);
                                 );
                               }}
                             >
-                              {selectedCandidates.includes(candidate._id) && <Tick />}
+                              {selectedCandidates.includes(candidate._id) && (
+                                <Tick />
+                              )}
                             </div>
-  
+
                             <Avatar
                               src={candidate.photo_url || ""}
                               alt={candidate.first_name}
                               style={{
                                 width: 32,
                                 height: 32,
-                                backgroundColor: candidate.photo_url ? "transparent" : getRandomColor(),
+                                backgroundColor: candidate.photo_url
+                                  ? "transparent"
+                                  : getRandomColor(),
                                 fontSize: 14,
                                 textAlign: "center",
                               }}
                             >
-                              {!candidate.photo_url ? getInitials(candidate.candidate_first_name + " " + candidate.candidate_last_name) : ""}
+                              {!candidate.photo_url
+                                ? getInitials(
+                                    candidate.candidate_first_name +
+                                      " " +
+                                      candidate.candidate_last_name
+                                  )
+                                : ""}
                             </Avatar>
-  
+
                             <span className="font-14-regular truncate-text">
-                              {candidate.candidate_name|| ""}
+                              {candidate.candidate_name || ""}
                             </span>
-  
+
                             {!showDeleteIcon ? (
                               <>
-                                <button className="eye-icon" onClick={(e) => {
-                                  e.stopPropagation();
-                                  eyeClickOn();
-                                }}>
+                                <button
+                                  className="eye-icon"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    eyeClickOn();
+                                  }}
+                                >
                                   <EyeIcon />
                                 </button>
                                 <button
-                                  aria-controls={open ? "basic-menu" : undefined}
+                                  aria-controls={
+                                    open ? "basic-menu" : undefined
+                                  }
                                   aria-haspopup="true"
                                   aria-expanded={open ? "true" : undefined}
-                                  className={`eye-icon ${open && candidate?._id === selectedCandidate?._id && "opacity-1"}`}
+                                  className={`eye-icon ${
+                                    open &&
+                                    candidate?._id === selectedCandidate?._id &&
+                                    "opacity-1"
+                                  }`}
                                   onClick={(e) => {
                                     e.stopPropagation();
                                     setSelectedCandidate(candidate);
@@ -205,10 +242,13 @@ console.log("data im candidateTable",data);
                                 </button>
                               </>
                             ) : (
-                              <button className="eye-icon" onClick={(e) => {
-                                deleteIconClick();
-                                e.stopPropagation();
-                              }}>
+                              <button
+                                className="eye-icon"
+                                onClick={(e) => {
+                                  deleteIconClick();
+                                  e.stopPropagation();
+                                }}
+                              >
                                 <ArchiveIcon />
                               </button>
                             )}
@@ -216,7 +256,7 @@ console.log("data im candidateTable",data);
                         </TableCell>
                       );
                     }
-  
+
                     return (
                       <TableCell key={index} className="font-14-regular">
                         {value}
@@ -224,13 +264,11 @@ console.log("data im candidateTable",data);
                     );
                   })}
                 </TableRow>
-              )
+              );
             })}
           </TableBody>
         </Table>
       </TableContainer>
-
-  
 
       <Menu
         anchorEl={anchorEl}
@@ -247,10 +285,16 @@ console.log("data im candidateTable",data);
           <button className="common-menu-item-btn" onClick={AddFolderClick}>
             <AddFolderIcon /> Add to Folder
           </button>
-          <button className="common-menu-item-btn" onClick={ChangeOwnerShipClick}>
+          <button
+            className="common-menu-item-btn"
+            onClick={ChangeOwnerShipClick}
+          >
             <EditUser /> Change Ownership
           </button>
-          <button className="common-menu-item-btn" onClick={() => navigate("/merge-candidate")}>
+          <button
+            className="common-menu-item-btn"
+            onClick={() => navigate("/merge-candidate")}
+          >
             <ArchiveIcon /> Archive
           </button>
         </div>

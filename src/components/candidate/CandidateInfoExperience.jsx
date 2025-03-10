@@ -8,7 +8,11 @@ import { ReactComponent as ArrowIcon } from "../../assets/icons/arrowDown.svg";
 import AddEducationDetailsModal from "../modals/AddEducationDetailsModal";
 import { useModal } from "../common/ModalProvider";
 import AddExperienceDetailsModal from "../modals/AddExperienceDetailsModal";
-import { formatDateMonthYear } from "../../helpers/utils";
+import {
+  formatDateMonthYear,
+  notifyError,
+  notifySuccess,
+} from "../../helpers/utils";
 import { updateCandidateDetails } from "../../actions/candidateActions";
 import { useDispatch, useSelector } from "react-redux";
 import Skeleton from "react-loading-skeleton";
@@ -17,35 +21,198 @@ import "react-loading-skeleton/dist/skeleton.css";
 const CandidateInfoExperience = ({ key, label, data, editable, isLoading }) => {
   const dispatch = useDispatch();
   const { token } = useSelector((state) => state.auth);
-  const { updateCandidateLoading } = useSelector((state) => state?.candidates);
-  const [anchorEl, setAnchorEl] = useState(null);
+  const { candidateId } = useSelector((state) => state?.candidates);
   const [collapse, setCollapse] = useState(true);
   const [educationModalVisible, setEducationModalVisible] = useState(false);
   const [experienceModalVisible, setExperienceModalVisible] = useState(false);
-  const open = Boolean(anchorEl);
-  const handleMenuClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-  const [educationDetails, setEducationDetails] = useState([]);
-  const [experienceDetails, setExperienceDetails] = useState([]);
-
+  const [experienceData, setExperienceData] = useState(data);
+  const [educationData, setEducationData] = useState(data);
   const [selectedEducationDetails, setSelectedEducationDetails] =
     useState(null);
   const [selectedExperienceDetails, setSelectedExperienceDetails] =
     useState(null);
 
+  const [selectedExperienceIndex, setSelectedExperienceIndex] = useState(null);
+  const [selectedEducationIndex, setSelectedEducationIndex] = useState(null);
+  const [updateLoading, setUpdateLoading] = useState(false);
+  const [deleteLoading, setDeleteLoading] = useState(false);
+
   const handleAddEducation = (details) => {
-    setEducationDetails((prevDetails) => [...prevDetails, details]);
-    setEducationModalVisible(false);
+    if (selectedEducationIndex) {
+      setUpdateLoading(true);
+      const updatedData = educationData?.map((item, index) => {
+        if (index === selectedEducationIndex - 1) {
+          return details;
+        } else {
+          return item;
+        }
+      });
+
+      const httpBody = {
+        education: [...updatedData],
+      };
+
+      dispatch(updateCandidateDetails(token, candidateId, httpBody)).then(
+        (response) => {
+          if (response?.success) {
+            notifySuccess(response?.message);
+            setEducationData([...updatedData]);
+            setEducationModalVisible(false);
+            setSelectedEducationIndex(null);
+            setSelectedEducationDetails(null);
+            setUpdateLoading(false);
+          } else {
+            notifyError(response);
+            setEducationModalVisible(false);
+            setSelectedEducationIndex(null);
+            setSelectedEducationDetails(null);
+            setUpdateLoading(false);
+          }
+        }
+      );
+    } else {
+      setUpdateLoading(true);
+      const updatedData = [...educationData, details];
+      const httpBody = {
+        education: updatedData,
+      };
+
+      dispatch(updateCandidateDetails(token, candidateId, httpBody)).then(
+        (response) => {
+          if (response?.success) {
+            setUpdateLoading(false);
+            notifySuccess(response?.message);
+            setEducationData([...updatedData]);
+            setEducationModalVisible(false);
+          } else {
+            setUpdateLoading(false);
+            notifyError(response);
+            setEducationModalVisible(false);
+          }
+        }
+      );
+    }
+  };
+
+  const handleRemoveEducation = () => {
+    if (selectedEducationIndex) {
+      setDeleteLoading(true);
+      const updatedData = educationData?.filter((item, index) => {
+        return selectedEducationIndex - 1 !== index;
+      });
+
+      const httpBody = {
+        education: [...updatedData],
+      };
+
+      dispatch(updateCandidateDetails(token, candidateId, httpBody)).then(
+        (response) => {
+          if (response?.success) {
+            notifySuccess(response?.message);
+            setEducationData([...updatedData]);
+            setEducationModalVisible(false);
+            setSelectedEducationIndex(null);
+            setSelectedEducationDetails(null);
+            setDeleteLoading(false);
+          } else {
+            notifyError(response);
+            setEducationModalVisible(false);
+            setSelectedEducationIndex(null);
+            setSelectedEducationDetails(null);
+            setDeleteLoading(false);
+          }
+        }
+      );
+    }
   };
 
   const handleAddExperience = (details) => {
-    setExperienceDetails((prevDetails) => [...prevDetails, details]);
-    setExperienceModalVisible(false);
+    if (selectedExperienceIndex) {
+      setUpdateLoading(true);
+      const updatedData = experienceData?.map((item, index) => {
+        if (index === selectedExperienceIndex - 1) {
+          return details;
+        } else {
+          return item;
+        }
+      });
+
+      const httpBody = {
+        employment_history: [...updatedData],
+      };
+
+      dispatch(updateCandidateDetails(token, candidateId, httpBody)).then(
+        (response) => {
+          if (response?.success) {
+            notifySuccess(response?.message);
+            setExperienceData([...updatedData]);
+            setExperienceModalVisible(false);
+            setSelectedExperienceIndex(null);
+            setSelectedExperienceDetails(null);
+            setUpdateLoading(false);
+          } else {
+            notifyError(response);
+            setExperienceModalVisible(false);
+            setSelectedExperienceIndex(null);
+            setSelectedExperienceDetails(null);
+            setUpdateLoading(false);
+          }
+        }
+      );
+    } else {
+      setUpdateLoading(true);
+      const updatedData = [...experienceData, details];
+      const httpBody = {
+        employment_history: updatedData,
+      };
+
+      dispatch(updateCandidateDetails(token, candidateId, httpBody)).then(
+        (response) => {
+          if (response?.success) {
+            setUpdateLoading(false);
+            notifySuccess(response?.message);
+            setExperienceData([...updatedData]);
+            setExperienceModalVisible(false);
+          } else {
+            setUpdateLoading(false);
+            notifyError(response);
+            setExperienceModalVisible(false);
+          }
+        }
+      );
+    }
   };
 
-  const handleMenuClose = () => {
-    setAnchorEl(null);
+  const handleRemoveExperience = () => {
+    if (selectedExperienceIndex) {
+      setDeleteLoading(true);
+      const updatedData = experienceData?.filter((item, index) => {
+        return selectedExperienceIndex - 1 !== index;
+      });
+
+      const httpBody = {
+        employment_history: [...updatedData],
+      };
+
+      dispatch(updateCandidateDetails(token, candidateId, httpBody)).then(
+        (response) => {
+          if (response?.success) {
+            notifySuccess(response?.message);
+            setExperienceData([...updatedData]);
+            setExperienceModalVisible(false);
+            setSelectedExperienceIndex(null);
+            setSelectedExperienceDetails(null);
+            setDeleteLoading(false);
+          } else {
+            notifyError(response);
+            setExperienceModalVisible(false);
+            setSelectedExperienceIndex(null);
+            setSelectedExperienceDetails(null);
+            setDeleteLoading(false);
+          }
+        }
+      );
+    }
   };
 
   const renderExperience = (item, index) => {
@@ -64,6 +231,7 @@ const CandidateInfoExperience = ({ key, label, data, editable, isLoading }) => {
               className="edit-details-btn"
               onClick={(e) => {
                 e.stopPropagation();
+                setSelectedExperienceIndex(index + 1);
                 setSelectedExperienceDetails(item);
                 setExperienceModalVisible(true);
               }}
@@ -92,13 +260,14 @@ const CandidateInfoExperience = ({ key, label, data, editable, isLoading }) => {
       >
         <div className="display-flex-justify align-center">
           <p className="font-14-medium color-dark-black">
-            {item?.degree} at {item?.field_of_study}
+            {item?.degree} in {item?.field_of_study}
           </p>
           {editable && (
             <button
               className="edit-details-btn"
               onClick={(e) => {
                 e.stopPropagation();
+                setSelectedEducationIndex(index + 1);
                 setSelectedEducationDetails(item);
                 setTimeout(() => {
                   setEducationModalVisible(true);
@@ -177,13 +346,37 @@ const CandidateInfoExperience = ({ key, label, data, editable, isLoading }) => {
           <>
             <div className="divider-line" />
             <div className="display-column" style={{ gap: 16 }}>
-              {data?.map((item) => {
-                if (label === "Experience Details") {
-                  return renderExperience(item);
-                } else {
-                  return renderEducation(item);
-                }
-              })}
+              {label === "Experience Details"
+                ? experienceData?.length > 0
+                  ? experienceData?.map((item, index) => {
+                      return renderExperience(item, index);
+                    })
+                  : editable && (
+                      <button
+                        className="add-details-btn"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setExperienceModalVisible(true);
+                        }}
+                      >
+                        + Add
+                      </button>
+                    )
+                : educationData?.length > 0
+                ? educationData?.map((item, index) => {
+                    return renderEducation(item, index);
+                  })
+                : editable && (
+                    <button
+                      className="add-details-btn"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setEducationModalVisible(true);
+                      }}
+                    >
+                      + Add
+                    </button>
+                  )}
             </div>
           </>
         )}
@@ -193,9 +386,13 @@ const CandidateInfoExperience = ({ key, label, data, editable, isLoading }) => {
         onClose={() => {
           setEducationModalVisible(false);
           setSelectedEducationDetails(null);
+          setSelectedEducationIndex(null);
         }}
         onAddEducation={handleAddEducation}
         selectedEducationData={selectedEducationDetails}
+        isLoading={updateLoading}
+        onRemoveEducation={handleRemoveEducation}
+        removeLoading={deleteLoading}
       />
 
       <AddExperienceDetailsModal
@@ -203,9 +400,13 @@ const CandidateInfoExperience = ({ key, label, data, editable, isLoading }) => {
         onClose={() => {
           setExperienceModalVisible(false);
           setSelectedExperienceDetails(null);
+          setSelectedExperienceIndex(null);
         }}
         onAddExperience={handleAddExperience}
         selectedExperienceData={selectedExperienceDetails}
+        isLoading={updateLoading}
+        onRemoveExperience={handleRemoveExperience}
+        removeLoading={deleteLoading}
       />
     </>
   );

@@ -115,3 +115,13 @@ export function formatDateMonthYear(dateString) {
 
   return date.toLocaleString("en-US", { month: "long", year: "numeric" });
 }
+
+export const convertToISODate = (date) => {
+  // Create a Date object using the month name and year
+  const newDate = new Date(`${date?.month} 1, ${date?.year}`);
+
+  // Format to YYYY-MM-DD
+  return `${newDate.getFullYear()}-${(newDate.getMonth() + 1)
+    .toString()
+    .padStart(2, "0")}-01`;
+};

@@ -8,7 +8,7 @@ import CommonTextInput from "../common/CommonTextInput";
 import LocationSearchDropdown from "../AutocompleteDropdowns/LocationSearchDropDown";
 import Tick from "../../assets/icons/sourcingIcons/tick.svg";
 import MonthYearPicker from "../MonthYearView";
-import { formatDateMonthYear } from "../../helpers/utils";
+import { convertToISODate, formatDateMonthYear } from "../../helpers/utils";
 import CommonLoader from "../common/CommonLoader";
 
 const checkboxOptions = ["Currently working at this role"];
@@ -18,37 +18,35 @@ const AddExperienceDetailsModal = ({
   onClose,
   onAddExperience,
   selectedExperienceData,
+  isLoading,
+  onRemoveExperience,
+  removeLoading,
 }) => {
   const { modals, setModalVisibility } = useModal();
   const [position, setPosition] = useState("");
   const [company, setCompany] = useState("");
-  const [selectedLocations, setSelectedLocations] = useState([]);
+  const [selectedLocation, setSelectedLocation] = useState("");
   const [checked, setChecked] = useState(false);
   const [startDate, setStartDate] = useState({ month: "", year: "" });
   const [endDate, setEndDate] = useState({ month: "", year: "" });
   const [modalAnimation, setModalAnimation] = useState(false);
   const [edit, setEdit] = useState(false);
+  const [addBtnDisable, setAddBtnDisable] = useState(true);
 
   const handleAddClick = () => {
-    if (!position || !company || selectedLocations.length === 0 || !startDate)
-      return;
+    if (!position || !company || !selectedLocation || !startDate) return;
 
     const experienceData = {
       position,
       company,
-      location: selectedLocations,
-      startDate: startDate ? `${startDate.month} ${startDate.year}` : "", // ✅ Ensure correct format
-      endDate: checked
-        ? "Present"
-        : endDate
-        ? `${endDate.month} ${endDate.year}`
-        : "",
+      location: selectedLocation,
+      title: position,
+      start_date: convertToISODate(startDate),
+      end_date: checked ? null : convertToISODate(endDate),
+      current: checked,
     };
-    console.log("experienceDataexperienceData", experienceData);
 
     onAddExperience(experienceData);
-
-    resetData();
   };
 
   const handleBackdropClick = () => {
@@ -61,7 +59,7 @@ const AddExperienceDetailsModal = ({
   const resetData = () => {
     setPosition("");
     setCompany("");
-    setSelectedLocations([]);
+    setSelectedLocation("");
     setStartDate({ month: "", year: "" });
     setEndDate({ month: "", year: "" });
     setEdit(false);
@@ -71,34 +69,88 @@ const AddExperienceDetailsModal = ({
 
   useEffect(() => {
     if (!!selectedExperienceData) {
-      console.log(">>>>>>>>>>>.selectedExperienceData", selectedExperienceData);
       setEdit(true);
       setPosition(selectedExperienceData?.position);
       setCompany(selectedExperienceData?.company);
-      setSelectedLocations([selectedExperienceData?.location]);
+      setSelectedLocation(selectedExperienceData?.location);
+      setChecked(selectedExperienceData?.current);
 
-      if (selectedExperienceData?.startDate) {
-        const splitDate = startDate?.split(" ");
-        setStartDate({
-          month: splitDate[0] || "",
-          year: splitDate[1] || "",
-        });
-      }
+      const startDateFormat = formatDateMonthYear(
+        selectedExperienceData?.start_date
+      );
+      const splitStartDate = startDateFormat?.split(" ");
+      setStartDate({
+        month: splitStartDate[0] || "",
+        year: splitStartDate[1] || "",
+      });
 
-      if (selectedExperienceData?.endDate) {
-        const endDate = formatDateMonthYear(selectedExperienceData?.endDate);
-        const splitDate = endDate?.split(" ");
+      const endDateFormat = formatDateMonthYear(
+        selectedExperienceData?.end_date
+      );
+      const splitEndDate = endDateFormat?.split(" ");
+
+      setEndDate(
+        selectedExperienceData?.current
+          ? "Present"
+          : {
+              month: splitEndDate[0],
+              year: splitEndDate[1],
+            }
+      );
+    } else {
+      setPosition("");
+      setCompany("");
+      setSelectedLocation("");
+      setEndDate({ month: "", year: "" });
+      setStartDate({ month: "", year: "" });
+      setChecked(false);
+      setEdit(false);
+    }
+  }, [selectedExperienceData]);
+
+  useEffect(() => {
+    if (checked) {
+      setEndDate({
+        month: "",
+        year: "",
+      });
+    } else {
+      if (selectedExperienceData?.end_date) {
+        const endDateFormat = formatDateMonthYear(
+          selectedExperienceData?.end_date
+        );
+        const splitEndDate = endDateFormat?.split(" ");
         setEndDate(
           selectedExperienceData?.current
             ? "Present"
             : {
-                month: splitDate[0],
-                year: splitDate[1],
+                month: splitEndDate[0],
+                year: splitEndDate[1],
               }
         );
       }
     }
-  }, [selectedExperienceData]);
+  }, [checked, selectedExperienceData]);
+
+  useEffect(() => {
+    if (
+      position?.length > 0 &&
+      company?.length > 0 &&
+      selectedLocation?.length > 0 &&
+      !!startDate?.month &&
+      !!startDate?.year
+    ) {
+      if (checked) {
+        setAddBtnDisable(false);
+      } else if (endDate?.month && endDate?.year) {
+        setAddBtnDisable(false);
+      } else {
+        setAddBtnDisable(true);
+      }
+    } else {
+      setAddBtnDisable(true);
+    }
+  }, [position, company, selectedLocation, startDate, endDate, checked]);
 
   return (
     <Modal
@@ -129,15 +181,23 @@ const AddExperienceDetailsModal = ({
           />
 
           {/* Location Selector */}
-          <LocationSearchDropdown
-            selectedLocations={selectedLocations}
-            setSelectedLocations={setSelectedLocations}
+          <CommonTextInput
+            type="text"
+            value={selectedLocation}
+            onChange={(e) => setSelectedLocation(e.target.value)}
             placeholder={"Location"}
           />
+          {/* <LocationSearchDropdown
+            selectedLocation={selectedLocation}
+            setSelectedLocation={setSelectedLocation}
+            placeholder={"Location"}
+          /> */}
           <div>
             <div
               className="flex items-center space-x-3 py-2 cursor-pointer text-sm font-ubuntu"
-              onClick={() => setChecked(!checked)}
+              onClick={() => {
+                setChecked(!checked);
+              }}
             >
               <div
                 className={`w-[20px] h-[20px] border rounded-md flex items-center justify-center border-black`}
@@ -168,10 +228,11 @@ const AddExperienceDetailsModal = ({
               <button
                 className="font-12-regular color-blue"
                 style={{ alignSelf: "flex-start" }}
+                onClick={onRemoveExperience}
               >
                 Remove Experience
               </button>
-              <CommonLoader className={"loader-blue"} />
+              {removeLoading && <CommonLoader className={"loader-blue"} />}
             </div>
           )}
         </div>
@@ -180,7 +241,12 @@ const AddExperienceDetailsModal = ({
           style={{ gap: 8, justifyContent: "center", marginTop: "24px" }}
         >
           <CancelButton title={"Cancel"} onClick={resetData} />
-          <CommonButton title={"Add"} onClick={handleAddClick} />
+          <CommonButton
+            title={"Add"}
+            onClick={handleAddClick}
+            isLoading={isLoading}
+            disabled={addBtnDisable}
+          />
         </div>
       </div>
     </Modal>

@@ -567,8 +567,8 @@ const CandidateInfoModal = ({ visible, onClose, candidateId }) => {
                   <div className="display-flex" style={{ gap: 10 }}>
                     <Avatar
                       src={
-                        candidateInfo?.raw_data.profile_photo
-                          ? candidateInfo?.raw_data.profile_photo
+                        candidateInfo?.raw_data?.profile_photo
+                          ? candidateInfo?.raw_data?.profile_photo
                           : userImage
                       }
                       alt={"Priya Sharma"}
@@ -580,8 +580,8 @@ const CandidateInfoModal = ({ visible, onClose, candidateId }) => {
                     />
                     <div className="display-column" style={{ gap: 8 }}>
                       <p className="font-16-medium color-dark-black">
-                        {candidateInfo?.raw_data.first_name}{" "}
-                        {candidateInfo?.raw_data.last_name}
+                        {candidateInfo?.raw_data?.first_name}{" "}
+                        {candidateInfo?.raw_data?.last_name}
                       </p>
                       <div
                         className="display-flex align-center"

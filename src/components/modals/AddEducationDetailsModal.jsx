@@ -4,12 +4,17 @@ import CancelButton from "../common/CancelButton";
 import CommonButton from "../common/CommonButton";
 import CommonTextInput from "../common/CommonTextInput";
 import MonthYearPicker from "../MonthYearView";
+import { convertToISODate, formatDateMonthYear } from "../../helpers/utils";
+import CommonLoader from "../common/CommonLoader";
 
 const AddEducationDetailsModal = ({
   visible,
   onClose,
   onAddEducation,
   selectedEducationData,
+  isLoading,
+  removeLoading,
+  onRemoveEducation,
 }) => {
   const [degree, setDegree] = useState("");
   const [major, setMajor] = useState("");
@@ -18,16 +23,18 @@ const AddEducationDetailsModal = ({
   const [endDate, setEndDate] = useState({ month: "", year: "" });
   const [modalAnimation, setModalAnimation] = useState(false);
   const [edit, setEdit] = useState(false);
+  const [addBtnDisable, setAddBtnDisable] = useState(true);
 
   const handleAddClick = () => {
     if (!degree || !major || !university || !startDate || !endDate) return; // Prevent empty fields
-    onAddEducation({ degree, major, university, startDate, endDate }); // Send data to parent
-    setDegree(""); // Clear input fields
-    setMajor("");
-    setUniversity("");
-    setStartDate({ month: "", year: "" });
-    setEndDate({ month: "", year: "" });
-    onClose();
+    const educationData = {
+      degree: degree,
+      field_of_study: major,
+      school: university,
+      start_date: convertToISODate(startDate),
+      end_date: convertToISODate(endDate),
+    };
+    onAddEducation(educationData); // Send data to parent
   };
 
   const resetData = () => {
@@ -51,25 +58,56 @@ const AddEducationDetailsModal = ({
     if (!!selectedEducationData) {
       setEdit(true);
       setDegree(selectedEducationData?.degree || "");
-      setUniversity(selectedEducationData?.collage || "");
-      setMajor(selectedEducationData?.course || "");
-      if (selectedEducationData?.startDate) {
-        const splitDate = selectedEducationData?.startDate?.split(" ");
-        setStartDate({
-          month: splitDate[0] || "",
-          year: splitDate[1] || "",
-        });
-      }
+      setUniversity(selectedEducationData?.school || "");
+      setMajor(selectedEducationData?.field_of_study || "");
+      const startDateFormat = formatDateMonthYear(
+        selectedEducationData?.start_date
+      );
+      const splitStartDate = startDateFormat?.split(" ");
+      setStartDate({
+        month: splitStartDate[0] || "",
+        year: splitStartDate[1] || "",
+      });
 
-      if (selectedEducationData?.endDate) {
-        const splitDate = selectedEducationData?.endDate?.split(" ");
-        setEndDate({
-          month: splitDate[0],
-          year: splitDate[1],
-        });
-      }
+      const endDateFormat = formatDateMonthYear(
+        selectedEducationData?.end_date
+      );
+      const splitEndDate = endDateFormat?.split(" ");
+      setEndDate({
+        month: splitEndDate[0] || "",
+        year: splitEndDate[1] || "",
+      });
+    } else {
+      setEdit(false);
+      setDegree("");
+      setUniversity("");
+      setMajor("");
+      setEndDate({
+        month: "",
+        year: "",
+      });
+      setStartDate({
+        month: "",
+        year: "",
+      });
     }
   }, [selectedEducationData]);
+
+  useEffect(() => {
+    if (
+      degree?.length > 0 &&
+      university?.length > 0 &&
+      major?.length > 0 &&
+      !!startDate?.month &&
+      !!startDate?.year &&
+      !!endDate?.month &&
+      !!endDate?.year
+    ) {
+      setAddBtnDisable(false);
+    } else {
+      setAddBtnDisable(true);
+    }
+  }, [major, university, degree, startDate, endDate]);
 
   return (
     <Modal
@@ -119,12 +157,16 @@ const AddEducationDetailsModal = ({
             year={endDate?.year?.toString()}
           />
           {edit && (
-            <button
-              className="font-12-regular color-blue"
-              style={{ alignSelf: "flex-start" }}
-            >
-              Remove Education
-            </button>
+            <div className="display-flex align-center" style={{ gap: 10 }}>
+              <button
+                className="font-12-regular color-blue"
+                style={{ alignSelf: "flex-start" }}
+                onClick={onRemoveEducation}
+              >
+                Remove Experience
+              </button>
+              {removeLoading && <CommonLoader className={"loader-blue"} />}
+            </div>
           )}
         </div>
         <div
@@ -132,7 +174,12 @@ const AddEducationDetailsModal = ({
           style={{ gap: 8, justifyContent: "center", marginTop: "24px" }}
         >
           <CancelButton title={"Cancel"} onClick={resetData} />
-          <CommonButton title={"Add"} onClick={handleAddClick} />
+          <CommonButton
+            title={"Add"}
+            onClick={handleAddClick}
+            isLoading={isLoading}
+            disabled={addBtnDisable}
+          />
         </div>
       </div>
     </Modal>

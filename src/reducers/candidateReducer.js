@@ -18,40 +18,55 @@ const initialState = {
   totalCandidateData: 0,
   totalCandidatePages: 1,
   candidateFilters: {},
+  totalCandidateData: 0,
+  totalCandidatePages: 1,
+  candidateFilters: {},
   candidateInfo: {},
+  candidateId: null,
   candidateDetailsLoading: false,
   updateCandidateLoading: false,
 };
 const candidateReducer = (state = initialState, action) => {
   switch (action.type) {
     case FETCH_CANDIDATES_REQUEST:
-      return { ...state, loading: true };
+      return { ...state, fetchMoreLoading: true };
 
     case FETCH_CANDIDATES_SUCCESS:
       return {
         ...state,
-        loading: false,
-        candidatesListingData: action.payload,
+        fetchMoreLoading: false,
+        candidatesListingData: action.candidateListData,
+        candidateFilters: action.filters,
+        totalCandidatePages: action.totalPage,
+        totalCandidateData: action.totalData,
       };
 
     case FETCH_CANDIDATES_FAILURE:
-      return { ...state, loading: false, error: action.payload };
+      return { ...state, fetchMoreLoading: false };
 
     // ✅ Handle Fetching a Single Candidate's Details
     case CANDIDATE_DETAILS_REQUEST:
-      return { ...state, candidateDetailsLoading: true };
+      return {
+        ...state,
+        candidateDetailsLoading: true,
+        candidateId: null,
+        candidateInfo: {},
+      };
 
     case CANDIDATE_DETAILS_SUCCESS:
       return {
         ...state,
         candidateDetailsLoading: false,
         candidateInfo: action.candidateInfo,
+        candidateId: action.candidateId,
       };
 
     case CANDIDATE_DETAILS_FAILURE:
       return {
         ...state,
         candidateDetailsLoading: false,
+        candidateId: null,
+        candidateInfo: {},
       };
 
     case UPDATE_CANDIDATE_DETAILS_REQUEST:

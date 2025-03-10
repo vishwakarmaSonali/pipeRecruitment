@@ -81,10 +81,6 @@ export const createCandidates = (token, params) => {
   };
 };
 export const fetchCandidatesList = (token, filters, page) => {
-  console.log(
-    "  `${BASE_URL}${fetchCandidatesEndpoint}?limit=100&page=1`",
-    `${BASE_URL}${fetchCandidatesEndpoint}?limit=100&page=1`
-  );
   return async (dispatch) => {
     dispatch({ type: FETCH_CANDIDATES_REQUEST });
 
@@ -92,14 +88,18 @@ export const fetchCandidatesList = (token, filters, page) => {
       const config = {
         headers: {
           "Content-Type": "application/json",
-          ...(token && { Authorization: `Bearer ${token}` }), // ✅ Add token if available
+          ...(token && { Authorization: `Bearer ${token}` }),
+        },
+        params: {
+          ...filters,
+          page,
         },
       };
+
       const response = await axios.get(
-        `${BASE_URL}${fetchCandidatesEndpoint}?limit=100&page=1`,
+        `${BASE_URL}${fetchCandidatesEndpoint}`,
         config
       );
-      console.log("fetch candidates api response", response);
 
       dispatch({
         type: FETCH_CANDIDATES_SUCCESS,
@@ -108,14 +108,22 @@ export const fetchCandidatesList = (token, filters, page) => {
         filters,
         totalPage: response.data?.totalPages,
         totalData: response.data?.total,
-        payload: response.data,
       });
+
+      return response?.data;
     } catch (error) {
       handleApiFailure(error, dispatch);
-      dispatch({
-        type: FETCH_CANDIDATES_FAILURE,
-        payload: error.message,
-      });
+      if (error?.response?.data) {
+        dispatch({
+          type: FETCH_CANDIDATES_FAILURE,
+        });
+        return error?.response?.data?.message;
+      } else {
+        dispatch({
+          type: FETCH_CANDIDATES_FAILURE,
+        });
+        return error.message;
+      }
     }
   };
 };
@@ -137,6 +145,7 @@ export const fetchCandidateDetails = (id, token) => async (dispatch) => {
     dispatch({
       type: CANDIDATE_DETAILS_SUCCESS,
       candidateInfo: response.data?.candidate,
+      candidateId: id,
     });
   } catch (error) {
     handleApiFailure(error, dispatch);
