@@ -1,0 +1,323 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.sourcing-main-container {
+  background-color: var(--white);
+  width: 100%;
+  position: relative;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.sourcing-main-inner-div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 50px;
+  max-width: 840px;
+}
+
+.sourcing-info-div-auto {
+  max-width: 600px;
+  text-align: center;
+  margin-bottom: 40px;
+  margin-top: auto;
+  font-size: 12px;
+  line-height: 13.79px;
+  color: #151b23;
+}
+
+.sourcing-info-img {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+.sourcing-info-div {
+  width: 250px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: center;
+}
+
+.sourcing-info-title-text {
+  font-size: 14px;
+  line-height: 16.09px;
+  color: #151b23;
+  font-family: "Ubuntu";
+  font-weight: 500;
+  margin: 0px;
+  text-align: center;
+}
+
+.sourcing-info-decription-text {
+  font-size: 14px;
+  line-height: 16.09px;
+  color: #797979;
+  font-family: "Ubuntu";
+  font-weight: 400;
+  margin: 0px;
+  text-align: center;
+}
+
+.display-column-8 {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.display-flex-20 {
+  display: flex;
+  gap: 20px;
+}
+
+.scroll-width-none {
+  /* Hide scrollbar for all browsers */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* Internet Explorer 10+ */
+}
+
+.scroll-width-none::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Edge */
+}
+/* Base Header Styles */
+.header-container {
+  @apply flex items-center justify-between w-full px-4 py-2;
+}
+.header-icons-container {
+  @apply flex items-center justify-end space-x-2;
+}
+.header-title {
+  @apply text-custom-large ml-[8px] font-ubuntu font-medium;
+}
+.search-input {
+  @apply w-[400px] font-ubuntu font-normal  px-10 h-[40px] text-sm text-gray-700 bg-gray-100 rounded-[8px] focus:outline-none focus:ring-0  transition-all duration-300 ease-in-out flex items-center;
+}
+.search-icon {
+  @apply absolute left-2 top-2 w-5 h-5 text-gray-500;
+}
+.header-icons {
+  @apply p-[10px] bg-customGrey1 rounded-[8px] mx-1 flex items-center;
+}
+.header-icons.search {
+  @apply hidden;
+}
+.profile-div {
+  @apply items-center justify-center  w-[46px] h-[46px] rounded-[100px] mx-1 overflow-hidden overscroll-none;
+}
+.candidate-details {
+  @apply w-[60%] mr-4 p-[14px] pb-[20px] mb-[110px] overflow-auto scroll-width-none bg-white h-auto rounded-[14px];
+}
+/* Responsive Design */
+
+/* Mobile View */
+@media (min-width: 240px) and (max-width: 1024px) {
+  .header-container {
+    @apply px-2; /* Adjust padding for smaller screens */
+  }
+  .header-title {
+    @apply hidden;
+  }
+  .header-icons-container {
+    @apply ml-auto; /* Align icons to the end */
+  }
+  .header-icons {
+    @apply p-[6px];
+  }
+  .header-icons.search {
+    @apply block;
+  }
+  .profile-div {
+    @apply w-[36px] h-[36px];
+  }
+  .hamburger-menu {
+    @apply block;
+  }
+  .search-input {
+    @apply hidden focus:outline-none focus:ring-0; /* Hide search input on mobile */
+  }
+  .candidate-list {
+    @apply w-full h-screen overflow-y-auto scroll-width-none; /* Enable scrolling */
+  }
+  .candidate-scroll {
+    @apply scroll-width-none;
+  }
+  .candidate-details {
+    @apply hidden; /* Hide the candidate details on tablets */
+  }
+}
+
+/* Desktop View */
+@media (min-width: 1025px) {
+  .hamburger-menu {
+    @apply hidden; /* Hide menu button on large screens */
+  }
+  .header-container {
+    @apply flex-row justify-between;
+  }
+  .header-title {
+    @apply block; /* Ensure title is shown */
+  }
+  .header-icons.search {
+    @apply hidden;
+  }
+  .search-input {
+    @apply w-[400px] focus:outline-none focus:ring-0; /* Full size for desktop */
+  }
+  .candidate-list {
+    @apply w-[40%] h-full overflow-auto bg-customGrey1 overflow-y-auto px-4 scroll-width-none;
+  }
+
+  .candidate-details {
+    @apply w-[60%] h-auto block; /* Ensure it's visible */
+  }
+}
+.candidate-profile-div {
+  @apply flex-col items-center justify-center w-[46px] h-[46px] rounded-[100px] overflow-hidden space-x-4 overscroll-none;
+}
+.candidate-name {
+  @apply text-xl text-customBlue font-ubuntu font-bold;
+}
+.candidate-designation {
+  @apply text-m text-customBlue font-ubuntu font-normal;
+}
+.candidate-scroll {
+  @apply overflow-auto h-auto scroll-width-none;
+}
+.candidate-location-designation-text {
+  @apply font-ubuntu font-normal text-l text-customBlue;
+}
+.candidate-skill {
+  @apply bg-blueBg text-gray-800 px-3 py-2 rounded-md text-m font-normal font-ubuntu shadow-sm cursor-pointer;
+}
+.detail-profile-name {
+  @apply text-customBlue font-ubuntu font-medium text-xxl;
+}
+.proifle-action-icon {
+  @apply h-[20px] w-[20px];
+}
+.details-title {
+  @apply font-ubuntu font-medium text-l text-customBlue;
+}
+.details-specific-div {
+  @apply border border-solid border-borderGrey p-[12px] my-[12px] rounded-[12px];
+}
+.language {
+  @apply bg-blueBg text-gray-800 px-[6px] py-[4px] rounded-md text-m font-normal font-ubuntu shadow-sm cursor-pointer leading-5;
+}
+.divider-border {
+  @apply border-b border-solid border-borderGrey my-[12px];
+}
+.details-griddiv {
+  @apply border border-solid border-borderGrey p-[12px]  rounded-[12px] min-h-0;
+}
+.main-title {
+  @apply font-ubuntu font-medium text-m text-customBlue;
+}
+.location-university-text-weight {
+  @apply font-normal;
+}
+.location-university-text-color {
+  @apply text-customGray font-normal;
+}
+.grid-title {
+  @apply font-ubuntu  font-medium text-m text-gray-700;
+}
+.grid-desc {
+  @apply text-gray-800 font-normal text-m font-ubuntu;
+}
+.modal-enter {
+  transform: translateX(100%);
+}
+
+.modal-enter-active {
+  transform: translateX(0);
+  transition: transform 0.3s ease-in-out;
+}
+
+.modal-exit {
+  transform: translateX(0);
+}
+
+.modal-exit-active {
+  transform: translateX(100%);
+  transition: transform 0.3s ease-in-out;
+}
+.dilogbox {
+  @apply absolute bottom-full right-0 transform translate-y-[-5px] bg-gray-800 text-white text-xs rounded-md px-3 py-1 shadow-md whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 font-ubuntu;
+}
+
+.font-22-medium {
+  font-family: "Ubuntu";
+  font-size: 22px;
+  font-weight: 500;
+  line-height: 25.28px;
+}
+
+.sourcing-header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  position: sticky;
+  top: 0px;
+  background-color: #fff;
+}
+
+.sourcing-inner-div {
+  flex: 1;
+  display: flex;
+  gap: 12px;
+  padding: 10px 16px 0px 16px;
+}
+
+.sourcing-inner-section-1 {
+  flex: 1;
+  height: calc(100vh - 200px);
+  overflow-y: auto;
+  max-width: 450px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  box-sizing: border-box;
+  transition: all 300ms ease;
+}
+.sourcing-inner-section-2 {
+  flex: 1;
+  height: calc(100vh - 200px);
+  overflow-y: auto;
+  transition: all 300ms ease;
+}
+
+.sourcing-inner-section-1::-webkit-scrollbar,
+.sourcing-inner-section-2::-webkit-scrollbar {
+  width: 10px;
+  border-radius: 2.5px;
+}
+.sourcing-inner-section-1::-webkit-scrollbar-thumb,
+.sourcing-inner-section-2::-webkit-scrollbar-thumb {
+  background: rgba(83, 166, 216, 0.5);
+  border-radius: 6px;
+}
+
+.sourcing-pagination-div {
+  padding: 16px;
+  background-color: var(--white);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+@media screen and (max-width: 1024px) {
+  .sourcing-inner-section-2 {
+    display: none;
+  }
+  .sourcing-inner-section-1 {
+    max-width: none;
+  }
+}

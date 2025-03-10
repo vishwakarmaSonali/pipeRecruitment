@@ -106,8 +106,15 @@ const BulkActionView = ({
   onClickFilter,
   onClickAddJob,
   onClickFolder,
+  selectedCandidates
 }) => {
+  const  handleAddToCandidate = () =>{
 
+    const selectedCandidateIds = selectedCandidates.map((id) => id);
+  
+  console.log("Formatted Candidate IDs:", JSON.stringify(selectedCandidateIds));
+  }
+  
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
 
@@ -192,6 +199,7 @@ const BulkActionView = ({
           </ListItemIcon>
           <Typography
             sx={{ fontSize: "14px", fontFamily: "'Ubuntu', sans-serif" }}
+            onClick={()=>handleAddToCandidate()}
           >
             Add to candidate
           </Typography>
@@ -260,6 +268,7 @@ const NoFiltersScreen = ({ onStartSearching }) => {
   );
 };
 const Sourcing = () => {
+  
    const bulkMenuItems = [
       {
         label: "Add to Candidate",
@@ -314,6 +323,8 @@ const Sourcing = () => {
   const [candidateDrawerOpen, setCandidateDrawerOpen] = useState(false);
 
   const [filterDrawerOpen, setFilterDrawerOpen] = useState(false);
+const {token} = useSelector((state)=>state?.auth)
+console.log("token>>>>>>>>",token);
 
   const toggleCandidateDrawer = (open) => {
     setCandidateDrawerOpen(open);
@@ -326,7 +337,7 @@ const Sourcing = () => {
   const handlePageChange = (page) => {
     setSelectedCandidates([]);
     setCurrentPage(page);
-    dispatch(fetchCandidates(null, candidateFilters, page));
+    dispatch(fetchCandidates(token, candidateFilters, page));
   };
 
   const handleResultsChange = (value) => {
@@ -384,12 +395,14 @@ const Sourcing = () => {
         : [...prevSelected, candidateId]
     );
   };
+  
   const handleCandidateSelectContainer = (candidate) => {
     setSelectedCandidate(candidate);
     if (windowWidth < 1024) {
       toggleCandidateDrawer(true);
     }
   };
+
 
   const emptyComponent = () => {
     return (
@@ -503,7 +516,7 @@ const Sourcing = () => {
       params.major = filters?.majorList?.join(", ");
     }
 
-    dispatch(fetchCandidates(null, params, 1));
+    dispatch(fetchCandidates(token, params, 1));
   }, [dispatch, filters, resultsPerPage]);
 
   useEffect(() => {
@@ -575,6 +588,7 @@ const Sourcing = () => {
               isAllSelected={selectedCandidates.length === candidates.length}
               filters={filters} // Pass filters as a prop
               onClickFilter={() => toggleFilterDrawer(true)}
+              selectedCandidates={selectedCandidates}
             />
             {candidateData?.length > 0 ? (
               <div className="sourcing-inner-div">

@@ -1,5 +1,6 @@
 export const BASE_URL = "http://3.110.81.44/";
 
+export const loginEndpoint = "api/auth/login"
 export const candidateSearchApiEndPoint = "api/source/search";
 export const candidateSerachByIdApiEndPOint =
   "api/source/candidates/";
@@ -9,3 +10,4 @@ export const getLabelEndpoint = "api/labels"
 export const locationAutoCompleteSourceEndpoint = "api/source/suggest/location"
 export const fetchCandidatesEndpoint = "api/candidates/search"
 export const fetchCandidatesDetailsEndpoint = "api/candidates"
+export const sourceTitleDropdown = "api/source/suggest/title"

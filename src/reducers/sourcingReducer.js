@@ -2,6 +2,9 @@ import {
   SEARCH_CANDIDATE_FAILURE,
   SEARCH_CANDIDATE_REQUEST,
   SEARCH_CANDIDATE_SUCCESS,
+  ADD_SOURCE_TO_CANDIDATE_REQUEST,
+  ADD_SOURCE_TO_CANDIDATE_SUCCESS,
+  ADD_SOURCE_TO_CANDIDATE_FAILURE,
 } from "../actions/actionsType";
 
 const initialState = {
@@ -10,11 +13,14 @@ const initialState = {
   totalCandidateData: 0,
   totalCandidatePages: 1,
   candidateFilters: {},
+  addingCandidates: false,
+  addCandidatesSuccessMessage: "",
+  addCandidatesErrorMessage: "",
 };
 
 const sourcingReducer = (state = initialState, action) => {
-  console.log("action>>>>",action?.payload);
-  
+  console.log("action>>>>", action?.payload);
+
   switch (action.type) {
     case SEARCH_CANDIDATE_REQUEST:
       return {
@@ -35,9 +41,33 @@ const sourcingReducer = (state = initialState, action) => {
         ...state,
         fetchMoreLoading: false,
         candidateData: [],
-        totalCandidateData: 1,
+        totalCandidatePages: 1,
         totalCandidateData: 0,
       };
+
+    // ✅ Handle Adding Candidates API
+    case ADD_SOURCE_TO_CANDIDATE_REQUEST:
+      return {
+        ...state,
+        addingCandidates: true,
+        addCandidatesSuccessMessage: "",
+        addCandidatesErrorMessage: "",
+      };
+    case ADD_SOURCE_TO_CANDIDATE_SUCCESS:
+      return {
+        ...state,
+        addingCandidates: false,
+        addCandidatesSuccessMessage: action.payload,
+        addCandidatesErrorMessage: "",
+      };
+    case ADD_SOURCE_TO_CANDIDATE_FAILURE:
+      return {
+        ...state,
+        addingCandidates: false,
+        addCandidatesSuccessMessage: "",
+        addCandidatesErrorMessage: action.payload,
+      };
+
     default:
       return state;
   }
