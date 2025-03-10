@@ -14,7 +14,7 @@ import CandidateCard from "../../../components/sourcing/CandidateCard";
 import CandidateDetails from "../../../components/sourcing/CandidateDetails";
 import PaginationComponent from "../../../components/common/PaginationComponent";
 import CandidateDetailsDrawer from "../../../components/sourcing/CandidateDetailsDrawer";
-import { fetchCandidates } from "../../../actions/sourcingActions";
+import { addSourceToCandidates, fetchCandidates } from "../../../actions/sourcingActions";
 import { useDispatch, useSelector } from "react-redux";
 import ShimmerEffectCandidateCard from "../../../components/sourcing/ShimmerEffectCandidateCard";
 import FilterDrawer from "../../../components/sourcing/FilterDrawer";
@@ -108,11 +108,14 @@ const BulkActionView = ({
   onClickFolder,
   selectedCandidates
 }) => {
+  const dispatch = useDispatch()
+  const {refreshToken,token} = useSelector((state)=>state?.auth)
   const  handleAddToCandidate = () =>{
 
     const selectedCandidateIds = selectedCandidates.map((id) => id);
   
   console.log("Formatted Candidate IDs:", JSON.stringify(selectedCandidateIds));
+  dispatch(addSourceToCandidates(selectedCandidateIds,token,refreshToken))
   }
   
   const [anchorEl, setAnchorEl] = useState(null);
@@ -323,8 +326,8 @@ const Sourcing = () => {
   const [candidateDrawerOpen, setCandidateDrawerOpen] = useState(false);
 
   const [filterDrawerOpen, setFilterDrawerOpen] = useState(false);
-const {token} = useSelector((state)=>state?.auth)
-console.log("token>>>>>>>>",token);
+const {token,refreshToken} = useSelector((state)=>state?.auth)
+console.log("token>>>>>>>>",token,"refreshToken",refreshToken);
 
   const toggleCandidateDrawer = (open) => {
     setCandidateDrawerOpen(open);
@@ -337,7 +340,7 @@ console.log("token>>>>>>>>",token);
   const handlePageChange = (page) => {
     setSelectedCandidates([]);
     setCurrentPage(page);
-    dispatch(fetchCandidates(token, candidateFilters, page));
+    dispatch(fetchCandidates(token, candidateFilters, page,refreshToken));
   };
 
   const handleResultsChange = (value) => {

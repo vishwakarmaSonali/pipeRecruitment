@@ -12,26 +12,26 @@ import { logoutUser } from "./authActions";
 
 // ✅ Handle API Failure (Logout if session expired)
 const handleApiFailure = (error, dispatch) => {
-  console.error("❌ API Error:", error.response?.data || error.message);
+  console.error("❌ API Error:", error.response?.data );
 
-  if (error.response?.status ===false) {
-    alert("Session expired. Please log in again.");
+  if (error.response?.data?.success == false) {
+    alert(error.response?.data?.message);
     dispatch(logoutUser()); // Remove token from Redux
     window.location.href = "/login"; // Redirect to login page
   }
 };
 
 // ✅ Fetch Candidates
-export const fetchCandidates = (token, filters, page) => {
+export const fetchCandidates = (token, filters, page,refreshToken) => {
   return async (dispatch) => {
     dispatch({ type: SEARCH_CANDIDATE_REQUEST });
 
-    if (!token) {
-      console.error("❌ Token is missing! Redirecting to login...");
-      dispatch(logoutUser());
-      window.location.href = "/login";
-      return;
-    }
+    // if (!token) {
+    //   console.error("❌ Token is missing! Redirecting to login...");
+    //   dispatch(logoutUser());
+    //   window.location.href = "/login";
+    //   return;
+    // }
 
     try {
       const authToken = token.trim();
@@ -41,6 +41,7 @@ export const fetchCandidates = (token, filters, page) => {
       const config = {
         headers: {
           Authorization: `Bearer ${authToken}`,
+         
         },
         params: {
           ...filters,
@@ -50,7 +51,7 @@ export const fetchCandidates = (token, filters, page) => {
 
       const response = await axios.get(`${BASE_URL}${candidateSearchApiEndPoint}`, config);
 
-      console.log("✅ API Response:", response.data);
+      console.log("✅ API Response:in fetch candidates", response.data);
 
       dispatch({
         type: SEARCH_CANDIDATE_SUCCESS,
@@ -71,10 +72,10 @@ export const fetchCandidates = (token, filters, page) => {
 };
 
 // ✅ Add Source to Candidates
-export const addSourceToCandidates = (selectedCandidates) => async (dispatch, getState) => {
+export const addSourceToCandidates = (selectedCandidates,token,refreshToken) => async (dispatch, getState) => {
   dispatch({ type: ADD_SOURCE_TO_CANDIDATE_REQUEST });
 
-  const { token, refreshToken } = getState().auth; // Get token from Redux
+  // const { token, refreshToken } = getState().auth; // Get token from Redux
 
   if (!token) {
     console.error("Token is missing. Redirecting to login...");

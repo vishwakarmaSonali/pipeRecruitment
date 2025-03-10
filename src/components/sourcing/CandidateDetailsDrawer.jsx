@@ -10,6 +10,9 @@ import Tooltip from "@mui/material/Tooltip";
 import { skills } from "./CandidateCard";
 import { educationData, experienceData, languages } from "./CandidateDetails";
 import { useModal } from "../common/ModalProvider";
+import { addSourceToCandidates } from "../../actions/sourcingActions";
+import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 
 const CandidateDetailsDrawer = ({
   visible,
@@ -27,7 +30,8 @@ const CandidateDetailsDrawer = ({
       setModalVisibility("animatedModal", false);
     }, 600);
   };
-
+  const {token,refreshToken} = useSelector((state)=> state?.auth)
+  const dispatch = useDispatch()
   return (
     <Drawer anchor="right" open={visible} onClose={handleBackdropClick}>
       <div
@@ -69,7 +73,8 @@ const CandidateDetailsDrawer = ({
               </div>
               <div className="display-flex" style={{ gap: 12 }}>
                 <Tooltip title="Add to candidate">
-                  <button>
+                 <button onClick = {()=> dispatch(addSourceToCandidates([data?._id],token,refreshToken))
+                            }>
                     <ProfileAdd />
                   </button>
                 </Tooltip>

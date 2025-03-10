@@ -10,6 +10,9 @@ import { ReactComponent as Download } from "../../assets/icons/sourcingIcons/dow
 import { skills } from "./CandidateCard";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
+import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import { addSourceToCandidates } from "../../actions/sourcingActions";
 
 export const languages = ["English", "Mandarin", "Spanish"];
 
@@ -65,7 +68,8 @@ const CandidateDetails = ({
   onClickAddFolder,
 }) => {
   const [validImageUrl, setValidImageUrl] = useState(true);
-
+const {token,refreshToken} = useSelector((state)=> state?.auth)
+const dispatch = useDispatch()
   if (loading) {
     return (
       <div className="candidate-details-card">
@@ -139,7 +143,8 @@ const CandidateDetails = ({
         </div>
         <div className="display-flex" style={{ gap: 12 }}>
           <Tooltip title="Add to candidate">
-            <button>
+            <button onClick = {()=> dispatch(addSourceToCandidates([data?._id],token,refreshToken))
+            }>
               <ProfileAdd />
             </button>
           </Tooltip>

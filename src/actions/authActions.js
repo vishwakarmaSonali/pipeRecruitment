@@ -13,7 +13,7 @@ export const loginUser = (email, password) => {
       });
 
       const { accessToken, refreshToken } = response.data?.data;
-console.log(" response.data",response.data?.success);
+console.log(" response.data",response.data);
 
       // Store tokens in Redux
       dispatch({
