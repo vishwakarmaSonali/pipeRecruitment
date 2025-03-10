@@ -73,7 +73,10 @@ import CancelButton from "../common/CancelButton";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { fetchLabels } from "../../actions/dropdownAction";
-import { fetchCandidateDetails } from "../../actions/candidateActions";
+import {
+  fetchCandidateDetails,
+  updateCandidateLabel,
+} from "../../actions/candidateActions";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 
@@ -237,7 +240,9 @@ const CandidateInfoModal = ({ visible, onClose, candidateId }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [randomColor, setRandomColor] = useState([]);
   const [writeText, setWriteText] = useState("");
-  const [selectedLabelData, setSelectedLabelData] = useState([]);
+  const [selectedLabelData, setSelectedLabelData] = useState(
+    candidateInfo?.raw_data?.labels || []
+  );
   const [deleteNoteModalVisible, setDeleteNoteModalVisible] = useState(false);
   const [noteModalVisible, setNoteModalVisible] = useState(false);
   const [folders, setFolders] = useState([]);
@@ -337,8 +342,19 @@ const CandidateInfoModal = ({ visible, onClose, candidateId }) => {
       }
     });
     const filterLableData = updatedData?.filter((item) => item?.selected);
-    setSelectedLabelData(filterLableData);
-    setLabelsData(updatedData);
+    const selectedLabelId = filterLableData?.map((item) => item?._id);
+    const httpBody = {
+      candidateIds: [candidateId],
+      updateData: {
+        labels: [...selectedLabelId],
+      },
+    };
+    dispatch(updateCandidateLabel(token, httpBody)).then((response) => {
+      if (response?.success) {
+        setSelectedLabelData([...filterLableData]);
+        setLabelsData(updatedData);
+      }
+    });
   };
 
   const renderFeedback = (item) => {
@@ -590,7 +606,7 @@ const CandidateInfoModal = ({ visible, onClose, candidateId }) => {
                         {selectedLabelData?.map((item) => {
                           return (
                             <div
-                              key={item?.id}
+                              key={item?._id}
                               className="candidate-info-label"
                             >
                               <LabelIcon fill={item?.color} /> {item?.name}

@@ -8,6 +8,9 @@ import {
   UPDATE_CANDIDATE_DETAILS_REQUEST,
   UPDATE_CANDIDATE_DETAILS_SUCCESS,
   UPDATE_CANDIDATE_DETAILS_FAILURE,
+  UPDATE_CANDIDATE_LABEL_REQUEST,
+  UPDATE_CANDIDATE_LABEL_SUCCESS,
+  UPDATE_CANDIDATE_LABEL_FAILURE,
 } from "../actions/actionsType";
 
 const initialState = {
@@ -79,6 +82,21 @@ const candidateReducer = (state = initialState, action) => {
       };
 
     case UPDATE_CANDIDATE_DETAILS_FAILURE:
+      return {
+        ...state,
+        updateCandidateLoading: false,
+      };
+
+    case UPDATE_CANDIDATE_LABEL_REQUEST:
+      return { ...state, updateCandidateLoading: true };
+
+    case UPDATE_CANDIDATE_LABEL_SUCCESS:
+      return {
+        ...state,
+        updateCandidateLoading: false,
+      };
+
+    case UPDATE_CANDIDATE_LABEL_FAILURE:
       return {
         ...state,
         updateCandidateLoading: false,

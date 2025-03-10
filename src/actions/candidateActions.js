@@ -19,6 +19,9 @@ import {
   UPDATE_CANDIDATE_DETAILS_REQUEST,
   UPDATE_CANDIDATE_DETAILS_SUCCESS,
   UPDATE_CANDIDATE_DETAILS_FAILURE,
+  UPDATE_CANDIDATE_LABEL_REQUEST,
+  UPDATE_CANDIDATE_LABEL_SUCCESS,
+  UPDATE_CANDIDATE_LABEL_FAILURE,
 } from "./actionsType";
 import { useNavigate } from "react-router-dom";
 import { logoutUser } from "./authActions";
@@ -193,6 +196,42 @@ export const updateCandidateDetails = (token, id, data) => {
       } else {
         dispatch({
           type: UPDATE_CANDIDATE_DETAILS_FAILURE,
+        });
+        return error.message;
+      }
+    }
+  };
+};
+
+export const updateCandidateLabel = (token, data) => {
+  return async (dispatch) => {
+    dispatch({ type: UPDATE_CANDIDATE_LABEL_REQUEST });
+    try {
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          ...(token && { Authorization: `Bearer ${token}` }),
+        },
+      };
+      const response = await axios.put(
+        `${BASE_URL}${fetchCandidatesDetailsEndpoint}`,
+        JSON.stringify(data),
+        config
+      );
+      dispatch({
+        type: UPDATE_CANDIDATE_LABEL_SUCCESS,
+        data: response?.data,
+      });
+      return response?.data;
+    } catch (error) {
+      if (error?.response?.data) {
+        dispatch({
+          type: UPDATE_CANDIDATE_LABEL_FAILURE,
+        });
+        return error?.response?.data?.message;
+      } else {
+        dispatch({
+          type: UPDATE_CANDIDATE_LABEL_FAILURE,
         });
         return error.message;
       }
