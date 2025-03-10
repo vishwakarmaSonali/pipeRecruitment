@@ -3,9 +3,30 @@ import "./index.css";
 import { Avatar } from "@mui/material";
 import { getRandomColor } from "../../helpers/utils";
 import { ReactComponent as ArrowIcon } from "../../assets/icons/arrowDown.svg";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 
-const CandidateInfoJobs = ({ label, data, onAdd }) => {
+const CandidateInfoJobs = ({ label, data, onAdd, isLoading }) => {
   const [collapse, setCollapse] = useState(true);
+
+  if (isLoading) {
+    return (
+      <div className="candidate-details-main-container">
+        <div className="display-flex-justify align-center">
+          <div className="display-flex align-center" style={{ gap: 12 }}>
+            <Skeleton width={200} height={20} />
+          </div>
+        </div>
+        <div className="divider-line" />
+        <div
+          className="display-flex candidate-experince-item"
+          style={{ gap: 8 }}
+        >
+          <Skeleton containerClassName="flex-1" height={16} count={4} />
+        </div>
+      </div>
+    );
+  }
   return (
     <div className="candidate-details-main-container">
       <div className="display-flex-justify align-center">

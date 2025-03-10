@@ -8,8 +8,16 @@ import { ReactComponent as ArrowIcon } from "../../assets/icons/arrowDown.svg";
 import AddEducationDetailsModal from "../modals/AddEducationDetailsModal";
 import { useModal } from "../common/ModalProvider";
 import AddExperienceDetailsModal from "../modals/AddExperienceDetailsModal";
+import { formatDateMonthYear } from "../../helpers/utils";
+import { updateCandidateDetails } from "../../actions/candidateActions";
+import { useDispatch, useSelector } from "react-redux";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 
-const CandidateInfoExperience = ({ label, data, editable }) => {
+const CandidateInfoExperience = ({ key, label, data, editable, isLoading }) => {
+  const dispatch = useDispatch();
+  const { token } = useSelector((state) => state.auth);
+  const { updateCandidateLoading } = useSelector((state) => state?.candidates);
   const [anchorEl, setAnchorEl] = useState(null);
   const [collapse, setCollapse] = useState(true);
   const [educationModalVisible, setEducationModalVisible] = useState(false);
@@ -40,10 +48,10 @@ const CandidateInfoExperience = ({ label, data, editable }) => {
     setAnchorEl(null);
   };
 
-  const renderExperience = (item) => {
+  const renderExperience = (item, index) => {
     return (
       <div
-        key={item?.id}
+        key={index}
         className="display-column candidate-experince-item"
         style={{ gap: 8 }}
       >
@@ -67,23 +75,24 @@ const CandidateInfoExperience = ({ label, data, editable }) => {
         <div className="display-flex-justify align-center">
           <p className="font-14-regular color-dark-black">{item?.location}</p>
           <p className="font-14-regular color-grey">
-            {item?.startDate} - {item?.endDate}
+            {formatDateMonthYear(item?.start_date)} -{" "}
+            {item?.current ? "Present" : formatDateMonthYear(item?.end_date)}
           </p>
         </div>
       </div>
     );
   };
 
-  const renderEducation = (item) => {
+  const renderEducation = (item, index) => {
     return (
       <div
-        key={item?.id}
+        key={index}
         className="display-column candidate-experince-item"
         style={{ gap: 8 }}
       >
         <div className="display-flex-justify align-center">
           <p className="font-14-medium color-dark-black">
-            {item?.degree} at {item?.course}
+            {item?.degree} at {item?.field_of_study}
           </p>
           {editable && (
             <button
@@ -101,14 +110,34 @@ const CandidateInfoExperience = ({ label, data, editable }) => {
           )}
         </div>
         <div className="display-flex-justify align-center">
-          <p className="font-14-regular color-dark-black">{item?.collage}</p>
+          <p className="font-14-regular color-dark-black">{item?.school}</p>
           <p className="font-14-regular color-grey">
-            {item?.startDate} - {item?.endDate}
+            {formatDateMonthYear(item?.start_date)} -{" "}
+            {formatDateMonthYear(item?.end_date)}
           </p>
         </div>
       </div>
     );
   };
+
+  if (isLoading) {
+    return (
+      <div className="candidate-details-main-container">
+        <div className="display-flex-justify align-center">
+          <div className="display-flex align-center" style={{ gap: 12 }}>
+            <Skeleton width={200} height={20} />
+          </div>
+        </div>
+        <div className="divider-line" />
+        <div
+          className="display-flex candidate-experince-item"
+          style={{ gap: 8 }}
+        >
+          <Skeleton containerClassName="flex-1" height={100} />
+        </div>
+      </div>
+    );
+  }
   return (
     <>
       <div className="candidate-details-main-container">

@@ -105,3 +105,13 @@ export const getInitials = (name) => {
     .join("")
     .toUpperCase();
 };
+
+export function formatDateMonthYear(dateString) {
+  const date = new Date(dateString);
+
+  if (isNaN(date.getTime())) {
+    return "Invalid Date";
+  }
+
+  return date.toLocaleString("en-US", { month: "long", year: "numeric" });
+}

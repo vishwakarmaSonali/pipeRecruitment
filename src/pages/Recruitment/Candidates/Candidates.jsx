@@ -56,14 +56,6 @@ const Candidates = ({ isDrawerOpen }) => {
   const { candidatesListingData, loading, error } = useSelector(
     (state) => state.candidates
   );
-  const { candidateDetails, candidateDetailsLoading, candidateDetailsError } =
-    useSelector(
-      (state) => state.candidates || {} // Ensure default object to prevent undefined errors
-    );
-  console.log(
-    "candidateDetails>>>>>",
-    candidateDetails?.candidate?.structuredCandidate
-  );
 
   const [candidateList, setCandidateList] = useState(
     candidatesListingData?.results || []
@@ -441,10 +433,7 @@ const Candidates = ({ isDrawerOpen }) => {
   }, [candidatesListingData]);
 
   const handleCandidateClick = (id) => {
-    console.log("selected candidate>>>>>>", id);
-
-    setSelectedCandidateId(id); // Store candidate ID
-    dispatch(fetchCandidateDetails(id, token)); // Fetch candidate details
+    setSelectedCandidateId(id);
     setModalVisibility("candidateInfoModalVisible", true);
   };
   return (
@@ -741,7 +730,8 @@ const Candidates = ({ isDrawerOpen }) => {
       <CandidateInfoModal
         visible={modals?.candidateInfoModalVisible}
         onClose={() => setModalVisibility("candidateInfoModalVisible", false)}
-        candidate={candidateDetails?.candidate}
+        // candidate={candidateDetails?.candidate}
+        candidateId={selectedCandidateId}
       />
     </div>
   );

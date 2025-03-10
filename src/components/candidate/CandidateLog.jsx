@@ -1,9 +1,30 @@
 import React, { useState } from "react";
 import "./index.css";
 import { ReactComponent as ArrowIcon } from "../../assets/icons/arrowDown.svg";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 
-const CandidateLog = () => {
+const CandidateLog = ({ isLoading }) => {
   const [collapse, setCollapse] = useState(true);
+
+  if (isLoading) {
+    return (
+      <div className="candidate-details-main-container">
+        <div className="display-flex-justify align-center">
+          <div className="display-flex align-center" style={{ gap: 12 }}>
+            <Skeleton width={200} height={20} />
+          </div>
+        </div>
+        <div className="divider-line" />
+        <div
+          className="display-flex candidate-experince-item"
+          style={{ gap: 8 }}
+        >
+          <Skeleton containerClassName="flex-1" height={100} />
+        </div>
+      </div>
+    );
+  }
   return (
     <div className="candidate-details-main-container">
       <div className="display-flex align-center" style={{ gap: 12 }}>

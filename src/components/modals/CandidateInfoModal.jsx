@@ -63,7 +63,7 @@ import AddToJobsModal from "./AddToJobsModal";
 import { ReactComponent as CloseIcon } from "../../assets/icons/closeModal.svg";
 import { useNavigate } from "react-router-dom";
 import AddToFolderModal from "./AddToFolderModal";
-import { uptech } from "../../helpers/assets";
+import { uptech, userImage } from "../../helpers/assets";
 import { ReactComponent as OriginalResumeIcon } from "../../assets/images/resume/original.svg";
 import { ReactComponent as CvIcon } from "../../assets/images/resume/cv.svg";
 import { ReactComponent as ReportIcon } from "../../assets/images/resume/report.svg";
@@ -73,6 +73,9 @@ import CancelButton from "../common/CancelButton";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { fetchLabels } from "../../actions/dropdownAction";
+import { fetchCandidateDetails } from "../../actions/candidateActions";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 
 const candidateInfoTabs = [
   {
@@ -214,21 +217,21 @@ const enrichUserProfileData = [
   },
 ];
 
-const CandidateInfoModal = ({ visible, onClose, candidate }) => {
-  console.log("cadidate data>>>>>>", candidate?.raw_data);
-  console.log(
-    "cadidate datastructuredCandidate",
-    candidate?.structuredCandidate
-  );
+const CandidateInfoModal = ({ visible, onClose, candidateId }) => {
+  console.log("cadidate id", candidateId);
 
   const dispatch = useDispatch();
+  const { candidateInfo, candidateDetailsLoading } = useSelector(
+    (state) => state.candidates
+  );
+  const { token } = useSelector((state) => state.auth);
   const navigate = useNavigate();
   const { labelData } = useSelector((state) => state?.customization);
   const [labelsData, setLabelsData] = useState(labelData);
   const { modals, setModalVisibility } = useModal();
   const [candidateTabs, setCandidateTabs] = useState(candidateInfoTabs);
   const [summaryStructuredData, setSummaryStructuredData] = useState(
-    candidate?.structuredCandidate || {}
+    candidateInfo?.structuredCandidate || {}
   );
   const [selectedCandidateTab, setSelectedCandidateTab] = useState("Summary");
   const [anchorEl, setAnchorEl] = useState(null);
@@ -421,6 +424,14 @@ const CandidateInfoModal = ({ visible, onClose, candidate }) => {
     setRandomColor(random);
   }, []);
 
+  useEffect(() => {
+    setSummaryStructuredData(candidateInfo?.structuredCandidate || {});
+  }, [candidateInfo]);
+
+  useEffect(() => {
+    dispatch(fetchCandidateDetails(candidateId, token));
+  }, [candidateId]);
+
   const handleBackdropClick = () => {
     setModalVisibility("animatedModal", true);
     setTimeout(() => {
@@ -515,185 +526,237 @@ const CandidateInfoModal = ({ visible, onClose, candidate }) => {
           }`}
           style={{ paddingBottom: 16 }}
         >
-          <div className="candidate-info-header">
-            <div className="display-flex-justify align-center">
-              <div className="display-flex" style={{ gap: 10 }}>
-                <Avatar
-                  src={""}
-                  alt={"Priya Sharma"}
-                  style={{
-                    width: 60,
-                    height: 60,
-                    backgroundColor: randomColor,
-                  }}
-                />
-                <div className="display-column" style={{ gap: 8 }}>
-                  <p className="font-16-medium color-dark-black">
-                    {candidate?.raw_data.first_name}{" "}
-                    {candidate?.raw_data.last_name}
-                  </p>
-                  <div
-                    className="display-flex align-center"
-                    style={{ gap: 8, flexWrap: "wrap" }}
-                  >
-                    {selectedLabelData?.map((item) => {
+          {candidateDetailsLoading ? (
+            <div className="candidate-info-header">
+              <div className="display-flex-justify align-center">
+                <div className="display-flex" style={{ gap: 10 }}>
+                  <div className="w-h-60">
+                    <Skeleton circle width={"100%"} height={"100%"} />
+                  </div>
+                  <div className="display-column">
+                    <Skeleton width={150} height={16} />
+                    <Skeleton width={50} height={12} />
+                  </div>
+                </div>
+                <div className="display-flex" style={{ gap: 10 }}>
+                  <div className="profile-progress-div-1">
+                    <Skeleton circle width={"100%"} height={"100%"} />
+                  </div>
+                  <div className="profile-progress-div-2">
+                    <Skeleton circle width={"100%"} height={"100%"} />
+                  </div>
+                </div>
+              </div>
+              <div className="display-flex-justify align-center">
+                <div
+                  className="candidate-info-tab-main"
+                  style={{ borderBottom: "none" }}
+                >
+                  <Skeleton width={600} height={26} />
+                </div>
+                <div className="display-flex align-center" style={{ gap: 10 }}>
+                  <Skeleton width={100} height={26} />
+                  <Skeleton width={20} height={20} />
+                </div>
+              </div>
+            </div>
+          ) : (
+            <>
+              <div className="candidate-info-header">
+                <div className="display-flex-justify align-center">
+                  <div className="display-flex" style={{ gap: 10 }}>
+                    <Avatar
+                      src={
+                        candidateInfo?.raw_data.profile_photo
+                          ? candidateInfo?.raw_data.profile_photo
+                          : userImage
+                      }
+                      alt={"Priya Sharma"}
+                      style={{
+                        width: 60,
+                        height: 60,
+                        backgroundColor: "grey",
+                      }}
+                    />
+                    <div className="display-column" style={{ gap: 8 }}>
+                      <p className="font-16-medium color-dark-black">
+                        {candidateInfo?.raw_data.first_name}{" "}
+                        {candidateInfo?.raw_data.last_name}
+                      </p>
+                      <div
+                        className="display-flex align-center"
+                        style={{ gap: 8, flexWrap: "wrap" }}
+                      >
+                        {selectedLabelData?.map((item) => {
+                          return (
+                            <div
+                              key={item?.id}
+                              className="candidate-info-label"
+                            >
+                              <LabelIcon fill={item?.color} /> {item?.name}
+                            </div>
+                          );
+                        })}
+                        <button
+                          className="add-label-btn-candidate-info"
+                          aria-controls={
+                            labelMenuOpen ? "basic-menu" : undefined
+                          }
+                          aria-haspopup="true"
+                          aria-expanded={labelMenuOpen ? "true" : undefined}
+                          onClick={handleLabelMenuClick}
+                        >
+                          <AddIcon /> Label
+                        </button>
+                        <Menu
+                          anchorEl={labelAnchor}
+                          open={labelMenuOpen}
+                          onClose={handleLabelMenuClose}
+                          PaperProps={{
+                            sx: commonStyle.sx,
+                          }}
+                          transformOrigin={{
+                            vertical: "top",
+                            horizontal: "left",
+                          }}
+                          anchorOrigin={{
+                            vertical: "bottom",
+                            horizontal: "left",
+                          }}
+                        >
+                          <div className="display-column">
+                            {labelsData?.map((item) => {
+                              return (
+                                <button
+                                  className="label-item"
+                                  onClick={() => labelHandler(item?._id)}
+                                >
+                                  <LabelIcon fill={item?.color} />
+                                  <span
+                                    className="font-12-regular color-dark-black flex-1"
+                                    style={{ textAlign: "left" }}
+                                  >
+                                    {item?.name}
+                                  </span>
+                                  {item?.selected && (
+                                    <button>
+                                      <CloseIcon width={14} height={14} />
+                                    </button>
+                                  )}
+                                </button>
+                              );
+                            })}
+                            <div className="divider-line" />
+                            <button
+                              className="label-item"
+                              onClick={() =>
+                                navigate("/candidate-customization")
+                              }
+                            >
+                              <LabelIcon fill={"#151B23"} />
+                              <span
+                                className="font-12-regular color-dark-black flex-1"
+                                style={{ textAlign: "left" }}
+                              >
+                                Manage Labels
+                              </span>
+                            </button>
+                          </div>
+                        </Menu>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="display-flex" style={{ gap: 10 }}>
+                    <div className="profile-progress-div-1">56%</div>
+                    <div className="profile-progress-div-2">62</div>
+                  </div>
+                </div>
+                <div className="display-flex-justify align-center">
+                  <div className="candidate-info-tab-main">
+                    {candidateTabs?.map((item) => {
                       return (
-                        <div key={item?.id} className="candidate-info-label">
-                          <LabelIcon fill={item?.color} /> {item?.name}
-                        </div>
+                        <button
+                          key={item?.id}
+                          className={`candidate-info-tab-btn ${
+                            item?.selected && "active-info-tab"
+                          }`}
+                          onClick={() => selectedTabHandler(item?.id)}
+                        >
+                          {item?.name}
+                          {item?.name === "Attachments" &&
+                            attachmentData?.length > 0 && (
+                              <span className="candidate-info-tab-count">
+                                {formatTwoDigits(attachmentData?.length)}
+                              </span>
+                            )}
+                          {item?.name === "Jobs" &&
+                            candidateJobData?.length > 0 && (
+                              <span className="candidate-info-tab-count">
+                                {formatTwoDigits(candidateJobData?.length)}
+                              </span>
+                            )}
+                        </button>
                       );
                     })}
+                  </div>
+                  <div
+                    className="display-flex align-center"
+                    style={{ gap: 18 }}
+                  >
                     <button
-                      className="add-label-btn-candidate-info"
-                      aria-controls={labelMenuOpen ? "basic-menu" : undefined}
-                      aria-haspopup="true"
-                      aria-expanded={labelMenuOpen ? "true" : undefined}
-                      onClick={handleLabelMenuClick}
+                      className="customize-btn"
+                      onClick={() => navigate("/candidate-customization")}
                     >
-                      <AddIcon /> Label
+                      Customize
+                      <SettingIcon />
+                    </button>
+                    <button
+                      aria-controls={open ? "basic-menu" : undefined}
+                      aria-haspopup="true"
+                      aria-expanded={open ? "true" : undefined}
+                      onClick={handleMenuClick}
+                    >
+                      <MoreIcon />
                     </button>
                     <Menu
-                      anchorEl={labelAnchor}
-                      open={labelMenuOpen}
-                      onClose={handleLabelMenuClose}
+                      anchorEl={anchorEl}
+                      open={open}
+                      onClose={handleMenuClose}
                       PaperProps={{
                         sx: commonStyle.sx,
                       }}
                       transformOrigin={{
                         vertical: "top",
-                        horizontal: "left",
+                        horizontal: "right",
                       }}
                       anchorOrigin={{
                         vertical: "bottom",
-                        horizontal: "left",
+                        horizontal: "right",
                       }}
                     >
                       <div className="display-column">
-                        {labelsData?.map((item) => {
-                          return (
-                            <button
-                              className="label-item"
-                              onClick={() => labelHandler(item?._id)}
-                            >
-                              <LabelIcon fill={item?.color} />
-                              <span
-                                className="font-12-regular color-dark-black flex-1"
-                                style={{ textAlign: "left" }}
-                              >
-                                {item?.name}
-                              </span>
-                              {item?.selected && (
-                                <button>
-                                  <CloseIcon width={14} height={14} />
-                                </button>
-                              )}
-                            </button>
-                          );
-                        })}
-                        <div className="divider-line" />
-                        <button
-                          className="label-item"
-                          onClick={() => navigate("/candidate-customization")}
-                        >
-                          <LabelIcon fill={"#151B23"} />
-                          <span
-                            className="font-12-regular color-dark-black flex-1"
-                            style={{ textAlign: "left" }}
-                          >
-                            Manage Labels
-                          </span>
+                        <button className="common-menu-item-btn">
+                          <AddJobIcon /> Add to Jobs
+                        </button>
+                        <button className="common-menu-item-btn">
+                          <AddFolderIcon /> Add to Folder
+                        </button>
+                        <button className="common-menu-item-btn">
+                          <MarkProfileIcon /> Mark as Employee
+                        </button>
+                        <button className="common-menu-item-btn">
+                          <DownloadIcon /> Download Resume
+                        </button>
+                        <button className="common-menu-item-btn">
+                          <ArchiveIcon /> Archive
                         </button>
                       </div>
                     </Menu>
                   </div>
                 </div>
               </div>
-              <div className="display-flex" style={{ gap: 10 }}>
-                <div className="profile-progress-div-1">56%</div>
-                <div className="profile-progress-div-2">62</div>
-              </div>
-            </div>
-            <div className="display-flex-justify align-center">
-              <div className="candidate-info-tab-main">
-                {candidateTabs?.map((item) => {
-                  return (
-                    <button
-                      key={item?.id}
-                      className={`candidate-info-tab-btn ${
-                        item?.selected && "active-info-tab"
-                      }`}
-                      onClick={() => selectedTabHandler(item?.id)}
-                    >
-                      {item?.name}
-                      {item?.name === "Attachments" &&
-                        attachmentData?.length > 0 && (
-                          <span className="candidate-info-tab-count">
-                            {formatTwoDigits(attachmentData?.length)}
-                          </span>
-                        )}
-                      {item?.name === "Jobs" &&
-                        candidateJobData?.length > 0 && (
-                          <span className="candidate-info-tab-count">
-                            {formatTwoDigits(candidateJobData?.length)}
-                          </span>
-                        )}
-                    </button>
-                  );
-                })}
-              </div>
-              <div className="display-flex align-center" style={{ gap: 18 }}>
-                <button
-                  className="customize-btn"
-                  onClick={() => navigate("/candidate-customization")}
-                >
-                  Customize
-                  <SettingIcon />
-                </button>
-                <button
-                  aria-controls={open ? "basic-menu" : undefined}
-                  aria-haspopup="true"
-                  aria-expanded={open ? "true" : undefined}
-                  onClick={handleMenuClick}
-                >
-                  <MoreIcon />
-                </button>
-                <Menu
-                  anchorEl={anchorEl}
-                  open={open}
-                  onClose={handleMenuClose}
-                  PaperProps={{
-                    sx: commonStyle.sx,
-                  }}
-                  transformOrigin={{
-                    vertical: "top",
-                    horizontal: "right",
-                  }}
-                  anchorOrigin={{
-                    vertical: "bottom",
-                    horizontal: "right",
-                  }}
-                >
-                  <div className="display-column">
-                    <button className="common-menu-item-btn">
-                      <AddJobIcon /> Add to Jobs
-                    </button>
-                    <button className="common-menu-item-btn">
-                      <AddFolderIcon /> Add to Folder
-                    </button>
-                    <button className="common-menu-item-btn">
-                      <MarkProfileIcon /> Mark as Employee
-                    </button>
-                    <button className="common-menu-item-btn">
-                      <DownloadIcon /> Download Resume
-                    </button>
-                    <button className="common-menu-item-btn">
-                      <ArchiveIcon /> Archive
-                    </button>
-                  </div>
-                </Menu>
-              </div>
-            </div>
-          </div>
+            </>
+          )}
           {selectedCandidateTab === "Summary" && (
             <div
               className="display-flex"
@@ -726,10 +789,30 @@ const CandidateInfoModal = ({ visible, onClose, candidate }) => {
                           label={value?.label}
                           editable={true}
                           data={value?.value}
+                          isLoading={candidateDetailsLoading}
                         />
                       );
-                    }
-                    {
+                    } else if (key === "employment_history") {
+                      return (
+                        <CandidateInfoExperience
+                          key={key}
+                          label={"Experience Details"}
+                          data={value?.data || []}
+                          editable={true}
+                          isLoading={candidateDetailsLoading}
+                        />
+                      );
+                    } else if (key === "education") {
+                      return (
+                        <CandidateInfoExperience
+                          key={key}
+                          label={"Education Details"}
+                          data={value?.data || []}
+                          editable={true}
+                          isLoading={candidateDetailsLoading}
+                        />
+                      );
+                    } else {
                       return (
                         <ProfessionalDetails
                           details={
@@ -739,6 +822,7 @@ const CandidateInfoModal = ({ visible, onClose, candidate }) => {
                           }
                           label={value?.label}
                           editable={true}
+                          isLoading={candidateDetailsLoading}
                         />
                       );
                     }
@@ -760,53 +844,70 @@ const CandidateInfoModal = ({ visible, onClose, candidate }) => {
                   details={placementDetails}
                   editable={true}
                 />
-                <CandidateInfoExperience
-                  label={"Experience Details"}
-                  data={experienceData}
-                  editable={true}
-                />
-                <CandidateInfoExperience
-                  label={"Education Details"}
-                  data={educationData}
-                  editable={true}
-                />
+
                 <CandidateInfoJobs
                   label={"Jobs"}
                   data={jobData}
                   onAdd={() => setAddToJobsModalVisible(true)}
+                  isLoading={candidateDetailsLoading}
                 />
                 <AddCommonCandidateInfo
                   label={"Folders"}
                   onAdd={() => setAddToFolderModalVisible(true)}
                   data={folders}
+                  isLoading={candidateDetailsLoading}
                 />
-                <CandidateLog />
+                <CandidateLog isLoading={candidateDetailsLoading} />
               </div>
-              <div
-                className="candidate-info-modal-section-2 flex-1 "
-                style={{
-                  maxWidth: 500,
-                  maxHeight: "max-content",
-                  overflowY: "auto",
-                }}
-              >
-                <div className="candidate-info-modal-inner-section-1">
-                  <CompanyDropdown options={comapnyListing} />
-                  <input
-                    type="text"
-                    placeholder="Write a note"
-                    value={writeText}
-                    onChange={(e) => setWriteText(e.target?.value)}
-                    className="common-input"
-                  />
+              {candidateDetailsLoading ? (
+                <div
+                  className="candidate-info-modal-section-2 flex-1 "
+                  style={{
+                    maxWidth: 500,
+                    maxHeight: "max-content",
+                    overflowY: "auto",
+                  }}
+                >
+                  <div className="candidate-info-modal-inner-section-1">
+                    <Skeleton containerClassName="flex-1" height={30} />
+                    <Skeleton containerClassName="flex-1" height={20} />
+                  </div>
+                  <div className="divider-line" />
+                  <div className="candidate-info-modal-inner-section-1">
+                    <Skeleton
+                      containerClassName="flex-1"
+                      height={50}
+                      count={2}
+                    />
+                  </div>
                 </div>
-                <div className="divider-line" />
-                <div className="display-column" style={{ gap: 16 }}>
-                  {feedBackData?.map((item) => {
-                    return renderFeedback(item);
-                  })}
+              ) : (
+                <div
+                  className="candidate-info-modal-section-2 flex-1 "
+                  style={{
+                    maxWidth: 500,
+                    maxHeight: "max-content",
+                    overflowY: "auto",
+                  }}
+                >
+                  <div className="candidate-info-modal-inner-section-1">
+                    <CompanyDropdown options={comapnyListing} />
+                    <input
+                      type="text"
+                      placeholder="Write a note"
+                      value={writeText}
+                      onChange={(e) => setWriteText(e.target?.value)}
+                      className="common-input"
+                    />
+                  </div>
+                  <div className="divider-line" />
+                  <div className="display-column" style={{ gap: 16 }}>
+                    {feedBackData?.map((item) => {
+                      return renderFeedback(item);
+                    })}
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
           )}
 

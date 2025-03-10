@@ -7,11 +7,32 @@ import { ReactComponent as RightIcon } from "../../assets/icons/right-circle.svg
 import { ReactComponent as CancleIcon } from "../../assets/icons/close-circle.svg";
 import HtmlViewComponent from "../common/HtmlViewComponent";
 import { demoDescriptionText } from "../../helpers/config";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 
-const CandidateDescription = ({ label, data, editable }) => {
+const CandidateDescription = ({ label, data, editable, isLoading }) => {
   const [collapse, setCollapse] = useState(true);
   const [description, setDescription] = useState(data);
   const [edit, setEdit] = useState(false);
+
+  if (isLoading) {
+    return (
+      <div className="candidate-details-main-container">
+        <div className="display-flex-justify align-center">
+          <div className="display-flex align-center" style={{ gap: 12 }}>
+            <Skeleton width={200} height={20} />
+          </div>
+        </div>
+        <div className="divider-line" />
+        <div
+          className="display-flex candidate-experince-item"
+          style={{ gap: 8 }}
+        >
+          <Skeleton containerClassName="flex-1" height={100} />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="candidate-details-main-container">

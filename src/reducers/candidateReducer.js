@@ -5,6 +5,9 @@ import {
   CANDIDATE_DETAILS_REQUEST,
   CANDIDATE_DETAILS_SUCCESS,
   CANDIDATE_DETAILS_FAILURE,
+  UPDATE_CANDIDATE_DETAILS_REQUEST,
+  UPDATE_CANDIDATE_DETAILS_SUCCESS,
+  UPDATE_CANDIDATE_DETAILS_FAILURE,
 } from "../actions/actionsType";
 
 const initialState = {
@@ -15,9 +18,9 @@ const initialState = {
   totalCandidateData: 0,
   totalCandidatePages: 1,
   candidateFilters: {},
-  candidateDetails: null, // Added state for single candidate details
-  candidateDetailsLoading: false, // Loading state for candidate details
-  candidateDetailsError: null, // Error state for candidate details
+  candidateInfo: {},
+  candidateDetailsLoading: false,
+  updateCandidateLoading: false,
 };
 const candidateReducer = (state = initialState, action) => {
   switch (action.type) {
@@ -42,21 +45,32 @@ const candidateReducer = (state = initialState, action) => {
       return {
         ...state,
         candidateDetailsLoading: false,
-        candidateDetails: action.payload,
+        candidateInfo: action.candidateInfo,
       };
 
     case CANDIDATE_DETAILS_FAILURE:
       return {
         ...state,
         candidateDetailsLoading: false,
-        candidateDetailsError: action.payload,
       };
 
+    case UPDATE_CANDIDATE_DETAILS_REQUEST:
+      return { ...state, updateCandidateLoading: true };
+
+    case UPDATE_CANDIDATE_DETAILS_SUCCESS:
+      return {
+        ...state,
+        updateCandidateLoading: false,
+      };
+
+    case UPDATE_CANDIDATE_DETAILS_FAILURE:
+      return {
+        ...state,
+        updateCandidateLoading: false,
+      };
     default:
       return state;
   }
 };
-
-
 
 export default candidateReducer;

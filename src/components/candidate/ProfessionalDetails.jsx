@@ -28,8 +28,10 @@ import PhoneInputComponent from "../common/PhoneInputComponent";
 import CommonSearchDropdown from "../common/CommonSearchDropdown";
 import DropdownWithInput from "./StyledDropdownInput";
 import NationalitySearchDropdown from "../AutocompleteDropdowns/NationalitySearchDropDown";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 
-const ProfessionalDetails = ({ details, label }) => {
+const ProfessionalDetails = ({ details, label, isLoading }) => {
   const [fields, setFields] = useState(details);
   const [editField, setEditField] = useState(null);
   const [tempValue, setTempValue] = useState("");
@@ -516,6 +518,25 @@ const ProfessionalDetails = ({ details, label }) => {
       );
     }
   };
+
+  if (isLoading) {
+    return (
+      <div className="candidate-details-main-container">
+        <div className="display-flex-justify align-center">
+          <div className="display-flex align-center" style={{ gap: 12 }}>
+            <Skeleton width={200} height={20} />
+          </div>
+        </div>
+        <div className="divider-line" />
+        <div
+          className="display-flex candidate-experince-item"
+          style={{ gap: 8 }}
+        >
+          <Skeleton containerClassName="flex-1" height={100} />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <>

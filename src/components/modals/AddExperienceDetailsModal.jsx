@@ -8,6 +8,8 @@ import CommonTextInput from "../common/CommonTextInput";
 import LocationSearchDropdown from "../AutocompleteDropdowns/LocationSearchDropDown";
 import Tick from "../../assets/icons/sourcingIcons/tick.svg";
 import MonthYearPicker from "../MonthYearView";
+import { formatDateMonthYear } from "../../helpers/utils";
+import CommonLoader from "../common/CommonLoader";
 
 const checkboxOptions = ["Currently working at this role"];
 
@@ -76,7 +78,7 @@ const AddExperienceDetailsModal = ({
       setSelectedLocations([selectedExperienceData?.location]);
 
       if (selectedExperienceData?.startDate) {
-        const splitDate = selectedExperienceData?.startDate?.split(" ");
+        const splitDate = startDate?.split(" ");
         setStartDate({
           month: splitDate[0] || "",
           year: splitDate[1] || "",
@@ -84,11 +86,16 @@ const AddExperienceDetailsModal = ({
       }
 
       if (selectedExperienceData?.endDate) {
-        const splitDate = selectedExperienceData?.endDate?.split(" ");
-        setEndDate({
-          month: splitDate[0],
-          year: splitDate[1],
-        });
+        const endDate = formatDateMonthYear(selectedExperienceData?.endDate);
+        const splitDate = endDate?.split(" ");
+        setEndDate(
+          selectedExperienceData?.current
+            ? "Present"
+            : {
+                month: splitDate[0],
+                year: splitDate[1],
+              }
+        );
       }
     }
   }, [selectedExperienceData]);
@@ -157,12 +164,15 @@ const AddExperienceDetailsModal = ({
             isCheckedDisable={checked}
           />
           {edit && (
-            <button
-              className="font-12-regular color-blue"
-              style={{ alignSelf: "flex-start" }}
-            >
-              Remove Experience
-            </button>
+            <div className="display-flex align-center" style={{ gap: 10 }}>
+              <button
+                className="font-12-regular color-blue"
+                style={{ alignSelf: "flex-start" }}
+              >
+                Remove Experience
+              </button>
+              <CommonLoader className={"loader-blue"} />
+            </div>
           )}
         </div>
         <div

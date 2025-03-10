@@ -865,3 +865,10 @@ textarea,
 .justify-center {
   justify-content: center;
 }
+
+.w-h-60 {
+  width: 60px;
+  height: 60px;
+  border-radius: 100px;
+  overflow: hidden;
+}
