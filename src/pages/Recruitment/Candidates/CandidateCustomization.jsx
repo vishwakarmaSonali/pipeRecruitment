@@ -891,7 +891,7 @@ const CandidateCustomization = () => {
                             fill={
                               editingIndex === index
                                 ? tempLabel?.color
-                                : label.color
+                                : label?.color
                             }
                           />
                           {editingIndex === index ? (
@@ -987,7 +987,7 @@ const CandidateCustomization = () => {
                           {colorPickerVisible && (
                             <div style={{ alignSelf: "center" }}>
                               <HexColorPicker
-                                color={tempLabel.color}
+                                color={tempLabel?.color}
                                 onChange={(color) =>
                                   setTempLabel({ ...tempLabel, color })
                                 }

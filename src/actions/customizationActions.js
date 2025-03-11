@@ -115,7 +115,7 @@ export const addLabel = (data) => {
     dispatch({ type: ADD_LABEL_REQUEST });
     try {
       const response = await axiosInstance.post(getLabelEndpoint, data);
-      dispatch({ type: ADD_LABEL_SUCCESS, data: response.data });
+      dispatch({ type: ADD_LABEL_SUCCESS, data: response.data?.lable });
       return response.data;
     } catch (error) {
       dispatch({ type: ADD_LABEL_FAILURE });
@@ -143,7 +143,7 @@ export const addDomain = (data) => {
     dispatch({ type: ADD_DOMAIN_REQUEST });
     try {
       const response = await axiosInstance.post(getDomainEndpoint, data);
-      dispatch({ type: ADD_DOMAIN_SUCCESS, data: response.data });
+      dispatch({ type: ADD_DOMAIN_SUCCESS, data: response.data?.domain });
       return response.data;
     } catch (error) {
       dispatch({ type: ADD_DOMAIN_FAILURE });

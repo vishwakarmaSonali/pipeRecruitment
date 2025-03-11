@@ -144,10 +144,11 @@ const customizationReducer = (state = initialState, action) => {
         addLabelLoading: true,
       };
     case ADD_LABEL_SUCCESS:
+      console.log(">>>>>>>>>>>>>...action?.data", action?.data);
       return {
         ...state,
         addLabelLoading: false,
-        labelData: [...state.labelData, action?.data?.resp],
+        labelData: [...state.labelData, action?.data],
       };
     case ADD_LABEL_FAILURE:
       return {
@@ -181,7 +182,7 @@ const customizationReducer = (state = initialState, action) => {
       return {
         ...state,
         addDomainLoading: false,
-        domainData: [...state.domainData, action?.data?.resp],
+        domainData: [...state.domainData, action?.data],
       };
     case ADD_DOMAIN_FAILURE:
       return {

@@ -52,7 +52,7 @@ const CandidateInfoExperience = ({ key, label, data, editable, isLoading }) => {
         education: [...updatedData],
       };
 
-      dispatch(updateCandidateDetails(token, candidateId, httpBody)).then(
+      dispatch(updateCandidateDetails(candidateId, httpBody)).then(
         (response) => {
           if (response?.success) {
             notifySuccess(response?.message);
@@ -77,7 +77,7 @@ const CandidateInfoExperience = ({ key, label, data, editable, isLoading }) => {
         education: updatedData,
       };
 
-      dispatch(updateCandidateDetails(token, candidateId, httpBody)).then(
+      dispatch(updateCandidateDetails(candidateId, httpBody)).then(
         (response) => {
           if (response?.success) {
             setUpdateLoading(false);
@@ -105,7 +105,7 @@ const CandidateInfoExperience = ({ key, label, data, editable, isLoading }) => {
         education: [...updatedData],
       };
 
-      dispatch(updateCandidateDetails(token, candidateId, httpBody)).then(
+      dispatch(updateCandidateDetails(candidateId, httpBody)).then(
         (response) => {
           if (response?.success) {
             notifySuccess(response?.message);
@@ -141,7 +141,7 @@ const CandidateInfoExperience = ({ key, label, data, editable, isLoading }) => {
         employment_history: [...updatedData],
       };
 
-      dispatch(updateCandidateDetails(token, candidateId, httpBody)).then(
+      dispatch(updateCandidateDetails(candidateId, httpBody)).then(
         (response) => {
           if (response?.success) {
             notifySuccess(response?.message);
@@ -166,7 +166,7 @@ const CandidateInfoExperience = ({ key, label, data, editable, isLoading }) => {
         employment_history: updatedData,
       };
 
-      dispatch(updateCandidateDetails(token, candidateId, httpBody)).then(
+      dispatch(updateCandidateDetails(candidateId, httpBody)).then(
         (response) => {
           if (response?.success) {
             setUpdateLoading(false);
@@ -194,7 +194,7 @@ const CandidateInfoExperience = ({ key, label, data, editable, isLoading }) => {
         employment_history: [...updatedData],
       };
 
-      dispatch(updateCandidateDetails(token, candidateId, httpBody)).then(
+      dispatch(updateCandidateDetails(candidateId, httpBody)).then(
         (response) => {
           if (response?.success) {
             notifySuccess(response?.message);

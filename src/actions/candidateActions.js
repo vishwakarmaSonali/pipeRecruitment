@@ -1,10 +1,11 @@
-import axios from "axios";
+import axiosInstance from "./axiosInstance";
 import {
   BASE_URL,
   candidateSerachByIdApiEndPOint,
   createCandidateManuallyEndpoint,
   fetchCandidatesDetailsEndpoint,
   fetchCandidatesEndpoint,
+  updateCandidateLabelApiEndpoint,
 } from "../helpers/apiConfig";
 import {
   CREATE_CANDIDATE_REQUEST,
@@ -23,129 +24,69 @@ import {
   UPDATE_CANDIDATE_LABEL_SUCCESS,
   UPDATE_CANDIDATE_LABEL_FAILURE,
 } from "./actionsType";
-import { useNavigate } from "react-router-dom";
-import { logoutUser } from "./authActions";
 
-// ✅ Handle API failure (Unauthorized)
-const handleApiFailure = (error, dispatch) => {
-  console.error("❌ API Error:", error.response?.data || error.message);
+export const createCandidates = (params) => async (dispatch) => {
+  dispatch({ type: CREATE_CANDIDATE_REQUEST });
 
-  if (error.response?.status === false || error.response?.status === false) {
-    alert("Session expired. Please log in again.");
-    dispatch(logoutUser()); // Remove token from Redux
-    window.location.href = "/login"; // Redirect to login page
+  try {
+    console.log("🚀 Sending API Request to:", createCandidateManuallyEndpoint);
+    console.log("📩 Payload:", params?.candidateData);
+
+    const response = await axiosInstance.post(
+      createCandidateManuallyEndpoint,
+      params
+    );
+
+    console.log("✅ API Response:", response.data);
+
+    dispatch({
+      type: CREATE_CANDIDATE_SUCCESS,
+      payload: response.data,
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error("❌ API Error:", error.response?.data || error.message);
+
+    dispatch({ type: CREATE_CANDIDATE_FAILURE });
+
+    return (
+      error.response?.data?.message ||
+      "An error occurred while creating the candidate."
+    );
   }
 };
-export const createCandidates = (token, params,refreshToken) => {
-  return async (dispatch) => {
-    dispatch({ type: CREATE_CANDIDATE_REQUEST });
 
-    try {
-      // ✅ API Headers
-      const config = {
-        headers: {
-          "Content-Type": "application/json",
-          ...(token && { Authorization: `Bearer ${token}` }), // ✅ Add token if available
-          "x-refresh-token": refreshToken || "",
-        },
-      };
+export const fetchCandidatesList = (filters, page) => async (dispatch) => {
+  dispatch({ type: FETCH_CANDIDATES_REQUEST });
 
-      console.log(
-        "🚀 Sending API Request to:",
-        `${BASE_URL}${createCandidateManuallyEndpoint}`
-      );
-      console.log("📩 Payload:", params?.candidateData);
-
-      // ✅ Correct Axios POST Request
-      const response = await axios.post(
-        `${BASE_URL}${createCandidateManuallyEndpoint}`,
-        params,
-        config
-      );
-
-      console.log("✅ API Response:", response.data);
-
-      dispatch({
-        type: CREATE_CANDIDATE_SUCCESS,
-        payload: response.data, // ✅ Use proper response data
-      });
-
-      return response.data;
-    } catch (error) {
-      console.error("❌ API Error:", error.response?.data || error.message);
-      // handleApiFailure(error, dispatch);
-      dispatch({ type: CREATE_CANDIDATE_FAILURE });
-
-      // ✅ Return a proper error message
-      return (
-        error.response?.data?.message ||
-        "An error occurred while creating the candidate."
-      );
-    }
-  };
-};
-export const fetchCandidatesList = (token, filters, page,refreshToken) => {
-  return async (dispatch) => {
-    dispatch({ type: FETCH_CANDIDATES_REQUEST });
-console.log("calleddddddd in fetchcandidate list");
-
-    try {
-      const config = {
-        headers: {
-          "Content-Type": "application/json",
-          ...(token && { Authorization: `Bearer ${token}` }),
-          "x-refresh-token": refreshToken || "",
-        },
-        params: {
-          ...filters,
-          page,
-        },
-      };
-
-      const response = await axios.get(
-        `${BASE_URL}${fetchCandidatesEndpoint}`,
-        config
-      );
-
-      dispatch({
-        type: FETCH_CANDIDATES_SUCCESS,
-        candidateListData: response.data?.results,
-        page,
-        filters,
-        totalPage: response.data?.totalPages,
-        totalData: response.data?.total,
-      });
-
-      return response?.data;
-    } catch (error) {
-      // handleApiFailure(error, dispatch);
-      if (error?.response?.data) {
-        dispatch({
-          type: FETCH_CANDIDATES_FAILURE,
-        });
-        return error?.response?.data?.message;
-      } else {
-        dispatch({
-          type: FETCH_CANDIDATES_FAILURE,
-        });
-        return error.message;
-      }
-    }
-  };
-};
-
-export const fetchCandidateDetails = (id, token) => async (dispatch) => {
   try {
-    dispatch({ type: CANDIDATE_DETAILS_REQUEST });
-    const config = {
-      headers: {
-        "Content-Type": "application/json",
-        ...(token && { Authorization: `Bearer ${token}` }),
-      },
-    };
-    const response = await axios.get(
-      `${BASE_URL}${fetchCandidatesDetailsEndpoint}/${id}`,
-      config
+    const response = await axiosInstance.get(fetchCandidatesEndpoint, {
+      params: { ...filters, page },
+    });
+
+    dispatch({
+      type: FETCH_CANDIDATES_SUCCESS,
+      candidateListData: response.data?.results,
+      page,
+      filters,
+      totalPage: response.data?.totalPages,
+      totalData: response.data?.total,
+    });
+
+    return response?.data;
+  } catch (error) {
+    dispatch({ type: FETCH_CANDIDATES_FAILURE });
+    return error?.response?.data?.message || error.message;
+  }
+};
+
+export const fetchCandidateDetails = (id) => async (dispatch) => {
+  dispatch({ type: CANDIDATE_DETAILS_REQUEST });
+
+  try {
+    const response = await axiosInstance.get(
+      `${fetchCandidatesDetailsEndpoint}/${id}`
     );
 
     dispatch({
@@ -153,91 +94,53 @@ export const fetchCandidateDetails = (id, token) => async (dispatch) => {
       candidateInfo: response.data?.candidate,
       candidateId: id,
     });
+
+    return response.data;
   } catch (error) {
-    // handleApiFailure(error, dispatch);
-    if (error?.response?.data) {
-      dispatch({
-        type: CANDIDATE_DETAILS_FAILURE,
-      });
-      return error?.response?.data?.message;
-    } else {
-      dispatch({
-        type: CANDIDATE_DETAILS_FAILURE,
-      });
-      return error.message;
-    }
+    dispatch({ type: CANDIDATE_DETAILS_FAILURE });
+    return error?.response?.data?.message || error.message;
   }
 };
 
-export const updateCandidateDetails = (token, id, data) => {
-  return async (dispatch) => {
-    dispatch({ type: UPDATE_CANDIDATE_DETAILS_REQUEST });
-    try {
-      const config = {
-        headers: {
-          "Content-Type": "application/json",
-          ...(token && { Authorization: `Bearer ${token}` }),
-        },
-      };
-      const response = await axios.put(
-        `${BASE_URL}${fetchCandidatesDetailsEndpoint}/${id}`,
-        JSON.stringify(data),
-        config
-      );
-      dispatch({
-        type: UPDATE_CANDIDATE_DETAILS_SUCCESS,
-        data: response?.data,
-        id: id,
-      });
-      return response?.data;
-    } catch (error) {
-      if (error?.response?.data) {
-        dispatch({
-          type: UPDATE_CANDIDATE_DETAILS_FAILURE,
-        });
-        return error?.response?.data?.message;
-      } else {
-        dispatch({
-          type: UPDATE_CANDIDATE_DETAILS_FAILURE,
-        });
-        return error.message;
-      }
-    }
-  };
+export const updateCandidateDetails = (id, data) => async (dispatch) => {
+  dispatch({ type: UPDATE_CANDIDATE_DETAILS_REQUEST });
+
+  try {
+    const response = await axiosInstance.put(
+      `${fetchCandidatesDetailsEndpoint}/${id}`,
+      JSON.stringify(data)
+    );
+
+    dispatch({
+      type: UPDATE_CANDIDATE_DETAILS_SUCCESS,
+      data: response?.data,
+      id: id,
+    });
+
+    return response?.data;
+  } catch (error) {
+    dispatch({ type: UPDATE_CANDIDATE_DETAILS_FAILURE });
+    return error?.response?.data?.message || error.message;
+  }
 };
 
-export const updateCandidateLabel = (token, data) => {
-  return async (dispatch) => {
-    dispatch({ type: UPDATE_CANDIDATE_LABEL_REQUEST });
-    try {
-      const config = {
-        headers: {
-          "Content-Type": "application/json",
-          ...(token && { Authorization: `Bearer ${token}` }),
-        },
-      };
-      const response = await axios.put(
-        `${BASE_URL}${fetchCandidatesDetailsEndpoint}`,
-        JSON.stringify(data),
-        config
-      );
-      dispatch({
-        type: UPDATE_CANDIDATE_LABEL_SUCCESS,
-        data: response?.data,
-      });
-      return response?.data;
-    } catch (error) {
-      if (error?.response?.data) {
-        dispatch({
-          type: UPDATE_CANDIDATE_LABEL_FAILURE,
-        });
-        return error?.response?.data?.message;
-      } else {
-        dispatch({
-          type: UPDATE_CANDIDATE_LABEL_FAILURE,
-        });
-        return error.message;
-      }
-    }
-  };
+export const updateCandidateLabel = (data) => async (dispatch) => {
+  dispatch({ type: UPDATE_CANDIDATE_LABEL_REQUEST });
+
+  try {
+    const response = await axiosInstance.put(
+      updateCandidateLabelApiEndpoint,
+      JSON.stringify(data)
+    );
+
+    dispatch({
+      type: UPDATE_CANDIDATE_LABEL_SUCCESS,
+      data: response?.data,
+    });
+
+    return response?.data;
+  } catch (error) {
+    dispatch({ type: UPDATE_CANDIDATE_LABEL_FAILURE });
+    return error?.response?.data?.message || error.message;
+  }
 };

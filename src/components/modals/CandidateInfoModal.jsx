@@ -349,7 +349,7 @@ const CandidateInfoModal = ({ visible, onClose, candidateId }) => {
         labels: [...selectedLabelId],
       },
     };
-    dispatch(updateCandidateLabel(token, httpBody)).then((response) => {
+    dispatch(updateCandidateLabel(httpBody)).then((response) => {
       if (response?.success) {
         setSelectedLabelData([...filterLableData]);
         setLabelsData(updatedData);
@@ -445,7 +445,7 @@ const CandidateInfoModal = ({ visible, onClose, candidateId }) => {
   }, [candidateInfo]);
 
   useEffect(() => {
-    dispatch(fetchCandidateDetails(candidateId, token));
+    dispatch(fetchCandidateDetails(candidateId));
   }, [candidateId]);
 
   const handleBackdropClick = () => {

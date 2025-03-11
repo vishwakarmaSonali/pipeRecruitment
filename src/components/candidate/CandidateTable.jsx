@@ -169,43 +169,41 @@ const CandidateTable = ({
                                 );
                               }}
                             >
-                              {selectedCandidates.includes(candidate._id) && (
+                              {selectedCandidates.includes(candidate?._id) && (
                                 <Tick />
                               )}
                             </div>
 
                             <Avatar
                               src={
-                                candidate.profile_photo &&
-                                Object.keys(candidate.profile_photo).length > 0
-                                  ? candidate.profile_photo
+                                candidate?.profile_photo &&
+                                Object.keys(candidate?.profile_photo).length > 0
+                                  ? candidate?.profile_photo
                                   : ""
                               }
-                              alt={candidate.first_name}
+                              alt={candidate?.candidate_name}
                               style={{
                                 width: 32,
                                 height: 32,
                                 backgroundColor:
-                                  candidate.profile_photo &&
-                                  Object.keys(candidate.profile_photo).length > 0
+                                  candidate?.profile_photo &&
+                                  Object.keys(candidate?.profile_photo)
+                                    ?.length > 0
                                     ? "transparent"
                                     : getRandomColor(),
                                 fontSize: 14,
                                 textAlign: "center",
                               }}
                             >
-                              {!candidate.profile_photo ||
-                              Object.keys(candidate.profile_photo).length === 0
-                                ? getInitials(
-                                    candidate.first_name +
-                                      " " +
-                                      candidate.last_name
-                                  )
+                              {!candidate?.profile_photo ||
+                              Object.keys(candidate?.profile_photo)?.length ===
+                                0
+                                ? getInitials(candidate?.candidate_name)
                                 : ""}
                             </Avatar>
 
                             <span className="font-14-regular truncate-text">
-                              {candidate.first_name} {candidate.last_name}
+                              {candidate?.candidate_name}
                             </span>
 
                             {!showDeleteIcon ? (
@@ -257,8 +255,10 @@ const CandidateTable = ({
                     }
 
                     return (
-                      <TableCell key={index} className="font-14-regular">
-                        {value}
+                      <TableCell key={index}>
+                        <span className="font-14-regular truncate-text">
+                          {value}
+                        </span>
                       </TableCell>
                     );
                   })}

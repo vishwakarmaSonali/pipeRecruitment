@@ -32,7 +32,7 @@ const initialState = {
 const candidateReducer = (state = initialState, action) => {
   switch (action.type) {
     case FETCH_CANDIDATES_REQUEST:
-      return { ...state, fetchMoreLoading: true };
+      return { ...state, fetchMoreLoading: true, candidatesListingData: [] };
 
     case FETCH_CANDIDATES_SUCCESS:
       return {
@@ -45,7 +45,7 @@ const candidateReducer = (state = initialState, action) => {
       };
 
     case FETCH_CANDIDATES_FAILURE:
-      return { ...state, fetchMoreLoading: false };
+      return { ...state, fetchMoreLoading: false, candidatesListingData: [] };
 
     // ✅ Handle Fetching a Single Candidate's Details
     case CANDIDATE_DETAILS_REQUEST:

@@ -65,10 +65,10 @@ const CreateCandidateForm = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const today = new Date();
-  const { token,refreshToken} = useSelector((state) => state?.auth);
-    const { data, loading, error } = useSelector((state) => state.domains);
+  const { token, refreshToken } = useSelector((state) => state?.auth);
+  const { data, loading, error } = useSelector((state) => state.domains);
   // Ensure `data` is available and formatted properly
-  console.log("data>>>>>CreateCandidateForm>>>>token",  );
+  console.log("data>>>>>CreateCandidateForm>>>>token");
 
   const domainOptions =
     data?.map((item) => ({
@@ -140,10 +140,10 @@ const CreateCandidateForm = () => {
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      console.log(file,"<<<<<<<file");
-      
+      console.log(file, "<<<<<<<file");
+
       setProfileImage(file); // Store file for API request
-  
+
       // Create a preview URL for the selected image
       const reader = new FileReader();
       reader.onloadend = () => {
@@ -152,7 +152,7 @@ const CreateCandidateForm = () => {
       reader.readAsDataURL(file);
     }
   };
-  
+
   const handleLastUpdatedDateSelect = (date) => {
     setLastUpdatedDate(date);
     setShowUpdatedCalendar(false);
@@ -207,15 +207,15 @@ const CreateCandidateForm = () => {
       alert("First Name, Last Name, and Email Fields are required!");
       return;
     }
-  
+
     console.log("education:", education);
-  
+
     // Parse selected location
     const { city, state, country } =
       selectedLocations.length > 0
         ? parseLocation(selectedLocations[0])
         : { city: "", state: "", country: "" };
-  
+
     // Extract language details
     const formattedLanguages = languages?.length
       ? languages.map((lang) => ({
@@ -223,7 +223,7 @@ const CreateCandidateForm = () => {
           proficiency: lang.level || "Basic",
         }))
       : undefined;
-  
+
     // Extract education details with YYYY-MM-DD format
     const formattedEducation = education?.length
       ? education.map((edu) => ({
@@ -232,15 +232,21 @@ const CreateCandidateForm = () => {
           field_of_study: edu?.major || "N/A",
           start_date:
             edu?.startDate?.year && edu?.startDate?.month
-              ? format(new Date(`${edu.startDate.year}-${edu.startDate.month}-01`), "yyyy-MM-dd")
+              ? format(
+                  new Date(`${edu.startDate.year}-${edu.startDate.month}-01`),
+                  "yyyy-MM-dd"
+                )
               : undefined,
           end_date:
             edu?.endDate?.year && edu?.endDate?.month
-              ? format(new Date(`${edu.endDate.year}-${edu.endDate.month}-01`), "yyyy-MM-dd")
+              ? format(
+                  new Date(`${edu.endDate.year}-${edu.endDate.month}-01`),
+                  "yyyy-MM-dd"
+                )
               : undefined,
         }))
       : undefined;
-  
+
     // Extract employment history with YYYY-MM-DD format
     const formattedEmploymentHistory = experience?.length
       ? experience.map((exp) => ({
@@ -257,7 +263,7 @@ const CreateCandidateForm = () => {
           title: exp.title || "N/A",
         }))
       : undefined;
-  
+
     // Extract social links
     const formattedSocialLinks = socialLinks?.length
       ? socialLinks.map((link) => ({
@@ -265,8 +271,8 @@ const CreateCandidateForm = () => {
           url: link.url || "",
         }))
       : undefined;
-  console.log("profilePhotoprofilePhotoprofilePhoto",profilePhoto);
-  
+    console.log("profilePhotoprofilePhotoprofilePhoto", profilePhoto);
+
     // Build candidate data with **conditional inclusion**
     const candidateData = {
       ...(profileImage && { profile_photo: profileImage }), //return {}
@@ -274,13 +280,19 @@ const CreateCandidateForm = () => {
       ...(firstName && { first_name: firstName }),
       ...(lastName && { last_name: lastName }),
       ...(selectedGender && { gender: selectedGender }),
-      ...(dateofbirth && { date_of_birth: format(new Date(dateofbirth), "yyyy-MM-dd") }),
+      ...(dateofbirth && {
+        date_of_birth: format(new Date(dateofbirth), "yyyy-MM-dd"),
+      }),
       ...(city && { city }),
       ...(state && { state }),
       ...(country && { country }),
       ...(selectedCountry?.name && { country: selectedCountry?.name }),
-      ...(selectedNationality.length > 0 && { nationality: selectedNationality[0] }),
-      ...(selectedCountry?.dialCode && { country_code: selectedCountry?.dialCode }),
+      ...(selectedNationality.length > 0 && {
+        nationality: selectedNationality[0],
+      }),
+      ...(selectedCountry?.dialCode && {
+        country_code: selectedCountry?.dialCode,
+      }),
       ...(phoneNumber && { phone: phoneNumber }),
       ...(email && { email }),
       ...(description && { description }),
@@ -297,33 +309,40 @@ const CreateCandidateForm = () => {
       ...(currentEmployer && { company: currentEmployer }),
       ...(frequency && { salary_frequency: frequency }),
       ...(currentSalary && { current_salary: parseInt(currentSalary, 10) }),
-      ...(currentSalaryCurrency?.code && { current_salary_currency: currentSalaryCurrency.code }),
+      ...(currentSalaryCurrency?.code && {
+        current_salary_currency: currentSalaryCurrency.code,
+      }),
       ...(expectedSalary && { expected_salary: parseInt(expectedSalary, 10) }),
-      ...(expectedSalaryCurrency?.code && { expected_salary_currency: expectedSalaryCurrency.code }),
+      ...(expectedSalaryCurrency?.code && {
+        expected_salary_currency: expectedSalaryCurrency.code,
+      }),
       ...(formattedLanguages && { languages: formattedLanguages }),
       ...(formattedSocialLinks && { social_links: formattedSocialLinks }),
-      ...(formattedEmploymentHistory && { employment_history: formattedEmploymentHistory }),
+      ...(formattedEmploymentHistory && {
+        employment_history: formattedEmploymentHistory,
+      }),
       ...(formattedEducation && { education: formattedEducation }),
     };
-  
+
     console.log("Final Candidate Data >>>", candidateData);
-  
+
     try {
-      const response = await dispatch(createCandidates(token, candidateData,refreshToken));
+      const response = await dispatch(createCandidates(candidateData));
       console.log("API Response >>>", response);
-  
+
       if (response?.success || response?.id) {
         alert("Candidate created successfully!");
         navigate("/candidates");
       } else {
-        alert(response?.message || "Failed to create candidate. Please try again.");
+        alert(
+          response?.message || "Failed to create candidate. Please try again."
+        );
       }
     } catch (error) {
       console.error("❌ API Error:", error);
       alert("Something went wrong. Please try again.");
     }
   };
-  
 
   const parseLocation = (locationString) => {
     if (!locationString) return { city: "", state: "", country: "" };

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef,useCallback } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import "./Candidates.css";
 import { useSelector } from "react-redux"; // Import Redux selector
 
@@ -47,15 +47,15 @@ import {
 } from "../../../actions/candidateActions";
 import CandidateInfoModal from "../../../components/modals/CandidateInfoModal";
 import { ReactComponent as Tick } from "../../../assets/icons/sourcingIcons/tick.svg";
+import { fetchAllLabels } from "../../../actions/customizationActions";
 
 const Candidates = ({ isDrawerOpen }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const location = useLocation(); // Get current route location
-console.log(location,"locationnnnnn");
+  console.log(location, "locationnnnnn");
 
-  const { token,refreshToken} = useSelector((state) => state.auth);
-
+  const { token, refreshToken } = useSelector((state) => state.auth);
 
   const {
     candidatesListingData,
@@ -80,10 +80,6 @@ console.log(location,"locationnnnnn");
   const [addToJobsDrawerOpen, setAddToJobsDrawerOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [resultsPerPage, setResultsPerPage] = useState(20);
-  useEffect(() => {
-    dispatch(fetchCandidatesList(token, candidateFilters, currentPage, refreshToken));
-  }, [dispatch, location.pathname]); // Runs when the route changes
-
 
   const [changeOwnershipDrawerOpen, setChangeOwnershipDrawerOpen] =
     useState(false);
@@ -94,10 +90,6 @@ console.log(location,"locationnnnnn");
 
   const toggleCandidateOverviewDrawer = (open) => {
     setCandidateOverviewFilterDrawerOpen(open);
-  };
-
-  const handlePageChange = (page) => {
-    setCurrentPage(page);
   };
 
   const [filters, setFilters] = useState({
@@ -418,48 +410,61 @@ console.log(location,"locationnnnnn");
   const handleCloseBulkAction = () => {
     setAnchorBulkActionEl(null);
   };
-// Extract headers dynamically but filter out unwanted fields
-// Extract headers dynamically but filter out unwanted fields
-const tableHeaders = candidateList.length
-  ? Object.keys(candidateList[0]).filter(
-      (key) => key !== "_id" && key !== "profile_photo" // ❌ Exclude these fields
-    )
-  : [];
+  // Extract headers dynamically but filter out unwanted fields
+  // Extract headers dynamically but filter out unwanted fields
+  const tableHeaders = candidateList.length
+    ? Object.keys(candidateList[0]).filter(
+        (key) => key !== "_id" && key !== "profile_photo" // ❌ Exclude these fields
+      )
+    : [];
 
-// Ensure First & Last Name are always present
-const headers = ["Candidate Name", ...tableHeaders];
+  // Ensure First & Last Name are always present
+  const headers = [...tableHeaders];
 
   useEffect(() => {
-    if (candidatesListingData?.results) {
-      const formattedCandidates = candidatesListingData?.results.map(
-        (candidate) => ({
-          // id: candidate._id,
-          candidate_name:
-            `${candidate.first_name || ""} ${
-              candidate.last_name || ""
-            }`.trim() || "N/A",
-          candidate_first_name: candidate.first_name || "N/A",
-          candidate_last_name: candidate.last_name || "N/A",
-          reference_id: candidate._id || "N/A",
-          location: candidate.location || "N/A",
-          gender: candidate.gender || "N/A",
-          diploma: candidate.education?.[0]?.degree || "N/A",
-          university: candidate.education?.[0]?.school || "N/A",
-          current_company: candidate.employment_history?.[0]?.company || "N/A",
-          current_position:
-            candidate.employment_history?.[0]?.position || "N/A",
-          email: candidate.email || "N/A",
-          phone: candidate.phone || "N/A",
-          start_date: candidate.employment_history?.[0]?.start_date || "N/A",
-          // skills: candidate.skills?.map((skill) => skill.name).join(", ") || "N/A",
-          photo_url: candidate.photo_url || "",
-        })
-      );
+    if (candidatesListingData?.length > 0) {
+      const formattedCandidates = candidatesListingData?.map((candidate) => ({
+        _id: candidate?._id,
+        candidate_name:
+          `${candidate.first_name || ""} ${candidate.last_name || ""}`.trim() ||
+          "N/A",
+        // candidate_first_name: candidate.first_name || "N/A",
+        // candidate_last_name: candidate.last_name || "N/A",
+        reference_id: candidate._id || "N/A",
+        location: candidate.location || "N/A",
+        gender: candidate.gender || "N/A",
+        diploma: candidate.education?.[0]?.degree || "N/A",
+        university: candidate.education?.[0]?.school || "N/A",
+        current_company: candidate.employment_history?.[0]?.company || "N/A",
+        current_position: candidate.employment_history?.[0]?.position || "N/A",
+        email: candidate.email || "N/A",
+        phone: candidate.phone || "N/A",
+        // start_date: candidate.employment_history?.[0]?.start_date || "N/A",
+        // skills: candidate.skills?.map((skill) => skill.name).join(", ") || "N/A",
+        // photo_url: candidate.photo_url || "",
+      }));
 
       console.log("Transformed Candidate Data: ", formattedCandidates);
       setCandidateList(formattedCandidates);
     }
   }, [candidatesListingData]);
+
+  const handlePageChange = (page) => {
+    setSelectedCandidates([]);
+    setCurrentPage(page);
+    dispatch(fetchCandidatesList(candidateFilters, page));
+  };
+
+  useEffect(() => {
+    setCurrentPage(1);
+    let params = {};
+    params.limit = resultsPerPage;
+    dispatch(fetchCandidatesList(params, 1));
+  }, [dispatch, resultsPerPage]);
+
+  useEffect(() => {
+    dispatch(fetchAllLabels());
+  }, [dispatch]);
 
   const handleCandidateClick = (id) => {
     setSelectedCandidateId(id);
