@@ -12,7 +12,7 @@ import { logoutUser } from "./authActions";
 
 // ✅ Handle API Failure (Logout if session expired)
 const handleApiFailure = (error, dispatch) => {
-  console.error("❌ API Error:", error.response?.data );
+  console.error("❌ API Error:", error.response?.data);
 
   if (error.response?.data?.success == false) {
     alert(error.response?.data?.message);
@@ -22,7 +22,7 @@ const handleApiFailure = (error, dispatch) => {
 };
 
 // ✅ Fetch Candidates
-export const fetchCandidates = (token, filters, page,refreshToken) => {
+export const fetchCandidates = (token, filters, page, refreshToken) => {
   return async (dispatch) => {
     dispatch({ type: SEARCH_CANDIDATE_REQUEST });
 
@@ -41,7 +41,6 @@ export const fetchCandidates = (token, filters, page,refreshToken) => {
       const config = {
         headers: {
           Authorization: `Bearer ${authToken}`,
-         
         },
         params: {
           ...filters,
@@ -49,7 +48,10 @@ export const fetchCandidates = (token, filters, page,refreshToken) => {
         },
       };
 
-      const response = await axios.get(`${BASE_URL}${candidateSearchApiEndPoint}`, config);
+      const response = await axios.get(
+        `${BASE_URL}${candidateSearchApiEndPoint}`,
+        config
+      );
 
       console.log("✅ API Response:in fetch candidates", response.data);
 
@@ -65,68 +67,69 @@ export const fetchCandidates = (token, filters, page,refreshToken) => {
       return response.data;
     } catch (error) {
       dispatch({ type: SEARCH_CANDIDATE_FAILURE });
-      handleApiFailure(error, dispatch);
+      // handleApiFailure(error, dispatch);
       return error?.response?.data?.message || error.message;
     }
   };
 };
 
 // ✅ Add Source to Candidates
-export const addSourceToCandidates = (selectedCandidates,token,refreshToken) => async (dispatch, getState) => {
-  dispatch({ type: ADD_SOURCE_TO_CANDIDATE_REQUEST });
+export const addSourceToCandidates =
+  (selectedCandidates, token, refreshToken) => async (dispatch, getState) => {
+    dispatch({ type: ADD_SOURCE_TO_CANDIDATE_REQUEST });
 
-  // const { token, refreshToken } = getState().auth; // Get token from Redux
+    // const { token, refreshToken } = getState().auth; // Get token from Redux
 
-  if (!token) {
-    console.error("Token is missing. Redirecting to login...");
-    dispatch(logoutUser());
-    window.location.href = "/login";
-    return;
-  }
+    if (!token) {
+      console.error("Token is missing. Redirecting to login...");
+      dispatch(logoutUser());
+      window.location.href = "/login";
+      return;
+    }
 
-  if (!selectedCandidates.length) {
-    console.warn("No candidates selected.");
-    return;
-  }
+    if (!selectedCandidates.length) {
+      console.warn("No candidates selected.");
+      return;
+    }
 
-  const requestData = {
-    candidateIds: selectedCandidates.map((id) => id),
-  };
+    const requestData = {
+      candidateIds: selectedCandidates.map((id) => id),
+    };
 
-  try {
-    const response = await axios.post(
-      "http://3.110.81.44/api/candidates/add-to-candidate",
-      requestData,
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-          "x-refresh-token": refreshToken || "",
-        },
+    try {
+      const response = await axios.post(
+        "http://3.110.81.44/api/candidates/add-to-candidate",
+        requestData,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+            "x-refresh-token": refreshToken || "",
+          },
+        }
+      );
+
+      console.log("✅ API Response:", response.data);
+
+      if (response.data.success) {
+        dispatch({
+          type: ADD_SOURCE_TO_CANDIDATE_SUCCESS,
+          payload: response.data.message,
+        });
+        alert("Candidates added successfully!");
+      } else {
+        dispatch({
+          type: ADD_SOURCE_TO_CANDIDATE_FAILURE,
+          payload: response.data.message || "Failed to add candidates.",
+        });
+        alert(response.data.message || "Failed to add candidates.");
       }
-    );
-
-    console.log("✅ API Response:", response.data);
-
-    if (response.data.success) {
-      dispatch({
-        type: ADD_SOURCE_TO_CANDIDATE_SUCCESS,
-        payload: response.data.message,
-      });
-      alert("Candidates added successfully!");
-    } else {
+    } catch (error) {
       dispatch({
         type: ADD_SOURCE_TO_CANDIDATE_FAILURE,
-        payload: response.data.message || "Failed to add candidates.",
+        payload: error.response?.data?.message || "Something went wrong.",
       });
-      alert(response.data.message || "Failed to add candidates.");
-    }
-  } catch (error) {
-    dispatch({
-      type: ADD_SOURCE_TO_CANDIDATE_FAILURE,
-      payload: error.response?.data?.message || "Something went wrong.",
-    });
 
-    handleApiFailure(error, dispatch); // Handle session expiry
-  }
-};
+      // handleApiFailure(error, dispatch); // Handle session expiry
+    }
+  };
