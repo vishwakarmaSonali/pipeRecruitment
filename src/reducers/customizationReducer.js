@@ -106,12 +106,9 @@ const customizationReducer = (state = initialState, action) => {
         ...state,
         updateLabelLoading: false,
         labelData: state?.labelData?.map((item) => {
-          if (item?._id === action?.id) {
+          if (item?._id === action?.data?._id) {
             return {
-              ...item,
-              name: action?.data?.name,
-              color: action?.data?.color,
-              createdAt: action?.data?.createdAt,
+              ...action?.data,
             };
           } else {
             return { ...item };
@@ -202,11 +199,9 @@ const customizationReducer = (state = initialState, action) => {
         ...state,
         updateDomainLoading: false,
         domainData: state?.domainData?.map((item) => {
-          if (item?._id === action?.id) {
+          if (item?._id === action?.data?._id) {
             return {
-              ...item,
-              name: action?.data?.name,
-              createdAt: action?.data?.createdAt,
+              ...action?.data,
             };
           } else {
             return { ...item };

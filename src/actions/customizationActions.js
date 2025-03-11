@@ -1,9 +1,4 @@
-import axios from "axios";
-import {
-  BASE_URL,
-  getDomainEndpoint,
-  getLabelEndpoint,
-} from "../helpers/apiConfig";
+import { getDomainEndpoint, getLabelEndpoint } from "../helpers/apiConfig";
 import {
   CATEGORY_CUSTOMIZATION_REQUEST,
   CATEGORY_FIELD_CUSTOMIZATION_REQUEST,
@@ -34,6 +29,7 @@ import {
   DELETE_DOMAIN_REQUEST,
   DELETE_DOMAIN_SUCCESS,
 } from "./actionsType";
+import axiosInstance from "./axiosInstance";
 
 export const categoryDraggableFuction = (data) => {
   return (dispatch) => {
@@ -69,288 +65,124 @@ export const deleteCategoryFunction = (data) => {
   };
 };
 
-export const fetchAllLabels = (token) => {
+export const fetchAllLabels = () => {
   return async (dispatch) => {
     dispatch({ type: FETCH_LABEL_REQUEST });
     try {
-      const config = {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      };
-      const response = await axios.get(
-        `${BASE_URL}${getLabelEndpoint}`,
-        config
-      );
-
-      dispatch({
-        type: FETCH_LABEL_SUCCESS,
-        labelData: response?.data,
-      });
+      const response = await axiosInstance.get(getLabelEndpoint);
+      dispatch({ type: FETCH_LABEL_SUCCESS, labelData: response.data });
       return response.data;
     } catch (error) {
-      if (error?.response?.data) {
-        dispatch({
-          type: FETCH_LABEL_FAILURE,
-        });
-        return error?.response?.data?.message;
-      } else {
-        dispatch({
-          type: FETCH_LABEL_FAILURE,
-        });
-        return error.message;
-      }
+      dispatch({ type: FETCH_LABEL_FAILURE });
+      return error.response?.data?.message || error.message;
     }
   };
 };
 
-export const updateLabel = (token, id, data) => {
+export const updateLabel = (id, data) => {
   return async (dispatch) => {
     dispatch({ type: UPDATE_LABEL_REQUEST });
     try {
-      const config = {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      };
-      const response = await axios.put(
-        `${BASE_URL}${getLabelEndpoint}/${id}`,
-        JSON.stringify(data),
-        config
+      const response = await axiosInstance.put(
+        `${getLabelEndpoint}/${id}`,
+        data
       );
-      dispatch({
-        type: UPDATE_LABEL_SUCCESS,
-        data: response?.data,
-        id: id,
-      });
-      return response;
+      dispatch({ type: UPDATE_LABEL_SUCCESS, data: response.data?.label });
+      return response?.data;
     } catch (error) {
-      if (error?.response?.data) {
-        dispatch({
-          type: UPDATE_LABEL_FAILURE,
-        });
-        return error?.response?.data?.message;
-      } else {
-        dispatch({
-          type: UPDATE_LABEL_FAILURE,
-        });
-        return error.message;
-      }
+      dispatch({ type: UPDATE_LABEL_FAILURE });
+      return error.response?.data?.message || error.message;
     }
   };
 };
 
-export const deleteLabel = (token, id) => {
+export const deleteLabel = (id) => {
   return async (dispatch) => {
     dispatch({ type: DELETE_LABEL_REQUEST });
     try {
-      const config = {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      };
-      const response = await axios.delete(
-        `${BASE_URL}${getLabelEndpoint}/${id}`,
-        config
-      );
-      dispatch({
-        type: DELETE_LABEL_SUCCESS,
-        id: id,
-      });
+      const response = await axiosInstance.delete(`${getLabelEndpoint}/${id}`);
+      dispatch({ type: DELETE_LABEL_SUCCESS, id });
       return response?.data;
     } catch (error) {
-      if (error?.response?.data) {
-        dispatch({
-          type: DELETE_LABEL_FAILURE,
-        });
-        return error?.response?.data?.message;
-      } else {
-        dispatch({
-          type: DELETE_LABEL_FAILURE,
-        });
-        return error.message;
-      }
+      dispatch({ type: DELETE_LABEL_FAILURE });
+      return error.response?.data?.message || error.message;
     }
   };
 };
 
-export const addLabel = (token, data) => {
+export const addLabel = (data) => {
   return async (dispatch) => {
     dispatch({ type: ADD_LABEL_REQUEST });
     try {
-      const config = {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      };
-      const response = await axios.post(
-        `${BASE_URL}${getLabelEndpoint}`,
-        JSON.stringify(data),
-        config
-      );
-      dispatch({
-        type: ADD_LABEL_SUCCESS,
-        data: response?.data,
-      });
-      return response?.data;
+      const response = await axiosInstance.post(getLabelEndpoint, data);
+      dispatch({ type: ADD_LABEL_SUCCESS, data: response.data });
+      return response.data;
     } catch (error) {
-      if (error?.response?.data) {
-        dispatch({
-          type: ADD_LABEL_FAILURE,
-        });
-        return error?.response?.data?.message;
-      } else {
-        dispatch({
-          type: ADD_LABEL_FAILURE,
-        });
-        return error.message;
-      }
+      dispatch({ type: ADD_LABEL_FAILURE });
+      return error.response?.data?.message || error.message;
     }
   };
 };
 
-export const fetchAllDomains = (token) => {
+export const fetchAllDomains = () => {
   return async (dispatch) => {
     dispatch({ type: FETCH_DOMAIN_REQUEST });
     try {
-      const config = {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      };
-      const response = await axios.get(
-        `${BASE_URL}${getDomainEndpoint}`,
-        config
-      );
-
-      dispatch({
-        type: FETCH_DOMAIN_SUCCESS,
-        domainData: response?.data,
-      });
+      const response = await axiosInstance.get(getDomainEndpoint);
+      dispatch({ type: FETCH_DOMAIN_SUCCESS, domainData: response.data });
       return response.data;
     } catch (error) {
-      if (error?.response?.data) {
-        dispatch({
-          type: FETCH_DOMAIN_FAILURE,
-        });
-        return error?.response?.data?.message;
-      } else {
-        dispatch({
-          type: FETCH_DOMAIN_FAILURE,
-        });
-        return error.message;
-      }
+      dispatch({ type: FETCH_DOMAIN_FAILURE });
+      return error.response?.data?.message || error.message;
     }
   };
 };
 
-export const addDomain = (token, data) => {
+export const addDomain = (data) => {
   return async (dispatch) => {
     dispatch({ type: ADD_DOMAIN_REQUEST });
     try {
-      const config = {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      };
-      const response = await axios.post(
-        `${BASE_URL}${getDomainEndpoint}`,
-        JSON.stringify(data),
-        config
-      );
-      dispatch({
-        type: ADD_DOMAIN_SUCCESS,
-        data: response?.data,
-      });
-      return response?.data;
+      const response = await axiosInstance.post(getDomainEndpoint, data);
+      dispatch({ type: ADD_DOMAIN_SUCCESS, data: response.data });
+      return response.data;
     } catch (error) {
-      if (error?.response?.data) {
-        dispatch({
-          type: ADD_DOMAIN_FAILURE,
-        });
-        return error?.response?.data?.message;
-      } else {
-        dispatch({
-          type: ADD_DOMAIN_FAILURE,
-        });
-        return error.message;
-      }
+      dispatch({ type: ADD_DOMAIN_FAILURE });
+      return error.response?.data?.message || error.message;
     }
   };
 };
 
-export const updateDomain = (token, id, data) => {
+export const updateDomain = (id, data) => {
   return async (dispatch) => {
     dispatch({ type: UPDATE_DOMAIN_REQUEST });
     try {
-      const config = {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      };
-      const response = await axios.put(
-        `${BASE_URL}${getDomainEndpoint}/${id}`,
-        JSON.stringify(data),
-        config
+      const response = await axiosInstance.put(
+        `${getDomainEndpoint}/${id}`,
+        data
       );
       dispatch({
         type: UPDATE_DOMAIN_SUCCESS,
-        data: response?.data,
-        id: id,
+        data: response.data?.domain,
+        id,
       });
-      return response;
+      return response?.data;
     } catch (error) {
-      if (error?.response?.data) {
-        dispatch({
-          type: UPDATE_DOMAIN_FAILURE,
-        });
-        return error?.response?.data?.message;
-      } else {
-        dispatch({
-          type: UPDATE_DOMAIN_FAILURE,
-        });
-        return error.message;
-      }
+      dispatch({ type: UPDATE_DOMAIN_FAILURE });
+      return error.response?.data?.message || error.message;
     }
   };
 };
 
-export const deleteDomain = (token, id) => {
+export const deleteDomain = (id) => {
   return async (dispatch) => {
     dispatch({ type: DELETE_DOMAIN_REQUEST });
     try {
-      const config = {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      };
-      const response = await axios.delete(
-        `${BASE_URL}${getDomainEndpoint}/${id}`,
-        config
-      );
-      dispatch({
-        type: DELETE_DOMAIN_SUCCESS,
-        id: id,
-      });
+      const response = await axiosInstance.delete(`${getDomainEndpoint}/${id}`);
+      dispatch({ type: DELETE_DOMAIN_SUCCESS, id });
       return response?.data;
     } catch (error) {
-      if (error?.response?.data) {
-        dispatch({
-          type: DELETE_DOMAIN_FAILURE,
-        });
-        return error?.response?.data?.message;
-      } else {
-        dispatch({
-          type: DELETE_DOMAIN_FAILURE,
-        });
-        return error.message;
-      }
+      dispatch({ type: DELETE_DOMAIN_FAILURE });
+      return error.response?.data?.message || error.message;
     }
   };
 };

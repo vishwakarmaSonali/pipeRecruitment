@@ -80,14 +80,10 @@ const CandidateCustomization = () => {
     fetchDomainLoading,
   } = useSelector((state) => state?.customization);
 
-  const { token } = useSelector((state) => state?.auth);
-
-  console.log(">>>>>>>>>>>>>>>>>>>>>.token", token);
   const { modals, setModalVisibility } = useModal();
   const [candidateTabs, setCandidateTabs] = useState(
     candidateCustomizationsTabs
   );
-  console.log("token in candidate customization", token);
 
   const [selectedCandidateTab, setSelectedCandidateTab] =
     useState("Summary Fields");
@@ -168,10 +164,11 @@ const CandidateCustomization = () => {
       name: tempLabel?.name,
       color: tempLabel?.color,
     };
-    dispatch(updateLabel(token, id, httpBody)).then((response) => {
-      if (response?.status === 200) {
+    dispatch(updateLabel(id, httpBody)).then((response) => {
+      if (response?.success) {
         setEditingIndex(null);
         setColorPickerVisible(false);
+        notifySuccess(response?.message);
       } else {
         notifyError(response);
       }
@@ -193,9 +190,10 @@ const CandidateCustomization = () => {
     const httpBody = {
       name: tempDomain?.name,
     };
-    dispatch(updateDomain(token, id, httpBody)).then((response) => {
-      if (response?.status === 200) {
+    dispatch(updateDomain(id, httpBody)).then((response) => {
+      if (response?.success) {
         setEditingIndex(null);
+        notifySuccess(response?.message);
       } else {
         notifyError(response);
       }
@@ -204,7 +202,7 @@ const CandidateCustomization = () => {
 
   const addLabelFunction = () => {
     const isDuplicate = labelData?.some(
-      (label) => label.name === tempLabel.name
+      (label) => label?.name === tempLabel?.name
     );
 
     if (isDuplicate) {
@@ -216,7 +214,7 @@ const CandidateCustomization = () => {
       name: tempLabel?.name,
       color: tempLabel?.color,
     };
-    dispatch(addLabel(token, httpBody)).then((response) => {
+    dispatch(addLabel(httpBody)).then((response) => {
       if (response?.success) {
         setEditingIndex(null);
         setColorPickerVisible(false);
@@ -241,7 +239,7 @@ const CandidateCustomization = () => {
     const httpBody = {
       name: tempDomain?.name,
     };
-    dispatch(addDomain(token, httpBody)).then((response) => {
+    dispatch(addDomain(httpBody)).then((response) => {
       if (response?.success) {
         setEditingIndex(null);
         setAddNewDomain(false);
@@ -266,8 +264,8 @@ const CandidateCustomization = () => {
   };
 
   const deleteLabelFunction = (id) => {
-    dispatch(deleteLabel(token, id)).then((response) => {
-      if (response?.status) {
+    dispatch(deleteLabel(id)).then((response) => {
+      if (response?.success) {
         setEditingIndex(null);
         setModalVisibility("labelDeleteModalVisible", false);
         notifySuccess(response?.message);
@@ -278,8 +276,8 @@ const CandidateCustomization = () => {
   };
 
   const deleteDomainFunction = (id) => {
-    dispatch(deleteDomain(token, id)).then((response) => {
-      if (response?.status) {
+    dispatch(deleteDomain(id)).then((response) => {
+      if (response?.success) {
         setEditingIndex(null);
         setModalVisibility("domainDeleteModalVisible", false);
         notifySuccess(response?.message);
@@ -495,8 +493,8 @@ const CandidateCustomization = () => {
   }, [labelData]);
 
   useEffect(() => {
-    dispatch(fetchAllLabels(token));
-    dispatch(fetchAllDomains(token));
+    dispatch(fetchAllLabels());
+    dispatch(fetchAllDomains());
   }, []);
 
   return (
@@ -970,7 +968,7 @@ const CandidateCustomization = () => {
                             {defaultColorList?.map((item, idx) => (
                               <button
                                 className={`default-color-btn ${
-                                  item === tempLabel.color
+                                  item === tempLabel?.color
                                     ? "selected-color-btn"
                                     : ""
                                 }`}
