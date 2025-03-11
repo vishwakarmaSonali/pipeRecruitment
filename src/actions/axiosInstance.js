@@ -1,5 +1,6 @@
 import axios from "axios";
 import { BASE_URL } from "../helpers/apiConfig";
+import { logoutUser } from "./authActions";
 
 const axiosInstance = axios.create({
   baseURL: BASE_URL,
@@ -30,7 +31,14 @@ axiosInstance.interceptors.response.use(
   (response) => response,
   (error) => {
     console.error("API Error:", error.response?.data || error.message);
-    return Promise.reject(error);
+    if (error.response?.status === 401) {
+      console.error("Unauthorized. Redirecting to login...");
+      logoutUser();
+      window.location.href = "/login";
+      return Promise.reject(error);
+    } else {
+      return Promise.reject(error);
+    }
   }
 );
 

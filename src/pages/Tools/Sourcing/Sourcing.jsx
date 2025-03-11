@@ -1,4 +1,4 @@
-import React, { useState,  useEffect ,useRef} from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Menu, MenuItem, ListItemIcon, Typography } from "@mui/material";
 import { css } from "@emotion/react";
 import "./Sourcing.css";
@@ -14,7 +14,10 @@ import CandidateCard from "../../../components/sourcing/CandidateCard";
 import CandidateDetails from "../../../components/sourcing/CandidateDetails";
 import PaginationComponent from "../../../components/common/PaginationComponent";
 import CandidateDetailsDrawer from "../../../components/sourcing/CandidateDetailsDrawer";
-import { addSourceToCandidates, fetchCandidates } from "../../../actions/sourcingActions";
+import {
+  addSourceToCandidates,
+  fetchCandidates,
+} from "../../../actions/sourcingActions";
 import { useDispatch, useSelector } from "react-redux";
 import ShimmerEffectCandidateCard from "../../../components/sourcing/ShimmerEffectCandidateCard";
 import FilterDrawer from "../../../components/sourcing/FilterDrawer";
@@ -99,25 +102,26 @@ const candidates = [
   },
 ];
 
-
 const BulkActionView = ({
   isBulkAction,
   filters,
   onClickFilter,
   onClickAddJob,
   onClickFolder,
-  selectedCandidates
+  selectedCandidates,
 }) => {
-  const dispatch = useDispatch()
-  const {refreshToken,token} = useSelector((state)=>state?.auth)
-  const  handleAddToCandidate = () =>{
-
+  const dispatch = useDispatch();
+  const { refreshToken, token } = useSelector((state) => state?.auth);
+  const handleAddToCandidate = () => {
     const selectedCandidateIds = selectedCandidates.map((id) => id);
-  
-  console.log("Formatted Candidate IDs:", JSON.stringify(selectedCandidateIds));
-  dispatch(addSourceToCandidates(selectedCandidateIds,token,refreshToken))
-  }
-  
+
+    console.log(
+      "Formatted Candidate IDs:",
+      JSON.stringify(selectedCandidateIds)
+    );
+    dispatch(addSourceToCandidates(selectedCandidateIds));
+  };
+
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
 
@@ -198,11 +202,11 @@ const BulkActionView = ({
       >
         <MenuItem onClick={handleClose} css={menuItemStyle}>
           <ListItemIcon>
-           <ProfileAdd />
+            <ProfileAdd />
           </ListItemIcon>
           <Typography
             sx={{ fontSize: "14px", fontFamily: "'Ubuntu', sans-serif" }}
-            onClick={()=>handleAddToCandidate()}
+            onClick={() => handleAddToCandidate()}
           >
             Add to candidate
           </Typography>
@@ -214,7 +218,7 @@ const BulkActionView = ({
           }}
         >
           <ListItemIcon>
-          <AddToJobsIcon />
+            <AddToJobsIcon />
           </ListItemIcon>
           <Typography
             sx={{ fontSize: "14px", fontFamily: "'Ubuntu', sans-serif" }}
@@ -229,7 +233,7 @@ const BulkActionView = ({
           }}
         >
           <ListItemIcon>
-           <FolderAdd stroke="#151B23" />,
+            <FolderAdd stroke="#151B23" />,
           </ListItemIcon>
           <Typography
             sx={{ fontSize: "14px", fontFamily: "'Ubuntu', sans-serif" }}
@@ -271,25 +275,23 @@ const NoFiltersScreen = ({ onStartSearching }) => {
   );
 };
 const Sourcing = () => {
-  
-   const bulkMenuItems = [
-      {
-        label: "Add to Candidate",
-        icon: <ProfileAdd />,
-        onClick: () => setAddToJobsDrawerOpen(true),
-      },
-      {
-        label: "Add to folder",
-        icon: <AddtoFolderIcon stroke="#151B23" />,
-        onClick: () => setAddToFolderDrawerOpen(true),
-      },
-      {
-        label: "Add to jobs",
-        icon:  <AddToJobsIcon /> ,
-        onClick: () => setAddToFolderDrawerOpen(true),
-      },
-    
-    ];
+  const bulkMenuItems = [
+    {
+      label: "Add to Candidate",
+      icon: <ProfileAdd />,
+      onClick: () => setAddToJobsDrawerOpen(true),
+    },
+    {
+      label: "Add to folder",
+      icon: <AddtoFolderIcon stroke="#151B23" />,
+      onClick: () => setAddToFolderDrawerOpen(true),
+    },
+    {
+      label: "Add to jobs",
+      icon: <AddToJobsIcon />,
+      onClick: () => setAddToFolderDrawerOpen(true),
+    },
+  ];
   const dispatch = useDispatch();
   const {
     fetchMoreLoading,
@@ -326,8 +328,8 @@ const Sourcing = () => {
   const [candidateDrawerOpen, setCandidateDrawerOpen] = useState(false);
 
   const [filterDrawerOpen, setFilterDrawerOpen] = useState(false);
-const {token,refreshToken} = useSelector((state)=>state?.auth)
-console.log("token>>>>>>>>",token,"refreshToken",refreshToken);
+  const { token, refreshToken } = useSelector((state) => state?.auth);
+  console.log("token>>>>>>>>", token, "refreshToken", refreshToken);
 
   const toggleCandidateDrawer = (open) => {
     setCandidateDrawerOpen(open);
@@ -340,7 +342,7 @@ console.log("token>>>>>>>>",token,"refreshToken",refreshToken);
   const handlePageChange = (page) => {
     setSelectedCandidates([]);
     setCurrentPage(page);
-    dispatch(fetchCandidates(token, candidateFilters, page,refreshToken));
+    dispatch(fetchCandidates(candidateFilters, page));
   };
 
   const handleResultsChange = (value) => {
@@ -398,14 +400,13 @@ console.log("token>>>>>>>>",token,"refreshToken",refreshToken);
         : [...prevSelected, candidateId]
     );
   };
-  
+
   const handleCandidateSelectContainer = (candidate) => {
     setSelectedCandidate(candidate);
     if (windowWidth < 1024) {
       toggleCandidateDrawer(true);
     }
   };
-
 
   const emptyComponent = () => {
     return (
@@ -428,11 +429,9 @@ console.log("token>>>>>>>>",token,"refreshToken",refreshToken);
   };
 
   const toggleAddToFolderDrawer = (open) => {
-  
     setAddToFolderDrawerOpen(open);
   };
   const toggleAddToJobsDrawer = (open) => {
-  
     setAddToJobsDrawerOpen(open);
   };
 
@@ -492,7 +491,7 @@ console.log("token>>>>>>>>",token,"refreshToken",refreshToken);
     }
 
     if (filters?.industry) {
-      params.industry = filters?.industry;
+      params.domain = filters?.industry;
     }
 
     if (!!filters?.major && !(filters?.majorList?.length > 0)) {
@@ -519,7 +518,7 @@ console.log("token>>>>>>>>",token,"refreshToken",refreshToken);
       params.major = filters?.majorList?.join(", ");
     }
 
-    dispatch(fetchCandidates(token, params, 1,refreshToken));
+    dispatch(fetchCandidates(params, 1));
   }, [dispatch, filters, resultsPerPage]);
 
   useEffect(() => {
@@ -582,12 +581,8 @@ console.log("token>>>>>>>>",token,"refreshToken",refreshToken);
               toggleModal={toggleModal}
               isBulkAction={selectedCandidates.length > 0}
               onSelectAll={handleSelectAll}
-              onClickAddJob={() =>
-               setAddToJobsDrawerOpen(true)
-              }
-              onClickFolder={() =>
-               setAddToFolderDrawerOpen(true)
-              }
+              onClickAddJob={() => setAddToJobsDrawerOpen(true)}
+              onClickFolder={() => setAddToFolderDrawerOpen(true)}
               isAllSelected={selectedCandidates.length === candidates.length}
               filters={filters} // Pass filters as a prop
               onClickFilter={() => toggleFilterDrawer(true)}
@@ -622,12 +617,8 @@ console.log("token>>>>>>>>",token,"refreshToken",refreshToken);
                   <CandidateDetails
                     data={selectedCandidate}
                     loading={fetchMoreLoading}
-                    onClickAddJob={() =>
-                     setAddToJobsDrawerOpen(true)
-                    }
-                    onClickAddFolder={() =>
-                     setAddToFolderDrawerOpen(true)
-                    }
+                    onClickAddJob={() => setAddToJobsDrawerOpen(true)}
+                    onClickAddFolder={() => setAddToFolderDrawerOpen(true)}
                   />
                 </div>
               </div>
@@ -725,10 +716,8 @@ console.log("token>>>>>>>>",token,"refreshToken",refreshToken);
         visible={candidateDrawerOpen}
         onClose={() => toggleCandidateDrawer(false)}
         data={selectedCandidate}
-        onClickAddJob={() =>setAddToJobsDrawerOpen(true)}
-        onClickAddFolder={() =>
-         setAddToFolderDrawerOpen(true)
-        }
+        onClickAddJob={() => setAddToJobsDrawerOpen(true)}
+        onClickAddFolder={() => setAddToFolderDrawerOpen(true)}
       />
       {/* <AddToJobsModal
         visible={modals?.addToJobsModalVisible}
@@ -738,14 +727,14 @@ console.log("token>>>>>>>>",token,"refreshToken",refreshToken);
         visible={modals?.addToFolderModalVisible}
         onClose={() => setModalVisibility("addToFolderModalVisible", false)}
       /> */}
-       <AddToJobsDrawer
+      <AddToJobsDrawer
         // onApply={applyFilters}
         // onReset={resetFilters}
         filters={filters}
         isOpen={addToJobsDrawerOpen}
         onClose={() => toggleAddToJobsDrawer(false)}
       />
-       <AddToFolderDrawer
+      <AddToFolderDrawer
         // onApply={applyFilters}
         // onReset={resetFilters}
         filters={filters}

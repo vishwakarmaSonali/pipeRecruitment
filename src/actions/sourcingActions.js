@@ -9,52 +9,16 @@ import {
   ADD_SOURCE_TO_CANDIDATE_REQUEST,
 } from "./actionsType";
 import { logoutUser } from "./authActions";
+import axiosInstance from "./axiosInstance";
 
-// ✅ Handle API Failure (Logout if session expired)
-const handleApiFailure = (error, dispatch) => {
-  console.error("❌ API Error:", error.response?.data);
-
-  if (error.response?.data?.success == false) {
-    alert(error.response?.data?.message);
-    dispatch(logoutUser()); // Remove token from Redux
-    window.location.href = "/login"; // Redirect to login page
-  }
-};
-
-// ✅ Fetch Candidates
-export const fetchCandidates = (token, filters, page, refreshToken) => {
+export const fetchCandidates = (filters, page) => {
   return async (dispatch) => {
     dispatch({ type: SEARCH_CANDIDATE_REQUEST });
 
-    // if (!token) {
-    //   console.error("❌ Token is missing! Redirecting to login...");
-    //   dispatch(logoutUser());
-    //   window.location.href = "/login";
-    //   return;
-    // }
-
     try {
-      const authToken = token.trim();
-
-      console.log("🔹 Token being used:", authToken);
-
-      const config = {
-        headers: {
-          Authorization: `Bearer ${authToken}`,
-         "x-refresh-token": refreshToken || "",
-        },
-        params: {
-          ...filters,
-          page,
-        },
-      };
-
-      const response = await axios.get(
-        `${BASE_URL}${candidateSearchApiEndPoint}`,
-        config
-      );
-
-      console.log("✅ API Response:in fetch candidates", response.data);
+      const response = await axiosInstance.get(candidateSearchApiEndPoint, {
+        params: { ...filters, page },
+      });
 
       dispatch({
         type: SEARCH_CANDIDATE_SUCCESS,
@@ -68,25 +32,15 @@ export const fetchCandidates = (token, filters, page, refreshToken) => {
       return response.data;
     } catch (error) {
       dispatch({ type: SEARCH_CANDIDATE_FAILURE });
-      // handleApiFailure(error, dispatch);
-      return error?.response?.data?.message || error.message;
+      return error.response?.data?.message || error.message;
     }
   };
 };
 
 // ✅ Add Source to Candidates
 export const addSourceToCandidates =
-  (selectedCandidates, token, refreshToken) => async (dispatch, getState) => {
+  (selectedCandidates) => async (dispatch) => {
     dispatch({ type: ADD_SOURCE_TO_CANDIDATE_REQUEST });
-
-    // const { token, refreshToken } = getState().auth; // Get token from Redux
-
-    if (!token) {
-      console.error("Token is missing. Redirecting to login...");
-      dispatch(logoutUser());
-      window.location.href = "/login";
-      return;
-    }
 
     if (!selectedCandidates.length) {
       console.warn("No candidates selected.");
@@ -94,20 +48,13 @@ export const addSourceToCandidates =
     }
 
     const requestData = {
-      candidateIds: selectedCandidates.map((id) => id),
+      candidateIds: selectedCandidates,
     };
 
     try {
-      const response = await axios.post(
-        `${BASE_URL}api/candidates/add-to-candidate`,
-        requestData,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-            "x-refresh-token": refreshToken || "",
-          },
-        }
+      const response = await axiosInstance.post(
+        "api/candidates/add-to-candidate",
+        requestData
       );
 
       console.log("✅ API Response:", response.data);
@@ -130,7 +77,5 @@ export const addSourceToCandidates =
         type: ADD_SOURCE_TO_CANDIDATE_FAILURE,
         payload: error.response?.data?.message || "Something went wrong.",
       });
-
-      // handleApiFailure(error, dispatch); // Handle session expiry
     }
   };
