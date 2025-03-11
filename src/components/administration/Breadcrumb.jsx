@@ -7,6 +7,7 @@ const breadcrumbMap = {
   "/user-roles-permissions": "Roles & Permissions Management",
   "/user-team-management": "User & Team Management",
   "/candidate-customization": "Candidate Customization",
+  "/archive-candidates": "Archived Candidates",
 };
 
 const Breadcrumb = () => {

@@ -352,7 +352,7 @@ const CustomCvPage = () => {
             disabled={!isMounted}
             onClick={exportAsPDF}
           />
-          <PDFExportButton />
+          {/* <PDFExportButton /> */}
         </div>
       </div>
     );

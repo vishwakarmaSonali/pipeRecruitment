@@ -408,7 +408,7 @@ const ProfessionalDetails = ({ details, label, isLoading }) => {
                     className="flex-1 display-flex align-center"
                     style={{ gap: 12 }}
                   >
-                    <div
+                    {/* <div
                       className="display-flex"
                       style={{ flexWrap: "wrap", gap: 6 }}
                     >
@@ -419,7 +419,7 @@ const ProfessionalDetails = ({ details, label, isLoading }) => {
                           </div>
                         );
                       })}
-                    </div>
+                    </div> */}
                     <button
                       className="edit-details-btn"
                       onClick={() => handleEdit(key, value)}
