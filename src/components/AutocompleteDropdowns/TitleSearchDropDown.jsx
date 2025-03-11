@@ -15,7 +15,7 @@ const TitleSearchDropdown = ({
   const [titleSuggestions, setTitleSuggestions] = useState([]);
   const [showTitleDropdown, setShowTitleDropdown] = useState(false);
   // Fetch title suggestions from API when the user types
-  const { token } = useSelector((state) => state?.auth);
+  const { token,refreshToken } = useSelector((state) => state?.auth);
 
   useEffect(() => {
     // ✅ Retrieve token properly
@@ -36,9 +36,9 @@ const TitleSearchDropdown = ({
           const config = {
             headers: {
               "Content-Type": "application/json",
-              // Authorization: `Bearer ${authToken}`,
+              Authorization: `Bearer ${authToken}`,
+              "x-refresh-token": refreshToken || "",
           
-              Authorization: token1
             },
           };
   

@@ -8,6 +8,7 @@ import { useDispatch } from "react-redux";
 import { loginUser } from "../../actions/authActions";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { notifyError } from "../../helpers/utils";
 const LoginAdmin = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -18,13 +19,16 @@ const LoginAdmin = () => {
 
   const handleLogin = () => {
     console.log("Logging in with", { email, password });
-    dispatch(loginUser(email, password));
+    dispatch(loginUser(email, password)).then(response=>{
+      if(response?.success){
+        navigate("/sourcing"); // Redirect to Sourcing when logged in
+      }
+      else{
+        notifyError(response)
+      }
+    });
   };
-  useEffect(() => {
-    if (token) {
-      navigate("/sourcing"); // Redirect to Sourcing when logged in
-    }
-  }, [token, navigate]);
+ 
   const NoFiltersScreen = () => {
     return (
       <div className="sourcing-main-inner-div  border-sky-100 border-1">

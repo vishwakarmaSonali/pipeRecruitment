@@ -36,7 +36,7 @@ const handleApiFailure = (error, dispatch) => {
     window.location.href = "/login"; // Redirect to login page
   }
 };
-export const createCandidates = (token, params) => {
+export const createCandidates = (token, params,refreshToken) => {
   return async (dispatch) => {
     dispatch({ type: CREATE_CANDIDATE_REQUEST });
 
@@ -46,6 +46,7 @@ export const createCandidates = (token, params) => {
         headers: {
           "Content-Type": "application/json",
           ...(token && { Authorization: `Bearer ${token}` }), // ✅ Add token if available
+          "x-refresh-token": refreshToken || "",
         },
       };
 
@@ -83,15 +84,17 @@ export const createCandidates = (token, params) => {
     }
   };
 };
-export const fetchCandidatesList = (token, filters, page) => {
+export const fetchCandidatesList = (token, filters, page,refreshToken) => {
   return async (dispatch) => {
     dispatch({ type: FETCH_CANDIDATES_REQUEST });
+console.log("calleddddddd in fetchcandidate list");
 
     try {
       const config = {
         headers: {
           "Content-Type": "application/json",
           ...(token && { Authorization: `Bearer ${token}` }),
+          "x-refresh-token": refreshToken || "",
         },
         params: {
           ...filters,
@@ -115,7 +118,7 @@ export const fetchCandidatesList = (token, filters, page) => {
 
       return response?.data;
     } catch (error) {
-      handleApiFailure(error, dispatch);
+      // handleApiFailure(error, dispatch);
       if (error?.response?.data) {
         dispatch({
           type: FETCH_CANDIDATES_FAILURE,
@@ -151,7 +154,7 @@ export const fetchCandidateDetails = (id, token) => async (dispatch) => {
       candidateId: id,
     });
   } catch (error) {
-    handleApiFailure(error, dispatch);
+    // handleApiFailure(error, dispatch);
     if (error?.response?.data) {
       dispatch({
         type: CANDIDATE_DETAILS_FAILURE,

@@ -4,6 +4,7 @@ import {
   RouterProvider,
   Navigate,
 } from "react-router-dom";
+
 import Sourcing from "./pages/Tools/Sourcing/Sourcing";
 import Client from "./pages/Recruitment/Client";
 import Candidates from "./pages/Recruitment/Candidates/Candidates";

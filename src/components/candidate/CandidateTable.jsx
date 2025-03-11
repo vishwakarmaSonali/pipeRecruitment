@@ -57,7 +57,8 @@ const CandidateTable = ({
       ?.replace(/_/g, " ")
       .replace(/\b\w/g, (char) => char.toUpperCase());
   };
-  console.log("data im candidateTable", data);
+
+  console.log("data in CandidateTable", data);
 
   return (
     <>
@@ -118,20 +119,9 @@ const CandidateTable = ({
                   key={index}
                   className="hover-row"
                   onClick={() => onCandidateClick(candidate?._id)}
-                  // onClick={() => {
-                  //   setSelectedCandidate(candidate);
-                  //   setSelectedCandidateUser(candidate);
-                  //   setModalVisibility("candidateInfoModalVisible", true);
-                  // }}
                 >
                   {header.map((columnName, index) => {
                     let value = candidate[columnName] || "-";
-
-                    // ✅ Convert "skills" array to a readable string
-                    if (columnName === "skills" && Array.isArray(value)) {
-                      value =
-                        value.map((skill) => skill.name).join(", ") || "-";
-                    }
 
                     // ✅ Convert "skills" array to a readable string
                     if (columnName === "skills" && Array.isArray(value)) {
@@ -154,7 +144,8 @@ const CandidateTable = ({
                     if (typeof value === "object" && value !== null) {
                       value = JSON.stringify(value);
                     }
-                    // ✅ Handle First Column (Candidate Name, Photo, Checkbox)
+
+                    // ✅ Handle First Column (Candidate Name, Profile Photo, Checkbox)
                     if (index === 0) {
                       return (
                         <TableCell key={index}>
@@ -184,29 +175,37 @@ const CandidateTable = ({
                             </div>
 
                             <Avatar
-                              src={candidate.photo_url || ""}
+                              src={
+                                candidate.profile_photo &&
+                                Object.keys(candidate.profile_photo).length > 0
+                                  ? candidate.profile_photo
+                                  : ""
+                              }
                               alt={candidate.first_name}
                               style={{
                                 width: 32,
                                 height: 32,
-                                backgroundColor: candidate.photo_url
-                                  ? "transparent"
-                                  : getRandomColor(),
+                                backgroundColor:
+                                  candidate.profile_photo &&
+                                  Object.keys(candidate.profile_photo).length > 0
+                                    ? "transparent"
+                                    : getRandomColor(),
                                 fontSize: 14,
                                 textAlign: "center",
                               }}
                             >
-                              {!candidate.photo_url
+                              {!candidate.profile_photo ||
+                              Object.keys(candidate.profile_photo).length === 0
                                 ? getInitials(
-                                    candidate.candidate_first_name +
+                                    candidate.first_name +
                                       " " +
-                                      candidate.candidate_last_name
+                                      candidate.last_name
                                   )
                                 : ""}
                             </Avatar>
 
                             <span className="font-14-regular truncate-text">
-                              {candidate.candidate_name || ""}
+                              {candidate.first_name} {candidate.last_name}
                             </span>
 
                             {!showDeleteIcon ? (
@@ -269,36 +268,6 @@ const CandidateTable = ({
           </TableBody>
         </Table>
       </TableContainer>
-
-      <Menu
-        anchorEl={anchorEl}
-        open={open}
-        onClose={handleMenuClose}
-        PaperProps={{ sx: commonStyle.sx }}
-        transformOrigin={{ vertical: "top", horizontal: "right" }}
-        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-      >
-        <div className="display-column">
-          <button className="common-menu-item-btn" onClick={AddJobClick}>
-            <AddJobIcon /> Add to Jobs
-          </button>
-          <button className="common-menu-item-btn" onClick={AddFolderClick}>
-            <AddFolderIcon /> Add to Folder
-          </button>
-          <button
-            className="common-menu-item-btn"
-            onClick={ChangeOwnerShipClick}
-          >
-            <EditUser /> Change Ownership
-          </button>
-          <button
-            className="common-menu-item-btn"
-            onClick={() => navigate("/merge-candidate")}
-          >
-            <ArchiveIcon /> Archive
-          </button>
-        </div>
-      </Menu>
     </>
   );
 };

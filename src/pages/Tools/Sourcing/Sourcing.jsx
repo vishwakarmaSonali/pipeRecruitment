@@ -519,7 +519,7 @@ console.log("token>>>>>>>>",token,"refreshToken",refreshToken);
       params.major = filters?.majorList?.join(", ");
     }
 
-    dispatch(fetchCandidates(token, params, 1));
+    dispatch(fetchCandidates(token, params, 1,refreshToken));
   }, [dispatch, filters, resultsPerPage]);
 
   useEffect(() => {

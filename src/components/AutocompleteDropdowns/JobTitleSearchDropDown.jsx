@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import "../../components/filterModal/FilterModal.css";
+import { useSelector } from "react-redux";
 
 const JobTitleSearchDropdown = ({ 
   selectedNationalities = [], 
@@ -13,7 +14,7 @@ const JobTitleSearchDropdown = ({
   const [showNationalityDropdown, setShowNationalityDropdown] = useState(false);
   const debounceTimeout = useRef(null);
   const disableFetch = useRef(false); // Prevent API call on selection
-
+const {token,refreshToken} = useSelector((state)=>state?.auth)
   // Fetch nationality suggestions from API (debounced)
   useEffect(() => {
     if (disableFetch.current) {
@@ -25,9 +26,17 @@ const JobTitleSearchDropdown = ({
       clearTimeout(debounceTimeout.current);
       
       debounceTimeout.current = setTimeout(async () => {
+        const config = {
+          headers: {
+            Authorization: `Bearer ${token}`,
+           "x-refresh-token": refreshToken || "",
+          },
+         
+        };
         try {
           const response = await axios.get(
-            `http://3.110.81.44/api/candidate-profiles/suggest/nationality?query=${nationalityQuery}`
+            `${BASE_URL}api/candidate-profiles/suggest/nationality?query=${nationalityQuery}`,
+            config
           );
           console.log("Nationality API Response:", response?.data?.suggestions);
 

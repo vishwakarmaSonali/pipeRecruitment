@@ -41,6 +41,7 @@ export const fetchCandidates = (token, filters, page, refreshToken) => {
       const config = {
         headers: {
           Authorization: `Bearer ${authToken}`,
+         "x-refresh-token": refreshToken || "",
         },
         params: {
           ...filters,
@@ -98,7 +99,7 @@ export const addSourceToCandidates =
 
     try {
       const response = await axios.post(
-        "http://3.110.81.44/api/candidates/add-to-candidate",
+        `${BASE_URL}api/candidates/add-to-candidate`,
         requestData,
         {
           headers: {

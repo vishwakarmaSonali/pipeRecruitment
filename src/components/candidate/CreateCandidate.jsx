@@ -65,7 +65,7 @@ const CreateCandidateForm = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const today = new Date();
-  const { token } = useSelector((state) => state?.auth);
+  const { token,refreshToken} = useSelector((state) => state?.auth);
     const { data, loading, error } = useSelector((state) => state.domains);
   // Ensure `data` is available and formatted properly
   console.log("data>>>>>CreateCandidateForm>>>>token",  );
@@ -78,25 +78,20 @@ const CreateCandidateForm = () => {
 
   const [description, setDescription] = useState("");
   const [profileImages, setProfileImage] = useState("");
-  const [imagePreview, setImagePreview] = useState("");
   const [selectedTitle, setSelectedTitle] = useState("None");
   const [firstName, setFirstName] = useState(""); // New state for First Name
   const [lastName, setLastName] = useState(""); // New state for First Name
   const [dateofbirth, setDateofbirth] = useState(null);
   const [selectedDomain, setSelectedDomain] = useState(null); // Must be an object or null
-
+  const [profilePhoto, setProfilePhoto] = useState(null);
+  const [imagePreview, setImagePreview] = useState("");
   const [selectedDomains, setSelectedDomains] = useState([]); // For multi-selection
 
   const [lastUpdatedDate, setLastUpdatedDate] = useState(
     format(today, "yyyy-MM-dd")
   );
   const [selectedLocations, setSelectedLocations] = useState([]); // Ensure it's an array
-  const [selectedCountry, setSelectedCountry] = useState({
-    code: "US",
-    name: "United States",
-    dialCode: "+1",
-    flag: "🇺🇸",
-  });
+  const [selectedCountry, setSelectedCountry] = useState();
 
   const [showContactedCalendar, setShowContactedCalendar] = useState(false);
   const [showUpdatedCalendar, setShowUpdatedCalendar] = useState(false);
@@ -105,19 +100,9 @@ const CreateCandidateForm = () => {
   const [selectedGender, setSelectedGender] = useState("");
   const [nationality, setNationality] = useState([]);
   const [frequency, setFrequency] = useState(null);
-  const [currentSalaryCurrency, setCurrentSalaryCurrency] = useState({
-    code: "USD",
-    name: "US Dollar",
-    symbol: "US$",
-    flag: "🇺🇸",
-  });
+  const [currentSalaryCurrency, setCurrentSalaryCurrency] = useState();
 
-  const [expectedSalaryCurrency, setExpectedSalaryCurrency] = useState({
-    code: "GBP",
-    name: "British Pound",
-    symbol: "£",
-    flag: "🇬🇧",
-  });
+  const [expectedSalaryCurrency, setExpectedSalaryCurrency] = useState();
 
   const [currentSalary, setCurrentSalary] = useState("");
   const [expectedSalary, setExpectedSalary] = useState("");
@@ -155,9 +140,10 @@ const CreateCandidateForm = () => {
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      // Update profile image with selected file
-      setProfileImage(file);
-
+      console.log(file,"<<<<<<<file");
+      
+      setProfileImage(file); // Store file for API request
+  
       // Create a preview URL for the selected image
       const reader = new FileReader();
       reader.onloadend = () => {
@@ -166,6 +152,7 @@ const CreateCandidateForm = () => {
       reader.readAsDataURL(file);
     }
   };
+  
   const handleLastUpdatedDateSelect = (date) => {
     setLastUpdatedDate(date);
     setShowUpdatedCalendar(false);
@@ -278,10 +265,11 @@ const CreateCandidateForm = () => {
           url: link.url || "",
         }))
       : undefined;
+  console.log("profilePhotoprofilePhotoprofilePhoto",profilePhoto);
   
     // Build candidate data with **conditional inclusion**
     const candidateData = {
-      ...(profileImages && { profile_photo: profileImages }),
+      ...(profileImage && { profile_photo: profileImage }), //return {}
       ...(selectedTitle !== "None" && { salutation: selectedTitle }),
       ...(firstName && { first_name: firstName }),
       ...(lastName && { last_name: lastName }),
@@ -290,9 +278,9 @@ const CreateCandidateForm = () => {
       ...(city && { city }),
       ...(state && { state }),
       ...(country && { country }),
-      ...(selectedCountry.name && { country: selectedCountry.name }),
+      ...(selectedCountry?.name && { country: selectedCountry?.name }),
       ...(selectedNationality.length > 0 && { nationality: selectedNationality[0] }),
-      ...(selectedCountry.dialCode && { country_code: selectedCountry.dialCode }),
+      ...(selectedCountry?.dialCode && { country_code: selectedCountry?.dialCode }),
       ...(phoneNumber && { phone: phoneNumber }),
       ...(email && { email }),
       ...(description && { description }),
@@ -321,7 +309,7 @@ const CreateCandidateForm = () => {
     console.log("Final Candidate Data >>>", candidateData);
   
     try {
-      const response = await dispatch(createCandidates(token, candidateData));
+      const response = await dispatch(createCandidates(token, candidateData,refreshToken));
       console.log("API Response >>>", response);
   
       if (response?.success || response?.id) {

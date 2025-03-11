@@ -24,6 +24,7 @@ console.log(" response.data",response.data);
       // Save tokens in localStorage
       localStorage.setItem("token", accessToken);
       localStorage.setItem("refreshToken", refreshToken);
+      return response?.data
 
     } catch (error) {
       dispatch({
@@ -35,5 +36,6 @@ console.log(" response.data",response.data);
 };
 export const logoutUser = () => (dispatch) => {
     localStorage.removeItem("token"); // Clear token storage (if used)
+    localStorage.removeItem("refreshToken"); // Clear token storage (if used)
     dispatch({ type: LOGOUT_USER });
   };

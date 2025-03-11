@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import "../../components/filterModal/FilterModal.css";
 import { BASE_URL,locationAutoCompleteSourceEndpoint} from "../../helpers/apiConfig";
+import { useSelector } from "react-redux";
 const LocationSearchDropdown = ({
   selectedLocations = [],
   setSelectedLocations,
@@ -17,7 +18,7 @@ const LocationSearchDropdown = ({
   const debounceTimeout = useRef(null);
   const isFetching = useRef(false); // Prevents duplicate API calls
   const disableFetch = useRef(false); // Prevents API calls after selection
-
+const {token,refreshToken} = useSelector((state)=>state?.auth)
   // Fetch location suggestions from API (debounced)
   useEffect(() => {
     if (disableFetch.current) {
@@ -27,12 +28,19 @@ const LocationSearchDropdown = ({
 
     if (locationQuery.length > 1) {
       clearTimeout(debounceTimeout.current);
-
       debounceTimeout.current = setTimeout(async () => {
+        const config = {
+          headers: {
+            Authorization: `Bearer ${token}`,
+           "x-refresh-token": refreshToken || "",
+          },
+         
+        };
         isFetching.current = true; // Mark as fetching to prevent duplicate calls
         try {
           const response = await axios.get(
-            `${BASE_URL}${locationAutoCompleteSourceEndpoint}?query=${locationQuery}`
+            `${BASE_URL}${locationAutoCompleteSourceEndpoint}?query=${locationQuery}`,
+           config
           );
           console.log("Location API Response:", response?.data?.suggestions);
 

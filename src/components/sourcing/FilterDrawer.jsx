@@ -91,7 +91,7 @@ const FilterDrawer = ({ isOpen, onClose, onApply, onReset, filters }) => {
     onApply({
       ...localFilters,
       radiusType: radius?.type || "",
-      industry: industry?.industryType || "",
+      domain: industry?.industryType || "",
       titles: selectedTitles,
       location: selectedLocations,
       skills: selectedSkills,

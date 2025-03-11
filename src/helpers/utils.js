@@ -99,11 +99,13 @@ export function formatPhoneNumber(phoneNumber) {
 }
 
 export const getInitials = (name) => {
+  if (!name) return "";
+  
   return name
-    .split("")
-    .map((word) => word[0])
-    .join("")
-    .toUpperCase();
+    .split(" ") // Split by space to get words
+    .map((word) => word.charAt(0)) // Get first letter of each word
+    .join("") // Join initials
+    .toUpperCase(); // Convert to uppercase
 };
 
 export function formatDateMonthYear(dateString) {
