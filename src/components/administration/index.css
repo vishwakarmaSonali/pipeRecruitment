@@ -1,0 +1,7 @@
+.breadcrumb {
+  padding: 14px 16px;
+  background-color: #ffffff;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}

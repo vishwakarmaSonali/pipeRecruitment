@@ -203,7 +203,14 @@ const Navbar = () => {
             <button className="common-menu-item-btn">
               <ProfileIcon /> Account
             </button>
-            <button className="common-menu-item-btn">
+            <button
+              className="common-menu-item-btn"
+              onClick={(e) => {
+                e.stopPropagation();
+                navigate("/administration");
+                handleMenuClose();
+              }}
+            >
               <AdminIcon /> Administration
             </button>
             <button className="common-menu-item-btn">

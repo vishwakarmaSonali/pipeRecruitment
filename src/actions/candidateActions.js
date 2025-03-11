@@ -27,15 +27,15 @@ import { useNavigate } from "react-router-dom";
 import { logoutUser } from "./authActions";
 
 // ✅ Handle API failure (Unauthorized)
-// const handleApiFailure = (error, dispatch) => {
-//   console.error("❌ API Error:", error.response?.data || error.message);
+const handleApiFailure = (error, dispatch) => {
+  console.error("❌ API Error:", error.response?.data || error.message);
 
-//   if (error.response?.status === false || error.response?.status === false) {
-//     alert("Session expired. Please log in again.");
-//     dispatch(logoutUser()); // Remove token from Redux
-//     window.location.href = "/login"; // Redirect to login page
-//   }
-// };
+  if (error.response?.status === false || error.response?.status === false) {
+    alert("Session expired. Please log in again.");
+    dispatch(logoutUser()); // Remove token from Redux
+    window.location.href = "/login"; // Redirect to login page
+  }
+};
 export const createCandidates = (token, params) => {
   return async (dispatch) => {
     dispatch({ type: CREATE_CANDIDATE_REQUEST });

@@ -33,6 +33,9 @@ import ReportPage from "./pages/resume/ReportPage";
 import CustomReportPage from "./pages/resume/CustomReportPage";
 import LoginAdmin from "./pages/Login/Login";
 import { useSelector } from "react-redux";
+import Administration from "./pages/administration/Administration";
+import UserTeamManagement from "./pages/administration/UserTeamManagement";
+import UserRoleManagement from "./pages/administration/UserRoleManagement";
 
 // 🔹 Protected Route Wrapper
 const ProtectedRoute = ({ element }) => {
@@ -50,7 +53,6 @@ class ErrorBoundary extends React.Component {
   static getDerivedStateFromError() {
     return { hasError: true };
   }
-
 
   render() {
     if (this.state.hasError) {
@@ -144,6 +146,18 @@ const router = createBrowserRouter([
   {
     path: "/merge-candidate",
     element: <MergeDuplicateCandidatesPage />,
+  },
+  {
+    path: "/administration",
+    element: <Administration />,
+  },
+  {
+    path: "/user-team-management",
+    element: <UserTeamManagement />,
+  },
+  {
+    path: "/user-roles-permissions",
+    element: <UserRoleManagement />,
   },
 ]);
 

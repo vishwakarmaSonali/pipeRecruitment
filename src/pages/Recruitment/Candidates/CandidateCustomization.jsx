@@ -44,6 +44,7 @@ import { HexColorPicker } from "react-colorful";
 import { ReactComponent as AddIcon } from "../../../assets/icons/plusIcon.svg";
 import CommonLoader from "../../../components/common/CommonLoader";
 import { notifyError, notifySuccess } from "../../../helpers/utils";
+import Breadcrumb from "../../../components/administration/Breadcrumb";
 
 const candidateCustomizationsTabs = [
   {
@@ -86,8 +87,8 @@ const CandidateCustomization = () => {
   const [candidateTabs, setCandidateTabs] = useState(
     candidateCustomizationsTabs
   );
-  console.log("token in candidate customization",token);
-  
+  console.log("token in candidate customization", token);
+
   const [selectedCandidateTab, setSelectedCandidateTab] =
     useState("Summary Fields");
 
@@ -501,26 +502,24 @@ const CandidateCustomization = () => {
   return (
     <div className="candidate-info-main-container">
       <Navbar />
-      <div className="candidate-customization-header">
-        <p className="font-22-medium color-dark-black padding-16">
-          Candidate Customization
-        </p>
-        <div className="candidate-customization-tab-main">
-          {candidateTabs?.map((item) => {
-            return (
-              <button
-                key={item?.id}
-                className={`candidate-customization-tab-btn ${
-                  item?.selected && "active-info-tab"
-                }`}
-                onClick={() => selectedTabHandler(item?.id)}
-              >
-                {item?.name}
-              </button>
-            );
-          })}
-        </div>
+      <Breadcrumb />
+
+      <div className="candidate-customization-tab-main">
+        {candidateTabs?.map((item) => {
+          return (
+            <button
+              key={item?.id}
+              className={`candidate-customization-tab-btn ${
+                item?.selected && "active-info-tab"
+              }`}
+              onClick={() => selectedTabHandler(item?.id)}
+            >
+              {item?.name}
+            </button>
+          );
+        })}
       </div>
+
       {selectedCandidateTab === "Summary Fields" && (
         <div className="candidate-customization-container">
           <p className="font-16-medium color-dark-black">

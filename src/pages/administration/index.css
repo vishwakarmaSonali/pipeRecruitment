@@ -1,0 +1,27 @@
+.main-administration-container {
+  max-width: 1120px;
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  align-items: center;
+  margin: 10px auto;
+  overflow-y: auto;
+  align-self: center;
+}
+
+.administration-tab-item {
+  border: 1px solid #f3f4f4;
+  width: 360px;
+  height: 150px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 14px;
+  border-radius: 14px;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+
+.administration-tab-item:hover {
+}

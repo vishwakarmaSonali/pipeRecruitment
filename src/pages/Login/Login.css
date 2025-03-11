@@ -252,13 +252,6 @@
   @apply absolute bottom-full right-0 transform translate-y-[-5px] bg-gray-800 text-white text-xs rounded-md px-3 py-1 shadow-md whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 font-ubuntu;
 }
 
-.font-22-medium {
-  font-family: "Ubuntu";
-  font-size: 22px;
-  font-weight: 500;
-  line-height: 25.28px;
-}
-
 .sourcing-header-container {
   display: flex;
   justify-content: space-between;
