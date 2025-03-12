@@ -5,7 +5,10 @@ import { Menu, MenuItem, IconButton } from "@mui/material";
 import MoreVertIcon from "@mui/icons-material/MoreVert"; // Three dots icon
 import { commonStyle } from "../../helpers/config";
 
-const ExperienceDetailsManager = ({ experienceDetails, setExperienceDetails }) => {
+const ExperienceDetailsManager = ({
+  experienceDetails,
+  setExperienceDetails,
+}) => {
   const { modals, setModalVisibility } = useModal();
   const [selectedIndex, setSelectedIndex] = useState(null); // Track selected experience index
   const [anchorEl, setAnchorEl] = useState(null);
@@ -75,9 +78,12 @@ const ExperienceDetailsManager = ({ experienceDetails, setExperienceDetails }) =
                 <p className="text-l font-ubuntu font-medium text-customBlue">
                   {exp.position} at {exp.company}
                 </p>
-                <p className="text-m font-ubuntu text-customBlue">{exp.location}</p>
+                <p className="text-m font-ubuntu text-customBlue">
+                  {exp.location}
+                </p>
                 <p className="font-ubuntu text-m text-customGray">
-                  {exp.startDate} - {exp.isCurrentlyWorking ? "Present" : exp.endDate}
+                  {exp.startDate} -{" "}
+                  {exp.isCurrentlyWorking ? "Present" : exp.endDate}
                 </p>
               </div>
 
@@ -92,11 +98,13 @@ const ExperienceDetailsManager = ({ experienceDetails, setExperienceDetails }) =
                 open={Boolean(anchorEl) && selectedIndex === index}
                 onClose={handleCloseMenu}
                 PaperProps={{
-                        sx: commonStyle.sx,
-                      }}
+                  sx: commonStyle.sx,
+                }}
               >
                 <MenuItem onClick={handleEditExperience}>Edit</MenuItem>
-                <MenuItem onClick={() => removeExperience(index)}>Remove</MenuItem>
+                <MenuItem onClick={() => removeExperience(index)}>
+                  Remove
+                </MenuItem>
               </Menu>
             </div>
           ))}
@@ -107,13 +115,13 @@ const ExperienceDetailsManager = ({ experienceDetails, setExperienceDetails }) =
       <button
         onClick={() => {
           console.log("➕ Opening Add Experience Modal...");
-          setSelectedIndex(null); // ✅ Ensure it resets for new additions
-          setEditExperienceData(null); // ✅ Clears previous data
+          setSelectedIndex(null);
+          setEditExperienceData(null);
           setModalVisibility("AddExperienceDetailModalVisible", true);
         }}
         className="text-buttonBLue font-ubuntu text-sm"
       >
-        + Add 
+        + Add
       </button>
 
       {/* Experience Details Modal (Pass Edit Data) */}
@@ -126,7 +134,7 @@ const ExperienceDetailsManager = ({ experienceDetails, setExperienceDetails }) =
           setEditExperienceData(null);
         }}
         onAddExperience={handleAddOrUpdateExperience} // ✅ Pass callback to store/update experience details
-        editExperienceData={editExperienceData} // ✅ Pass selected experience data for editing
+        selectedExperienceData={editExperienceData} // ✅ Pass selected experience data for editing
         isEditing={selectedIndex !== null} // ✅ Ensure form resets when adding new
       />
     </div>

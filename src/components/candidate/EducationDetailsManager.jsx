@@ -95,8 +95,8 @@ const EducationDetailsManager = ({ educationDetails, setEducationDetails }) => {
               open={Boolean(anchorEl) && selectedIndex === index}
               onClose={handleCloseMenu}
               PaperProps={{
-                      sx: commonStyle.sx,
-                    }}
+                sx: commonStyle.sx,
+              }}
             >
               <MenuItem onClick={handleEditEducation}>Edit</MenuItem>
               <MenuItem onClick={() => removeEducation(index)}>Remove</MenuItem>
