@@ -450,12 +450,18 @@ const Sourcing = () => {
     setCurrentPage(1);
     let params = {};
     params.limit = resultsPerPage;
+
+    console.log(">>>>>>>>>>>.filters?.locations", filters);
     if (filters?.titles?.length > 0) {
       params.title = filters.titles.join(", ");
     }
 
-    if (filters?.locations?.length > 0) {
-      params.location = filters.locations.map((loc) => `'${loc}'`).join(", ");
+    if (filters?.location?.length > 0) {
+      params.location = filters?.location.map((loc) => `'${loc}'`).join(", ");
+    }
+
+    if (filters?.locations?.length > 0 && filters?.location?.length < 1) {
+      params.location = filters?.locations;
     }
 
     if (!!filters?.radius) {
