@@ -31,7 +31,7 @@ const LoginAdmin = () => {
  
   const NoFiltersScreen = () => {
     return (
-      <div className="sourcing-main-inner-div  border-sky-100 border-1">
+      <div className="sourcing-main-inner-div ">
         <img src={Logo} alt="logo" className="w-[239px] h-[46px] " />
         <div className="display-flex-20 mt-[100px]">
           {LoginInfo?.map((item) => {

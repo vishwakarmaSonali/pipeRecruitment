@@ -13,6 +13,7 @@ import "react-loading-skeleton/dist/skeleton.css";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { addSourceToCandidates } from "../../actions/sourcingActions";
+import { formatDate } from "../../helpers/utils";
 
 export const languages = ["English", "Mandarin", "Spanish"];
 
@@ -274,8 +275,8 @@ const dispatch = useDispatch()
                       </p>
                     )}
                     <p className="font-14-regular color-grey">
-                      {item?.start_date} -{" "}
-                      {item?.end_date ? item?.end_date : "Present"}
+                      {formatDate(item?.start_date)} -{" "}
+                      {item?.end_date ? formatDate(item?.end_date) : "Present"}
                     </p>
                   </div>
                 );
