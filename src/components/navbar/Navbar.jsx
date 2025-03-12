@@ -105,7 +105,7 @@ const Navbar = () => {
           <DropDown />
         </Link>
         <Link
-          to="/jobs"
+          to="#"
           className={`nav-common-link-text ${
             activeLink === "/jobs" && "nav-active-link"
           }`}

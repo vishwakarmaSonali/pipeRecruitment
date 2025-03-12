@@ -150,19 +150,14 @@ const ProfessionalDetails = ({ details, label, isLoading }) => {
   };
 
   const renderItemValue = (key, value) => {
-    if (key === "Hired Date") {
+    if (value?.fe_input_type === "date_time") {
       return formatCustomDate(value);
-    } else if (
-      key === "Start Date" ||
-      key === "Probation End Date" ||
-      key === "Left Date" ||
-      key === "Date of Birth"
-    ) {
+    } else if (value?.fe_input_type === "date") {
       return formatDate(value);
     } else if (key === "Phone Number") {
       return formatPhoneNumber(`+${value}`);
     } else {
-      return value?.value;
+      return value;
     }
   };
 
@@ -207,7 +202,7 @@ const ProfessionalDetails = ({ details, label, isLoading }) => {
               </div>
             ) : (
               <div className="flex-1 display-flex-justify ">
-                {!!value ? (
+                {value?.value ? (
                   <div
                     className="flex-1 display-flex align-center"
                     style={{ gap: 12 }}
@@ -216,7 +211,7 @@ const ProfessionalDetails = ({ details, label, isLoading }) => {
                       className="display-flex"
                       style={{ flexWrap: "wrap", gap: 6 }}
                     >
-                      {value?.data?.map((item, index) => {
+                      {value?.value?.map((item, index) => {
                         return (
                           <div
                             key={index}
@@ -232,7 +227,7 @@ const ProfessionalDetails = ({ details, label, isLoading }) => {
                     </div>
                     <button
                       className="edit-details-btn"
-                      onClick={() => handleEdit(key, value)}
+                      onClick={() => handleEdit(key, value?.value)}
                       style={{ alignSelf: "flex-start" }}
                     >
                       <EditIcon />
@@ -256,15 +251,15 @@ const ProfessionalDetails = ({ details, label, isLoading }) => {
           </div>
         </div>
       );
-    } else if (typeof value === "boolean") {
+    } else if (value?.fe_input_type === "toggle") {
       return (
         <div key={key} className="detail-row">
           <p className="font-14-medium color-dark-black flex-1">{key}</p>
           <div className="flex-2">
             <CommonSwitch
-              on={value}
+              on={value?.value ? true : false}
               onToggle={() => {
-                setFields({ ...fields, [key]: !value });
+                setFields({ ...fields, [key]: !value?.value });
               }}
             />
           </div>
@@ -327,7 +322,7 @@ const ProfessionalDetails = ({ details, label, isLoading }) => {
                   </button>
                 </div>
               </div>
-            ) : Object.values(value).some((url) => url) ? (
+            ) : value?.value ? (
               <div
                 className="flex-1 display-flex align-center"
                 style={{ gap: 12 }}
@@ -336,20 +331,18 @@ const ProfessionalDetails = ({ details, label, isLoading }) => {
                   className="display-flex"
                   style={{ flexWrap: "wrap", gap: 6 }}
                 >
-                  {Object.entries(value)
-                    .filter(([_, url]) => url)
-                    .map(([key, url]) => (
-                      <a
-                        key={key}
-                        href={url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="social-link-item font-14-regular color-dark-black"
-                      >
-                        {icons[key]}
-                        <span>{key}</span>
-                      </a>
-                    ))}
+                  {value?.value?.map((item, index) => (
+                    <a
+                      key={index}
+                      href={item?.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="social-link-item font-14-regular color-dark-black"
+                    >
+                      {icons[item?.name]}
+                      <span>{item?.name}</span>
+                    </a>
+                  ))}
                 </div>
                 <button
                   className="edit-details-btn"
@@ -403,23 +396,23 @@ const ProfessionalDetails = ({ details, label, isLoading }) => {
               </div>
             ) : (
               <div className="flex-1 display-flex-justify ">
-                {!!value ? (
+                {value?.value ? (
                   <div
                     className="flex-1 display-flex align-center"
                     style={{ gap: 12 }}
                   >
-                    {/* <div
+                    <div
                       className="display-flex"
                       style={{ flexWrap: "wrap", gap: 6 }}
                     >
-                      {value?.map((item) => {
+                      {value?.value?.map((item) => {
                         return (
                           <div className="selected-options-item font-14-regular color-dark-black">
                             {item}
                           </div>
                         );
                       })}
-                    </div> */}
+                    </div>
                     <button
                       className="edit-details-btn"
                       onClick={() => handleEdit(key, value)}
@@ -450,22 +443,31 @@ const ProfessionalDetails = ({ details, label, isLoading }) => {
       return (
         <div className="detail-row">
           <p className="font-14-medium color-dark-black flex-1">{key}</p>
-          <div className="display-flex align-center flex-2" style={{ gap: 6 }}>
-            <div className="w-h-32">
-              <img src={value?.image} className="common-img" />
-            </div>
-            <div className="display-column" style={{ gap: 4 }}>
-              {value?.name && (
-                <p className="font-14-medium color-dark-black">{value?.name}</p>
-              )}
+          {value?.value ? (
+            <div
+              className="display-flex align-center flex-2"
+              style={{ gap: 6 }}
+            >
+              <div className="w-h-32">
+                <img src={value?.image} className="common-img" />
+              </div>
+              <div className="display-column" style={{ gap: 4 }}>
+                {value?.name && (
+                  <p className="font-14-medium color-dark-black">
+                    {value?.name}
+                  </p>
+                )}
 
-              {value?.position && (
-                <p className="font-10-regular color-dark-black">
-                  {value?.position}
-                </p>
-              )}
+                {value?.position && (
+                  <p className="font-10-regular color-dark-black">
+                    {value?.position}
+                  </p>
+                )}
+              </div>
             </div>
-          </div>
+          ) : (
+            <DashIcon />
+          )}
         </div>
       );
     } else {
@@ -495,17 +497,17 @@ const ProfessionalDetails = ({ details, label, isLoading }) => {
                   className="flex-1 display-flex align-center"
                   style={{ gap: 12 }}
                 >
-                  {!!value ? (
+                  {!!value?.value ? (
                     <span className="font-14-regular color-dark-blak ">
-                      {renderItemValue(key, value)}
+                      {renderItemValue(key, value?.value)}
                     </span>
                   ) : (
                     <DashIcon />
                   )}
-                  {key !== "Candidate Reference" && (
+                  {value?.fe_input_type !== "disable" && (
                     <button
                       className="edit-details-btn"
-                      onClick={() => handleEdit(key, value)}
+                      onClick={() => handleEdit(key, value?.value)}
                     >
                       <EditIcon />
                     </button>

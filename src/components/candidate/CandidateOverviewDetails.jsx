@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { icons } from "../../helpers/config";
+import { ReactComponent as DashIcon } from "../../assets/icons/dash.svg";
 
 import {
   formatCustomDate,
@@ -11,14 +12,9 @@ const CandidateOverviewDetails = ({ details, label }) => {
   const [fields, setFields] = useState(details);
 
   const renderItemValue = (key, value) => {
-    if (key === "Hired Date") {
+    if (value?.fe_input_type === "date-time") {
       return formatCustomDate(value);
-    } else if (
-      key === "Start Date" ||
-      key === "Probation End Date" ||
-      key === "Left Date" ||
-      key === "Date of Birth"
-    ) {
+    } else if (value?.fe_input_type === "date") {
       return formatDate(value);
     } else if (key === "Phone Number") {
       return formatPhoneNumber(`+${value}`);
@@ -47,7 +43,7 @@ const CandidateOverviewDetails = ({ details, label }) => {
                     className="display-flex"
                     style={{ flexWrap: "wrap", gap: 6 }}
                   >
-                    {value?.map((item) => {
+                    {value?.value?.map((item) => {
                       return (
                         <div className="candidate-info-skill-item">
                           {item?.name}{" "}
@@ -64,39 +60,27 @@ const CandidateOverviewDetails = ({ details, label }) => {
           </div>
         </div>
       );
-    } else if (typeof value === "boolean") {
+    } else if (value?.fe_input_type === "toggle") {
       return;
     } else if (key === "Social Links") {
       return (
         <div key={key} className="detail-row">
           <p className="font-14-medium color-dark-black flex-1">{key}</p>
           <div className="flex-1">
-            {Object.values(value).some((url) => url) && (
-              <div
-                className="flex-1 display-flex align-center"
-                style={{ gap: 12 }}
-              >
-                <div
-                  className="display-flex"
-                  style={{ flexWrap: "wrap", gap: 6 }}
+            <div className="display-flex" style={{ flexWrap: "wrap", gap: 6 }}>
+              {value?.value?.map((item, index) => (
+                <a
+                  key={index}
+                  href={item?.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="social-link-item font-14-regular color-dark-black"
                 >
-                  {Object.entries(value)
-                    .filter(([_, url]) => url)
-                    .map(([key, url]) => (
-                      <a
-                        key={key}
-                        href={url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="social-link-item font-14-regular color-dark-black"
-                      >
-                        {icons[key]}
-                        <span>{key}</span>
-                      </a>
-                    ))}
-                </div>
-              </div>
-            )}
+                  {icons[item?.name]}
+                  <span>{item?.name}</span>
+                </a>
+              ))}
+            </div>
           </div>
         </div>
       );
@@ -106,25 +90,18 @@ const CandidateOverviewDetails = ({ details, label }) => {
           <p className="font-14-medium color-dark-black flex-1">{key}</p>
           <div className="flex-1">
             <div className="flex-1 display-flex-justify">
-              {!!value && (
-                <div
-                  className="flex-1 display-flex align-center"
-                  style={{ gap: 12 }}
-                >
-                  <div
-                    className="display-flex"
-                    style={{ flexWrap: "wrap", gap: 6 }}
-                  >
-                    {value?.map((item) => {
-                      return (
-                        <div className="selected-options-item font-14-regular color-dark-black">
-                          {item}
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-              )}
+              <div
+                className="display-flex"
+                style={{ flexWrap: "wrap", gap: 6 }}
+              >
+                {value?.value?.map((item) => {
+                  return (
+                    <div className="selected-options-item font-14-regular color-dark-black">
+                      {item}
+                    </div>
+                  );
+                })}
+              </div>
             </div>
           </div>
         </div>
@@ -141,10 +118,12 @@ const CandidateOverviewDetails = ({ details, label }) => {
                 className="flex-1 display-flex align-center"
                 style={{ gap: 12 }}
               >
-                {!!value && (
+                {value?.value ? (
                   <span className="font-14-regular color-dark-blak ">
-                    {renderItemValue(key, value)}
+                    {renderItemValue(key, value?.value)}
                   </span>
+                ) : (
+                  <DashIcon />
                 )}
               </div>
             </div>

@@ -63,6 +63,8 @@ const Candidates = ({ isDrawerOpen }) => {
     totalCandidateData,
     totalCandidatePages,
     candidateFilters,
+    candidateInfo,
+    candidateDetailsLoading,
   } = useSelector((state) => state.candidates);
 
   const [candidateList, setCandidateList] = useState(
@@ -466,6 +468,15 @@ const Candidates = ({ isDrawerOpen }) => {
     dispatch(fetchAllLabels());
   }, [dispatch]);
 
+  useEffect(() => {
+    dispatch(fetchCandidateDetails(selectedCandidateId));
+  }, [selectedCandidateId]);
+
+  const handleCandidateEyeClick = (id) => {
+    setSelectedCandidateId(id);
+    toggleCandidateOverviewDrawer(true);
+  };
+
   const handleCandidateClick = (id) => {
     setSelectedCandidateId(id);
     setModalVisibility("candidateInfoModalVisible", true);
@@ -624,7 +635,7 @@ const Candidates = ({ isDrawerOpen }) => {
                     }
                     setSelectedCandidateUsers={setSelectedCandidates}
                     showDeleteIcon={false}
-                    eyeClickOn={() => toggleCandidateOverviewDrawer(true)}
+                    eyeClickOn={handleCandidateEyeClick}
                     onCandidateClick={handleCandidateClick} // Pass function to handle clicks
                   />
                 )}

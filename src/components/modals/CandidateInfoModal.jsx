@@ -444,10 +444,6 @@ const CandidateInfoModal = ({ visible, onClose, candidateId }) => {
     setSummaryStructuredData(candidateInfo?.structuredCandidate || {});
   }, [candidateInfo]);
 
-  useEffect(() => {
-    dispatch(fetchCandidateDetails(candidateId));
-  }, [candidateId]);
-
   const handleBackdropClick = () => {
     setModalVisibility("animatedModal", true);
     setTimeout(() => {
@@ -793,6 +789,7 @@ const CandidateInfoModal = ({ visible, onClose, candidateId }) => {
                           options: field.options,
                           order: field.order,
                           default: field.default,
+                          fe_input_type: field.fe_input_type,
                           hide: field.hide,
                         };
                         return acc;
@@ -804,7 +801,7 @@ const CandidateInfoModal = ({ visible, onClose, candidateId }) => {
                         <CandidateDescription
                           label={value?.label}
                           editable={true}
-                          data={value?.value}
+                          data={value?.fields[0]?.value || ""}
                           isLoading={candidateDetailsLoading}
                         />
                       );
@@ -828,6 +825,26 @@ const CandidateInfoModal = ({ visible, onClose, candidateId }) => {
                           isLoading={candidateDetailsLoading}
                         />
                       );
+                    } else if (key === "jobs") {
+                      return (
+                        <CandidateInfoJobs
+                          label={value?.label}
+                          data={jobData}
+                          onAdd={() => setAddToJobsModalVisible(true)}
+                          isLoading={candidateDetailsLoading}
+                        />
+                      );
+                    } else if (key === "folder") {
+                      return (
+                        <AddCommonCandidateInfo
+                          label={value?.label}
+                          onAdd={() => setAddToFolderModalVisible(true)}
+                          data={folders}
+                          isLoading={candidateDetailsLoading}
+                        />
+                      );
+                    } else if (key === "folders") {
+                      return;
                     } else {
                       return (
                         <ProfessionalDetails
@@ -844,36 +861,7 @@ const CandidateInfoModal = ({ visible, onClose, candidateId }) => {
                     }
                   })}
 
-                <ProfessionalDetails
-                  label={"Contact Details"}
-                  details={contactDetails}
-                  editable={true}
-                />
-
-                <ProfessionalDetails
-                  label={"Professional Details"}
-                  details={professionalDetails}
-                  editable={true}
-                />
-                <ProfessionalDetails
-                  label={"Placement Details"}
-                  details={placementDetails}
-                  editable={true}
-                />
-
-                <CandidateInfoJobs
-                  label={"Jobs"}
-                  data={jobData}
-                  onAdd={() => setAddToJobsModalVisible(true)}
-                  isLoading={candidateDetailsLoading}
-                />
-                <AddCommonCandidateInfo
-                  label={"Folders"}
-                  onAdd={() => setAddToFolderModalVisible(true)}
-                  data={folders}
-                  isLoading={candidateDetailsLoading}
-                />
-                <CandidateLog isLoading={candidateDetailsLoading} />
+                {/* <CandidateLog isLoading={candidateDetailsLoading} /> */}
               </div>
               {candidateDetailsLoading ? (
                 <div

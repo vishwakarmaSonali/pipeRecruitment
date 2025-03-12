@@ -212,7 +212,7 @@ const CandidateTable = ({
                                   className="eye-icon"
                                   onClick={(e) => {
                                     e.stopPropagation();
-                                    eyeClickOn();
+                                    eyeClickOn(candidate?._id);
                                   }}
                                 >
                                   <EyeIcon />

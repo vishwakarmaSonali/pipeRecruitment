@@ -585,7 +585,7 @@ export const languagesOptions = [
 ];
 
 export const icons = {
-  linkedin_url: <LinkedIn />,
+  LinkedIn: <LinkedIn />,
   twitter_url: <Twitter />,
   github_url: <Github />,
   facebook_url: <Facebook />,
