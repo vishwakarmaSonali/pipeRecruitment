@@ -81,6 +81,7 @@ export const fetchCandidatesList = (filters, page) => async (dispatch) => {
   }
 };
 
+
 export const fetchCandidateDetails = (id) => async (dispatch) => {
   dispatch({ type: CANDIDATE_DETAILS_REQUEST });
 

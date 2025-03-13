@@ -20,14 +20,14 @@ const ExperienceDetailsManager = ({
       if (selectedIndex !== null) {
         console.log("✅ Updating existing experience at index:", selectedIndex);
         return prevDetails.map((exp, i) =>
-          i === selectedIndex ? details : exp
+          i === selectedIndex ? { ...details, end_date: details.isCurrentlyWorking ? null : details.end_date } : exp
         );
       } else {
         console.log("🆕 Adding new experience...");
-        return [...prevDetails, details];
+        return [...prevDetails, { ...details, end_date: details.isCurrentlyWorking ? null : details.end_date }];
       }
     });
-
+  
     // Reset state after updating
     setTimeout(() => {
       setSelectedIndex(null);
@@ -35,6 +35,7 @@ const ExperienceDetailsManager = ({
       setModalVisibility("AddExperienceDetailModalVisible", false);
     }, 0);
   };
+  
 
   // ✅ Function to remove an experience entry
   const removeExperience = (index) => {
@@ -68,46 +69,50 @@ const ExperienceDetailsManager = ({
       {/* List of Added Experience Details */}
       {experienceDetails.length > 0 && (
         <div className="flex flex-col gap-2">
-          {experienceDetails.map((exp, index) => (
-            <div
-              key={index}
-              className="flex items-center justify-between p-2 rounded-md"
-            >
-              {/* ✅ Display Experience Details */}
-              <div className="space-y-1">
-                <p className="text-l font-ubuntu font-medium text-customBlue">
-                  {exp.position} at {exp.company}
-                </p>
-                <p className="text-m font-ubuntu text-customBlue">
-                  {exp.location}
-                </p>
-                <p className="font-ubuntu text-m text-customGray">
-                  {exp.startDate} -{" "}
-                  {exp.isCurrentlyWorking ? "Present" : exp.endDate}
-                </p>
-              </div>
-
-              {/* ✅ Three Dots Menu */}
-              <IconButton onClick={(e) => handleOpenMenu(e, index)}>
-                <MoreVertIcon />
-              </IconButton>
-
-              {/* ✅ Dropdown Menu */}
-              <Menu
-                anchorEl={anchorEl}
-                open={Boolean(anchorEl) && selectedIndex === index}
-                onClose={handleCloseMenu}
-                PaperProps={{
-                  sx: commonStyle.sx,
-                }}
+          {experienceDetails.map((exp, index) => {
+            console.log("expedfsdfsdfsdfsdf",exp);
+            
+            return (
+              <div
+                key={index}
+                className="flex items-center justify-between p-2 rounded-md"
               >
-                <MenuItem onClick={handleEditExperience}>Edit</MenuItem>
-                <MenuItem onClick={() => removeExperience(index)}>
-                  Remove
-                </MenuItem>
-              </Menu>
-            </div>
-          ))}
+                {/* ✅ Display Experience Details */}
+                <div className="space-y-1">
+                  <p className="text-l font-ubuntu font-medium text-customBlue">
+                    {exp.position} at {exp.company}
+                  </p>
+                  <p className="text-m font-ubuntu text-customBlue">
+                    {exp.location}
+                  </p>
+                  <p className="font-ubuntu text-m text-customGray">
+                    {exp.start_date} -{" "}
+                    {exp.isCurrentlyWorking ? "Present" : exp.end_date}
+                  </p>
+                </div>
+  
+                {/* ✅ Three Dots Menu */}
+                <IconButton onClick={(e) => handleOpenMenu(e, index)}>
+                  <MoreVertIcon />
+                </IconButton>
+  
+                {/* ✅ Dropdown Menu */}
+                <Menu
+                  anchorEl={anchorEl}
+                  open={Boolean(anchorEl) && selectedIndex === index}
+                  onClose={handleCloseMenu}
+                  PaperProps={{
+                    sx: commonStyle.sx,
+                  }}
+                >
+                  <MenuItem onClick={handleEditExperience}>Edit</MenuItem>
+                  <MenuItem onClick={() => removeExperience(index)}>
+                    Remove
+                  </MenuItem>
+                </Menu>
+              </div>
+            )
+          })}
         </div>
       )}
 

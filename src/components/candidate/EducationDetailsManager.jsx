@@ -65,44 +65,48 @@ const EducationDetailsManager = ({ educationDetails, setEducationDetails }) => {
     <div>
       {/* List of Added Education Details */}
       <div className="flex flex-col gap-2 mb-2">
-        {educationDetails.map((edu, index) => (
-          <div
-            key={index}
-            className="flex items-center justify-between p-2 rounded-md "
-          >
-            {/* ✅ Display Education Details */}
-            <div>
-              <p className="text-l font-ubuntu font-medium text-customBlue">
-                {edu.degree} in {edu.major}
-              </p>
-              <p className="text-m font-ubuntu text-customBlue">
-                {edu.university}
-              </p>
-              <p className="font-ubuntu text-m text-customGray">
-                {edu.startDate?.month} {edu.startDate?.year} -{" "}
-                {edu.endDate?.month} {edu.endDate?.year}
-              </p>
-            </div>
-
-            {/* ✅ Three Dots Menu */}
-            <IconButton onClick={(e) => handleOpenMenu(e, index)}>
-              <MoreVertIcon />
-            </IconButton>
-
-            {/* ✅ Dropdown Menu */}
-            <Menu
-              anchorEl={anchorEl}
-              open={Boolean(anchorEl) && selectedIndex === index}
-              onClose={handleCloseMenu}
-              PaperProps={{
-                sx: commonStyle.sx,
-              }}
+        {educationDetails.map((edu, index) => {
+          console.log("eduuuuuuu",edu);
+          
+          return (
+            <div
+              key={index}
+              className="flex items-center justify-between p-2 rounded-md "
             >
-              <MenuItem onClick={handleEditEducation}>Edit</MenuItem>
-              <MenuItem onClick={() => removeEducation(index)}>Remove</MenuItem>
-            </Menu>
-          </div>
-        ))}
+              {/* ✅ Display Education Details */}
+              <div>
+                <p className="text-l font-ubuntu font-medium text-customBlue">
+                  {edu.degree} in {edu.field_of_study}
+                </p>
+                <p className="text-m font-ubuntu text-customBlue">
+                  {edu.school}
+                </p>
+                <p className="font-ubuntu text-m text-customGray">
+                  {edu.start_date} -{" "}
+                  {edu.end_date}
+                </p>
+              </div>
+  
+              {/* ✅ Three Dots Menu */}
+              <IconButton onClick={(e) => handleOpenMenu(e, index)}>
+                <MoreVertIcon />
+              </IconButton>
+  
+              {/* ✅ Dropdown Menu */}
+              <Menu
+                anchorEl={anchorEl}
+                open={Boolean(anchorEl) && selectedIndex === index}
+                onClose={handleCloseMenu}
+                PaperProps={{
+                  sx: commonStyle.sx,
+                }}
+              >
+                <MenuItem onClick={handleEditEducation}>Edit</MenuItem>
+                <MenuItem onClick={() => removeEducation(index)}>Remove</MenuItem>
+              </Menu>
+            </div>
+          )
+        })}
       </div>
 
       {/* Add Education Button */}

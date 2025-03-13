@@ -69,7 +69,7 @@ const LoginAdmin = () => {
           <div className="w-96 space-y-4">
             <div className="space-y-2">
               <label className="block text-customBlue font-ubuntu text-sm mb-1">
-                Email Id
+                Email Id here
               </label>
               <CommonTextInput
                 type="email"

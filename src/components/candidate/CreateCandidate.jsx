@@ -227,9 +227,9 @@ const CreateCandidateForm = () => {
     // Extract education details with YYYY-MM-DD format
     const formattedEducation = education?.length
       ? education.map((edu) => ({
-          school: edu?.university || "N/A",
-          degree: edu?.degree || "N/A",
-          field_of_study: edu?.major || "N/A",
+          school: edu?.university || "-",
+          degree: edu?.degree || "-",
+          field_of_study: edu?.major || "-",
           start_date:
             edu?.startDate?.year && edu?.startDate?.month
               ? format(
@@ -250,24 +250,24 @@ const CreateCandidateForm = () => {
     // Extract employment history with YYYY-MM-DD format
     const formattedEmploymentHistory = experience?.length
       ? experience.map((exp) => ({
-          company: exp.company || "N/A",
-          position: exp.position || "N/A",
+          company: exp.company || "-",
+          position: exp.position || "-",
           start_date: exp.start_date
             ? format(new Date(exp.start_date), "yyyy-MM-dd")
             : undefined,
           end_date: exp.end_date
             ? format(new Date(exp.end_date), "yyyy-MM-dd")
             : undefined, // If null, it's the current job
-          location: exp.location || "N/A",
+          location: exp.location || "-",
           current: !exp.end_date,
-          title: exp.title || "N/A",
+          title: exp.title || "-",
         }))
       : undefined;
 
     // Extract social links
     const formattedSocialLinks = socialLinks?.length
       ? socialLinks.map((link) => ({
-          name: link.name || "N/A",
+          name: link.name || "-",
           url: link.url || "",
         }))
       : undefined;
@@ -665,7 +665,11 @@ const CreateCandidateForm = () => {
                     selectedCurrency={currentSalaryCurrency}
                     setSelectedCurrency={setCurrentSalaryCurrency}
                     salary={currentSalary}
-                    setSalary={setCurrentSalary}
+                    setSalary={(value) => {
+                      if (/^\d*$/.test(value)) {
+                        setCurrentSalary(value); // Only allow numeric values
+                      }
+                    }}
                   />
                 </div>
                 <div className="flex-1 rounded-[8px]">
@@ -674,7 +678,11 @@ const CreateCandidateForm = () => {
                     selectedCurrency={expectedSalaryCurrency}
                     setSelectedCurrency={setExpectedSalaryCurrency}
                     salary={expectedSalary}
-                    setSalary={setExpectedSalary}
+                    setSalary={(value) => {
+                      if (/^\d*$/.test(value)) {
+                        setExpectedSalary(value);
+                      }
+                    }}
                   />
                 </div>
               </div>

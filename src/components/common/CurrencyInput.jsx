@@ -25,12 +25,12 @@ const CurrencySelector = ({
         const data = response.data.map((country) => {
           const currencyCode = country.currencies
             ? Object.keys(country.currencies)[0]
-            : "N/A";
+            : "-";
 
           return {
             name: country.name.common,
             code: currencyCode,
-            symbol: getSymbolFromCurrency(currencyCode) || "N/A",
+            symbol: getSymbolFromCurrency(currencyCode) || "-",
           };
         });
 

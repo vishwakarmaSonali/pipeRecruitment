@@ -10,6 +10,7 @@ import {
 } from "./actionsType";
 import { logoutUser } from "./authActions";
 import axiosInstance from "./axiosInstance";
+import { notifySuccess } from "../helpers/utils";
 
 export const fetchCandidates = (filters, page) => {
   return async (dispatch) => {
@@ -64,7 +65,7 @@ export const addSourceToCandidates =
           type: ADD_SOURCE_TO_CANDIDATE_SUCCESS,
           payload: response.data.message,
         });
-        alert("Candidates added successfully!");
+        notifySuccess("Candidates added successfully!");
       } else {
         dispatch({
           type: ADD_SOURCE_TO_CANDIDATE_FAILURE,

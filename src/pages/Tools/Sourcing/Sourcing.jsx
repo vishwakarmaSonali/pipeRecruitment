@@ -166,22 +166,28 @@ const BulkActionView = ({
   return (
     <div className="sourcing-header-container">
       <p className="font-22-medium color-dark-black">Sourcing</p>
-      <button
-        className="text-white bg-buttonBLue px-[14px] py-[10px] rounded-[8px] flex items-center space-x-1 shadow-md hover:bg-opacity-80"
-        onClick={isBulkAction ? handleClick : onClickFilter}
-      >
-        <span className="font-ubuntu text-m">
-          {isBulkAction
-            ? "Bulk Action"
-            : `Filter ${filterCount > 0 ? `(${filterCount})` : ""}`}
-        </span>
-        {isBulkAction ? (
-          <DropArrow fill="white" />
-        ) : (
-          <img src={FilterIcon} alt="filter" />
-        )}
-      </button>
+      <div className="flex items-center gap-2">
+        {isBulkAction && (
+          <button
+            className="text-white bg-buttonBLue px-[14px] py-[10px] rounded-[8px] flex items-center space-x-1 shadow-md hover:bg-opacity-80"
+            onClick={handleClick}
+          >
+            <span className="font-ubuntu text-m">Bulk Action</span>
 
+            <DropArrow fill="white" />
+          </button>
+        )}
+        <button
+          className="text-white bg-buttonBLue px-[14px] py-[10px] rounded-[8px] flex items-center space-x-1 shadow-md hover:bg-opacity-80"
+          onClick={onClickFilter}
+        >
+          <span className="font-ubuntu text-m">
+            Filter {filterCount > 0 ? `(${filterCount})` : ""}
+          </span>
+
+          <img src={FilterIcon} alt="filter" />
+        </button>
+      </div>
       {/* Menu for Bulk Actions */}
       <Menu
         anchorEl={anchorEl}

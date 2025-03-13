@@ -34,6 +34,7 @@ const CandidateCard = ({
 }) => {
   const [skillsShowAll, setSkillsShowAll] = useState(false);
   const [validImageUrl, setValidImageUrl] = useState(true);
+console.log("data>>>>>>",data);
 
   return (
     <div
@@ -83,14 +84,14 @@ const CandidateCard = ({
             <p className="font-16-regular color-dark-black">{data?.location}</p>
           </div>
         )}
-        {/* {data?.location && (
+        {data?.education && (
           <div className="display-flex align-center" style={{ gap: 12 }}>
             <UniversityIcon />
             <p className="font-16-regular color-dark-black">
-              Rhode Island School of Design
+            {/* {data?.education?.} */}
             </p>
           </div>
-        )} */}
+        )}
         {skills && (
           <div className="display-flex" style={{ gap: 6, flexWrap: "wrap" }}>
             {[...skills]

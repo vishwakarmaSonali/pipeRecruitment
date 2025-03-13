@@ -74,7 +74,7 @@ const Candidates = ({ isDrawerOpen }) => {
   const [selectedCandidate, setSelectedCandidate] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState("Candidates");
   const selectedColumns = useSelector((state) => state.columns.selected); // Get selected columns from Redux
-  const savedFilters = useSelector((state) => state.filters.filters); // Get saved filters from Redux
+  const savedFilters = useSelector((state) => state?.filters?.filters); // Get saved filters from Redux
   const [isFilterSaved, setIsFilterSaved] = useState(false);
   const [isColumnSelectorOpen, setIsColumnSelectorOpen] = useState(false);
   const [filterDrawerOpen, setFilterDrawerOpen] = useState(false);
@@ -331,6 +331,8 @@ const Candidates = ({ isDrawerOpen }) => {
   // ✅ Handle Filter Menu Apply
   const handleFilterApply = (filterOption, inputValue) => {
     if (!inputValue || inputValue.trim() === "") {
+      console.log(filterOption,inputValue,"onHandleFilterApply");
+      
       console.error(
         "Filter input value is missing. Please enter a valid value."
       );
@@ -429,20 +431,20 @@ const Candidates = ({ isDrawerOpen }) => {
         _id: candidate?._id,
         candidate_name:
           `${candidate.first_name || ""} ${candidate.last_name || ""}`.trim() ||
-          "N/A",
-        // candidate_first_name: candidate.first_name || "N/A",
-        // candidate_last_name: candidate.last_name || "N/A",
-        reference_id: candidate._id || "N/A",
-        location: candidate.location || "N/A",
-        gender: candidate.gender || "N/A",
-        diploma: candidate.education?.[0]?.degree || "N/A",
-        university: candidate.education?.[0]?.school || "N/A",
-        current_company: candidate.employment_history?.[0]?.company || "N/A",
-        current_position: candidate.employment_history?.[0]?.position || "N/A",
-        email: candidate.email || "N/A",
-        phone: candidate.phone || "N/A",
-        // start_date: candidate.employment_history?.[0]?.start_date || "N/A",
-        // skills: candidate.skills?.map((skill) => skill.name).join(", ") || "N/A",
+          "-",
+        // candidate_first_name: candidate.first_name || "-",
+        // candidate_last_name: candidate.last_name || "-",
+        reference_id: candidate._id || "-",
+        location: candidate.location || "-",
+        gender: candidate.gender || "-",
+        diploma: candidate.education?.[0]?.degree || "-",
+        university: candidate.education?.[0]?.school || "-",
+        current_company: candidate.employment_history?.[0]?.company || "-",
+        current_position: candidate.employment_history?.[0]?.position || "-",
+        email: candidate.email || "-",
+        phone: candidate.phone || "-",
+        // start_date: candidate.employment_history?.[0]?.start_date || "-",
+        // skills: candidate.skills?.map((skill) => skill.name).join(", ") || "-",
         // photo_url: candidate.photo_url || "",
       }));
 
@@ -463,6 +465,7 @@ const Candidates = ({ isDrawerOpen }) => {
     params.limit = resultsPerPage;
     dispatch(fetchCandidatesList(params, 1));
   }, [dispatch, resultsPerPage]);
+
 
   useEffect(() => {
     dispatch(fetchAllLabels());
@@ -782,16 +785,9 @@ const Candidates = ({ isDrawerOpen }) => {
         menuItems={searchableMenuItems} // Pass dynamic items
       />
 
-      {/* 🔹 Filter Menu */}
-      <FilterMenu
-        anchorEl={anchorFilterMenuEl}
-        open={Boolean(anchorFilterMenuEl)}
-        onClose={() => setAnchorFilterMenuEl(null)}
-        selectedOption={selectedSearchableOption}
-        onApply={handleFilterApply} // Use modified handleApply
-      />
+   
       <CandidateFilterDrawer
-        // onApply={applyFilters}
+        onApply={handleFilterApply}
         // onReset={resetFilters}
         filters={filters}
         isOpen={filterDrawerOpen}
