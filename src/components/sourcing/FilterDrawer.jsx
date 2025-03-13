@@ -94,6 +94,7 @@ const FilterDrawer = ({ isOpen, onClose, onApply, onReset, filters }) => {
       domain: industry?.industryType || "",
       titles: selectedTitles,
       location: selectedLocations,
+      locations: selectedLocations,
       skills: selectedSkills,
       organizations: selectedOrganizations,
       experience,

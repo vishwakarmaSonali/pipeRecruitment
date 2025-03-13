@@ -150,7 +150,7 @@ const socialLinksOptions = [
 const AddSocialLinksModal = ({
   visible,
   onClose,
-  onAddLanguages,
+  onAddSocial,
   showHeader,
 }) => {
   const { modals, setModalVisibility } = useModal();
@@ -161,7 +161,7 @@ const AddSocialLinksModal = ({
   // ✅ Handle Add Button Click (Ensure a platform & URL is selected)
   const handleAddClick = () => {
     if (selectedSocialLink && socialLinkURL.trim() !== "") {
-      onAddLanguages({ ...selectedSocialLink, url: socialLinkURL }); // ✅ Send platform + URL
+      onAddSocial({ ...selectedSocialLink, url: socialLinkURL }); // ✅ Send platform + URL
       setSelectedSocialLink(null);
       setSocialLinkURL(""); // Clear fields after adding
     }

@@ -21,6 +21,8 @@ import {
   formatCustomDate,
   formatDate,
   formatPhoneNumber,
+  notifyError,
+  notifySuccess,
 } from "../../helpers/utils";
 import CommonDropdown from "../common/CommonDropdown";
 import LocationSearchDropdown from "../AutocompleteDropdowns/LocationSearchDropDown";
@@ -30,8 +32,13 @@ import DropdownWithInput from "./StyledDropdownInput";
 import NationalitySearchDropdown from "../AutocompleteDropdowns/NationalitySearchDropDown";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
+import { updateCandidateDetails } from "../../actions/candidateActions";
+import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 
 const ProfessionalDetails = ({ details, label, isLoading }) => {
+  const dispatch = useDispatch();
+  const { candidateId } = useSelector((state) => state?.candidates);
   const [fields, setFields] = useState(details);
   const [editField, setEditField] = useState(null);
   const [tempValue, setTempValue] = useState("");
@@ -42,28 +49,186 @@ const ProfessionalDetails = ({ details, label, isLoading }) => {
   const [addSkillModalVisible, setAddSkillModalVisible] = useState(false);
   const [tempDate, setTempDate] = useState(null);
   const [selectedTitle, setSelectedTitle] = useState("None");
+  const [updateLoading, setUpdateLoading] = useState(false);
 
   const handleDateSelect = (date) => {
-    console.log(">>>>>>>>>>>>>>>>>>date", date);
     setTempValue(date);
   };
 
   const handleEdit = (key, value) => {
     setEditField(key);
-    setTempValue(value);
+    if (value?.fe_input_type === "multi_select") {
+      if (value?.value?.length > 0) {
+        const refactorData = value?.value?.map((item) => item?.name);
+        setTempValue(refactorData);
+      }
+    } else if (value?.fe_input_type === "array") {
+      if (value?.value?.length > 0) {
+        setTempValue(value?.value);
+      }
+    } else {
+      setTempValue(value?.value);
+    }
   };
 
-  const handleSocialLinkEdit = (key, value) => {
-    setEditField(key);
-    setTempValue(value);
+  const handleSave = (key, value) => {
+    if (key === "First Name") {
+      setUpdateLoading(true);
+      let httpBody = {
+        first_name: tempValue?.trim(),
+        ...(selectedTitle !== "None" && { salutation: selectedTitle }),
+      };
+
+      dispatch(updateCandidateDetails(candidateId, httpBody)).then(
+        (response) => {
+          if (response?.success) {
+            notifySuccess(response?.message);
+            setFields({
+              ...fields,
+              [key]: { ...value, value: tempValue },
+            });
+            setEditField(null);
+            setUpdateLoading(false);
+          } else {
+            notifyError(response);
+            setUpdateLoading(false);
+          }
+        }
+      );
+    } else if (value?.fe_input_type === "auto_search") {
+      setUpdateLoading(true);
+
+      let httpBody = {
+        [value?.name]: typeof tempValue === "string" ? tempValue : tempValue[0],
+      };
+
+      dispatch(updateCandidateDetails(candidateId, httpBody)).then(
+        (response) => {
+          if (response?.success) {
+            notifySuccess(response?.message);
+            setFields({
+              ...fields,
+              [key]: {
+                ...value,
+                value: typeof tempValue === "string" ? tempValue : tempValue[0],
+              },
+            });
+            setEditField(null);
+            setUpdateLoading(false);
+          } else {
+            notifyError(response);
+            setUpdateLoading(false);
+          }
+        }
+      );
+    } else if (value?.fe_input_type === "multi_select") {
+      setUpdateLoading(true);
+      const data =
+        key === "Languages"
+          ? tempValue?.length > 0
+            ? tempValue?.map((item) => {
+                return { name: item, proficiency: null };
+              })
+            : []
+          : [];
+
+      let httpBody = {
+        [value?.name]: data,
+      };
+
+      dispatch(updateCandidateDetails(candidateId, httpBody)).then(
+        (response) => {
+          if (response?.success) {
+            notifySuccess(response?.message);
+            setFields({
+              ...fields,
+              [key]: {
+                ...value,
+                value: data,
+              },
+            });
+            setEditField(null);
+            setUpdateLoading(false);
+          } else {
+            notifyError(response);
+            setUpdateLoading(false);
+          }
+        }
+      );
+    } else if (value?.fe_input_type === "array") {
+      setUpdateLoading(true);
+
+      let httpBody = {
+        [value?.name]: tempValue,
+      };
+
+      dispatch(updateCandidateDetails(candidateId, httpBody)).then(
+        (response) => {
+          if (response?.success) {
+            notifySuccess(response?.message);
+            setFields({
+              ...fields,
+              [key]: {
+                ...value,
+                value: tempValue,
+              },
+            });
+            setEditField(null);
+            setUpdateLoading(false);
+          } else {
+            notifyError(response);
+            setUpdateLoading(false);
+          }
+        }
+      );
+    } else {
+      setUpdateLoading(true);
+      let httpBody = {
+        [value?.name]: tempValue?.trim(),
+      };
+      dispatch(updateCandidateDetails(candidateId, httpBody)).then(
+        (response) => {
+          if (response?.success) {
+            notifySuccess(response?.message);
+            setFields({
+              ...fields,
+              [key]: { ...value, value: tempValue },
+            });
+            setEditField(null);
+            setUpdateLoading(false);
+          } else {
+            notifyError(response);
+            setUpdateLoading(false);
+          }
+        }
+      );
+    }
   };
 
-  const handleSave = (key) => {
-    setFields({
-      ...fields,
-      [key]: tempValue,
+  const handleSkillAdd = (value) => {
+    console.log(">>>>>>>>>>>>>>>>handleSkillAdd", value);
+    setUpdateLoading(true);
+    let httpBody = {
+      skills: value,
+    };
+    dispatch(updateCandidateDetails(candidateId, httpBody)).then((response) => {
+      if (response?.success) {
+        notifySuccess(response?.message);
+        setFields({
+          ...fields,
+          Skills: {
+            ...value,
+            value: value,
+          },
+        });
+        setAddSkillModalVisible(false);
+        setEditField(null);
+        setUpdateLoading(false);
+      } else {
+        notifyError(response);
+        setUpdateLoading(false);
+      }
     });
-    setEditField(null);
   };
 
   const handleCancel = () => {
@@ -71,7 +236,7 @@ const ProfessionalDetails = ({ details, label, isLoading }) => {
   };
 
   const renderEditInput = (key, value) => {
-    if (key === "Hired Date") {
+    if (value?.fe_input_type === "date_time") {
       return (
         <DateTimePicker
           initialDate={value}
@@ -88,23 +253,20 @@ const ProfessionalDetails = ({ details, label, isLoading }) => {
           setFirstName={setTempValue}
         />
       );
-    } else if (
-      key === "Start Date" ||
-      key === "Probation End Date" ||
-      key === "Left Date" ||
-      key === "Date of Birth"
-    ) {
+    } else if (value?.fe_input_type === "date") {
       return (
-        <DateTimePicker initialDate={value} onDateSelect={handleDateSelect} />
+        <DateTimePicker
+          initialDate={tempValue}
+          onDateSelect={handleDateSelect}
+        />
       );
-    } else if (key === "Gender") {
+    } else if (value?.fe_input_type === "select") {
       return (
         <CommonDropdown
-          options={genderOption}
-          placeholder="Gender"
+          options={value?.options}
+          placeholder={key}
           selectedValue={tempValue}
           onChange={setTempValue}
-          optionKey="type"
           candidateInfo={true}
         />
       );
@@ -136,8 +298,20 @@ const ProfessionalDetails = ({ details, label, isLoading }) => {
           multipleSelect={false}
         />
       );
-    } else if (key === "Phone Number") {
+    } else if (value?.fe_input_type === "phone_input") {
       return <PhoneInputComponent phone={value} onChange={setTempValue} />;
+    } else if (value?.fe_input_type === "multi_select") {
+      if (key === "Languages")
+        return (
+          <CommonSearchDropdown
+            options={languagesOptions}
+            optionKey="name"
+            placeholder="Language"
+            multiSelect={true}
+            selectedData={tempValue || []}
+            onSelect={setTempValue}
+          />
+        );
     } else {
       return (
         <CommonTextInput
@@ -151,13 +325,17 @@ const ProfessionalDetails = ({ details, label, isLoading }) => {
 
   const renderItemValue = (key, value) => {
     if (value?.fe_input_type === "date_time") {
-      return formatCustomDate(value);
+      return formatCustomDate(value?.value);
     } else if (value?.fe_input_type === "date") {
-      return formatDate(value);
+      return formatDate(value?.value);
     } else if (key === "Phone Number") {
-      return formatPhoneNumber(`+${value}`);
+      return formatPhoneNumber(`+${value?.value}`);
+    } else if (key === "First Name") {
+      return selectedTitle !== "None"
+        ? `${selectedTitle} ${value?.value}`
+        : value?.value;
     } else {
-      return value;
+      return value?.value;
     }
   };
 
@@ -185,9 +363,11 @@ const ProfessionalDetails = ({ details, label, isLoading }) => {
                       return (
                         <div className="candidate-info-skill-item">
                           {item?.name}{" "}
-                          <span style={{ color: "#1761D8" }}>
-                            {item?.level}
-                          </span>
+                          {item?.level && (
+                            <span style={{ color: "#1761D8" }}>
+                              {item?.level}
+                            </span>
+                          )}
                         </div>
                       );
                     })}
@@ -227,7 +407,7 @@ const ProfessionalDetails = ({ details, label, isLoading }) => {
                     </div>
                     <button
                       className="edit-details-btn"
-                      onClick={() => handleEdit(key, value?.value)}
+                      onClick={() => handleEdit(key, value)}
                       style={{ alignSelf: "flex-start" }}
                     >
                       <EditIcon />
@@ -259,7 +439,10 @@ const ProfessionalDetails = ({ details, label, isLoading }) => {
             <CommonSwitch
               on={value?.value ? true : false}
               onToggle={() => {
-                setFields({ ...fields, [key]: !value?.value });
+                setFields({
+                  ...fields,
+                  [key]: { ...value, value: !value?.value },
+                });
               }}
             />
           </div>
@@ -280,28 +463,26 @@ const ProfessionalDetails = ({ details, label, isLoading }) => {
                     className="display-flex"
                     style={{ flexWrap: "wrap", gap: 6 }}
                   >
-                    {Object.entries(tempValue)
-                      .filter(([_, url]) => url)
-                      .map(([key, url]) => (
-                        <a
-                          key={key}
-                          className="social-link-item font-14-regular color-dark-black"
+                    {tempValue?.map((item, index) => (
+                      <a
+                        key={index}
+                        className="social-link-item font-14-regular color-dark-black"
+                      >
+                        {icons[item?.name]}
+                        <span>{item?.name}</span>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            const updateData = tempValue?.filter(
+                              (item, i) => index !== i
+                            );
+                            setTempValue(updateData);
+                          }}
                         >
-                          {icons[key]}
-                          <span>{key}</span>
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              setTempValue((prev) => ({
-                                ...prev,
-                                [key]: null,
-                              }));
-                            }}
-                          >
-                            <CloseIcon width={8} height={8} />
-                          </button>
-                        </a>
-                      ))}
+                          <CloseIcon width={8} height={8} />
+                        </button>
+                      </a>
+                    ))}
                   </div>
                   <button
                     className="add-details-btn"
@@ -317,7 +498,7 @@ const ProfessionalDetails = ({ details, label, isLoading }) => {
                   <button onClick={handleCancel}>
                     <CancleIcon />
                   </button>
-                  <button onClick={() => handleSave(key)}>
+                  <button onClick={() => handleSave(key, value)}>
                     <RightIcon />
                   </button>
                 </div>
@@ -372,16 +553,7 @@ const ProfessionalDetails = ({ details, label, isLoading }) => {
                 className="flex-1 display-flex align-center"
                 style={{ gap: 8 }}
               >
-                <div className="flex-1">
-                  <CommonSearchDropdown
-                    options={languagesOptions}
-                    optionKey="name"
-                    placeholder="Language"
-                    multiSelect={true}
-                    selectedData={value}
-                    onSelect={setTempValue}
-                  />
-                </div>
+                <div className="flex-1">{renderEditInput(key, value)}</div>
                 <div
                   className="display-flex"
                   style={{ gap: 8, alignSelf: "flex-start" }}
@@ -389,7 +561,7 @@ const ProfessionalDetails = ({ details, label, isLoading }) => {
                   <button onClick={handleCancel}>
                     <CancleIcon />
                   </button>
-                  <button onClick={() => handleSave(key)}>
+                  <button onClick={() => handleSave(key, value)}>
                     <RightIcon />
                   </button>
                 </div>
@@ -408,7 +580,7 @@ const ProfessionalDetails = ({ details, label, isLoading }) => {
                       {value?.value?.map((item) => {
                         return (
                           <div className="selected-options-item font-14-regular color-dark-black">
-                            {item}
+                            {item?.name}
                           </div>
                         );
                       })}
@@ -486,7 +658,7 @@ const ProfessionalDetails = ({ details, label, isLoading }) => {
                   <button onClick={handleCancel}>
                     <CancleIcon />
                   </button>
-                  <button onClick={() => handleSave(key)}>
+                  <button onClick={() => handleSave(key, value)}>
                     <RightIcon />
                   </button>
                 </div>
@@ -499,7 +671,7 @@ const ProfessionalDetails = ({ details, label, isLoading }) => {
                 >
                   {!!value?.value ? (
                     <span className="font-14-regular color-dark-blak ">
-                      {renderItemValue(key, value?.value)}
+                      {renderItemValue(key, value)}
                     </span>
                   ) : (
                     <DashIcon />
@@ -507,7 +679,7 @@ const ProfessionalDetails = ({ details, label, isLoading }) => {
                   {value?.fe_input_type !== "disable" && (
                     <button
                       className="edit-details-btn"
-                      onClick={() => handleEdit(key, value?.value)}
+                      onClick={() => handleEdit(key, value)}
                     >
                       <EditIcon />
                     </button>
@@ -570,10 +742,20 @@ const ProfessionalDetails = ({ details, label, isLoading }) => {
       <AddSocialLinksModal
         visible={socialLinkModalVisible}
         onClose={() => setSocialLinkModalVisible(false)}
+        onAddSocial={(value) => {
+          const updateData = [
+            ...tempValue,
+            { name: value?.name, url: value?.url },
+          ];
+          setTempValue(updateData);
+          setSocialLinkModalVisible(false);
+        }}
       />
       <AddSkillsModal
         visible={addSkillModalVisible}
         onClose={() => setAddSkillModalVisible(false)}
+        tags={tempValue || []}
+        setTags={handleSkillAdd}
       />
     </>
   );

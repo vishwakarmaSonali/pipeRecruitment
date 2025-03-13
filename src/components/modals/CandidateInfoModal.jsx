@@ -784,6 +784,7 @@ const CandidateInfoModal = ({ visible, onClose, candidateId }) => {
                     const mappedCandidateDetailsFields = value?.fields?.reduce(
                       (acc, field) => {
                         acc[field.label] = {
+                          name: field.name,
                           value: field.value,
                           type: field.type,
                           options: field.options,

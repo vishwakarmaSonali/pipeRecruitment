@@ -64,7 +64,7 @@ const SocialLinksManager = ({selectedSocialLinks,setSelectedSocialLinks}) => {
       <AddSocialLinksModal
         visible={modals?.addSocialLinksModalVisible}
         onClose={() => setModalVisibility("addSocialLinksModalVisible", false)}
-        onAddLanguages={handleAddSocialLinks} // ✅ Pass callback to store links
+        onAddSocial={handleAddSocialLinks} // ✅ Pass callback to store links
       />
     </div>
   );

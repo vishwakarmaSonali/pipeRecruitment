@@ -357,7 +357,6 @@ const Sourcing = () => {
   };
 
   const toggleModal = () => {
-    console.log("Modal toggle triggered");
     setIsModalOpen((prev) => !prev);
   };
 

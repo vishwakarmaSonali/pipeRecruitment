@@ -586,9 +586,9 @@ export const languagesOptions = [
 
 export const icons = {
   LinkedIn: <LinkedIn />,
-  twitter_url: <Twitter />,
-  github_url: <Github />,
-  facebook_url: <Facebook />,
+  X: <Twitter />,
+  GitHub: <Github />,
+  Facebook: <Facebook />,
 };
 
 export const jobsTableHeaderData = [

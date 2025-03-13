@@ -9,13 +9,37 @@ import HtmlViewComponent from "../common/HtmlViewComponent";
 import { demoDescriptionText } from "../../helpers/config";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
+import { updateCandidateDetails } from "../../actions/candidateActions";
+import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import { notifyError, notifySuccess } from "../../helpers/utils";
 
 const CandidateDescription = ({ label, data, editable, isLoading }) => {
+  const dispatch = useDispatch();
+  const { candidateId } = useSelector((state) => state?.candidates);
   const [collapse, setCollapse] = useState(true);
   const [description, setDescription] = useState(data);
   const [edit, setEdit] = useState(false);
+  const [updateLoading, setUpdateLoading] = useState(false);
 
-  if (isLoading) {
+  const descriptionSaveHandler = () => {
+    setUpdateLoading(true);
+    const httpBody = {
+      description: description,
+    };
+    dispatch(updateCandidateDetails(candidateId, httpBody)).then((response) => {
+      if (response?.success) {
+        notifySuccess(response?.message);
+        setEdit(false);
+        setUpdateLoading(false);
+      } else {
+        notifyError(response);
+        setUpdateLoading(false);
+      }
+    });
+  };
+
+  if (isLoading || updateLoading) {
     return (
       <div className="candidate-details-main-container">
         <div className="display-flex-justify align-center">
@@ -75,18 +99,18 @@ const CandidateDescription = ({ label, data, editable, isLoading }) => {
               >
                 <button
                   onClick={() => {
-                    setDescription(demoDescriptionText);
+                    setDescription(data);
                     setEdit(false);
                   }}
                 >
                   <CancleIcon />
                 </button>
-                <button onClick={() => setEdit(false)}>
+                <button onClick={descriptionSaveHandler}>
                   <RightIcon />
                 </button>
               </div>
             </div>
-          ) : (
+          ) : !!description ? (
             <div
               className="display-flex candidate-experince-item"
               style={{ gap: 8 }}
@@ -105,6 +129,16 @@ const CandidateDescription = ({ label, data, editable, isLoading }) => {
                 </button>
               )}
             </div>
+          ) : (
+            <button
+              className="add-details-btn"
+              onClick={(e) => {
+                e.stopPropagation();
+                setEdit(true);
+              }}
+            >
+              + Add
+            </button>
           )}
         </>
       )}
