@@ -23,6 +23,7 @@
     "cra-template": "1.2.0",
     "currency-codes": "^2.2.0",
     "currency-map-symbol": "^4.0.5",
+    "currency-symbol-map": "^5.1.0",
     "date-fns": "^4.1.0",
     "dayjs": "^1.11.13",
     "html2canvas": "^1.4.1",

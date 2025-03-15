@@ -72,13 +72,16 @@ import CommonButton from "../common/CommonButton";
 import CancelButton from "../common/CancelButton";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
-import { fetchLabels } from "../../actions/dropdownAction";
 import {
   fetchCandidateDetails,
   updateCandidateLabel,
 } from "../../actions/candidateActions";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
+import {
+  fetchAllDomains,
+  fetchAllLabels,
+} from "../../actions/customizationActions";
 
 const candidateInfoTabs = [
   {
@@ -221,27 +224,31 @@ const enrichUserProfileData = [
 ];
 
 const CandidateInfoModal = ({ visible, onClose, candidateId }) => {
-  console.log("cadidate id", candidateId);
-
   const dispatch = useDispatch();
   const { candidateInfo, candidateDetailsLoading } = useSelector(
     (state) => state.candidates
   );
-  const { token } = useSelector((state) => state.auth);
   const navigate = useNavigate();
-  const { labelData } = useSelector((state) => state?.customization);
+  const { labelData, domainData } = useSelector(
+    (state) => state?.customization
+  );
   const [labelsData, setLabelsData] = useState(labelData);
+  const [domainsData, setDomainsData] = useState([]);
   const { modals, setModalVisibility } = useModal();
   const [candidateTabs, setCandidateTabs] = useState(candidateInfoTabs);
   const [summaryStructuredData, setSummaryStructuredData] = useState(
     candidateInfo?.structuredCandidate || {}
   );
+
   const [selectedCandidateTab, setSelectedCandidateTab] = useState("Summary");
   const [anchorEl, setAnchorEl] = useState(null);
   const [randomColor, setRandomColor] = useState([]);
   const [writeText, setWriteText] = useState("");
   const [selectedLabelData, setSelectedLabelData] = useState(
     candidateInfo?.raw_data?.labels || []
+  );
+  const [candidateRawData, setCandidateRawData] = useState(
+    candidateInfo?.raw_data || {}
   );
   const [deleteNoteModalVisible, setDeleteNoteModalVisible] = useState(false);
   const [noteModalVisible, setNoteModalVisible] = useState(false);
@@ -290,10 +297,13 @@ const CandidateInfoModal = ({ visible, onClose, candidateId }) => {
   const [selectedResumeTab, setSelectedResumeTab] = useState(1);
 
   useEffect(() => {
-    console.log("called");
-
-    dispatch(fetchLabels());
+    dispatch(fetchAllLabels());
+    dispatch(fetchAllDomains());
   }, [dispatch]);
+
+  useEffect(() => {
+    setCandidateRawData(candidateInfo?.raw_data);
+  }, [candidateInfo]);
 
   const handleLabelMenuClick = (event) => {
     setLabelAnchor(event.currentTarget);
@@ -857,6 +867,7 @@ const CandidateInfoModal = ({ visible, onClose, candidateId }) => {
                           label={value?.label}
                           editable={true}
                           isLoading={candidateDetailsLoading}
+                          rawData={candidateRawData}
                         />
                       );
                     }

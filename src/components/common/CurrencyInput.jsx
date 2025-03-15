@@ -46,11 +46,11 @@ const CurrencySelector = ({
 
   // 🔹 Update filtered list on search
   useEffect(() => {
-    if (searchValue.trim() === "") {
+    if (searchValue?.trim() === "") {
       setFilteredCountries(countryList);
     } else {
-      const filtered = countryList.filter((country) =>
-        country.name.toLowerCase().includes(searchValue.toLowerCase())
+      const filtered = countryList?.filter((country) =>
+        country?.name.toLowerCase()?.includes(searchValue?.toLowerCase())
       );
       setFilteredCountries(filtered);
     }
@@ -59,13 +59,18 @@ const CurrencySelector = ({
   return (
     <div className="relative ">
       {/* Input Field with Currency Selector */}
-      <div className="flex items-center   px-2 rounded-md cursor-pointer bg-white py-3  h-[38px]" style={{border:'1px solid #f3f4f4'}}>
       <div
-          className="flex items-center cursor-pointer"
-        onClick={() => setShowDropdown(!showDropdown)}
+        className="flex items-center   px-2 rounded-md cursor-pointer bg-white py-3  h-[38px]"
+        style={{ border: "1px solid #f3f4f4" }}
       >
+        <div
+          className="flex items-center cursor-pointer"
+          onClick={() => setShowDropdown(!showDropdown)}
+        >
           <span className="mx-1 text-sm text-customBlue font-ubuntu">
-            {selectedCurrency?.symbol || "Select"}
+            {selectedCurrency?.code
+              ? getSymbolFromCurrency(selectedCurrency?.code)
+              : "Select"}
           </span>
           <DropArrow
             width={8}
@@ -101,8 +106,8 @@ const CurrencySelector = ({
             {filteredCountries.length > 0 ? (
               filteredCountries.map((country, index) => (
                 <li
-                key={index}
-                className="flex items-center justify-between px-[10px] py-[10px] hover:bg-gray-100 cursor-pointer font-ubuntu text-sm"
+                  key={index}
+                  className="flex items-center justify-between px-[10px] py-[10px] hover:bg-gray-100 cursor-pointer font-ubuntu text-sm"
                   onClick={() => {
                     setSelectedCurrency({
                       code: country.code,
@@ -113,8 +118,8 @@ const CurrencySelector = ({
                     setSearchValue(""); // Reset search after selection
                   }}
                 >
-                  <span>{country.name}</span>
-                  <span className="text-gray-600">{country.symbol}</span>
+                  <span>{country?.name}</span>
+                  <span className="text-gray-600">{country?.symbol}</span>
                 </li>
               ))
             ) : (

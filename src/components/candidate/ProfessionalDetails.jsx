@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ReactComponent as EditIcon } from "../../assets/icons/edit.svg";
 import { ReactComponent as RightIcon } from "../../assets/icons/right-circle.svg";
 import { ReactComponent as CancleIcon } from "../../assets/icons/close-circle.svg";
@@ -35,10 +35,13 @@ import "react-loading-skeleton/dist/skeleton.css";
 import { updateCandidateDetails } from "../../actions/candidateActions";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
+import CurrencySelector from "../common/CurrencyInput";
+import getSymbolFromCurrency from "currency-symbol-map";
 
-const ProfessionalDetails = ({ details, label, isLoading }) => {
+const ProfessionalDetails = ({ details, label, isLoading, rawData }) => {
   const dispatch = useDispatch();
   const { candidateId } = useSelector((state) => state?.candidates);
+  const { domainData } = useSelector((state) => state?.customization);
   const [fields, setFields] = useState(details);
   const [editField, setEditField] = useState(null);
   const [tempValue, setTempValue] = useState("");
@@ -50,10 +53,48 @@ const ProfessionalDetails = ({ details, label, isLoading }) => {
   const [tempDate, setTempDate] = useState(null);
   const [selectedTitle, setSelectedTitle] = useState("None");
   const [updateLoading, setUpdateLoading] = useState(false);
+  const [domainsData, setDomainsData] = useState([]);
+  const [currentSalary, setCurrentSalary] = useState(
+    rawData?.current_salary || ""
+  );
+  const [currentSalaryCurrency, setCurrentSalaryCurrency] = useState(
+    rawData?.current_salary_currency
+      ? { code: rawData?.current_salary_currency }
+      : null
+  );
+
+  const [expectedSalary, setExpectedSalary] = useState(
+    rawData?.expected_salary || ""
+  );
+  const [expectedSalaryCurrency, setExpectedSalaryCurrency] = useState(
+    rawData?.expected_salary_currency
+      ? { code: rawData?.expected_salary_currency }
+      : null
+  );
+
+  useEffect(() => {
+    setExpectedSalary(rawData?.expected_salary || "");
+    setExpectedSalaryCurrency(
+      rawData?.expected_salary_currency
+        ? { code: rawData?.expected_salary_currency }
+        : null
+    );
+    setCurrentSalaryCurrency(
+      rawData?.current_salary_currency
+        ? { code: rawData?.current_salary_currency }
+        : null
+    );
+    setCurrentSalary(rawData?.current_salary || "");
+  }, [rawData, editField]);
 
   const handleDateSelect = (date) => {
     setTempValue(date);
   };
+
+  useEffect(() => {
+    const updatedData = domainData?.map((item) => item?.name);
+    setDomainsData(updatedData);
+  }, [domainData]);
 
   const handleEdit = (key, value) => {
     setEditField(key);
@@ -181,6 +222,66 @@ const ProfessionalDetails = ({ details, label, isLoading }) => {
           }
         }
       );
+    } else if (
+      value?.fe_input_type === "salary_input" &&
+      value?.name === "current_salary"
+    ) {
+      setUpdateLoading(true);
+
+      let httpBody = {
+        current_salary: currentSalary,
+        current_salary_currency: currentSalaryCurrency?.code,
+      };
+
+      dispatch(updateCandidateDetails(candidateId, httpBody)).then(
+        (response) => {
+          if (response?.success) {
+            notifySuccess(response?.message);
+            // setFields({
+            //   ...fields,
+            //   [key]: {
+            //     ...value,
+            //     value: tempValue,
+            //   },
+            // });
+            setEditField(null);
+            setUpdateLoading(false);
+          } else {
+            notifyError(response);
+            setUpdateLoading(false);
+          }
+        }
+      );
+    } else if (
+      value?.fe_input_type === "salary_input" &&
+      value?.name === "expected_salary"
+    ) {
+      setUpdateLoading(true);
+
+      let httpBody = {
+        expected_salary: expectedSalary,
+        expected_salary_currency: expectedSalaryCurrency?.code,
+      };
+
+      dispatch(updateCandidateDetails(candidateId, httpBody)).then(
+        (response) => {
+          if (response?.success) {
+            notifySuccess(response?.message);
+            // setFields({
+            //   ...fields,
+            //   [key]: {
+            //     ...value,
+            //     value: tempValue,
+            //   },
+            // });
+            setEditField(null);
+            setUpdateLoading(false);
+          } else {
+            notifyError(response);
+            setUpdateLoading(false);
+          }
+        }
+      );
     } else {
       setUpdateLoading(true);
       let httpBody = {
@@ -261,15 +362,46 @@ const ProfessionalDetails = ({ details, label, isLoading }) => {
         />
       );
     } else if (value?.fe_input_type === "select") {
+      const options = value?.name === "domain" ? domainsData : value?.options;
       return (
         <CommonDropdown
-          options={value?.options}
+          options={options}
           placeholder={key}
           selectedValue={tempValue}
           onChange={setTempValue}
           candidateInfo={true}
         />
       );
+    } else if (value?.fe_input_type === "salary_input") {
+      if (value?.name === "current_salary") {
+        return (
+          <CurrencySelector
+            label={key}
+            selectedCurrency={currentSalaryCurrency}
+            setSelectedCurrency={setCurrentSalaryCurrency}
+            salary={currentSalary}
+            setSalary={(value) => {
+              if (/^\d*$/.test(value)) {
+                setCurrentSalary(value);
+              }
+            }}
+          />
+        );
+      } else {
+        return (
+          <CurrencySelector
+            label={key}
+            selectedCurrency={expectedSalaryCurrency}
+            setSelectedCurrency={setExpectedSalaryCurrency}
+            salary={expectedSalary}
+            setSalary={(value) => {
+              if (/^\d*$/.test(value)) {
+                setExpectedSalary(value);
+              }
+            }}
+          />
+        );
+      }
     } else if (key === "Employment Status") {
       return (
         <CommonDropdown
@@ -316,6 +448,7 @@ const ProfessionalDetails = ({ details, label, isLoading }) => {
       return (
         <CommonTextInput
           type="text"
+          placeholder={key}
           value={tempValue}
           onChange={(e) => setTempValue(e.target.value)}
         />
@@ -330,6 +463,18 @@ const ProfessionalDetails = ({ details, label, isLoading }) => {
       return formatDate(value?.value);
     } else if (key === "Phone Number") {
       return formatPhoneNumber(`+${value?.value}`);
+    } else if (value?.fe_input_type === "salary_input") {
+      if (value?.name === "current_salary") {
+        return `${
+          currentSalaryCurrency?.code &&
+          getSymbolFromCurrency(currentSalaryCurrency?.code)
+        } ${currentSalary}`;
+      } else {
+        return `${
+          expectedSalaryCurrency?.code &&
+          getSymbolFromCurrency(expectedSalaryCurrency?.code)
+        } ${expectedSalary}`;
+      }
     } else if (key === "First Name") {
       return selectedTitle !== "None"
         ? `${selectedTitle} ${value?.value}`

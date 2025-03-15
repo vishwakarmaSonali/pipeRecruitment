@@ -144,7 +144,6 @@ const customizationReducer = (state = initialState, action) => {
         addLabelLoading: true,
       };
     case ADD_LABEL_SUCCESS:
-      console.log(">>>>>>>>>>>>>...action?.data", action?.data);
       return {
         ...state,
         addLabelLoading: false,
