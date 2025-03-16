@@ -29,15 +29,10 @@ export const createCandidates = (params) => async (dispatch) => {
   dispatch({ type: CREATE_CANDIDATE_REQUEST });
 
   try {
-    console.log("🚀 Sending API Request to:", createCandidateManuallyEndpoint);
-    console.log("📩 Payload:", params?.candidateData);
-
     const response = await axiosInstance.post(
       createCandidateManuallyEndpoint,
       params
     );
-
-    console.log("✅ API Response:", response.data);
 
     dispatch({
       type: CREATE_CANDIDATE_SUCCESS,
@@ -80,7 +75,6 @@ export const fetchCandidatesList = (filters, page) => async (dispatch) => {
     return error?.response?.data?.message || error.message;
   }
 };
-
 
 export const fetchCandidateDetails = (id) => async (dispatch) => {
   dispatch({ type: CANDIDATE_DETAILS_REQUEST });

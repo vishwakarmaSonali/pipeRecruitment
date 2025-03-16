@@ -53,7 +53,6 @@ const Candidates = ({ isDrawerOpen }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const location = useLocation(); // Get current route location
-  console.log(location, "locationnnnnn");
 
   const { token, refreshToken } = useSelector((state) => state.auth);
 
@@ -65,7 +64,11 @@ const Candidates = ({ isDrawerOpen }) => {
     candidateFilters,
     candidateInfo,
     candidateDetailsLoading,
+    candidateListID,
+    updateCandidateLoading,
   } = useSelector((state) => state.candidates);
+
+  console.log(">>>>>>>>>>>>>>>>>>.candidateListID", candidateListID);
 
   const [candidateList, setCandidateList] = useState(
     candidatesListingData || []
@@ -331,8 +334,8 @@ const Candidates = ({ isDrawerOpen }) => {
   // ✅ Handle Filter Menu Apply
   const handleFilterApply = (filterOption, inputValue) => {
     if (!inputValue || inputValue.trim() === "") {
-      console.log(filterOption,inputValue,"onHandleFilterApply");
-      
+      console.log(filterOption, inputValue, "onHandleFilterApply");
+
       console.error(
         "Filter input value is missing. Please enter a valid value."
       );
@@ -466,14 +469,13 @@ const Candidates = ({ isDrawerOpen }) => {
     dispatch(fetchCandidatesList(params, 1));
   }, [dispatch, resultsPerPage]);
 
-
   useEffect(() => {
     dispatch(fetchAllLabels());
   }, [dispatch]);
 
   useEffect(() => {
     dispatch(fetchCandidateDetails(selectedCandidateId));
-  }, [selectedCandidateId]);
+  }, [selectedCandidateId, updateCandidateLoading]);
 
   const handleCandidateEyeClick = (id) => {
     setSelectedCandidateId(id);
@@ -481,9 +483,44 @@ const Candidates = ({ isDrawerOpen }) => {
   };
 
   const handleCandidateClick = (id) => {
-    setSelectedCandidateId(id);
-    setModalVisibility("candidateInfoModalVisible", true);
+    navigate(`/candidates?id=${id}`);
   };
+
+  const handleNextCandidate = () => {
+    const searchParams = new URLSearchParams(location.search);
+    const currentId = searchParams.get("id");
+
+    if (currentId) {
+      const currentIndex = candidateListID?.indexOf(currentId);
+      if (currentIndex !== -1 && currentIndex < candidateListID?.length - 1) {
+        navigate(`/candidates?id=${candidateListID[currentIndex + 1]}`);
+      }
+    }
+  };
+
+  const handlePrevCandidate = () => {
+    const searchParams = new URLSearchParams(location.search);
+    const currentId = searchParams.get("id");
+
+    if (currentId) {
+      const currentIndex = candidateListID?.indexOf(currentId);
+      if (currentIndex > 0) {
+        navigate(`/candidates?id=${candidateListID[currentIndex - 1]}`);
+      }
+    }
+  };
+
+  useEffect(() => {
+    const searchParams = new URLSearchParams(location.search);
+    const userId = searchParams.get("id");
+
+    if (userId) {
+      setSelectedCandidateId(userId);
+      setTimeout(() => {
+        setModalVisibility("candidateInfoModalVisible", true);
+      }, [300]);
+    }
+  }, [location]);
   return (
     <div className="sourcing-main-container">
       <Navbar />
@@ -785,7 +822,6 @@ const Candidates = ({ isDrawerOpen }) => {
         menuItems={searchableMenuItems} // Pass dynamic items
       />
 
-   
       <CandidateFilterDrawer
         onApply={handleFilterApply}
         // onReset={resetFilters}
@@ -826,11 +862,15 @@ const Candidates = ({ isDrawerOpen }) => {
       <CandidateInfoModal
         visible={modals?.candidateInfoModalVisible}
         onClose={() => {
+          const searchParams = new URLSearchParams(location.search);
+          searchParams.delete("id");
+          navigate(`/candidates?${searchParams.toString()}`);
           setModalVisibility("candidateInfoModalVisible", false);
           setSelectedCandidateId(null);
         }}
-        // candidate={candidateDetails?.candidate}
         candidateId={selectedCandidateId}
+        prevButtonClick={handlePrevCandidate}
+        nextButtonClick={handleNextCandidate}
       />
     </div>
   );

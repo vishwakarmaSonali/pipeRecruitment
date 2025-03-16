@@ -223,17 +223,20 @@ const enrichUserProfileData = [
   },
 ];
 
-const CandidateInfoModal = ({ visible, onClose, candidateId }) => {
+const CandidateInfoModal = ({
+  visible,
+  onClose,
+  candidateId,
+  prevButtonClick,
+  nextButtonClick,
+}) => {
   const dispatch = useDispatch();
   const { candidateInfo, candidateDetailsLoading } = useSelector(
     (state) => state.candidates
   );
   const navigate = useNavigate();
-  const { labelData, domainData } = useSelector(
-    (state) => state?.customization
-  );
+  const { labelData } = useSelector((state) => state?.customization);
   const [labelsData, setLabelsData] = useState(labelData);
-  const [domainsData, setDomainsData] = useState([]);
   const { modals, setModalVisibility } = useModal();
   const [candidateTabs, setCandidateTabs] = useState(candidateInfoTabs);
   const [summaryStructuredData, setSummaryStructuredData] = useState(
@@ -1281,10 +1284,10 @@ const CandidateInfoModal = ({ visible, onClose, candidateId }) => {
           <button className="modal-close-btn" onClick={onClose}>
             <ModalClose />
           </button>
-          <button className="modal-next-btn">
+          <button className="modal-next-btn" onClick={nextButtonClick}>
             <ModalNext />
           </button>
-          <button className="modal-previous-btn">
+          <button className="modal-previous-btn" onClick={prevButtonClick}>
             <ModalPrevious />
           </button>
         </div>

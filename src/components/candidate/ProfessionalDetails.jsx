@@ -46,12 +46,11 @@ const ProfessionalDetails = ({ details, label, isLoading, rawData }) => {
   const [editField, setEditField] = useState(null);
   const [tempValue, setTempValue] = useState("");
   const [collapse, setCollapse] = useState(true);
-  const [isOn, setIsOn] = useState(false);
-  const [selectedMultiLanguages, setSelectedMultiLanguages] = useState([]);
   const [socialLinkModalVisible, setSocialLinkModalVisible] = useState(false);
   const [addSkillModalVisible, setAddSkillModalVisible] = useState(false);
-  const [tempDate, setTempDate] = useState(null);
-  const [selectedTitle, setSelectedTitle] = useState("None");
+  const [selectedTitle, setSelectedTitle] = useState(
+    rawData?.salutation ? rawData?.salutation : "None"
+  );
   const [updateLoading, setUpdateLoading] = useState(false);
   const [domainsData, setDomainsData] = useState([]);
   const [currentSalary, setCurrentSalary] = useState(
@@ -72,19 +71,29 @@ const ProfessionalDetails = ({ details, label, isLoading, rawData }) => {
       : null
   );
 
+  const [countryCallingCode, setCountryCallingCode] = useState(
+    rawData?.country_code || ""
+  );
+  const [phoneNumber, setPhoneNumber] = useState(rawData?.phone || "");
+
   useEffect(() => {
-    setExpectedSalary(rawData?.expected_salary || "");
-    setExpectedSalaryCurrency(
-      rawData?.expected_salary_currency
-        ? { code: rawData?.expected_salary_currency }
-        : null
-    );
-    setCurrentSalaryCurrency(
-      rawData?.current_salary_currency
-        ? { code: rawData?.current_salary_currency }
-        : null
-    );
-    setCurrentSalary(rawData?.current_salary || "");
+    if (!editField) {
+      setExpectedSalary(rawData?.expected_salary || "");
+      setExpectedSalaryCurrency(
+        rawData?.expected_salary_currency
+          ? { code: rawData?.expected_salary_currency }
+          : null
+      );
+      setCurrentSalaryCurrency(
+        rawData?.current_salary_currency
+          ? { code: rawData?.current_salary_currency }
+          : null
+      );
+      setCurrentSalary(rawData?.current_salary || "");
+      setSelectedTitle(rawData?.salutation ? rawData?.salutation : "None");
+      setCountryCallingCode(rawData?.country_code || "");
+      setPhoneNumber(rawData?.phone || "");
+    }
   }, [rawData, editField]);
 
   const handleDateSelect = (date) => {
@@ -282,6 +291,28 @@ const ProfessionalDetails = ({ details, label, isLoading, rawData }) => {
           }
         }
       );
+    } else if (value?.fe_input_type === "phone_input") {
+      setUpdateLoading(true);
+
+      let httpBody = {
+        phone: phoneNumber,
+        country_code: countryCallingCode,
+      };
+
+      dispatch(updateCandidateDetails(candidateId, httpBody)).then(
+        (response) => {
+          if (response?.success) {
+            notifySuccess(response?.message);
+            setPhoneNumber(phoneNumber);
+            setCountryCallingCode(countryCallingCode);
+            setEditField(null);
+            setUpdateLoading(false);
+          } else {
+            notifyError(response);
+            setUpdateLoading(false);
+          }
+        }
+      );
     } else {
       setUpdateLoading(true);
       let httpBody = {
@@ -431,7 +462,17 @@ const ProfessionalDetails = ({ details, label, isLoading, rawData }) => {
         />
       );
     } else if (value?.fe_input_type === "phone_input") {
-      return <PhoneInputComponent phone={value} onChange={setTempValue} />;
+      return (
+        <PhoneInputComponent
+          phoneNumber={phoneNumber}
+          callingCode={countryCallingCode}
+          selectedPhoneNumber={(item) => {
+            setPhoneNumber(item?.phoneNumber);
+            setCountryCallingCode(item?.callingCode);
+          }}
+          setValid={(item) => console.log(">>>>>>>>>setValid", item)}
+        />
+      );
     } else if (value?.fe_input_type === "multi_select") {
       if (key === "Languages")
         return (
@@ -462,7 +503,7 @@ const ProfessionalDetails = ({ details, label, isLoading, rawData }) => {
     } else if (value?.fe_input_type === "date") {
       return formatDate(value?.value);
     } else if (key === "Phone Number") {
-      return formatPhoneNumber(`+${value?.value}`);
+      return `(${countryCallingCode}) ${phoneNumber}`;
     } else if (value?.fe_input_type === "salary_input") {
       if (value?.name === "current_salary") {
         return `${
@@ -476,8 +517,8 @@ const ProfessionalDetails = ({ details, label, isLoading, rawData }) => {
         } ${expectedSalary}`;
       }
     } else if (key === "First Name") {
-      return selectedTitle !== "None"
-        ? `${selectedTitle} ${value?.value}`
+      return rawData?.salutation
+        ? `${rawData?.salutation} ${value?.value}`
         : value?.value;
     } else {
       return value?.value;
@@ -608,26 +649,27 @@ const ProfessionalDetails = ({ details, label, isLoading, rawData }) => {
                     className="display-flex"
                     style={{ flexWrap: "wrap", gap: 6 }}
                   >
-                    {tempValue?.map((item, index) => (
-                      <a
-                        key={index}
-                        className="social-link-item font-14-regular color-dark-black"
-                      >
-                        {icons[item?.name]}
-                        <span>{item?.name}</span>
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            const updateData = tempValue?.filter(
-                              (item, i) => index !== i
-                            );
-                            setTempValue(updateData);
-                          }}
+                    {tempValue?.length > 0 &&
+                      tempValue?.map((item, index) => (
+                        <a
+                          key={index}
+                          className="social-link-item font-14-regular color-dark-black"
                         >
-                          <CloseIcon width={8} height={8} />
-                        </button>
-                      </a>
-                    ))}
+                          {icons[item?.name]}
+                          <span>{item?.name}</span>
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              const updateData = tempValue?.filter(
+                                (item, i) => index !== i
+                              );
+                              setTempValue(updateData);
+                            }}
+                          >
+                            <CloseIcon width={8} height={8} />
+                          </button>
+                        </a>
+                      ))}
                   </div>
                   <button
                     className="add-details-btn"
@@ -648,7 +690,7 @@ const ProfessionalDetails = ({ details, label, isLoading, rawData }) => {
                   </button>
                 </div>
               </div>
-            ) : value?.value ? (
+            ) : value?.value?.length > 0 ? (
               <div
                 className="flex-1 display-flex align-center"
                 style={{ gap: 12 }}
@@ -678,12 +720,18 @@ const ProfessionalDetails = ({ details, label, isLoading, rawData }) => {
                 </button>
               </div>
             ) : (
-              <button
-                className="add-details-btn"
-                onClick={() => setSocialLinkModalVisible(true)}
+              <div
+                className="flex-1 display-flex align-center"
+                style={{ gap: 12 }}
               >
-                + Add
-              </button>
+                <DashIcon />
+                <button
+                  className="edit-details-btn"
+                  onClick={() => handleEdit(key, value)}
+                >
+                  <EditIcon />
+                </button>
+              </div>
             )}
           </div>
         </div>
@@ -744,10 +792,10 @@ const ProfessionalDetails = ({ details, label, isLoading, rawData }) => {
                   >
                     <DashIcon />
                     <button
-                      className="add-details-btn"
+                      className="edit-details-btn"
                       onClick={() => handleEdit(key, "")}
                     >
-                      + Add
+                      <EditIcon />
                     </button>
                   </div>
                 )}

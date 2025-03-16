@@ -7,19 +7,32 @@ import {
   formatDate,
   formatPhoneNumber,
 } from "../../helpers/utils";
+import getSymbolFromCurrency from "currency-symbol-map";
 
-const CandidateOverviewDetails = ({ details, label }) => {
+const CandidateOverviewDetails = ({ details, label, rawData }) => {
   const [fields, setFields] = useState(details);
 
   const renderItemValue = (key, value) => {
     if (value?.fe_input_type === "date-time") {
-      return formatCustomDate(value);
+      return formatCustomDate(value?.value);
     } else if (value?.fe_input_type === "date") {
-      return formatDate(value);
+      return formatDate(value?.value);
     } else if (key === "Phone Number") {
-      return formatPhoneNumber(`+${value}`);
+      return formatPhoneNumber(`+${value?.value}`);
+    } else if (value?.fe_input_type === "salary_input") {
+      if (value?.name === "current_salary") {
+        return `${
+          !!rawData?.current_salary_currency &&
+          getSymbolFromCurrency(rawData?.current_salary_currency)
+        } ${value?.value}`;
+      } else {
+        return `${
+          !!rawData?.expected_salary_currency &&
+          getSymbolFromCurrency(rawData?.expected_salary_currency)
+        } ${value?.value}`;
+      }
     } else {
-      return value;
+      return value?.value;
     }
   };
 
@@ -94,13 +107,17 @@ const CandidateOverviewDetails = ({ details, label }) => {
                 className="display-flex"
                 style={{ flexWrap: "wrap", gap: 6 }}
               >
-                {value?.value?.map((item) => {
-                  return (
-                    <div className="selected-options-item font-14-regular color-dark-black">
-                      {item}
-                    </div>
-                  );
-                })}
+                {value?.value ? (
+                  value?.value?.map((item) => {
+                    return (
+                      <div className="selected-options-item font-14-regular color-dark-black">
+                        {item?.name}
+                      </div>
+                    );
+                  })
+                ) : (
+                  <DashIcon />
+                )}
               </div>
             </div>
           </div>
@@ -120,7 +137,7 @@ const CandidateOverviewDetails = ({ details, label }) => {
               >
                 {value?.value ? (
                   <span className="font-14-regular color-dark-blak ">
-                    {renderItemValue(key, value?.value)}
+                    {renderItemValue(key, value)}
                   </span>
                 ) : (
                   <DashIcon />

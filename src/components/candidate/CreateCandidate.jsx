@@ -117,6 +117,8 @@ const CreateCandidateForm = () => {
   const [socialLinks, setSocialLinks] = useState([]);
   const [experience, setExperience] = useState([]);
   const [education, setEducation] = useState([]);
+
+  const [countryCallingCode, setCountryCallingCode] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [email, setEmail] = useState("");
   const [selectedNationality, setSelectedNationality] = useState([]);
@@ -290,8 +292,8 @@ const CreateCandidateForm = () => {
       ...(selectedNationality.length > 0 && {
         nationality: selectedNationality[0],
       }),
-      ...(selectedCountry?.dialCode && {
-        country_code: selectedCountry?.dialCode,
+      ...(countryCallingCode && {
+        country_code: countryCallingCode,
       }),
       ...(phoneNumber && { phone: phoneNumber }),
       ...(email && { email }),
@@ -534,15 +536,14 @@ const CreateCandidateForm = () => {
             <div className="w-full">
               <div className="display-flex gap-[10px] mt-[10px]">
                 <div className="flex-1">
-                  {/* <PhoneNumberInput
-                    selectedCountry={selectedCountry}
-                    setSelectedCountry={setSelectedCountry}
-                    phoneNumber={phoneNumber}
-                    setPhoneNumber={setPhoneNumber}
-                  /> */}
                   <PhoneInputComponent
-                    phone={phoneNumber}
-                    onChange={setPhoneNumber}
+                    phoneNumber={phoneNumber}
+                    callingCode={countryCallingCode}
+                    selectedPhoneNumber={(item) => {
+                      setPhoneNumber(item?.phoneNumber);
+                      setCountryCallingCode(item?.callingCode);
+                    }}
+                    setValid={(item) => console.log(">>>>>>>>>setValid", item)}
                   />
                 </div>
                 <div className="flex-1 ">

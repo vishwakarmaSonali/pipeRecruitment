@@ -23,8 +23,13 @@ const CandidateOverviewDrawer = ({ isOpen, onClose }) => {
     candidateInfo?.structuredCandidate || {}
   );
 
+  const [candidateRawData, setCandidateRawData] = useState(
+    candidateInfo?.raw_data || {}
+  );
+
   useEffect(() => {
     setSummaryStructuredData(candidateInfo?.structuredCandidate || {});
+    setCandidateRawData(candidateInfo?.raw_data || {});
   }, [candidateInfo]);
   return (
     <Drawer anchor="right" open={isOpen} onClose={onClose}>
@@ -76,6 +81,7 @@ const CandidateOverviewDrawer = ({ isOpen, onClose }) => {
                         key === "skills" ? value : mappedCandidateDetailsFields
                       }
                       label={"Candidate Details"}
+                      rawData={candidateRawData}
                     />
                   );
                 } else if (key === "contact_details") {
@@ -116,6 +122,7 @@ const CandidateOverviewDrawer = ({ isOpen, onClose }) => {
                         key === "skills" ? value : mappedCandidateDetailsFields
                       }
                       label={"Professional Details"}
+                      rawData={candidateRawData}
                     />
                   );
                 } else if (key === "employment_history") {

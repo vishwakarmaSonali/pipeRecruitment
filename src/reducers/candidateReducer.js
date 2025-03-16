@@ -16,6 +16,7 @@ import {
 const initialState = {
   loading: false,
   candidatesListingData: [],
+  candidateListID: [],
   error: "",
   fetchMoreLoading: false,
   totalCandidateData: 0,
@@ -32,20 +33,32 @@ const initialState = {
 const candidateReducer = (state = initialState, action) => {
   switch (action.type) {
     case FETCH_CANDIDATES_REQUEST:
-      return { ...state, fetchMoreLoading: true, candidatesListingData: [] };
+      return {
+        ...state,
+        fetchMoreLoading: true,
+        candidatesListingData: [],
+        candidateListID: [],
+      };
 
     case FETCH_CANDIDATES_SUCCESS:
+      const candidateID = action.candidateListData?.map((item) => item?._id);
       return {
         ...state,
         fetchMoreLoading: false,
         candidatesListingData: action.candidateListData,
+        candidateListID: candidateID,
         candidateFilters: action.filters,
         totalCandidatePages: action.totalPage,
         totalCandidateData: action.totalData,
       };
 
     case FETCH_CANDIDATES_FAILURE:
-      return { ...state, fetchMoreLoading: false, candidatesListingData: [] };
+      return {
+        ...state,
+        fetchMoreLoading: false,
+        candidatesListingData: [],
+        candidatesListingData: [],
+      };
 
     // ✅ Handle Fetching a Single Candidate's Details
     case CANDIDATE_DETAILS_REQUEST:
@@ -53,7 +66,6 @@ const candidateReducer = (state = initialState, action) => {
         ...state,
         candidateDetailsLoading: true,
         candidateId: null,
-        candidateInfo: {},
       };
 
     case CANDIDATE_DETAILS_SUCCESS:

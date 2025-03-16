@@ -1,6 +1,9 @@
 import { toast } from "react-toastify";
 import { parse, formatISO } from "date-fns";
-import { parsePhoneNumberFromString } from "libphonenumber-js";
+import {
+  parsePhoneNumberFromString,
+  getCountryCallingCode,
+} from "libphonenumber-js";
 
 export const notifySuccess = (success) => {
   toast.dismiss();
@@ -100,7 +103,7 @@ export function formatPhoneNumber(phoneNumber) {
 
 export const getInitials = (name) => {
   if (!name) return "";
-  
+
   return name
     .split(" ") // Split by space to get words
     .map((word) => word.charAt(0)) // Get first letter of each word
@@ -127,3 +130,16 @@ export const convertToISODate = (date) => {
     .toString()
     .padStart(2, "0")}-01`;
 };
+
+export const getCallingCode = (countryCode) => {
+  try {
+    return `+${getCountryCallingCode(countryCode.toUpperCase())}`;
+  } catch (error) {
+    return "undefined";
+  }
+};
+
+export function getCountryCode(phoneNumber) {
+  const phoneNumberObj = parsePhoneNumberFromString(phoneNumber);
+  return phoneNumberObj ? phoneNumberObj.country : false;
+}
