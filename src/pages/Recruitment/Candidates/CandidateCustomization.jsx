@@ -496,6 +496,16 @@ const CandidateCustomization = () => {
 
     dispatch(reorderCategory(httpBody, updateCategories)).then((response) => {
       if (response?.success) {
+        const updatedCategoryData = categories?.map((category) => {
+          const updatedCategory = updateCategories?.find(
+            (update) => update?.categoryId === category?._id
+          );
+          return updatedCategory
+            ? { ...category, order: updatedCategory?.order }
+            : category;
+        });
+
+        setCategories(updatedCategoryData);
         notifySuccess(response?.message);
       } else {
         notifyError(response);
