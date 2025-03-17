@@ -68,8 +68,6 @@ const Candidates = ({ isDrawerOpen }) => {
     updateCandidateLoading,
   } = useSelector((state) => state.candidates);
 
-  console.log(">>>>>>>>>>>>>>>>>>.candidateListID", candidateListID);
-
   const [candidateList, setCandidateList] = useState(
     candidatesListingData || []
   );
@@ -474,7 +472,9 @@ const Candidates = ({ isDrawerOpen }) => {
   }, [dispatch]);
 
   useEffect(() => {
-    dispatch(fetchCandidateDetails(selectedCandidateId));
+    if (!updateCandidateLoading) {
+      dispatch(fetchCandidateDetails(selectedCandidateId));
+    }
   }, [selectedCandidateId, updateCandidateLoading]);
 
   const handleCandidateEyeClick = (id) => {
@@ -513,12 +513,15 @@ const Candidates = ({ isDrawerOpen }) => {
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
     const userId = searchParams.get("id");
+    console.log(">>>>>>>>>>>>>>>>candidateId", userId);
 
-    if (userId) {
+    if (!!userId) {
       setSelectedCandidateId(userId);
       setTimeout(() => {
         setModalVisibility("candidateInfoModalVisible", true);
       }, [300]);
+    } else {
+      setModalVisibility("candidateInfoModalVisible", false);
     }
   }, [location]);
   return (

@@ -11,6 +11,9 @@ import {
   UPDATE_CANDIDATE_LABEL_REQUEST,
   UPDATE_CANDIDATE_LABEL_SUCCESS,
   UPDATE_CANDIDATE_LABEL_FAILURE,
+  FETCH_SUGGESTED_FOLDER_REQUEST,
+  FETCH_SUGGESTED_FOLDER_SUCCESS,
+  FETCH_SUGGESTED_FOLDER_FAILURE,
 } from "../actions/actionsType";
 
 const initialState = {
@@ -29,6 +32,8 @@ const initialState = {
   candidateId: null,
   candidateDetailsLoading: false,
   updateCandidateLoading: false,
+  fetchFolderLoading: false,
+  folderList: [],
 };
 const candidateReducer = (state = initialState, action) => {
   switch (action.type) {
@@ -112,6 +117,22 @@ const candidateReducer = (state = initialState, action) => {
       return {
         ...state,
         updateCandidateLoading: false,
+      };
+
+    case FETCH_SUGGESTED_FOLDER_REQUEST:
+      return { ...state, fetchFolderLoading: true };
+
+    case FETCH_SUGGESTED_FOLDER_SUCCESS:
+      return {
+        ...state,
+        fetchFolderLoading: false,
+        folderList: action.folderData,
+      };
+
+    case FETCH_SUGGESTED_FOLDER_FAILURE:
+      return {
+        ...state,
+        fetchFolderLoading: false,
       };
     default:
       return state;

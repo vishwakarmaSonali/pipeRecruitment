@@ -3,6 +3,7 @@ import {
   BASE_URL,
   candidateSerachByIdApiEndPOint,
   createCandidateManuallyEndpoint,
+  fetchAutoSuggestFolderApiEndPoint,
   fetchCandidatesDetailsEndpoint,
   fetchCandidatesEndpoint,
   updateCandidateLabelApiEndpoint,
@@ -23,6 +24,9 @@ import {
   UPDATE_CANDIDATE_LABEL_REQUEST,
   UPDATE_CANDIDATE_LABEL_SUCCESS,
   UPDATE_CANDIDATE_LABEL_FAILURE,
+  FETCH_SUGGESTED_FOLDER_REQUEST,
+  FETCH_SUGGESTED_FOLDER_SUCCESS,
+  FETCH_SUGGESTED_FOLDER_FAILURE,
 } from "./actionsType";
 
 export const createCandidates = (params) => async (dispatch) => {
@@ -136,6 +140,31 @@ export const updateCandidateLabel = (data) => async (dispatch) => {
     return response?.data;
   } catch (error) {
     dispatch({ type: UPDATE_CANDIDATE_LABEL_FAILURE });
+    return error?.response?.data?.message || error.message;
+  }
+};
+
+export const fetchSuggestedFolders = (query) => async (dispatch) => {
+  dispatch({ type: FETCH_SUGGESTED_FOLDER_REQUEST });
+
+  try {
+    const response = await axiosInstance.get(
+      `${fetchAutoSuggestFolderApiEndPoint}`,
+      {
+        params: {
+          query: query,
+        },
+      }
+    );
+
+    dispatch({
+      type: FETCH_SUGGESTED_FOLDER_SUCCESS,
+      folderData: response?.data,
+    });
+
+    return response?.data;
+  } catch (error) {
+    dispatch({ type: FETCH_SUGGESTED_FOLDER_FAILURE });
     return error?.response?.data?.message || error.message;
   }
 };

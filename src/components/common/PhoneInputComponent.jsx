@@ -115,7 +115,7 @@ const PhoneInputComponent = ({
               }`}
             />
           </button>
-          <span className="font-12-regular color-black">
+          <span className="font-12-regular color-dark-black">
             ({selectedCountry.callingCode})
           </span>
           <input
@@ -194,7 +194,7 @@ const PhoneInputComponent = ({
                         svg
                         style={{ width: "22px", height: "16px" }}
                       />
-                      <span className="truncate-text font-12-regular color-black flex-1">
+                      <span className="truncate-text font-12-regular color-dark-black flex-1">
                         {option.name}
                       </span>
                     </div>

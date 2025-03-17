@@ -11,3 +11,4 @@ export const fetchCandidatesEndpoint = "api/candidates/search";
 export const fetchCandidatesDetailsEndpoint = "api/candidates";
 export const sourceTitleDropdown = "api/source/suggest/title";
 export const updateCandidateLabelApiEndpoint = "api/candidates/labels";
+export const fetchAutoSuggestFolderApiEndPoint = "api/folders/suggest";

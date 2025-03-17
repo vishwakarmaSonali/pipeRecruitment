@@ -101,6 +101,10 @@ const ProfessionalDetails = ({ details, label, isLoading, rawData }) => {
   };
 
   useEffect(() => {
+    setFields(details);
+  }, [details]);
+
+  useEffect(() => {
     const updatedData = domainData?.map((item) => item?.name);
     setDomainsData(updatedData);
   }, [domainData]);
@@ -246,13 +250,7 @@ const ProfessionalDetails = ({ details, label, isLoading, rawData }) => {
         (response) => {
           if (response?.success) {
             notifySuccess(response?.message);
-            // setFields({
-            //   ...fields,
-            //   [key]: {
-            //     ...value,
-            //     value: tempValue,
-            //   },
-            // });
+
             setEditField(null);
             setUpdateLoading(false);
           } else {
@@ -276,13 +274,7 @@ const ProfessionalDetails = ({ details, label, isLoading, rawData }) => {
         (response) => {
           if (response?.success) {
             notifySuccess(response?.message);
-            // setFields({
-            //   ...fields,
-            //   [key]: {
-            //     ...value,
-            //     value: tempValue,
-            //   },
-            // });
+
             setEditField(null);
             setUpdateLoading(false);
           } else {
@@ -806,7 +798,7 @@ const ProfessionalDetails = ({ details, label, isLoading, rawData }) => {
       );
     } else if (key === "Job") {
       return (
-        <div className="detail-row">
+        <div key={key} className="detail-row">
           <p className="font-14-medium color-dark-black flex-1">{key}</p>
           {value?.value ? (
             <div

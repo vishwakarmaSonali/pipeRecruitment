@@ -19,7 +19,7 @@ const Administration = () => {
               className="administration-tab-item"
               onClick={() => navigate(item?.navigate)}
             >
-              <p className="font-22-medium color-black">{item?.name}</p>
+              <p className="font-22-medium color-dark-black">{item?.name}</p>
               <p className="font-14-regular color-grey">{item?.desc}</p>
             </div>
           );

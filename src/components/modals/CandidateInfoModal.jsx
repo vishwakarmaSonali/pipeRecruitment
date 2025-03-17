@@ -1,7 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { useModal } from "../common/ModalProvider";
 import Modal from "react-bootstrap/Modal";
-import { formatTwoDigits, getRandomColor } from "../../helpers/utils";
+import {
+  formatTwoDigits,
+  getRandomColor,
+  notifyError,
+  notifySuccess,
+} from "../../helpers/utils";
 import { Avatar, Menu } from "@mui/material";
 import { ReactComponent as LabelIcon } from "../../pages/Recruitment/Candidates/assets/label.svg";
 import { ReactComponent as AddIcon } from "../../pages/Recruitment/Candidates/assets/add.svg";
@@ -74,6 +79,7 @@ import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import {
   fetchCandidateDetails,
+  updateCandidateDetails,
   updateCandidateLabel,
 } from "../../actions/candidateActions";
 import Skeleton from "react-loading-skeleton";
@@ -82,6 +88,7 @@ import {
   fetchAllDomains,
   fetchAllLabels,
 } from "../../actions/customizationActions";
+import { cloneDeep } from "lodash";
 
 const candidateInfoTabs = [
   {
@@ -242,7 +249,7 @@ const CandidateInfoModal = ({
   const [summaryStructuredData, setSummaryStructuredData] = useState(
     candidateInfo?.structuredCandidate || {}
   );
-
+  const [updateLoading, setUpdateLoading] = useState(false);
   const [selectedCandidateTab, setSelectedCandidateTab] = useState("Summary");
   const [anchorEl, setAnchorEl] = useState(null);
   const [randomColor, setRandomColor] = useState([]);
@@ -291,7 +298,7 @@ const CandidateInfoModal = ({
   const [addToJobsModalVisible, setAddToJobsModalVisible] = useState(false);
 
   const [addToFolderModalVisible, setAddToFolderModalVisible] = useState(false);
-
+  const [folderIds, setFolderIds] = useState([]);
   const [anchorE2, setAnchorE2] = useState(null);
   const [labelAnchor, setLabelAnchor] = useState(null);
   const labelMenuOpen = Boolean(labelAnchor);
@@ -305,7 +312,10 @@ const CandidateInfoModal = ({
   }, [dispatch]);
 
   useEffect(() => {
-    setCandidateRawData(candidateInfo?.raw_data);
+    setCandidateRawData(cloneDeep(candidateInfo?.raw_data));
+    setSummaryStructuredData(
+      cloneDeep(candidateInfo?.structuredCandidate || {})
+    );
   }, [candidateInfo]);
 
   const handleLabelMenuClick = (event) => {
@@ -452,10 +462,6 @@ const CandidateInfoModal = ({
     const random = getRandomColor();
     setRandomColor(random);
   }, []);
-
-  useEffect(() => {
-    setSummaryStructuredData(candidateInfo?.structuredCandidate || {});
-  }, [candidateInfo]);
 
   const handleBackdropClick = () => {
     setModalVisibility("animatedModal", true);
@@ -805,6 +811,7 @@ const CandidateInfoModal = ({
                           default: field.default,
                           fe_input_type: field.fe_input_type,
                           hide: field.hide,
+                          data: field.data,
                         };
                         return acc;
                       },
@@ -813,6 +820,7 @@ const CandidateInfoModal = ({
                     if (key === "candidate_description") {
                       return (
                         <CandidateDescription
+                          key={key}
                           label={value?.label}
                           editable={true}
                           data={value?.fields[0]?.value || ""}
@@ -842,6 +850,7 @@ const CandidateInfoModal = ({
                     } else if (key === "jobs") {
                       return (
                         <CandidateInfoJobs
+                          key={key}
                           label={value?.label}
                           data={jobData}
                           onAdd={() => setAddToJobsModalVisible(true)}
@@ -851,9 +860,15 @@ const CandidateInfoModal = ({
                     } else if (key === "folder") {
                       return (
                         <AddCommonCandidateInfo
+                          key={key}
                           label={value?.label}
-                          onAdd={() => setAddToFolderModalVisible(true)}
-                          data={folders}
+                          onAdd={(data) => {
+                            setFolderIds(data);
+                            setTimeout(() => {
+                              setAddToFolderModalVisible(true);
+                            }, [300]);
+                          }}
+                          data={mappedCandidateDetailsFields}
                           isLoading={candidateDetailsLoading}
                         />
                       );
@@ -862,6 +877,7 @@ const CandidateInfoModal = ({
                     } else {
                       return (
                         <ProfessionalDetails
+                          key={key}
                           details={
                             key === "skills"
                               ? value
@@ -1345,7 +1361,27 @@ const CandidateInfoModal = ({
       <AddToFolderModal
         visible={addToFolderModalVisible}
         onClose={() => setAddToFolderModalVisible(false)}
-        folders={setFolders}
+        isLoading={updateLoading}
+        setSelectedFolderId={setFolderIds}
+        folders={(data) => {
+          setUpdateLoading(true);
+          let httpBody = {
+            folders: folderIds,
+          };
+          dispatch(updateCandidateDetails(candidateId, httpBody)).then(
+            (response) => {
+              if (response?.success) {
+                notifySuccess(response?.message);
+                setAddToFolderModalVisible(false);
+                setUpdateLoading(false);
+              } else {
+                notifyError(response);
+                setUpdateLoading(false);
+              }
+            }
+          );
+        }}
+        selectedFolderId={folderIds || []}
       />
     </>
   );

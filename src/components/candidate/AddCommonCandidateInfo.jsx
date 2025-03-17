@@ -42,37 +42,50 @@ const AddCommonCandidateInfo = ({ label, onAdd, data, isLoading }) => {
             <ArrowIcon />
           </button>
         </div>
-        {data?.length > 0 && (
-          <button className="add-details-btn" onClick={onAdd}>
-            + Add
-          </button>
-        )}
+        {Object.entries(data)?.map(([key, value]) => {
+          return (
+            value?.data?.length > 0 && (
+              <button
+                className="add-details-btn"
+                onClick={() => onAdd(value?.value || [])}
+              >
+                + Add
+              </button>
+            )
+          );
+        })}
       </div>
       {collapse && (
         <>
           <div className="divider-line" />
           <div className="details-container">
-            {data?.length > 0 ? (
-              data?.map((item) => {
-                return (
-                  <div
-                    className="display-flex-justify align-center"
-                    style={{ padding: "6px 0", gap: 6 }}
-                  >
-                    <p className="font-14-medium color-dark-black">
-                      {item?.name}
-                    </p>
-                    <div className="w-h-26">
-                      <img src={grown} className="common-img" />
+            {Object.entries(data)?.map(([key, value]) => {
+              return value?.data?.length > 0 ? (
+                value?.data?.map((item) => {
+                  return (
+                    <div
+                      key={item?._id}
+                      className="display-flex-justify align-center"
+                      style={{ padding: "6px 0", gap: 6 }}
+                    >
+                      <p className="font-14-medium color-dark-black">
+                        {item?.name}
+                      </p>
+                      <div className="w-h-26">
+                        <img src={grown} className="common-img" />
+                      </div>
                     </div>
-                  </div>
-                );
-              })
-            ) : (
-              <button className="add-details-btn" onClick={onAdd}>
-                + Add
-              </button>
-            )}
+                  );
+                })
+              ) : (
+                <button
+                  className="add-details-btn"
+                  onClick={() => onAdd(value?.value || [])}
+                >
+                  + Add
+                </button>
+              );
+            })}
           </div>
         </>
       )}

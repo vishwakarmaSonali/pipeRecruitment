@@ -27,7 +27,7 @@ const Breadcrumb = () => {
         </>
       );
     }
-    return <span className="font-22-medium color-black">Administration</span>;
+    return <span className="font-22-medium color-dark-black">Administration</span>;
   };
 
   return <div className="breadcrumb position-sticky">{getBreadcrumb()}</div>;
