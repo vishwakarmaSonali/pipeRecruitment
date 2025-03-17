@@ -332,11 +332,54 @@ const Candidates = ({ isDrawerOpen }) => {
   // ✅ Handle Filter Menu Apply
   const handleFilterApply = (filterOption, inputValue) => {
     if (!inputValue || inputValue.trim() === "") {
-      console.log(filterOption, inputValue, "onHandleFilterApply");
+console.log("filterOption?.schoolfilterOption?.schoolfilterOption?.school",filterOption);
 
-      console.error(
-        "Filter input value is missing. Please enter a valid value."
-      );
+setCurrentPage(1);
+let params = {}
+params.limit = resultsPerPage;
+// if(filterOption?.candidateName){
+//   params.candidate_name = filterOption?.candidateName
+// }
+if (filterOption?.location?.length > 0) {
+  params.location = filterOption?.location.map((loc) => `'${loc}'`).join(", ");
+}
+
+if (filterOption?.locations?.length > 0 && filterOption?.location?.length < 1) {
+  params.location = filterOption?.locations;
+}
+if (filterOption?.nationality?.length > 0 && filterOption?.location?.length < 1) {
+  params.nationality = filterOption?.nationality;
+}
+if (!!filterOption?.experience?.from) {
+  params.years_of_experience_from = filterOption?.experience?.from;
+}
+
+if (!!filterOption?.experience?.to) {
+  params.years_of_experience_to = filterOption?.experience?.to;
+}
+if(filterOption?.school){
+  params.school = filterOption?.school
+}
+if(filterOption?.school?.length>0){
+  params.school = filterOption?.school?.join(",")
+}
+if(filterOption?.degree?.length>0){
+  params.degree = filterOption?.degree?.join(",")
+}
+if(filterOption?.degree){
+  params.degree = filterOption?.degree
+}
+if(filterOption?.company){
+  params.company = filterOption?.company
+}
+if(filterOption?.company?.length>0){
+  
+  params.company = filterOption?.company?.join(",")
+
+}
+
+
+ dispatch(fetchCandidatesList(params, 1));
       return;
     }
 
@@ -464,6 +507,9 @@ const Candidates = ({ isDrawerOpen }) => {
     setCurrentPage(1);
     let params = {};
     params.limit = resultsPerPage;
+
+    console.log("Fetching params>>>>",candidateFilters);
+    
     dispatch(fetchCandidatesList(params, 1));
   }, [dispatch, resultsPerPage]);
 

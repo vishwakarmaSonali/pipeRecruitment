@@ -39,14 +39,14 @@ const CandidateFilterDrawer = ({
   const [selectedLabels, setSelectedLabels] = useState([]);
   const [selectedSources, setSelectedSources] = useState([]);
   const [lastContactedDate, setLastContactedDate] = useState(
-    format(today, "yyyy-MM-dd")
+    
   );
   const [lastUpdatedDate, setLastUpdatedDate] = useState(
-    format(today, "yyyy-MM-dd")
+   
   );
   const [showContactedCalendar, setShowContactedCalendar] = useState(false);
   const [showUpdatedCalendar, setShowUpdatedCalendar] = useState(false);
-  const [selectedDate, setSelectedDate] = useState(format(today, "yyyy-MM-dd"));
+  const [selectedDate, setSelectedDate] = useState();
   const [selectedSkills, setSelectedSkills] = useState([]);
   const [skillQuery, setSkillQuery] = useState("");
   const [skillSuggestions, setSkillSuggestions] = useState([]);
@@ -143,6 +143,51 @@ const CandidateFilterDrawer = ({
     });
   };
 
+  const handleApplyFilters = () => {
+    const appliedFilters = {
+      candidateName: localFilters.candidateName || "",
+      location: selectedLocations || [], // Ensure locations are stored
+      nationality: nationality || [], // Store selected nationality
+      languages: selectedLanguages || [], // Store selected languages
+      experience: {
+        from: experience?.from || "",
+        to: experience?.to || "",
+      },
+      industry: industry || [], // Ensure industry data is captured
+      radius: radius || "",
+      radiusType: radius?.type || "",
+      skill: selectedSkills || [], // Ensure skills are included
+      pipelineStage: pipelineStage || [],
+      lastContactedDate: lastContactedDate || "",
+      lastUpdatedDate: lastUpdatedDate || "",
+      searchText: searchText || "",
+      selectedDomains: selectedDomains || [],
+      selectedLabels: selectedLabels || [],
+      selectedSources: selectedSources || [],
+      checkedColumns: checkedColumns || [],
+      currentSalary: currentSalary || "",
+      currentSalaryCurrency: currentSalaryCurrency || {},
+      expectedSalary: expectedSalary || "",
+      expectedSalaryCurrency: expectedSalaryCurrency || {},
+      selectedFrequencies: selectedFrequencies || "",
+      company: localFilters.company || localFilters?.companyList || [],
+      educationLevel: localFilters.educationLevel || "",
+      school: localFilters.school ||localFilters?.schoolList || [],
+      degree: localFilters.degree || localFilters?.degreeList || "",
+      
+      workModel: localFilters.workmodel || "",
+      checkboxOptions: checkedColumns || [], // Ensure checkboxes store selected options
+    };
+  
+    console.log("Applied Filters:", appliedFilters); // ✅ Log all selected filters
+  
+    if (onApply) {
+      onApply(appliedFilters); // ✅ Pass filters to Candidates.js
+    } else {
+      console.error("onApply is not defined");
+    }
+  };
+  
   const handleKeyDown = (e, field) => {
     if (
       e.key === "Enter" &&
@@ -169,27 +214,7 @@ const CandidateFilterDrawer = ({
     }));
   };
 
-  const handleApplyFilters = () => {
-    const appliedFilters = {
-      ...localFilters,
-      radiusType: radius?.type || "",
-      industry: industry?.industryType || "",
-      experience,
-      languages: selectedLanguages,
-      nationality: nationality?.nationality || "",
-      pipelineStage,
-      searchText,
-      selectedDomains,
-      selectedFrequencies,
-      selectedLabels,
-      selectedSources,
-      lastContactedDate,
-    };
-
-    console.log("Applied Filters:", appliedFilters); // Log all values
-
-    onApply(appliedFilters);
-  };
+ 
 
   useEffect(() => {
     setLocalFilters(filters);

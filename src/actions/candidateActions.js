@@ -63,6 +63,7 @@ export const fetchCandidatesList = (filters, page) => async (dispatch) => {
     const response = await axiosInstance.get(fetchCandidatesEndpoint, {
       params: { ...filters, page },
     });
+console.log("response of fetch candidate lisrt>>>",response,"filtersdsdsdd",filters);
 
     dispatch({
       type: FETCH_CANDIDATES_SUCCESS,

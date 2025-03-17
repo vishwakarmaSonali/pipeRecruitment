@@ -210,7 +210,7 @@ const CreateCandidateForm = () => {
       return;
     }
 
-    console.log("education:", education);
+    console.log("education:>>>>>", frequency);
 
     // Parse selected location
     const { city, state, country } =
@@ -309,7 +309,7 @@ const CreateCandidateForm = () => {
       ...(selectedDomain?.name && { domain: selectedDomain.name }),
       ...(selectedTitles.length > 0 && { title: selectedTitles[0] }),
       ...(currentEmployer && { company: currentEmployer }),
-      ...(frequency && { salary_frequency: frequency }),
+      ...(frequency && { salary_frequency: frequency?.frequency }),
       ...(currentSalary && { current_salary: parseInt(currentSalary, 10) }),
       ...(currentSalaryCurrency?.code && {
         current_salary_currency: currentSalaryCurrency.code,
