@@ -16,15 +16,53 @@ import { ReactComponent as DropdownIcon } from "../../assets/icons/dropdown.svg"
 import CommonTextInput from "../common/CommonTextInput";
 import CommonTextArea from "../common/CommonTextArea";
 import CommonLoader from "../common/CommonLoader";
+import Radio from "@mui/material/Radio";
+import RadioGroup from "@mui/material/RadioGroup";
+import FormControlLabel from "@mui/material/FormControlLabel";
 
 const fieldFormatList = [
-  { id: 1, type: "Short Text", icon: <ShortTextIcon /> },
-  { id: 2, type: "Detailed Text", icon: <DetailedTextIcon /> },
-  { id: 3, type: "Numeric Input", icon: <NumericIcon /> },
-  { id: 4, type: "Percentage Value", icon: <PercentageIcon /> },
-  { id: 5, type: "Date Picker", icon: <CalendarIcon /> },
-  { id: 6, type: "Yes/No Toggle", icon: <ToggleIcon /> },
-  { id: 7, type: "Single-Select Dropdown", icon: <DropdownIcon /> },
+  { id: 1, type: "Short Text", fe_input_type: "text", icon: <ShortTextIcon /> },
+  {
+    id: 2,
+    type: "Detailed Text",
+    fe_input_type: "quill",
+    icon: <DetailedTextIcon />,
+  },
+  {
+    id: 3,
+    type: "Numeric Input",
+    fe_input_type: "number_input",
+    icon: <NumericIcon />,
+  },
+  {
+    id: 4,
+    type: "Percentage Value",
+    fe_input_type: "percentage_input",
+    icon: <PercentageIcon />,
+  },
+  {
+    id: 5,
+    type: "Date Picker",
+    fe_input_type: "date",
+    icon: <CalendarIcon />,
+  },
+  {
+    id: 6,
+    type: "Yes/No Toggle",
+    fe_input_type: "toggle",
+    icon: <ToggleIcon />,
+  },
+  { id: 7, type: "Dropdown", fe_input_type: "select", icon: <DropdownIcon /> },
+];
+
+const singleDropdownOprions = [
+  { id: 1, type: "Custom" },
+  { id: 2, type: "Candidates" },
+  { id: 3, type: "Jobs" },
+  { id: 4, type: "Clients" },
+  { id: 5, type: "Matches" },
+  { id: 6, type: "Contact" },
+  { id: 7, type: "Users" },
 ];
 
 const AddFieldDrawer = ({ visible, onClose }) => {
@@ -34,15 +72,55 @@ const AddFieldDrawer = ({ visible, onClose }) => {
   const [description, setDescription] = useState("");
   const [nameError, setNameError] = useState("");
   const [saveBtnDisable, setSaveBtnDisable] = useState(true);
+  const [dropdownType, setDropdownType] = useState("single-select");
+  const [singleDropdownSelect, setSingleDropdownSelect] = useState("");
+  const [options, setOptions] = useState([
+    { id: Date.now(), value: "Option 1" },
+  ]);
+
+  const handleAddOption = () => {
+    setOptions([
+      ...options,
+      { id: Date.now(), value: `Option ${options.length + 1}` },
+    ]);
+  };
+
+  const handleChange = (id, newValue) => {
+    setOptions(
+      options.map((option) =>
+        option.id === id ? { ...option, value: newValue } : option
+      )
+    );
+  };
+
+  const handleBlur = (id) => {
+    console.log(
+      "Saved option:",
+      options.find((option) => option.id === id)
+    );
+  };
+
+  const handleRemove = (id) => {
+    if (options.length > 1) {
+      setOptions(options.filter((option) => option.id !== id));
+    }
+  };
 
   const resetData = () => {
     setName("");
     setFieldFormat("");
+    setDropdownType("single-select");
+    setOptions([{ id: Date.now(), value: "Option 1" }]);
+    setSingleDropdownSelect("");
   };
 
   const onCloseDrawer = () => {
     resetData();
     onClose();
+  };
+
+  const handleRadioChange = (event) => {
+    setDropdownType(event.target.value);
   };
 
   const handleBackdropClick = () => {
@@ -92,6 +170,104 @@ const AddFieldDrawer = ({ visible, onClose }) => {
               optionKey="type"
               type={"fieldFormat"}
             />
+            {fieldFormat?.fe_input_type === "select" && (
+              <div className="display-column" style={{ gap: 10 }}>
+                <RadioGroup
+                  row
+                  aria-labelledby="demo-controlled-radio-buttons-group"
+                  name="controlled-radio-buttons-group"
+                  value={dropdownType}
+                  onChange={handleRadioChange}
+                  sx={{ display: "flex", gap: "10px", margin: "0px 20px" }}
+                >
+                  <FormControlLabel
+                    value="single-select"
+                    control={
+                      <Radio
+                        sx={{
+                          color: "#151B23",
+                          "&.Mui-checked": {
+                            color: "#151B23",
+                          },
+                          transform: "scale(0.8)",
+                          width: "18px",
+                          height: "18px",
+                        }}
+                      />
+                    }
+                    label="Single Select"
+                    sx={styles?.label}
+                  />
+                  <FormControlLabel
+                    value="multi-select"
+                    control={
+                      <Radio
+                        sx={{
+                          transform: "scale(0.8)",
+                          width: "18px",
+                          height: "18px",
+                          color: "#151B23",
+                          "&.Mui-checked": {
+                            color: "#151B23",
+                          },
+                        }}
+                      />
+                    }
+                    label="Multi Select"
+                    sx={styles?.label}
+                  />
+                </RadioGroup>
+                {dropdownType === "single-select" && (
+                  <>
+                    <CommonDropdown
+                      options={singleDropdownOprions}
+                      placeholder="Type of Dropdown"
+                      selectedValue={singleDropdownSelect}
+                      onChange={setSingleDropdownSelect}
+                      optionKey="type"
+                      type={"fieldFormat"}
+                    />
+                    {singleDropdownSelect?.type === "Custom" && (
+                      <div className="display-column" style={{ gap: 10 }}>
+                        <p className="font-12-regular color-dark-black">
+                          Custom Options
+                        </p>
+                        <div className="custom-options-container">
+                          {options.map((option, index) => (
+                            <div key={option.id} className="custom-option-div">
+                              <span className="font-12-regular color-dark-black">
+                                {index + 1}.
+                              </span>
+                              <input
+                                type="text"
+                                value={option.value}
+                                onChange={(e) =>
+                                  handleChange(option.id, e.target.value)
+                                }
+                                onBlur={() => handleBlur(option.id)}
+                                className="option-input font-12-regular color-dark-black"
+                              />
+                              {options.length > 1 && (
+                                <button onClick={() => handleRemove(option.id)}>
+                                  <CloseIcon width={14} height={14} />
+                                </button>
+                              )}
+                            </div>
+                          ))}
+
+                          <div
+                            className="add-option-btn font-12-regular color-dark-black"
+                            onClick={handleAddOption}
+                          >
+                            Add Option
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </>
+                )}
+              </div>
+            )}
             <CommonTextArea
               type={"text"}
               value={description}
@@ -119,3 +295,18 @@ const AddFieldDrawer = ({ visible, onClose }) => {
 };
 
 export default AddFieldDrawer;
+
+const styles = {
+  label: {
+    Padding: "10px 12px !important",
+    flex: 1,
+    "& .MuiTypography-root": {
+      fontSize: "12px",
+      lineHeight: "14px",
+      fontFamily: "Ubuntu",
+      fontWeight: 400,
+      color: "#151B23",
+      marginLeft: "10px",
+    },
+  },
+};

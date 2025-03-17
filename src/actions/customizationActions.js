@@ -257,3 +257,23 @@ export const reorderCategoryFields = (data) => {
     }
   };
 };
+
+export const UpdateCategoryFields = (data, categoryId, fieldId) => {
+  return async (dispatch) => {
+    dispatch({ type: REORDER_CATEGORIRY_FIELD_REQUEST });
+    try {
+      const response = await axiosInstance.put(
+        `api/form-field-categories/${categoryId}/fields/${fieldId}`,
+        data
+      );
+      dispatch({
+        type: REORDER_CATEGORIRY_FIELD_SUCCESS,
+        updatedData: response?.data,
+      });
+      return response?.data;
+    } catch (error) {
+      dispatch({ type: REORDER_CATEGORIRY_FIELD_FAILURE });
+      return error.response?.data?.message || error.message;
+    }
+  };
+};
