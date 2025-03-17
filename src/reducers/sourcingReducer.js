@@ -19,8 +19,6 @@ const initialState = {
 };
 
 const sourcingReducer = (state = initialState, action) => {
-  console.log("action>>>>", action?.payload);
-
   switch (action.type) {
     case SEARCH_CANDIDATE_REQUEST:
       return {

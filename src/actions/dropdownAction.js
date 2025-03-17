@@ -7,7 +7,11 @@ import {
   LABEL_FETCH_SUCCESS,
   LABEL_FETCH_FAILURE,
 } from "./actionsType";
-import { BASE_URL,  getDomainEndpoint, getLabelEndpoint } from "../helpers/apiConfig";
+import {
+  BASE_URL,
+  getDomainEndpoint,
+  getLabelEndpoint,
+} from "../helpers/apiConfig";
 
 export const fetchDomains = () => {
   return async (dispatch) => {
@@ -16,10 +20,9 @@ export const fetchDomains = () => {
     try {
       const response = await axios.get(`${BASE_URL}${getDomainEndpoint}`, {
         headers: {
-        //   Authorization: "Bearer {{accessToken}}",
+          //   Authorization: "Bearer {{accessToken}}",
         },
       });
-console.log("response in fetchdomains",response?.data);
 
       dispatch({ type: DOMAIN_FETCH_SUCCESS, payload: response.data });
     } catch (error) {
@@ -37,10 +40,9 @@ export const fetchLabels = () => {
     try {
       const response = await axios.get(`${BASE_URL}${getLabelEndpoint}`, {
         headers: {
-        //   Authorization: "Bearer {{accessToken}}",
+          //   Authorization: "Bearer {{accessToken}}",
         },
       });
-console.log("response in fetchLabels",response?.data);
 
       dispatch({ type: LABEL_FETCH_SUCCESS, payload: response.data });
     } catch (error) {

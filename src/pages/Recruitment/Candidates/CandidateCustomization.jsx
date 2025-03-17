@@ -33,6 +33,9 @@ import {
   addDomain,
   updateDomain,
   deleteDomain,
+  fetchAllCategories,
+  reorderCategory,
+  reorderCategoryFields,
 } from "../../../actions/customizationActions";
 import CommonDeleteModal from "../../../components/modals/CommonDeleteModal";
 import AddFieldDrawer from "../../../components/candidate/AddFieldDrawer";
@@ -78,6 +81,8 @@ const CandidateCustomization = () => {
     deleteDomainLoading,
     addDomainLoading,
     fetchDomainLoading,
+    categoriesData,
+    fetchLoading,
   } = useSelector((state) => state?.customization);
 
   const { modals, setModalVisibility } = useModal();
@@ -88,7 +93,7 @@ const CandidateCustomization = () => {
   const [selectedCandidateTab, setSelectedCandidateTab] =
     useState("Summary Fields");
 
-  const [categories, setCategories] = useState(categoryData);
+  const [categories, setCategories] = useState(categoriesData);
   const [selectedCategory, setSelectedCategory] = useState({});
   const [selectedItem, setSelectedItem] = useState(null);
   const [selectedFieldItem, setSelectedFieldItem] = useState(null);
@@ -111,6 +116,10 @@ const CandidateCustomization = () => {
   const [tempDomain, setTempDomain] = useState(null);
   const [addNewDomain, setAddNewDomain] = useState(false);
   const [selectedDomainId, setSelectedDomainId] = useState(null);
+
+  useEffect(() => {
+    // setCategories(categoriesData);
+  }, [categoriesData]);
 
   const reset = () => {
     setAddNewLabel(false);
@@ -447,7 +456,7 @@ const CandidateCustomization = () => {
 
   const selectedCustomizationCategoryHandler = (item) => {
     const updatedData = categories?.map((data) => {
-      if (item?.id === data?.id) {
+      if (item?._id === data?._id) {
         return { ...data, selected: true };
       } else {
         return { ...data, selected: false };
@@ -458,14 +467,40 @@ const CandidateCustomization = () => {
     setCategories(updatedData);
   };
 
+  const sortDataByOrder = (data) => {
+    return data
+      .sort((a, b) => a?.order - b?.order)
+      .map((section) => ({
+        ...section,
+        fields: section?.fields.sort((a, b) => a?.order - b?.order),
+      }));
+  };
+
   const onDragEnd = (result) => {
     if (!result.destination) return;
 
     const reorderedItems = [...categories];
     const [movedItem] = reorderedItems.splice(result.source.index, 1);
     reorderedItems.splice(result.destination.index, 0, movedItem);
-    dispatch(categoryDraggableFuction(reorderedItems));
-    setCategories(reorderedItems);
+
+    const updateCategories = reorderedItems?.map((item, index) => {
+      return {
+        categoryId: item?._id,
+        order: index + 1,
+      };
+    });
+
+    const httpBody = {
+      categories: updateCategories,
+    };
+
+    dispatch(reorderCategory(httpBody, updateCategories)).then((response) => {
+      if (response?.success) {
+        notifySuccess(response?.message);
+      } else {
+        notifyError(response);
+      }
+    });
   };
 
   const onDragEndFields = (result) => {
@@ -475,13 +510,27 @@ const CandidateCustomization = () => {
 
     const [movedItem] = reorderedItems?.splice(result.source.index, 1);
     reorderedItems?.splice(result.destination.index, 0, movedItem);
-    dispatch(
-      categoryFieldDraggableFuction(selectedCategory?.id, reorderedItems)
-    );
-    setSelectedCategory((prev) => ({
-      ...prev,
-      fields: [...reorderedItems],
-    }));
+
+    const updateCategoryFields = reorderedItems?.map((item, index) => {
+      return {
+        fieldId: item?._id,
+        order: index + 1,
+      };
+    });
+
+    const httpBody = {
+      categoryId: selectedCategory?._id,
+      fields: updateCategoryFields,
+    };
+
+    dispatch(reorderCategoryFields(httpBody)).then((response) => {
+      if (response?.message) {
+        setSelectedCategory(response?.result);
+        notifySuccess(response?.message);
+      } else {
+        notifyError(response);
+      }
+    });
   };
 
   useEffect(() => {
@@ -495,7 +544,8 @@ const CandidateCustomization = () => {
   useEffect(() => {
     dispatch(fetchAllLabels());
     dispatch(fetchAllDomains());
-  }, []);
+    dispatch(fetchAllCategories());
+  }, [dispatch]);
 
   return (
     <div className="candidate-info-main-container">
@@ -559,10 +609,10 @@ const CandidateCustomization = () => {
                         {...provided.droppableProps}
                         className="candidate-customization-category-item"
                       >
-                        {categories?.map((item, index) => (
+                        {sortDataByOrder(categories)?.map((item, index) => (
                           <Draggable
-                            key={item?.id}
-                            draggableId={item.id?.toString()}
+                            key={item?._id}
+                            draggableId={item._id?.toString()}
                             index={index}
                           >
                             {(provided) => (
@@ -610,7 +660,7 @@ const CandidateCustomization = () => {
                                           (inputRefs.current[item.id] = el)
                                         }
                                         type="text"
-                                        value={item?.name}
+                                        value={item?.label}
                                         onChange={(e) =>
                                           handleCategoryNameChange(
                                             item?.id,
@@ -618,13 +668,13 @@ const CandidateCustomization = () => {
                                           )
                                         }
                                         onBlur={() =>
-                                          saveCategoryName(item.id, item?.name)
+                                          saveCategoryName(item.id, item?.label)
                                         }
                                         onKeyDown={(e) => {
                                           if (e.key === "Enter") {
                                             saveCategoryName(
                                               item.id,
-                                              item?.name
+                                              item?.label
                                             );
                                           }
                                         }}
@@ -641,7 +691,7 @@ const CandidateCustomization = () => {
                                         }}
                                       >
                                         <span className="font-14-regular color-grey ">
-                                          {item?.name}
+                                          {item?.label}
                                         </span>
                                       </div>
                                     )}
@@ -761,8 +811,8 @@ const CandidateCustomization = () => {
                             >
                               {selectedCategory?.fields?.map((item, index) => (
                                 <Draggable
-                                  key={item?.id}
-                                  draggableId={item.id?.toLocaleString()}
+                                  key={item?._id}
+                                  draggableId={item._id?.toLocaleString()}
                                   index={index}
                                 >
                                   {(provided) => (
@@ -779,7 +829,7 @@ const CandidateCustomization = () => {
                                           <DraggableIcon fill={"#151B23"} />
                                         </div>
                                         <p className="font-12-regular color-dark-black">
-                                          {item?.name}
+                                          {item?.label}
                                         </p>
                                       </div>
                                       <div

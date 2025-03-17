@@ -12,3 +12,10 @@ export const fetchCandidatesDetailsEndpoint = "api/candidates";
 export const sourceTitleDropdown = "api/source/suggest/title";
 export const updateCandidateLabelApiEndpoint = "api/candidates/labels";
 export const fetchAutoSuggestFolderApiEndPoint = "api/folders/suggest";
+export const fetchAllCategoriesApiEndPoint =
+  "api/form-field-categories/categories";
+export const addNewCategoryApiEndPoint = "api/form-field-categories/category";
+export const reorderCategoryApiEndPoint =
+  "api/form-field-categories/reorder-categories";
+export const reorderCategoryFieldApiEndPoint =
+  "api/form-field-categories/reorder";

@@ -1,6 +1,11 @@
 import axios from "axios";
 import { BASE_URL, loginEndpoint } from "../helpers/apiConfig";
-import { LOGIN_FAILURE, LOGIN_REQUEST, LOGIN_SUCCESS, LOGOUT_USER } from "./actionsType";
+import {
+  LOGIN_FAILURE,
+  LOGIN_REQUEST,
+  LOGIN_SUCCESS,
+  LOGOUT_USER,
+} from "./actionsType";
 
 // Login action
 export const loginUser = (email, password) => {
@@ -8,12 +13,15 @@ export const loginUser = (email, password) => {
     dispatch({ type: LOGIN_REQUEST });
 
     try {
-      const response = await axios.post(`${BASE_URL}${loginEndpoint}`, { email, password }, {
-        headers: { "Content-Type": "application/json" },
-      });
+      const response = await axios.post(
+        `${BASE_URL}${loginEndpoint}`,
+        { email, password },
+        {
+          headers: { "Content-Type": "application/json" },
+        }
+      );
 
       const { accessToken, refreshToken } = response.data?.data;
-console.log(" response.data",response.data);
 
       // Store tokens in Redux
       dispatch({
@@ -24,8 +32,7 @@ console.log(" response.data",response.data);
       // Save tokens in localStorage
       localStorage.setItem("token", accessToken);
       localStorage.setItem("refreshToken", refreshToken);
-      return response?.data
-
+      return response?.data;
     } catch (error) {
       dispatch({
         type: LOGIN_FAILURE,
@@ -35,7 +42,7 @@ console.log(" response.data",response.data);
   };
 };
 export const logoutUser = () => (dispatch) => {
-    localStorage.removeItem("token"); // Clear token storage (if used)
-    localStorage.removeItem("refreshToken"); // Clear token storage (if used)
-    dispatch({ type: LOGOUT_USER });
-  };
+  localStorage.removeItem("token"); // Clear token storage (if used)
+  localStorage.removeItem("refreshToken"); // Clear token storage (if used)
+  dispatch({ type: LOGOUT_USER });
+};

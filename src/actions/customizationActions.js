@@ -1,4 +1,10 @@
-import { getDomainEndpoint, getLabelEndpoint } from "../helpers/apiConfig";
+import {
+  fetchAllCategoriesApiEndPoint,
+  getDomainEndpoint,
+  getLabelEndpoint,
+  reorderCategoryApiEndPoint,
+  reorderCategoryFieldApiEndPoint,
+} from "../helpers/apiConfig";
 import {
   CATEGORY_CUSTOMIZATION_REQUEST,
   CATEGORY_FIELD_CUSTOMIZATION_REQUEST,
@@ -28,6 +34,15 @@ import {
   DELETE_DOMAIN_FAILURE,
   DELETE_DOMAIN_REQUEST,
   DELETE_DOMAIN_SUCCESS,
+  FETCH_ALL_CATEGORIES_REQUEST,
+  FETCH_ALL_CATEGORIES_SUCCESS,
+  FETCH_ALL_CATEGORIES_FAILURE,
+  REORDER_CATEGORIES_REQUEST,
+  REORDER_CATEGORIES_SUCCESS,
+  REORDER_CATEGORIES_FAILURE,
+  REORDER_CATEGORIRY_FIELD_REQUEST,
+  REORDER_CATEGORIRY_FIELD_SUCCESS,
+  REORDER_CATEGORIRY_FIELD_FAILURE,
 } from "./actionsType";
 import axiosInstance from "./axiosInstance";
 
@@ -182,6 +197,62 @@ export const deleteDomain = (id) => {
       return response?.data;
     } catch (error) {
       dispatch({ type: DELETE_DOMAIN_FAILURE });
+      return error.response?.data?.message || error.message;
+    }
+  };
+};
+
+export const fetchAllCategories = () => {
+  return async (dispatch) => {
+    dispatch({ type: FETCH_ALL_CATEGORIES_REQUEST });
+    try {
+      const response = await axiosInstance.get(fetchAllCategoriesApiEndPoint);
+      dispatch({
+        type: FETCH_ALL_CATEGORIES_SUCCESS,
+        categoryData: response.data,
+      });
+      return response.data;
+    } catch (error) {
+      dispatch({ type: FETCH_ALL_CATEGORIES_FAILURE });
+      return error.response?.data?.message || error.message;
+    }
+  };
+};
+export const reorderCategory = (data, updateCategories) => {
+  return async (dispatch) => {
+    dispatch({ type: REORDER_CATEGORIES_REQUEST });
+    try {
+      const response = await axiosInstance.put(
+        reorderCategoryApiEndPoint,
+        data
+      );
+      dispatch({
+        type: REORDER_CATEGORIES_SUCCESS,
+        updatedCategoryData: updateCategories,
+      });
+      return response?.data;
+    } catch (error) {
+      dispatch({ type: REORDER_CATEGORIES_FAILURE });
+      return error.response?.data?.message || error.message;
+    }
+  };
+};
+
+export const reorderCategoryFields = (data) => {
+  return async (dispatch) => {
+    dispatch({ type: REORDER_CATEGORIRY_FIELD_REQUEST });
+    try {
+      const response = await axiosInstance.put(
+        reorderCategoryFieldApiEndPoint,
+        data
+      );
+      dispatch({
+        type: REORDER_CATEGORIRY_FIELD_SUCCESS,
+        updatedData: response?.data,
+      });
+      return response?.data;
+    } catch (error) {
+      dispatch({ type: REORDER_CATEGORIRY_FIELD_FAILURE });
       return error.response?.data?.message || error.message;
     }
   };

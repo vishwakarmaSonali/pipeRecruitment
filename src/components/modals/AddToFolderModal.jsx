@@ -52,7 +52,6 @@ const AddToFolderModal = ({
   }, [searchValue, debouncedFetchFolders]);
 
   const folderHandler = (id) => {
-    console.log(">>>>>>>>>>>.selectedFolderId", selectedFolderId);
     let updatedSelectedIds = [...selectedFolderId];
 
     if (updatedSelectedIds?.includes(id)) {

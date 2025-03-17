@@ -115,10 +115,6 @@ const BulkActionView = ({
   const handleAddToCandidate = () => {
     const selectedCandidateIds = selectedCandidates.map((id) => id);
 
-    console.log(
-      "Formatted Candidate IDs:",
-      JSON.stringify(selectedCandidateIds)
-    );
     dispatch(addSourceToCandidates(selectedCandidateIds));
   };
 
@@ -335,7 +331,6 @@ const Sourcing = () => {
 
   const [filterDrawerOpen, setFilterDrawerOpen] = useState(false);
   const { token, refreshToken } = useSelector((state) => state?.auth);
-  console.log("token>>>>>>>>", token, "refreshToken", refreshToken);
 
   const toggleCandidateDrawer = (open) => {
     setCandidateDrawerOpen(open);
@@ -362,7 +357,6 @@ const Sourcing = () => {
 
   // Function to handle applying filters
   const applyFilters = (newFilters) => {
-    console.log(">>>>>>>>>>>>>>>>>>>>>newFilters", newFilters);
     setFilters(newFilters);
     setFiltersApplied(true);
     toggleFilterDrawer(false);
@@ -456,7 +450,6 @@ const Sourcing = () => {
     let params = {};
     params.limit = resultsPerPage;
 
-    console.log(">>>>>>>>>>>.filters?.locations", filters);
     if (filters?.titles?.length > 0) {
       params.title = filters.titles.join(", ");
     }

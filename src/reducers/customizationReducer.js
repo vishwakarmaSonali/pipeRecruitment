@@ -27,6 +27,15 @@ import {
   DELETE_DOMAIN_FAILURE,
   DELETE_DOMAIN_REQUEST,
   DELETE_DOMAIN_SUCCESS,
+  FETCH_ALL_CATEGORIES_REQUEST,
+  FETCH_ALL_CATEGORIES_SUCCESS,
+  FETCH_ALL_CATEGORIES_FAILURE,
+  REORDER_CATEGORIES_REQUEST,
+  REORDER_CATEGORIES_SUCCESS,
+  REORDER_CATEGORIES_FAILURE,
+  REORDER_CATEGORIRY_FIELD_SUCCESS,
+  REORDER_CATEGORIRY_FIELD_REQUEST,
+  REORDER_CATEGORIRY_FIELD_FAILURE,
 } from "../actions/actionsType";
 import { defaultCategoryData } from "../helpers/config";
 
@@ -42,6 +51,9 @@ const initialState = {
   updateDomainLoading: false,
   deleteDomainLoading: false,
   addDomainLoading: false,
+  fetchLoading: false,
+  categoriesData: [],
+  reorderLoading: false,
 };
 
 const customizationReducer = (state = initialState, action) => {
@@ -231,6 +243,74 @@ const customizationReducer = (state = initialState, action) => {
       return {
         ...state,
         deleteDomainLoading: false,
+      };
+
+    case FETCH_ALL_CATEGORIES_REQUEST:
+      return {
+        ...state,
+        fetchLoading: true,
+      };
+    case FETCH_ALL_CATEGORIES_SUCCESS:
+      return {
+        ...state,
+        categoriesData: action.categoryData,
+        fetchLoading: false,
+      };
+    case FETCH_ALL_CATEGORIES_FAILURE:
+      return {
+        ...state,
+        fetchLoading: false,
+      };
+
+    case REORDER_CATEGORIES_REQUEST:
+      return {
+        ...state,
+        reorderLoading: true,
+      };
+    case REORDER_CATEGORIES_SUCCESS:
+      const updatedCategoryData = state.categoriesData?.map((category) => {
+        const updatedCategory = action?.updatedCategoryData?.find(
+          (update) => update?.categoryId === category?._id
+        );
+        return updatedCategory
+          ? { ...category, order: updatedCategory?.order }
+          : category;
+      });
+
+      return {
+        ...state,
+        reorderLoading: false,
+        categoriesData: updatedCategoryData,
+      };
+    case REORDER_CATEGORIES_FAILURE:
+      return {
+        ...state,
+        reorderLoading: false,
+      };
+
+    case REORDER_CATEGORIRY_FIELD_REQUEST:
+      return {
+        ...state,
+        reorderLoading: true,
+      };
+    case REORDER_CATEGORIRY_FIELD_SUCCESS:
+      const updatedCategoryFieldData = state.categoriesData?.map((category) => {
+        if (category?._id === action?.updatedData?.result?._id) {
+          return action?.updatedData?.result;
+        } else {
+          return category;
+        }
+      });
+
+      return {
+        ...state,
+        categoriesData: updatedCategoryFieldData,
+        reorderLoading: false,
+      };
+    case REORDER_CATEGORIRY_FIELD_FAILURE:
+      return {
+        ...state,
+        reorderLoading: false,
       };
     default:
       return state;

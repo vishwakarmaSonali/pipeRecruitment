@@ -58,8 +58,6 @@ export const addSourceToCandidates =
         requestData
       );
 
-      console.log("✅ API Response:", response.data);
-
       if (response.data.success) {
         dispatch({
           type: ADD_SOURCE_TO_CANDIDATE_SUCCESS,

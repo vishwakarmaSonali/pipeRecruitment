@@ -1,4 +1,4 @@
-import React, { useState,useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import "../../components/filterModal/FilterModal.css";
 import { ReactComponent as CloseIcon } from "../../assets/icons/drawerClose.svg";
 import { ReactComponent as FolderIcon } from "../../assets/icons/sourcingIcons/folder-add.svg";
@@ -15,19 +15,19 @@ import { useSelector } from "react-redux";
 
 const AddLabelDrawer = ({ isOpen, onClose, onApply, onReset }) => {
   const navigate = useNavigate();
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   const [searchValue, setSearchValue] = useState("");
   const [labelData, setLabelData] = useState([]);
   const [selectedLabels, setSelectedLabels] = useState([]);
-  
+
   const { data, loading, error } = useSelector((state) => state.labels);
   // Ensure `data` is available and formatted properly
   const labelOptions =
-  data?.map((item) => ({
-    id: item.id,
-    name: item.name, // Adjust the key based on API response
-    color:item.color
-  })) || [];
+    data?.map((item) => ({
+      id: item.id,
+      name: item.name, // Adjust the key based on API response
+      color: item.color,
+    })) || [];
   const [folderData, setFolderData] = useState(labelOptions);
   // ✅ Generate Unique "New Folder" Name
   const generateUniqueFolderName = () => {
@@ -79,8 +79,6 @@ const AddLabelDrawer = ({ isOpen, onClose, onApply, onReset }) => {
   };
 
   useEffect(() => {
-    console.log("called");
-
     dispatch(fetchLabels());
   }, [dispatch]);
   useEffect(() => {
@@ -91,7 +89,7 @@ const AddLabelDrawer = ({ isOpen, onClose, onApply, onReset }) => {
         color: item.color,
         selected: false, // Ensures labels start unselected
       }));
-  
+
       setLabelData(formattedData);
     }
   }, [data]);
@@ -101,19 +99,21 @@ const AddLabelDrawer = ({ isOpen, onClose, onApply, onReset }) => {
         item._id === id ? { ...item, selected: !item.selected } : item
       )
     );
-  
+
     setSelectedLabels((prevSelectedLabels) => {
       const isSelected = prevSelectedLabels.some((item) => item._id === id);
-  
+
       if (isSelected) {
         return prevSelectedLabels.filter((item) => item._id !== id); // Remove if already selected
       } else {
         const selectedItem = labelData.find((item) => item._id === id);
-        return selectedItem ? [...prevSelectedLabels, selectedItem] : prevSelectedLabels;
+        return selectedItem
+          ? [...prevSelectedLabels, selectedItem]
+          : prevSelectedLabels;
       }
     });
   };
-  
+
   return (
     <Drawer anchor="right" open={isOpen} onClose={onClose}>
       <div
@@ -145,23 +145,23 @@ const AddLabelDrawer = ({ isOpen, onClose, onApply, onReset }) => {
           {labelData?.length > 0 && (
             <div className="display-column space-y-2 ">
               {labelData?.map((item) => (
-                 <div
-                 key={item._id}
-                 className={`flex items-center justify-between p-2 rounded-md cursor-pointer transition ${
-                   selectedLabels.some((label) => label._id === item._id) ? "bg-blueBg" : ""
-                 }`}
+                <div
+                  key={item._id}
+                  className={`flex items-center justify-between p-2 rounded-md cursor-pointer transition ${
+                    selectedLabels.some((label) => label._id === item._id)
+                      ? "bg-blueBg"
+                      : ""
+                  }`}
                   onClick={() => handleSelectLabel(item._id)}
                 >
                   <div className="items-center flex">
                     <LabelIcon className="mr-2" fill={item.color} />
-                      <span className="font-14-regular color-dark-black">
-                        {item.name}
-                      </span>
-                  
+                    <span className="font-14-regular color-dark-black">
+                      {item.name}
+                    </span>
                   </div>
                   {/* Tick Icon (when selected) */}
                   {selectedLabels.some((label) => label._id === item._id) && (
-
                     <div className="flex items-end">
                       <TickCircle />
                     </div>
@@ -178,7 +178,7 @@ const AddLabelDrawer = ({ isOpen, onClose, onApply, onReset }) => {
             <button
               className="w-1/2  text-buttonBLue flex justify-center items-center py-[12px] rounded-[8px] btn-text h-[40px]"
               onClick={onReset}
-              style = {{border:"1px solid #1761D8"}}
+              style={{ border: "1px solid #1761D8" }}
             >
               Cancel
             </button>

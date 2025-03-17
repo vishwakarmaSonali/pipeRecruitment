@@ -376,6 +376,9 @@ const CandidateInfoModal = ({
       if (response?.success) {
         setSelectedLabelData([...filterLableData]);
         setLabelsData(updatedData);
+        handleLabelMenuClose();
+      } else {
+        handleLabelMenuClose();
       }
     });
   };
