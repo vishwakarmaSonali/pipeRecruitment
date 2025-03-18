@@ -28,3 +28,66 @@
 .administration-tab-item:hover {
   box-shadow: 0px 0px 4px 0px #00000014;
 }
+
+.user-role-management-main-container {
+  padding: 10px 36px;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.user-role-management-section-1 {
+  flex: 1;
+  max-width: 460px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.user-role-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px;
+  gap: 8px;
+}
+
+.user-role-management-section-2 {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.user-permission-container {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  overflow: "inherit";
+}
+
+.user-permission-item-container {
+  width: 230px;
+  max-height: 250px;
+  border-radius: 10px;
+  border-width: 0px 1px 1px 1px;
+  border-style: solid;
+  border-color: #f3f4f4;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+.user-permission-item-header {
+  background-color: #1761d81a;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.user-role-sub-div {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 0px 20px;
+}

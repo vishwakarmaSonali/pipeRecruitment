@@ -52,6 +52,12 @@ export const userRolePermissionData = {
       "Resume Management": ["Download", "View", "Edit"],
     },
   ],
+  Sourcing: [
+    "Create Candidate",
+    "Add to Jobs",
+    "Add to Folder",
+    "Download Resume",
+  ],
   Clients: [
     "Create Client",
     "Update Client",
@@ -60,10 +66,4 @@ export const userRolePermissionData = {
     "Reports",
   ],
   Jobs: ["Create Job", "Update Job", "Export Job", "Reports"],
-  Sourcing: [
-    "Create Candidate",
-    "Add to Jobs",
-    "Add to Folder",
-    "Download Resume",
-  ],
 };

@@ -316,6 +316,14 @@ const CandidateInfoModal = ({
     setSummaryStructuredData(
       cloneDeep(candidateInfo?.structuredCandidate || {})
     );
+    setSelectedLabelData(candidateInfo?.raw_data?.labels || []);
+    const updatedData = labelData?.map((item) => {
+      const updatedLabel = candidateInfo?.raw_data?.labels?.find(
+        (update) => update?._id === item?._id
+      );
+      return updatedLabel ? { ...item, selected: true } : item;
+    });
+    setLabelsData(updatedData);
   }, [candidateInfo]);
 
   const handleLabelMenuClick = (event) => {
@@ -368,9 +376,7 @@ const CandidateInfoModal = ({
     const selectedLabelId = filterLableData?.map((item) => item?._id);
     const httpBody = {
       candidateIds: [candidateId],
-      updateData: {
-        labels: [...selectedLabelId],
-      },
+      labels: [...selectedLabelId],
     };
     dispatch(updateCandidateLabel(httpBody)).then((response) => {
       if (response?.success) {

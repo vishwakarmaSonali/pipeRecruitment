@@ -94,7 +94,7 @@ const CandidateCustomization = () => {
     useState("Summary Fields");
 
   const [categories, setCategories] = useState(categoriesData);
-  const [selectedCategory, setSelectedCategory] = useState({});
+  const [selectedCategory, setSelectedCategory] = useState(null);
   const [selectedItem, setSelectedItem] = useState(null);
   const [selectedFieldItem, setSelectedFieldItem] = useState(null);
   const [anchorEl, setAnchorEl] = useState(null);
@@ -118,7 +118,9 @@ const CandidateCustomization = () => {
   const [selectedDomainId, setSelectedDomainId] = useState(null);
 
   useEffect(() => {
-    // setCategories(categoriesData);
+    if (!selectedCategory) {
+      setCategories(categoriesData);
+    }
   }, [categoriesData]);
 
   const reset = () => {
@@ -339,7 +341,8 @@ const CandidateCustomization = () => {
     const newId = Date.now().toString();
     const newCategory = {
       id: newId,
-      name: "Candidate Name",
+      name: "candidate_name",
+      label: "Candidate Name",
       fields: [],
       selected: true,
       custom: true,
@@ -353,7 +356,7 @@ const CandidateCustomization = () => {
     );
 
     setNewCategoryId(newId);
-    setSelectedCategory({});
+    setSelectedCategory(null);
     setTimeout(() => {
       if (inputRefs.current[newCategory.id]) {
         inputRefs.current[newCategory.id].focus();
@@ -801,7 +804,7 @@ const CandidateCustomization = () => {
                 <div className="category-main-container">
                   <div className="display-flex-justify align-center">
                     <p className="font-14-medium color-dark-black">
-                      Fields - {selectedCategory?.name}
+                      Fields - {selectedCategory?.label}
                     </p>
                     <CommonAddButton
                       title={"Add Field"}

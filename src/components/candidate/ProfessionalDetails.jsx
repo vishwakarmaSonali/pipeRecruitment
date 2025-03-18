@@ -617,10 +617,26 @@ const ProfessionalDetails = ({ details, label, isLoading, rawData }) => {
             <CommonSwitch
               on={value?.value ? true : false}
               onToggle={() => {
-                setFields({
-                  ...fields,
-                  [key]: { ...value, value: !value?.value },
-                });
+                setUpdateLoading(true);
+                let httpBody = {
+                  [value?.name]: !value?.value,
+                };
+                dispatch(updateCandidateDetails(candidateId, httpBody)).then(
+                  (response) => {
+                    if (response?.success) {
+                      notifySuccess(response?.message);
+                      setFields({
+                        ...fields,
+                        [key]: { ...value, value: !value?.value },
+                      });
+                      setEditField(null);
+                      setUpdateLoading(false);
+                    } else {
+                      notifyError(response);
+                      setUpdateLoading(false);
+                    }
+                  }
+                );
               }}
             />
           </div>
