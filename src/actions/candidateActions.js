@@ -1,5 +1,6 @@
 import axiosInstance from "./axiosInstance";
 import {
+  addCandidatesToArchive,
   BASE_URL,
   candidateSerachByIdApiEndPOint,
   createCandidateManuallyEndpoint,
@@ -27,7 +28,11 @@ import {
   FETCH_SUGGESTED_FOLDER_REQUEST,
   FETCH_SUGGESTED_FOLDER_SUCCESS,
   FETCH_SUGGESTED_FOLDER_FAILURE,
+  ARCHIVE_CANDIDATES_REQUEST,
+  ARCHIVE_CANDIDATES_SUCCESS,
+  ARCHIVE_CANDIDATES_FAILURE,
 } from "./actionsType";
+import { notifySuccess } from "../helpers/utils";
 
 export const createCandidates = (params) => async (dispatch) => {
   dispatch({ type: CREATE_CANDIDATE_REQUEST });
@@ -169,3 +174,44 @@ export const fetchSuggestedFolders = (query) => async (dispatch) => {
     return error?.response?.data?.message || error.message;
   }
 };
+
+// ✅ Add Source to Candidates
+export const addCandidateToArchiveAction =
+  (selectedCandidates) => async (dispatch) => {
+    dispatch({ type: ARCHIVE_CANDIDATES_REQUEST });
+
+    if (!selectedCandidates.length) {
+      console.warn("No candidates selected.");
+      return;
+    }
+
+    const requestData = {
+      candidateIds: selectedCandidates,
+    };
+
+    try {
+      const response = await axiosInstance.post(
+        addCandidatesToArchive,
+        requestData
+      );
+
+      if (response.data.success) {
+        dispatch({
+          type: ARCHIVE_CANDIDATES_SUCCESS,
+          payload: response.data.message,
+        });
+        notifySuccess("Candidates archived successfully!");
+      } else {
+        dispatch({
+          type: ARCHIVE_CANDIDATES_FAILURE,
+          payload: response.data.message || "Failed to add candidates.",
+        });
+        alert(response.data.message || "Failed to add candidates.");
+      }
+    } catch (error) {
+      dispatch({
+        type: ARCHIVE_CANDIDATES_FAILURE,
+        payload: error.response?.data?.message || "Something went wrong.",
+      });
+    }
+  };

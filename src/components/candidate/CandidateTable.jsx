@@ -35,6 +35,7 @@ const CandidateTable = ({
   showDeleteIcon,
   eyeClickOn,
   onCandidateClick,
+  onCandidateSelect
 }) => {
   const navigate = useNavigate();
   const { modals, setModalVisibility } = useModal();
@@ -50,6 +51,9 @@ const CandidateTable = ({
   const handleMenuClose = () => {
     setAnchorEl(null);
   };
+  const handleSelect = (id) => {
+    onCandidateSelect(id); // Call the parent function
+  };
 
   // ✅ Format column headers (removes underscores & capitalizes words)
   const formatHeader = (header) => {
@@ -58,7 +62,7 @@ const CandidateTable = ({
       .replace(/\b\w/g, (char) => char.toUpperCase());
   };
 
-  console.log("data in CandidateTable", data);
+  console.log("data in CandidateTable", selectedCandidates);
 
   return (
     <>
@@ -101,6 +105,7 @@ const CandidateTable = ({
                             allSelected ? [] : data.map((c) => c._id)
                           );
                         }}
+                        
                       >
                         {selectedCandidates.length === data.length && <Tick />}
                       </button>

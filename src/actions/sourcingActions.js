@@ -1,5 +1,5 @@
 import axios from "axios";
-import { BASE_URL, candidateSearchApiEndPoint } from "../helpers/apiConfig";
+import { addSourceToCandidateEndpoint, BASE_URL, candidateSearchApiEndPoint } from "../helpers/apiConfig";
 import {
   SEARCH_CANDIDATE_REQUEST,
   SEARCH_CANDIDATE_FAILURE,
@@ -54,7 +54,7 @@ export const addSourceToCandidates =
 
     try {
       const response = await axiosInstance.post(
-        "api/candidates/add-to-candidate",
+        addSourceToCandidateEndpoint,
         requestData
       );
 

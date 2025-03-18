@@ -41,6 +41,7 @@ import { truncate } from "lodash";
 import { useLocation } from "react-router-dom";
 import CandidateOverviewDrawer from "../../../components/candidate/CandidateOverviewDrawer";
 import {
+  addCandidateToArchiveAction,
   fetchCandidateDetails,
   fetchCandidates,
   fetchCandidatesList,
@@ -83,6 +84,7 @@ const Candidates = ({ isDrawerOpen }) => {
   const [addToJobsDrawerOpen, setAddToJobsDrawerOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [resultsPerPage, setResultsPerPage] = useState(20);
+  const [selectedCandidateIds, setSelectedCandidateIds] = useState([]);
 
   const [changeOwnershipDrawerOpen, setChangeOwnershipDrawerOpen] =
     useState(false);
@@ -105,6 +107,54 @@ const Candidates = ({ isDrawerOpen }) => {
     skill: "",
     education: { major: "", school: "", degree: "" },
   });
+  // const handleArchiveCandidates = async () => {
+  //   if (selectedCandidates.length === 0) {
+  //     alert("Please select candidates to archive.");
+  //     return;
+  //   }
+  
+  //   console.log("Archiving Candidates: ", selectedCandidates);
+  // handleCloseBulkAction()
+  //   try {
+  //     // Dispatch archive action
+  //     await dispatch(addCandidateToArchiveAction(selectedCandidates, token, refreshToken));
+  
+  //     // ✅ Fetch updated list after successful archiving
+  //     setTimeout(() => {
+  //       dispatch(fetchCandidatesList(candidateFilters, 1));
+  //     }, 500);
+  
+  //     // Reset selection
+  //     setSelectedCandidates([]);
+  //   } catch (error) {
+  //     console.error("Error archiving candidates:", error);
+  //     alert("Failed to archive candidates.");
+  //   }
+  // };
+  
+  const handleArchiveCandidates = () => {
+    if (selectedCandidates.length === 0) {
+      alert("Please select candidates to archive.");
+      return;
+    }
+  handleCloseBulkAction()
+    console.log("Archiving Candidates: ", selectedCandidates);
+  
+    // ✅ Remove archived candidates from local state without calling API
+    setCandidateList((prevList) =>
+      prevList.filter((candidate) => !selectedCandidates.includes(candidate._id))
+    );
+  
+    // Reset selection after archiving
+    setSelectedCandidates([]);
+  };
+
+  
+  // useEffect(() => {
+  //   if (candidatesListingData) {
+  //     setCandidateList([...candidatesListingData]); // Force re-render
+  //   }
+  // }, [candidatesListingData]);
   const bulkMenuItems = [
     {
       label: "Add to jobs",
@@ -138,7 +188,8 @@ const Candidates = ({ isDrawerOpen }) => {
     {
       label: "Archive",
       icon: <ArchiveIcon />,
-      onClick: () => navigate("/archive-candidates"),
+      onClick: handleArchiveCandidates, // ✅ Call archive function
+      // onClick: () => navigate("/archive-candidates"),
     },
   ];
 
@@ -332,54 +383,62 @@ const Candidates = ({ isDrawerOpen }) => {
   // ✅ Handle Filter Menu Apply
   const handleFilterApply = (filterOption, inputValue) => {
     if (!inputValue || inputValue.trim() === "") {
-console.log("filterOption?.schoolfilterOption?.schoolfilterOption?.school",filterOption);
+      console.log(
+        "filterOption?.schoolfilterOption?.schoolfilterOption?.school",
+        filterOption
+      );
 
-setCurrentPage(1);
-let params = {}
-params.limit = resultsPerPage;
-// if(filterOption?.candidateName){
-//   params.candidate_name = filterOption?.candidateName
-// }
-if (filterOption?.location?.length > 0) {
-  params.location = filterOption?.location.map((loc) => `'${loc}'`).join(", ");
-}
+      setCurrentPage(1);
+      let params = {};
+      params.limit = resultsPerPage;
+      // if(filterOption?.candidateName){
+      //   params.candidate_name = filterOption?.candidateName
+      // }
+      if (filterOption?.location?.length > 0) {
+        params.location = filterOption?.location
+          .map((loc) => `'${loc}'`)
+          .join(", ");
+      }
 
-if (filterOption?.locations?.length > 0 && filterOption?.location?.length < 1) {
-  params.location = filterOption?.locations;
-}
-if (filterOption?.nationality?.length > 0 && filterOption?.location?.length < 1) {
-  params.nationality = filterOption?.nationality;
-}
-if (!!filterOption?.experience?.from) {
-  params.years_of_experience_from = filterOption?.experience?.from;
-}
+      if (
+        filterOption?.locations?.length > 0 &&
+        filterOption?.location?.length < 1
+      ) {
+        params.location = filterOption?.locations;
+      }
+      if (
+        filterOption?.nationality?.length > 0 &&
+        filterOption?.location?.length < 1
+      ) {
+        params.nationality = filterOption?.nationality;
+      }
+      if (!!filterOption?.experience?.from) {
+        params.years_of_experience_from = filterOption?.experience?.from;
+      }
 
-if (!!filterOption?.experience?.to) {
-  params.years_of_experience_to = filterOption?.experience?.to;
-}
-if(filterOption?.school){
-  params.school = filterOption?.school
-}
-if(filterOption?.school?.length>0){
-  params.school = filterOption?.school?.join(",")
-}
-if(filterOption?.degree?.length>0){
-  params.degree = filterOption?.degree?.join(",")
-}
-if(filterOption?.degree){
-  params.degree = filterOption?.degree
-}
-if(filterOption?.company){
-  params.company = filterOption?.company
-}
-if(filterOption?.company?.length>0){
-  
-  params.company = filterOption?.company?.join(",")
+      if (!!filterOption?.experience?.to) {
+        params.years_of_experience_to = filterOption?.experience?.to;
+      }
+      if (filterOption?.school) {
+        params.school = filterOption?.school;
+      }
+      if (filterOption?.school?.length > 0) {
+        params.school = filterOption?.school?.join(",");
+      }
+      if (filterOption?.degree?.length > 0) {
+        params.degree = filterOption?.degree?.join(",");
+      }
+      if (filterOption?.degree) {
+        params.degree = filterOption?.degree;
+      }
+      if (filterOption?.company) {
+        params.company = filterOption?.company;
+      }
+      if (filterOption?.company?.length > 0) {
+        params.company = filterOption?.company?.join(",");
+      }
 
-}
-
-
- dispatch(fetchCandidatesList(params, 1));
+      dispatch(fetchCandidatesList(params, 1));
       return;
     }
 
@@ -508,8 +567,8 @@ if(filterOption?.company?.length>0){
     let params = {};
     params.limit = resultsPerPage;
 
-    console.log("Fetching params>>>>",candidateFilters);
-    
+    console.log("Fetching params>>>>", candidateFilters);
+
     dispatch(fetchCandidatesList(params, 1));
   }, [dispatch, resultsPerPage]);
 
@@ -570,6 +629,9 @@ if(filterOption?.company?.length>0){
       setModalVisibility("candidateInfoModalVisible", false);
     }
   }, [location]);
+console.log("selected candidatesssss>>>>>>",selectedCandidateIds);
+
+
   return (
     <div className="sourcing-main-container">
       <Navbar />
@@ -726,6 +788,8 @@ if(filterOption?.company?.length>0){
                     showDeleteIcon={false}
                     eyeClickOn={handleCandidateEyeClick}
                     onCandidateClick={handleCandidateClick} // Pass function to handle clicks
+                    // onCandidateSelect={handleCandidateSelection} // Handle selection
+
                   />
                 )}
               </div>

@@ -129,7 +129,7 @@ const FilterDrawer = ({ isOpen, onClose, onApply, onReset, filters }) => {
 
   return (
     <Drawer anchor="right" open={isOpen} onClose={onClose}>
-      <div role="presentation" className="candidate-details-drawer">
+      <div role="presentation" className="candidate-details-drawer w-[460px]">
         <div className="py-[20px] h-full display-column" style={{ gap: 20 }}>
           <div className="flex justify-between items-center">
             <h2 className="font-24-medium color-dark-black">Filters</h2>
@@ -140,7 +140,36 @@ const FilterDrawer = ({ isOpen, onClose, onApply, onReset, filters }) => {
 
           <div className="filter-form">
             <div className="display-column-6 ">
+            <label className="font-12-regular color-dark-black">
+                Global Search
+              </label>
+              <div>
+                <CommonTextInput
+                  type="text"
+                  placeholder="Global Search"
+                  className="filter-input"
+                  value={localFilters.globalSearch || ""}
+                  onChange={(e) => handleInputChange(e, "globalSearch")}
+                  onKeyDown={(e) => handleKeyDown(e, "globalSearch")}
+                />
+              </div>
+              {localFilters.globalSearchList?.length > 0 && (
+                <div className="inputItemsDiv">
+                  {localFilters.globalSearchList?.map((majorItem, index) => (
+                    <div key={index} className="inputed-item">
+                      {majorItem}
+                      <button
+                        className="ml-2 text-customBlue"
+                        onClick={() => removeItem("globalSearch", index)}
+                      >
+                        ✕
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
               <label className="font-12-regular color-dark-black">
+                
                 Job Title
               </label>
               <div className="flex-1">

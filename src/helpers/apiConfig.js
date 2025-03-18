@@ -19,3 +19,5 @@ export const reorderCategoryApiEndPoint =
   "api/form-field-categories/reorder-categories";
 export const reorderCategoryFieldApiEndPoint =
   "api/form-field-categories/reorder";
+export const addSourceToCandidateEndpoint = "api/candidates/add-to-candidate"
+export const addCandidatesToArchive = "api/candidates/archive"

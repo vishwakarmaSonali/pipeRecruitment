@@ -251,10 +251,39 @@ const CandidateFilterDrawer = ({
           </div>
 
           <div className="filter-form">
-            <div className="display-column-6 border-b pb-2 ">
-              <label className="font-12-regular color-dark-black">
+              <label className="font-12-regular color-dark-black"> 
+                Global Search
+              </label>
+              <div className="">
+                <CommonTextInput
+                  type="text"
+                  placeholder="Global Search"
+                  className="filter-input"
+                  value={localFilters.globalSearch || []}
+                  onChange={(e) => handleInputChange(e, "globalSearch")}
+                  onKeyDown={(e) => handleKeyDown(e, "globalSearch")}
+                />
+              </div>
+              {localFilters.globalSearchList?.length > 0 && (
+                <div className="inputItemsDiv">
+                  {localFilters.globalSearchList?.map((companyItem, index) => (
+                    <div key={index} className="inputed-item">
+                      {companyItem}
+                      <button
+                        className="ml-2 text-customBlue"
+                        onClick={() => removeItem("globalSearch", index)}
+                      >
+                        ✕
+                      </button>
+                    </div>
+                  ))}
+                </div>
+                
+              )}
+              <label className="font-12-regular color-dark-black"> 
                 Quick Filters
               </label>
+            <div className="display-column-6 border-b pb-2 ">
               <div>
                 {checkboxOptions.map((column) => (
                   <div
