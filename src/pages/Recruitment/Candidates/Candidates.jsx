@@ -385,14 +385,43 @@ const Candidates = ({ isDrawerOpen }) => {
     if (!inputValue || inputValue.trim() === "") {
       console.log(
         "filterOption?.schoolfilterOption?.schoolfilterOption?.school",
-        filterOption
-      );
+        filterOption?.selectedLabels .map((loc) => `'${loc?.id}'`)
+        .join(", "))
+      
+
 
       setCurrentPage(1);
       let params = {};
       params.limit = resultsPerPage;
       if(filterOption?.candidateName){
         params.candidate_name = filterOption?.candidateName
+      }
+      if (
+        filterOption?.nationality
+      ) {
+      
+        params.nationality = filterOption?.nationality?.join(", ")
+      }
+      if (
+        filterOption?.workModel
+      ) {
+      
+        params.work_mode = filterOption?.workModel
+      }
+      if (
+        filterOption?.selectedLabels
+      ) {
+        params.labels = filterOption?.selectedLabels.map((labelItem) => `${labelItem?.id}`)
+        .join(", ")
+      }
+      if ( filterOption?.languages?.length > 0) {
+        console.log(" filterOption?.languages?.join(",")", filterOption?.languages
+          .map((loc) => `'${loc?.language}'`)
+          .join(", "));
+        
+        params.languages = filterOption?.languages
+        .map((lang) => `'${lang?.language}'`)
+        .join(", ");
       }
       if (filterOption?.location?.length > 0) {
         params.location = filterOption?.location
@@ -405,12 +434,6 @@ const Candidates = ({ isDrawerOpen }) => {
         filterOption?.location?.length < 1
       ) {
         params.location = filterOption?.locations;
-      }
-      if (
-        filterOption?.nationality?.length > 0 &&
-        filterOption?.location?.length < 1
-      ) {
-        params.nationality = filterOption?.nationality;
       }
       if (!!filterOption?.experience?.from) {
         params.years_of_experience_from = filterOption?.experience?.from;
@@ -443,6 +466,7 @@ const Candidates = ({ isDrawerOpen }) => {
       if (filterOption?.company?.length > 0) {
         params.company = filterOption?.company?.join(",");
       }
+      
 console.log("params in candidate filters",params);
 
       dispatch(fetchCandidatesList(params, 1));

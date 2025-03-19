@@ -53,6 +53,7 @@ const CandidateFilterDrawer = ({
   const [skillSuggestions, setSkillSuggestions] = useState([]);
   const [showSkillDropdown, setShowSkillDropdown] = useState(false);
   const [selectedLocations, setSelectedLocations] = useState([]); // Ensure it's an array
+    const [selectedWorkModel, setSelectedWorkModel] = useState(null); // Must be an object or null
   const [currentSalaryCurrency, setCurrentSalaryCurrency] = useState({
     code: "USD",
     name: "US Dollar",
@@ -102,6 +103,14 @@ const CandidateFilterDrawer = ({
     { id: 3, source: "Referral" },
     { id: 4, source: "Company Website" },
   ];
+  const workModelOptions = [
+    { id: 1, workModel: "On-site" },
+    { id: 2, workModel: "Remote" },
+    { id: 3, workModel: "Hybrid" },
+    { id: 4, workModel: "Flexible" },
+    { id: 5, workModel: "Freelance/Contract" },
+    { id: 6, workModel: "Part-Time" },
+  ];
   const { data, loading, error } = useSelector((state) => state.labels);
   // Ensure `data` is available and formatted properly
   const labelOptions =
@@ -141,6 +150,8 @@ const CandidateFilterDrawer = ({
   };
 
   const handleApplyFilters = () => {
+    console.log("localFilters.workmodellocalFilters.workmodel",selectedWorkModel);
+    
     const appliedFilters = {
       candidateName: localFilters.candidateName || "",
       location: selectedLocations || [], // Ensure locations are stored
@@ -172,7 +183,7 @@ const CandidateFilterDrawer = ({
       school: localFilters.school ||localFilters?.schoolList || [],
       degree: localFilters.degree || localFilters?.degreeList || "",
       globalSearch:localFilters?.globalSearch || localFilters?.globalSearchList || [],
-      workModel: localFilters.workmodel || "",
+      workModel: selectedWorkModel?.workModel || '',
       checkboxOptions: checkedColumns || [], // Ensure checkboxes store selected options
     };
   
@@ -524,14 +535,14 @@ const CandidateFilterDrawer = ({
               <label className="font-12-regular color-dark-black">
                 Job-Related
               </label>
-              <CommonTextInput
-                type="text"
-                placeholder="Work Model"
-                className="filter-input"
-                value={localFilters.workmodel || ""}
-                onChange={(e) => handleInputChange(e, "workmodel")}
-                onKeyDown={(e) => handleKeyDown(e, "workmodel")}
-              />
+              <CustomDropdown
+                    options={workModelOptions} // Ensure it's an array of objects
+                    placeholder="Work Model"
+                    selectedValues={selectedWorkModel} // Must be an object
+                    onChange={setSelectedWorkModel} // Must store the full object
+                    optionKey="workModel"
+                    multiSelect={false}
+                  />
               <label className="font-12-regular mt-[7px] color-dark-black ">
                 Expected Salary
               </label>

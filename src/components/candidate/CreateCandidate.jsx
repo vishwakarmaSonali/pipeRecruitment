@@ -337,7 +337,7 @@ const CreateCandidateForm = () => {
     };
 
     console.log("Final Candidate Data >>>", candidateData);
-return
+
     try {
       const response = await dispatch(createCandidates(candidateData));
       console.log("API Response >>>", response);
