@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "../../components/filterModal/FilterModal.css"
+import axiosInstance from "../../actions/axiosInstance";
+import { BASE_URL } from "../../helpers/apiConfig";
 const SkillSearchDropdown = ({ selectedSkills = [], setSelectedSkills }) => {
   const [skillQuery, setSkillQuery] = useState("");
   const [skillSuggestions, setSkillSuggestions] = useState([]);
@@ -11,8 +13,8 @@ const SkillSearchDropdown = ({ selectedSkills = [], setSelectedSkills }) => {
     if (skillQuery.length > 1) {
       const fetchSkills = async () => {
         try {
-          const response = await axios.get(
-            `http://3.111.186.55/api/candidate-profiles/suggest/skills?query=${skillQuery}`
+          const response = await axiosInstance.get(
+            `${BASE_URL}api/source/suggest/skills?query=${skillQuery}`
           );
           console.log("Skill API Response:", response?.data?.suggestions);
           

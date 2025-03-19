@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import CommonTextInput from "../common/CommonTextInput";
 import { BASE_URL } from "../../helpers/apiConfig";
+import axiosInstance from "../../actions/axiosInstance";
 
 const OrganizationSearchDropdown = ({ selectedOrganizations = [], setSelectedOrganizations }) => {
   const [organizationQuery, setOrganizationQuery] = useState("");
@@ -13,8 +14,8 @@ const OrganizationSearchDropdown = ({ selectedOrganizations = [], setSelectedOrg
     if (organizationQuery.length > 1) {
       const fetchOrganizations = async () => {
         try {
-          const response = await axios.get(
-            `${BASE_URL}api/candidate-profiles/suggest/organization?query=${organizationQuery}`
+          const response = await axiosInstance.get(
+            `${BASE_URL}api/source/suggest/company?query=${organizationQuery}`
           );
           console.log("Organization API Response:", response?.data?.suggestions);
 

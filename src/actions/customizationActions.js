@@ -43,6 +43,9 @@ import {
   REORDER_CATEGORIRY_FIELD_REQUEST,
   REORDER_CATEGORIRY_FIELD_SUCCESS,
   REORDER_CATEGORIRY_FIELD_FAILURE,
+  FETCH_ARCHIVE_CANDIDATES_REQUEST,
+  FETCH_ARCHIVE_CANDIDATES_SUCCESS,
+  FETCH_ARCHIVE_CANDIDATES_FAILURE,
 } from "./actionsType";
 import axiosInstance from "./axiosInstance";
 
@@ -273,6 +276,31 @@ export const UpdateCategoryFields = (data, categoryId, fieldId) => {
       return response?.data;
     } catch (error) {
       dispatch({ type: REORDER_CATEGORIRY_FIELD_FAILURE });
+      return error.response?.data?.message || error.message;
+    }
+  };
+};
+
+export const fetchArchivedCandidates = (page) => {
+  return async (dispatch) => {
+    dispatch({ type: FETCH_ARCHIVE_CANDIDATES_REQUEST });
+
+    try {
+      const response = await axiosInstance.get(
+        `api/candidates/archive?limit=10&page=${page}`
+      );
+console.log("api called in fetcharchived candidates",response?.data);
+
+      dispatch({
+        type: FETCH_ARCHIVE_CANDIDATES_SUCCESS,
+        payload: response.data, // Store response data in Redux
+      });
+
+      return response.data;
+    } catch (error) {
+      console.log(error, "error in fetch candidates archived");
+      
+      dispatch({ type: FETCH_ARCHIVE_CANDIDATES_FAILURE });
       return error.response?.data?.message || error.message;
     }
   };

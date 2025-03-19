@@ -13,6 +13,8 @@ import axiosInstance from "./axiosInstance";
 import { notifySuccess } from "../helpers/utils";
 
 export const fetchCandidates = (filters, page) => {
+  console.log("filtersasaas",filters);
+  
   return async (dispatch) => {
     dispatch({ type: SEARCH_CANDIDATE_REQUEST });
 

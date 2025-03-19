@@ -10,7 +10,13 @@ import SkillSearchDropdown from "../AutocompleteDropdowns/SkillDropdown";
 import OrganizationSearchDropdown from "../AutocompleteDropdowns/OrganizationSearchDropDown";
 import CommonDropdown from "../common/CommonDropdown";
 import CommonTextInput from "../common/CommonTextInput";
+import { fetchDomains } from "../../actions/dropdownAction";
+import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 const FilterDrawer = ({ isOpen, onClose, onApply, onReset, filters }) => {
+  const dispatch = useDispatch();
+  const { data, loading, error } = useSelector((state) => state.domains);
+
   const [localFilters, setLocalFilters] = useState(filters);
   const [isVisible, setIsVisible] = useState(isOpen);
 
@@ -21,10 +27,12 @@ const FilterDrawer = ({ isOpen, onClose, onApply, onReset, filters }) => {
   const [selectedSkills, setSelectedSkills] = useState([]);
   const [selectedOrganizations, setSelectedOrganizations] = useState([]); // Ensure it's an array
   console.log("onApply>>>>>>", onApply);
-
+  useEffect(() => {
+    dispatch(fetchDomains());
+  }, [dispatch]);
   const radiusOptions = [
-    { id: 1, type: "Kilometer" },
-    { id: 2, type: "Mile" },
+    { id: 1, type: "Kilometer", name: "km" },
+    { id: 2, type: "Mile", name: "mi" },
   ];
   const industryOptions = [
     { id: 1, industryType: "IT" },
@@ -70,13 +78,13 @@ const FilterDrawer = ({ isOpen, onClose, onApply, onReset, filters }) => {
       ),
     }));
   };
+console.log("dataDomaindataDomaindataDomain",data);
 
-  const handleIndustryChange = (selectedItem) => {
-    if (!industry.includes(selectedItem)) {
-      setIndustry([...industry, selectedItem]);
-    }
-  };
-
+  const domainOptions =
+    data?.map((item) => ({
+      id: item._id, // Correct id reference
+      name: item.name,
+    })) || [];
   const removeIndustry = (index) => {
     setIndustry(industry.filter((_, i) => i !== index));
   };
@@ -85,18 +93,19 @@ const FilterDrawer = ({ isOpen, onClose, onApply, onReset, filters }) => {
       "selectedTitlesselectedTitles",
       selectedTitles,
       "locationslocations",
-      selectedLocations
+      industry
     );
 
     onApply({
       ...localFilters,
-      radiusType: radius?.type || "",
-      domain: industry?.industryType || "",
+      radiusType: radius?.name || "",
+      domain: industry?.name || "",
       titles: selectedTitles,
       location: selectedLocations,
       locations: selectedLocations,
       skills: selectedSkills,
       organizations: selectedOrganizations,
+      
       experience,
     });
   };
@@ -139,8 +148,8 @@ const FilterDrawer = ({ isOpen, onClose, onApply, onReset, filters }) => {
           </div>
 
           <div className="filter-form">
-            <div className="display-column-6 ">
-            <label className="font-12-regular color-dark-black">
+            <div className="display-column-6">
+              <label className="font-12-regular color-dark-black">
                 Global Search
               </label>
               <div>
@@ -148,7 +157,7 @@ const FilterDrawer = ({ isOpen, onClose, onApply, onReset, filters }) => {
                   type="text"
                   placeholder="Global Search"
                   className="filter-input"
-                  value={localFilters.globalSearch || ""}
+                  value={localFilters.globalSearch || []}
                   onChange={(e) => handleInputChange(e, "globalSearch")}
                   onKeyDown={(e) => handleKeyDown(e, "globalSearch")}
                 />
@@ -168,8 +177,9 @@ const FilterDrawer = ({ isOpen, onClose, onApply, onReset, filters }) => {
                   ))}
                 </div>
               )}
+            </div>
+            <div className="display-column-6  ">
               <label className="font-12-regular color-dark-black">
-                
                 Job Title
               </label>
               <div className="flex-1">
@@ -303,13 +313,15 @@ const FilterDrawer = ({ isOpen, onClose, onApply, onReset, filters }) => {
 
             <div className="display-column-6 ">
               <label className="font-12-regular color-dark-black">Domain</label>
-              <CommonDropdown
-                options={industryOptions}
-                placeholder="Select Domain"
+              <CustomDropdown
+                options={domainOptions} // Ensure it's an array of objects
+                placeholder="Domain"
                 selectedValue={industry}
                 onChange={setIndustry}
-                optionKey="industryType"
+                optionKey="name"
+                multiSelect={false}
               />
+
               {industry.length > 0 && (
                 <div className="inputItemsDiv">
                   {industry.map((item, index) => (

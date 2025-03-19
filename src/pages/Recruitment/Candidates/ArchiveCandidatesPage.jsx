@@ -44,15 +44,19 @@ import { notifySuccess } from "../../../helpers/utils";
 import CandidateTable from "../../../components/candidate/CandidateTable";
 import {
   archivedCandidateHeader,
-  candidateTableHeader,
 } from "../../../helpers/config";
-import CandidateTable1 from "../../../components/candidate/ArchivedCandidateTable";
 import ArchiveCandidateTable from "../../../components/candidate/ArchivedCandidateTable";
 import PaginationComponent from "../../../components/common/PaginationComponent";
 import { useNavigate } from "react-router-dom";
+import { fetchArchivedCandidates } from "../../../actions/customizationActions";
 const ArchiveCandidates = ({ isDrawerOpen }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const archivedCandidates = useSelector(
+    (state) => state.customization.archivedCandidates?.results
+  );
+  console.log("archivedCandidatesarchivedCandidates",archivedCandidates);
+  
   const [candidateList, setCandidateList] = useState(archivedCandidates);
   const [selectedCandidates, setSelectedCandidates] = useState([]);
   const [selectedCandidate, setSelectedCandidate] = useState(null);
@@ -82,6 +86,7 @@ const ArchiveCandidates = ({ isDrawerOpen }) => {
     skill: "",
     education: { major: "", school: "", degree: "" },
   });
+
   const bulkMenuItems = [
     {
       label: "Add to jobs",
@@ -98,7 +103,7 @@ const ArchiveCandidates = ({ isDrawerOpen }) => {
       icon: <EditUser />,
       onClick: () => setChangeOwnershipDrawerOpen(true),
     },
-    ...(selectedCandidates.length > 1
+    ...(selectedCandidates?.length > 1
       ? [
           {
             label: "Merge Duplicate",
@@ -237,19 +242,10 @@ const ArchiveCandidates = ({ isDrawerOpen }) => {
   const [conditions, setConditions] = useState([]); // Store multiple conditions
   const [deleteMessage, setDeleteMessage] = useState(""); // New state to store the delete message
   const [deletingCandidates, setDeletingCandidates] = useState([]); // Track candidates to delete
+  const [totalPages, setTotalPages] = useState(1);
+  const [loading, setLoading] = useState(false);
 
-  const applySavedFilter = (filterName) => {
-    const selectedFilter = savedFilters.find(
-      (filter) => filter.name === filterName
-    );
-    if (selectedFilter) {
-      setConditions(selectedFilter.conditions);
-      setOriginalConditions([...selectedFilter.conditions]);
-      setIsFilterSaved(true);
-      setSelectedCategory(filterName);
-    }
-  };
-
+  
   useEffect(() => {
     if (modals?.savedFiltersModalVisible) {
       const selectedFilter = savedFilters.find((filter) => filter.isSelected);
@@ -261,6 +257,15 @@ const ArchiveCandidates = ({ isDrawerOpen }) => {
       }
     }
   }, [modals?.savedFiltersModalVisible, savedFilters]);
+  
+  useEffect(() => {
+    dispatch(fetchArchivedCandidates(currentPage)).then((data) => {
+      if (data && data.totalPages) {
+        setTotalPages(data.totalPages);
+      }
+    });
+  }, [dispatch, currentPage]);
+
 
   // Function to clear all filters
   const clearAllFilters = () => {
@@ -274,9 +279,7 @@ const ArchiveCandidates = ({ isDrawerOpen }) => {
     dispatch(updateFilterAsync({ name: selectedCategory, conditions }));
   };
   // 🔍 Filter Candidates based on Search Query
-  const filteredCandidates = candidateList.filter((candidate) =>
-    candidate?.candidate_name?.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+
 
   const handleSearchableMenuClose = () => {
     setAnchorAddConditionEl(null);
@@ -315,7 +318,7 @@ const ArchiveCandidates = ({ isDrawerOpen }) => {
 
     // Remove the selected filter from the searchable menu
     setSearchableMenuItems((prevItems) =>
-      prevItems.filter((item) => item.label !== selectedSearchableOption)
+      prevItems?.filter((item) => item.label !== selectedSearchableOption)
     );
 
     setSelectedSearchableOption("");
@@ -350,7 +353,7 @@ const ArchiveCandidates = ({ isDrawerOpen }) => {
     if (id) {
       setDeleteMessage("This candidate profile");
       setDeletingCandidates([id]); // Only delete this one user
-    } else if (selectedCandidates.length === 1) {
+    } else if (selectedCandidates?.length === 1) {
       setDeleteMessage("Selected candidate profile");
       setDeletingCandidates([...selectedCandidates]); // Single selected user
     } else {
@@ -364,11 +367,11 @@ const ArchiveCandidates = ({ isDrawerOpen }) => {
   const handleConfirmDelete = (id) => {
     if (id) {
       notifySuccess("Candidate has been permanently deleted.");
-    } else if (selectedCandidates.length === 1) {
+    } else if (selectedCandidates?.length === 1) {
       notifySuccess("Selected candidate has been permanently deleted.");
     }
     setCandidateList((prev) =>
-      prev.filter((candidate) => !deletingCandidates.includes(candidate.id))
+      prev?.filter((candidate) => !deletingCandidates.includes(candidate.id))
     );
     setSelectedCandidates([]); // Clear selection after deletion
     setDeleteCandidateDrawerOpen(false);
@@ -386,10 +389,10 @@ const ArchiveCandidates = ({ isDrawerOpen }) => {
 
         <div className="flex items-center justify-between p-[17px]">
           <span className="font-ubuntu font-medium text-custom-large">
-            Archived Candidates
+            Archived Candidates here
           </span>
           {/* Action Buttons */}
-          {selectedCandidates.length >= 1 && (
+          {selectedCandidates?.length >= 1 && (
             <div className="flex space-x-2">
               {/* ✅ Dynamically Change Button */}
 
@@ -453,102 +456,7 @@ const ArchiveCandidates = ({ isDrawerOpen }) => {
       </div>
       {/* Menu for Bulk Actions */}
 
-      <CreateCandidateModal
-        visible={modals?.createCandidateModalVisible}
-        onClose={() => setModalVisibility("createCandidateModalVisible", false)}
-      />
-      <CreateCandidateFormModal
-        visible={modals?.createCandidateFormModalVisible}
-        onClose={() =>
-          setModalVisibility("createCandidateFormModalVisible", false)
-        }
-      />
-      <SaveFiltersModal
-        visible={modals?.saveFiltersModalVisible}
-        onClose={() => setModalVisibility("saveFiltersModalVisible", false)}
-        selectedConditions={conditions} // Pass selected conditions
-      />
-      <SmartGenerateModal
-        visible={modals?.smartGenerateModalVisible}
-        onClose={() => setModalVisibility("smartGenerateModalVisible", false)}
-      />
-      <UploadResumeCandidateModal
-        visible={modals?.uploadResumeCandidateModalVisible}
-        onClose={() =>
-          setModalVisibility("uploadResumeCandidateModalVisible", false)
-        }
-      />
-      <MergeDuplicateModal
-        visible={modals?.mergeDuplicateModalVisible}
-        onClose={() => setModalVisibility("mergeDuplicateModalVisible", false)}
-      />
-
-      <GlobalMenu
-        anchorEl={anchorBulkActionEl}
-        open={openBulkAction}
-        onClose={handleCloseBulkAction}
-        menuItems={bulkMenuItems}
-      />
-      {/* menu for three dots menu */}
-      {/* <GlobalMenu
-        anchorEl={anchorEl}
-        open={open}
-        onClose={handleClose}
-        menuItems={threeDotsMenuItems}
-      /> */}
-      <GlobalMenu
-        anchorEl={anchorSettingEl}
-        open={openSetting}
-        onClose={handleSettingsClose}
-        menuItems={settingsMenuItems}
-      />
-      {/* 🔍 Searchable Menu */}
-      <SearchableMenu
-        anchorEl={anchorAddConditionEl}
-        open={Boolean(anchorAddConditionEl)}
-        onClose={handleSearchableMenuClose}
-        menuItems={searchableMenuItems} // Pass dynamic items
-      />
-      <ColumnSelector
-        isOpen={isColumnSelectorOpen}
-        onClose={() => setIsColumnSelectorOpen(false)}
-        selectedColumns={selectedColumns}
-        // setSelectedColumns={setSelectedColumns}
-      />
-
-      {/* 🔹 Filter Menu */}
-      <FilterMenu
-        anchorEl={anchorFilterMenuEl}
-        open={Boolean(anchorFilterMenuEl)}
-        onClose={() => setAnchorFilterMenuEl(null)}
-        selectedOption={selectedSearchableOption}
-        onApply={handleFilterApply} // Use modified handleApply
-      />
-      <CandidateFilterDrawer
-        // onApply={applyFilters}
-        // onReset={resetFilters}
-        filters={filters}
-        isOpen={filterDrawerOpen}
-        onClose={() => toggleFilterDrawer(false)}
-      />
-      <AddToJobsDrawer
-        // onApply={applyFilters}
-        // onReset={resetFilters}
-        filters={filters}
-        isOpen={addToJobsDrawerOpen}
-        onClose={() => toggleAddToJobsDrawer(false)}
-      />
-      <DeleteCandidateDrawer
-        isOpen={deleteCandidateDrawerOpen}
-        onClose={() => setDeleteCandidateDrawerOpen(false)}
-        deleteMessage={deleteMessage} // Pass message dynamically
-        onConfirmDelete={handleConfirmDelete} // Pass function to confirm delete
-      />
-      <CreateCandidateMenu
-        anchorEl={anchorCreateCandidtaeEl}
-        open={Boolean(anchorCreateCandidtaeEl)}
-        onClose={handleCloseMenu}
-      />
+  
     </div>
   );
 };

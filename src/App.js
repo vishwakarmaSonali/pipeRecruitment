@@ -37,6 +37,7 @@ import { useSelector } from "react-redux";
 import Administration from "./pages/administration/Administration";
 import UserTeamManagement from "./pages/administration/UserTeamManagement";
 import UserRoleManagement from "./pages/administration/UserRoleManagement";
+import SignUpPage from "./pages/SignUp/SignUpPage";
 
 // 🔹 Protected Route Wrapper
 const ProtectedRoute = ({ element }) => {
@@ -66,7 +67,7 @@ class ErrorBoundary extends React.Component {
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Navigate to="/login" replace />,
+    element: <Navigate to="/signup" replace />,
   },
   // {
   //   path: "/sourcing",
@@ -79,6 +80,10 @@ const router = createBrowserRouter([
   {
     path: "/login",
     element: <LoginAdmin />,
+  },
+  {
+    path: "/signup",
+    element: <SignUpPage />,
   },
   {
     path: "/sourcing",

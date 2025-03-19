@@ -3,6 +3,7 @@ import axios from "axios";
 import "../../components/filterModal/FilterModal.css";
 import { BASE_URL,locationAutoCompleteSourceEndpoint} from "../../helpers/apiConfig";
 import { useSelector } from "react-redux";
+import axiosInstance from "../../actions/axiosInstance";
 const LocationSearchDropdown = ({
   selectedLocations = [],
   setSelectedLocations,
@@ -38,7 +39,7 @@ const {token,refreshToken} = useSelector((state)=>state?.auth)
         };
         isFetching.current = true; // Mark as fetching to prevent duplicate calls
         try {
-          const response = await axios.get(
+          const response = await axiosInstance.get(
             `${BASE_URL}${locationAutoCompleteSourceEndpoint}?query=${locationQuery}`,
            config
           );

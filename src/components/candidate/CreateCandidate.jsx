@@ -60,6 +60,14 @@ const frequencyOptions = [
   { id: 6, frequency: "Quaterly" },
   { id: 7, frequency: "Anually" },
 ];
+const workModelOptions = [
+  { id: 1, workModel: "On-site" },
+  { id: 2, workModel: "Remote" },
+  { id: 3, workModel: "Hybrid" },
+  { id: 4, workModel: "Flexible" },
+  { id: 5, workModel: "Freelance/Contract" },
+  { id: 6, workModel: "Part-Time" },
+];
 
 const CreateCandidateForm = () => {
   const dispatch = useDispatch();
@@ -83,6 +91,7 @@ const CreateCandidateForm = () => {
   const [lastName, setLastName] = useState(""); // New state for First Name
   const [dateofbirth, setDateofbirth] = useState(null);
   const [selectedDomain, setSelectedDomain] = useState(null); // Must be an object or null
+  const [selectedWorkModel, setSelectedWorkModel] = useState(null); // Must be an object or null
   const [profilePhoto, setProfilePhoto] = useState(null);
   const [imagePreview, setImagePreview] = useState("");
   const [selectedDomains, setSelectedDomains] = useState([]); // For multi-selection
@@ -210,7 +219,7 @@ const CreateCandidateForm = () => {
       return;
     }
 
-    console.log("education:>>>>>", frequency);
+    console.log("education:>>>>>", selectedWorkModel?.workModel);
 
     // Parse selected location
     const { city, state, country } =
@@ -324,10 +333,11 @@ const CreateCandidateForm = () => {
         employment_history: formattedEmploymentHistory,
       }),
       ...(formattedEducation && { education: formattedEducation }),
+      ...(selectedWorkModel && {work_mode: selectedWorkModel?.workModel})
     };
 
     console.log("Final Candidate Data >>>", candidateData);
-
+return
     try {
       const response = await dispatch(createCandidates(candidateData));
       console.log("API Response >>>", response);
@@ -619,20 +629,30 @@ const CreateCandidateForm = () => {
                 </div>
               </div>
               <div className="display-flex gap-[10px] mt-[10px]">
-                <div className="flex-1 ">
+                <div className="flex-1">
                   <CustomDropdown
                     options={domainOptions} // Ensure it's an array of objects
-                    placeholder="Select Domain"
+                    placeholder="Domain"
                     selectedValues={selectedDomain} // Must be an object
                     onChange={setSelectedDomain} // Must store the full object
                     optionKey="name"
                     multiSelect={false}
                   />
                 </div>
-                <div className="flex-1 "></div>
+                <div className="flex-1">
+                  <CustomDropdown
+                    options={workModelOptions} // Ensure it's an array of objects
+                    placeholder="Work Model"
+                    selectedValues={selectedWorkModel} // Must be an object
+                    onChange={setSelectedWorkModel} // Must store the full object
+                    optionKey="workModel"
+                    multiSelect={false}
+                  />
+                </div>
+               
               </div>
               <div className="display-flex gap-[10px] mt-[10px]">
-                <div className="flex-1 ">
+                <div className="flex-1">
                   <TitleSearchDropdown
                     placeholder={"Current Job Title"}
                     selectedTitles={selectedTitles}

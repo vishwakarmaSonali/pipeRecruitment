@@ -4,6 +4,7 @@ import "../../components/filterModal/FilterModal.css";
 import { ReactComponent as DropArrow } from "../../assets/icons/arrowDown.svg";
 import { BASE_URL, sourceTitleDropdown } from "../../helpers/apiConfig";
 import { useSelector } from "react-redux";
+import axiosInstance from "../../actions/axiosInstance";
 
 const TitleSearchDropdown = ({
   selectedTitles = [],
@@ -44,7 +45,7 @@ const TitleSearchDropdown = ({
   
           console.log("Fetching titles with token:", `Bearer ${authToken}`);
   
-          const response = await axios.get(
+          const response = await axiosInstance.get(
             `${BASE_URL}${sourceTitleDropdown}?query=${encodeURIComponent(titleQuery)}`,
             config
           );

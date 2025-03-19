@@ -189,7 +189,7 @@ const Candidates = ({ isDrawerOpen }) => {
       label: "Archive",
       icon: <ArchiveIcon />,
       onClick: handleArchiveCandidates, // ✅ Call archive function
-      // onClick: () => navigate("/archive-candidates"),
+     
     },
   ];
 
@@ -391,9 +391,9 @@ const Candidates = ({ isDrawerOpen }) => {
       setCurrentPage(1);
       let params = {};
       params.limit = resultsPerPage;
-      // if(filterOption?.candidateName){
-      //   params.candidate_name = filterOption?.candidateName
-      // }
+      if(filterOption?.candidateName){
+        params.candidate_name = filterOption?.candidateName
+      }
       if (filterOption?.location?.length > 0) {
         params.location = filterOption?.location
           .map((loc) => `'${loc}'`)
@@ -425,6 +425,12 @@ const Candidates = ({ isDrawerOpen }) => {
       if (filterOption?.school?.length > 0) {
         params.school = filterOption?.school?.join(",");
       }
+      if (filterOption?.globalSearch) {
+        params.global = filterOption?.globalSearch;
+      }
+      if (filterOption?.globalSearch?.length > 0) {
+        params.global = filterOption?.globalSearch?.join(",");
+      }
       if (filterOption?.degree?.length > 0) {
         params.degree = filterOption?.degree?.join(",");
       }
@@ -437,6 +443,7 @@ const Candidates = ({ isDrawerOpen }) => {
       if (filterOption?.company?.length > 0) {
         params.company = filterOption?.company?.join(",");
       }
+console.log("params in candidate filters",params);
 
       dispatch(fetchCandidatesList(params, 1));
       return;
@@ -546,6 +553,7 @@ const Candidates = ({ isDrawerOpen }) => {
         current_position: candidate.employment_history?.[0]?.position || "-",
         email: candidate.email || "-",
         phone: candidate.phone || "-",
+
         // start_date: candidate.employment_history?.[0]?.start_date || "-",
         // skills: candidate.skills?.map((skill) => skill.name).join(", ") || "-",
         // photo_url: candidate.photo_url || "",

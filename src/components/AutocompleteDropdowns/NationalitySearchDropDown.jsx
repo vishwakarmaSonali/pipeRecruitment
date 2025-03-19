@@ -4,6 +4,7 @@ import "../../components/filterModal/FilterModal.css";
 import { BASE_URL } from "../../helpers/apiConfig";
 import { useSearchParams } from "react-router-dom";
 import { useSelector } from "react-redux";
+import axiosInstance from "../../actions/axiosInstance";
 
 const NationalitySearchDropdown = ({
   selectedNationalities,
@@ -37,7 +38,7 @@ const NationalitySearchDropdown = ({
           },
         };
         try {
-          const response = await axios.get(
+          const response = await axiosInstance.get(
             `${BASE_URL}api/nationality/suggest?query=${nationalityQuery}`,
             config
           );

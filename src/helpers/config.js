@@ -864,6 +864,7 @@ export const archivedCandidateHeader = [
   "Candidate Name",
   "Owner",
   "Archived Date",
+  
 ];
 
 export const archivedColumnMapping = {

@@ -14,7 +14,8 @@ import CurrencySelector from "../common/CurrencyInput";
 import DateTimePicker from "../common/DateTimePicker";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
-import { fetchLabels } from "../../actions/dropdownAction";
+import { fetchDomains, fetchLabels } from "../../actions/dropdownAction";
+
 
 const CandidateFilterDrawer = ({
   isOpen,
@@ -74,12 +75,7 @@ const CandidateFilterDrawer = ({
     { id: 1, type: "Kilometer" },
     { id: 2, type: "Mile" },
   ];
-  const industryOptions = [
-    { id: 1, industryType: "IT" },
-    { id: 2, industryType: "Finance" },
-    { id: 3, industryType: "Healthcare" },
-    { id: 4, industryType: "Retail" },
-  ];
+
   const checkboxOptions = ["Candidate Without Jobs", "Duplicate Candidates"];
   const languageOptions = [
     { id: 1, language: "English" },
@@ -118,6 +114,7 @@ const CandidateFilterDrawer = ({
   useEffect(() => {
 
     dispatch(fetchLabels());
+    dispatch(fetchDomains())
   }, [dispatch]);
 
   const handleNationalityChange = (selectedItem) => {
@@ -174,7 +171,7 @@ const CandidateFilterDrawer = ({
       educationLevel: localFilters.educationLevel || "",
       school: localFilters.school ||localFilters?.schoolList || [],
       degree: localFilters.degree || localFilters?.degreeList || "",
-      
+      globalSearch:localFilters?.globalSearch || localFilters?.globalSearchList || [],
       workModel: localFilters.workmodel || "",
       checkboxOptions: checkedColumns || [], // Ensure checkboxes store selected options
     };

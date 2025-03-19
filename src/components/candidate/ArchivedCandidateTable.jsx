@@ -40,6 +40,7 @@ import { ReactComponent as MergeDuplicateIcon } from "../../assets/icons/merge.s
 import { ReactComponent as EditUser } from "../../assets/icons/user-edit.svg";
 import DeleteCandidateDrawer from "./DeleteCandidateDrawer";
 import { archivedCandidates } from "../../helpers/dataCandidates";
+import { format } from "date-fns";
 
 const ArchiveCandidateTable = ({
   header,
@@ -81,7 +82,7 @@ const ArchiveCandidateTable = ({
     if (id) {
       setDeleteMessage("This candidate profile");
       setDeletingCandidates([id]); // Only delete this one user
-    } else if (selectedCandidates.length === 1) {
+    } else if (selectedCandidates?.length === 1) {
       setDeleteMessage("Selected candidate profile");
       setDeletingCandidates([...selectedCandidates]); // Single selected user
     } else {
@@ -95,11 +96,11 @@ const ArchiveCandidateTable = ({
   const handleConfirmDelete = (id) => {
     if (id) {
       notifySuccess("Candidate has been permanently deleted.");
-    } else if (selectedCandidates.length === 1) {
+    } else if (selectedCandidates?.length === 1) {
       notifySuccess("Selected candidate has been permanently deleted.");
     }
     setCandidateList((prev) =>
-      prev.filter((candidate) => !deletingCandidates.includes(candidate.id))
+      prev?.filter((candidate) => !deletingCandidates.includes(candidate.id))
     );
     setSelectedCandidates([]); // Clear selection after deletion
     setDeleteCandidateDrawerOpen(false);
@@ -140,18 +141,18 @@ const ArchiveCandidateTable = ({
                           onClick={(e) => {
                             e.stopPropagation();
                             setSelectedCandidates(
-                              selectedCandidates.length === data.length
+                              selectedCandidates?.length === data?.length
                                 ? []
-                                : data.map((c) => c.id)
+                                : data?.map((c) => c.id)
                             );
                             setSelectedCandidateUsers(
-                              selectedCandidates.length === data.length
+                              selectedCandidates?.length === data?.length
                                 ? []
-                                : data.map((c) => c.id)
+                                : data?.map((c) => c.id)
                             );
                           }}
                         >
-                          {selectedCandidates.length === data.length && (
+                          {selectedCandidates?.length === data?.length && (
                             <Tick />
                           )}
                         </button>
@@ -174,193 +175,73 @@ const ArchiveCandidateTable = ({
             </TableRow>
           </TableHead>
           <TableBody>
-            {data.map((candidate, index) => {
-              const randomColor = getRandomColor();
-              return (
-                <>
-                  <TableRow
-                    key={index}
-                    className="hover-row"
-                    onClick={() => {
-                      setSelectedCandidate(candidate);
-                      setSelectedCandidateUser(candidate);
-                      setModalVisibility("candidateInfoModalVisible", true);
-                    }}
-                  >
-                    {header.map((columnName, index) => {
-                      const key = archivedColumnMapping[columnName];
-
-                      if (index === 0) {
-                        return (
-                          <TableCell>
-                            <div
-                              className="display-flex align-center"
-                              style={{ gap: 6 }}
-                            >
-                              <div
-                                className={`candidate-card-checkbox`}
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  setSelectedCandidates((prev) =>
-                                    prev.includes(candidate.id)
-                                      ? prev.filter((id) => id !== candidate.id)
-                                      : [...prev, candidate.id]
-                                  );
-                                  setSelectedCandidateUsers((prev) =>
-                                    prev.includes(candidate.id)
-                                      ? prev.filter((id) => id !== candidate.id)
-                                      : [...prev, candidate.id]
-                                  );
-                                }}
-                              >
-                                {selectedCandidates.includes(candidate.id) && (
-                                  <Tick />
-                                )}
-                              </div>
-                              <Avatar
-                                src={""}
-                                alt={candidate[key]}
-                                style={{
-                                  width: 32,
-                                  height: 32,
-                                  backgroundColor: randomColor,
-                                  fontSize: 14,
-                                  lineHeight: "19.1px",
-                                  textAlign: "center",
-                                }}
-                              >
-                                {candidate[key] && getInitials(candidate[key])}
-                              </Avatar>
-                              <span className="font-14-regular truncate-text ">
-                                {candidate[key] || "-"}
-                              </span>
-                              {!showDeleteIcon ? (
-                                <>
-                                  <button className="eye-icon">
-                                    <EyeIcon />
-                                  </button>
-                                  <button
-                                    aria-controls={
-                                      open ? "basic-menu" : undefined
-                                    }
-                                    aria-haspopup="true"
-                                    aria-expanded={open ? "true" : undefined}
-                                    className={`eye-icon ${
-                                      open &&
-                                      candidate?.id === selectedCandidate?.id &&
-                                      "opacity-1"
-                                    }`}
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      setSelectedCandidate(candidate);
-                                      setSelectedCandidateUser(candidate);
-                                      handleMenuClick(e);
-                                    }}
-                                  >
-                                    <MoreIcon stroke="#151B23" />
-                                  </button>
-                                </>
-                              ) : (
-                                <button
-                                  className="eye-icon"
-                                  onClick={(e) => {
-                                    // handleMenuClose();
-                                    deleteIconClick();
-                                    e.stopPropagation();
-                                  }}
-                                >
-                                  <DeleteIcon />
-                                </button>
-                              )}
-                            </div>
-                          </TableCell>
+            {data.map((candidate, index) => (
+              <TableRow key={index} className="hover-row">
+                {/* Checkbox Column */}
+                <TableCell>
+                  <div className="display-flex align-center">
+                    <button
+                      className="candidate-card-checkbox"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setSelectedCandidates((prev) =>
+                          prev.includes(candidate._id)
+                            ? prev.filter((id) => id !== candidate._id)
+                            : [...prev, candidate._id]
                         );
-                      }
-                      if (columnName == "Owner") {
-                        return (
-                          <TableCell>
-                            <div
-                              className="display-flex align-center"
-                              style={{ gap: 6 }}
-                            >
-                              <Avatar
-                                src={""}
-                                alt={candidate[key]}
-                                style={{
-                                  width: 32,
-                                  height: 32,
-                                  backgroundColor: randomColor,
-                                  fontSize: 14,
-                                  lineHeight: "19.1px",
-                                  textAlign: "center",
-                                }}
-                              >
-                                {candidate[key] && getInitials(candidate[key])}
-                              </Avatar>
-                              <span className="font-14-regular truncate-text ">
-                                {candidate[key] || "-"}
-                              </span>
-                            </div>
-                          </TableCell>
+                        setSelectedCandidateUsers((prev) =>
+                          prev.includes(candidate._id)
+                            ? prev.filter((id) => id !== candidate._id)
+                            : [...prev, candidate._id]
                         );
-                      }
-                      return (
-                        <>
-                          <TableCell className="font-14-regular">
-                            {candidate[key] || "-"}
-                          </TableCell>
-                          <TableCell>
-                            <div className="flex gap-2">
-                              {/* Archive Button */}
-                              <Tooltip
-                                title="Restore"
-                                componentsProps={{
-                                  tooltip: {
-                                    sx: {
-                                      bgcolor: "#151B23",
-                                    },
-                                  },
-                                }}
-                              >
-                                <button
-                                  className="px-2 py-1  text-white rounded-md"
-                                  onClick={(e) => (
-                                    handleArchive(candidate.id),
-                                    e.stopPropagation()
-                                  )}
-                                >
-                                  <ArchiveIcon />
-                                </button>
-                              </Tooltip>
+                      }}
+                    >
+                      {selectedCandidates.includes(candidate._id) && <Tick />}
+                    </button>
+                  </div>
+                </TableCell>
 
-                              {/* Delete Button */}
-                              <Tooltip title="Delete Permanently" componentsProps={{
-                                  tooltip: {
-                                    sx: {
-                                      bgcolor: "#151B23",
-                                     
-                                    },
-                                  },
-                                }}>
-                                <button
-                                  className="px-2 py-1 bg-red-500 text-white rounded-md "
-                                  onClick={(e) => (
-                                    handleDelete(candidate.id),
-                                    e.stopPropagation()
-                                  )}
-                                >
-                                  <DeleteIcon />
-                                </button>
-                              </Tooltip>
-                            </div>
-                          </TableCell>
-                        </>
-                      );
-                    })}
-                  </TableRow>
-                </>
-              );
-            })}
+                {/* Dynamic Data Columns */}
+                {header.map((colName, colIndex) => {
+                  let value = "-";
+
+                  if (colName === "Candidate Name") {
+                    value = `${candidate.first_name || ""} ${candidate.last_name || ""}`.trim() || "-";
+                  } else if (colName === "Owner") {
+                    value = candidate.archived_by?.email || "-";
+                  } else if (colName === "Archived Date") {
+                    value = candidate.archived_at
+                      ? format(new Date(candidate.archived_at), "yyyy-MM-dd")
+                      : "-";
+                  }
+
+                  return (
+                    <TableCell key={colIndex} className="font-14-regular">
+                      {value}
+                    </TableCell>
+                  );
+                })}
+
+                {/* Action Buttons */}
+                <TableCell>
+                  <div className="flex gap-2">
+                    {/* Restore Button */}
+                    <Tooltip title="Restore">
+                      <button className="px-2 py-1 text-white rounded-md">
+                        <ArchiveIcon />
+                      </button>
+                    </Tooltip>
+
+                    {/* Delete Button */}
+                    <Tooltip title="Delete Permanently">
+                      <button className="px-2 py-1 bg-red-500 text-white rounded-md">
+                        <DeleteIcon />
+                      </button>
+                    </Tooltip>
+                  </div>
+                </TableCell>
+              </TableRow>
+            ))}
           </TableBody>
         </Table>
       </TableContainer>

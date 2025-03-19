@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import "../../components/filterModal/FilterModal.css";
 import { useSelector } from "react-redux";
+import axiosInstance from "../../actions/axiosInstance";
 
 const JobTitleSearchDropdown = ({ 
   selectedNationalities = [], 
@@ -34,7 +35,7 @@ const {token,refreshToken} = useSelector((state)=>state?.auth)
          
         };
         try {
-          const response = await axios.get(
+          const response = await axiosInstance.get(
             `${BASE_URL}api/candidate-profiles/suggest/nationality?query=${nationalityQuery}`,
             config
           );

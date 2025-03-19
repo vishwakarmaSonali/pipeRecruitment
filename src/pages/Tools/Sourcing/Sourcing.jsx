@@ -449,6 +449,7 @@ const Sourcing = () => {
     setCurrentPage(1);
     let params = {};
     params.limit = resultsPerPage;
+console.log("filters in useEffect>>>",filters);
 
     if (filters?.titles?.length > 0) {
       params.title = filters.titles.join(", ");
@@ -467,15 +468,25 @@ const Sourcing = () => {
     }
 
     if (!!filters?.radiusType) {
+      console.log("filters?.radiusTypefilters?.radiusType",filters?.radiusType);
+      
       params.radiusUnit = filters?.radiusType;
     }
 
     if (filters?.organizations?.length > 0) {
-      params.company = filters?.organizations.join("");
+      console.log("filters?.organizationsfilters?.organizationsfilters?.organizations",filters?.organizations.join(", "));
+      
+      params.company = filters?.organizations.join(", ");
     }
 
     if (filters?.companyList?.length > 0) {
       params.company = filters?.companyList?.join(", ");
+    }
+    if (filters?.globalSearchList?.length > 0) {
+      params.global = filters?.globalSearchList?.join(", ");
+    }
+    if (filters?.globalSearch) {
+      params.global = filters?.globalSearch;
     }
 
     if (!!filters?.experience?.from) {
@@ -486,16 +497,20 @@ const Sourcing = () => {
       params.years_of_experience_to = filters?.experience?.to;
     }
 
-    if (!!filters?.skill && !(filters?.skillList?.length > 0)) {
-      params.skill = filters?.skill;
+    if (!!filters?.skills && !(filters?.skillList?.length > 0)) {
+      params.skills = filters?.skills;
     }
-
+    
     if (filters?.skillList?.length > 0) {
-      params.skill = filters?.skillList?.join(", ");
+      console.log("filters?.skillList?.join(", ")filters?.skillList?.join(", ")",filters?.skillList);
+      
+      params.skills = filters?.skillList?.join(", ");
     }
 
-    if (filters?.industry) {
-      params.domain = filters?.industry;
+    if (filters?.domain) {
+      console.log("filters?.domainfilters?.domain",filters?.domain);
+      
+      params.domain = filters?.domain;
     }
 
     if (!!filters?.major && !(filters?.majorList?.length > 0)) {
@@ -521,6 +536,7 @@ const Sourcing = () => {
     if (filters?.majorList?.length > 0) {
       params.major = filters?.majorList?.join(", ");
     }
+console.log("params>>>>",params);
 
     dispatch(fetchCandidates(params, 1));
   }, [dispatch, filters, resultsPerPage]);

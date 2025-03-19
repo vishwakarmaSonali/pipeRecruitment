@@ -12,17 +12,15 @@ import {
   getDomainEndpoint,
   getLabelEndpoint,
 } from "../helpers/apiConfig";
+import axiosInstance from "./axiosInstance";
 
 export const fetchDomains = () => {
   return async (dispatch) => {
     dispatch({ type: DOMAIN_FETCH_REQUEST });
 
     try {
-      const response = await axios.get(`${BASE_URL}${getDomainEndpoint}`, {
-        headers: {
-          //   Authorization: "Bearer {{accessToken}}",
-        },
-      });
+      const response = await axiosInstance.get(`${BASE_URL}${getDomainEndpoint}`, );
+console.log("response in domain>>>",response?.data);
 
       dispatch({ type: DOMAIN_FETCH_SUCCESS, payload: response.data });
     } catch (error) {
@@ -38,7 +36,7 @@ export const fetchLabels = () => {
     dispatch({ type: LABEL_FETCH_REQUEST });
 
     try {
-      const response = await axios.get(`${BASE_URL}${getLabelEndpoint}`, {
+      const response = await axiosInstance.get(`${BASE_URL}${getLabelEndpoint}`, {
         headers: {
           //   Authorization: "Bearer {{accessToken}}",
         },

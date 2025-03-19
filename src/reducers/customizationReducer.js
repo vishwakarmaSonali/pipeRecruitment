@@ -36,6 +36,9 @@ import {
   REORDER_CATEGORIRY_FIELD_SUCCESS,
   REORDER_CATEGORIRY_FIELD_REQUEST,
   REORDER_CATEGORIRY_FIELD_FAILURE,
+  FETCH_ARCHIVE_CANDIDATES_SUCCESS,
+  FETCH_ARCHIVE_CANDIDATES_FAILURE,
+  FETCH_ARCHIVE_CANDIDATES_REQUEST,
 } from "../actions/actionsType";
 import { defaultCategoryData } from "../helpers/config";
 
@@ -54,6 +57,7 @@ const initialState = {
   fetchLoading: false,
   categoriesData: [],
   reorderLoading: false,
+  archivedCandidates: [],
 };
 
 const customizationReducer = (state = initialState, action) => {
@@ -312,6 +316,29 @@ const customizationReducer = (state = initialState, action) => {
         ...state,
         reorderLoading: false,
       };
+      case FETCH_ARCHIVE_CANDIDATES_REQUEST:
+      return {
+        ...state,
+        loading: true,
+        error: null,
+      };
+
+    case FETCH_ARCHIVE_CANDIDATES_SUCCESS:
+      console.log("action.payload.dataaction.payload.data",action.payload);
+      
+      return {
+        ...state,
+        loading: false,
+        archivedCandidates: action.payload, // Store fetched candidates
+      };
+
+    case FETCH_ARCHIVE_CANDIDATES_FAILURE:
+      return {
+        ...state,
+        loading: false,
+        error: action.payload,
+      };
+
     default:
       return state;
   }
