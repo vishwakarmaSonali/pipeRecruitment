@@ -34,7 +34,7 @@ const CandidateCard = ({
 }) => {
   const [skillsShowAll, setSkillsShowAll] = useState(false);
   const [validImageUrl, setValidImageUrl] = useState(true);
-console.log("data>>>>>>",data);
+  console.log("data>>>>>>", data);
 
   return (
     <div
@@ -81,14 +81,16 @@ console.log("data>>>>>>",data);
         {data?.location && (
           <div className="display-flex align-center" style={{ gap: 12 }}>
             <LocationIcon />
-            <p className="font-16-regular color-dark-black">{data?.location}</p>
+            <p className="font-16-regular color-dark-black truncate-text">
+              {data?.location}
+            </p>
           </div>
         )}
-        {data?.education && (
+        {data?.qualification && (
           <div className="display-flex align-center" style={{ gap: 12 }}>
             <UniversityIcon />
-            <p className="font-16-regular color-dark-black">
-            {/* {data?.education?.} */}
+            <p className="font-16-regular color-dark-black truncate-text">
+              {data?.qualification}
             </p>
           </div>
         )}

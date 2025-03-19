@@ -20,6 +20,9 @@ import {
   UPDATE_COLUMNS_LIST_REQUEST,
   UPDATE_COLUMNS_LIST_SUCCESS,
   UPDATE_COLUMNS_LIST_FAILURE,
+  FETCH_CANDIDATE_SUMMARY_REQUEST,
+  FETCH_CANDIDATE_SUMMARY_SUCCESS,
+  FETCH_CANDIDATE_SUMMARY_FAILURE,
 } from "../actions/actionsType";
 
 const initialState = {
@@ -43,6 +46,8 @@ const initialState = {
   fetchColumnLoading: false,
   columnList: [],
   updateColumnLoading: false,
+  candidateSummaryInfo: {},
+  candidateSummaryLoading: false,
 };
 const candidateReducer = (state = initialState, action) => {
   switch (action.type) {
@@ -71,10 +76,8 @@ const candidateReducer = (state = initialState, action) => {
         ...state,
         fetchMoreLoading: false,
         candidatesListingData: [],
-        candidatesListingData: [],
       };
 
-    // ✅ Handle Fetching a Single Candidate's Details
     case CANDIDATE_DETAILS_REQUEST:
       return {
         ...state,
@@ -173,6 +176,27 @@ const candidateReducer = (state = initialState, action) => {
       return {
         ...state,
         updateColumnLoading: false,
+      };
+
+    case FETCH_CANDIDATE_SUMMARY_REQUEST:
+      return {
+        ...state,
+        candidateSummaryLoading: true,
+        candidateSummaryInfo: {},
+      };
+
+    case FETCH_CANDIDATE_SUMMARY_SUCCESS:
+      return {
+        ...state,
+        candidateSummaryLoading: false,
+        candidateSummaryInfo: action.data,
+      };
+
+    case FETCH_CANDIDATE_SUMMARY_FAILURE:
+      return {
+        ...state,
+        candidateSummaryLoading: false,
+        candidateSummaryInfo: {},
       };
     default:
       return state;

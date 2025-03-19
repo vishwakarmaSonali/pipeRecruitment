@@ -78,7 +78,6 @@ import CancelButton from "../common/CancelButton";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import {
-  fetchCandidateDetails,
   updateCandidateDetails,
   updateCandidateLabel,
 } from "../../actions/candidateActions";
@@ -238,16 +237,20 @@ const CandidateInfoModal = ({
   nextButtonClick,
 }) => {
   const dispatch = useDispatch();
-  const { candidateInfo, candidateDetailsLoading } = useSelector(
-    (state) => state.candidates
-  );
+  const {
+    candidateInfo,
+    candidateDetailsLoading,
+    candidateSummaryInfo,
+    candidateSummaryLoading,
+  } = useSelector((state) => state.candidates);
+
   const navigate = useNavigate();
   const { labelData } = useSelector((state) => state?.customization);
   const [labelsData, setLabelsData] = useState(labelData);
   const { modals, setModalVisibility } = useModal();
   const [candidateTabs, setCandidateTabs] = useState(candidateInfoTabs);
   const [summaryStructuredData, setSummaryStructuredData] = useState(
-    candidateInfo?.structuredCandidate || {}
+    candidateSummaryInfo || {}
   );
   const [updateLoading, setUpdateLoading] = useState(false);
   const [selectedCandidateTab, setSelectedCandidateTab] = useState("Summary");
@@ -255,11 +258,9 @@ const CandidateInfoModal = ({
   const [randomColor, setRandomColor] = useState([]);
   const [writeText, setWriteText] = useState("");
   const [selectedLabelData, setSelectedLabelData] = useState(
-    candidateInfo?.raw_data?.labels || []
+    candidateInfo?.labels || []
   );
-  const [candidateRawData, setCandidateRawData] = useState(
-    candidateInfo?.raw_data || {}
-  );
+  const [candidateRawData, setCandidateRawData] = useState(candidateInfo);
   const [deleteNoteModalVisible, setDeleteNoteModalVisible] = useState(false);
   const [noteModalVisible, setNoteModalVisible] = useState(false);
   const [folders, setFolders] = useState([]);
@@ -312,13 +313,13 @@ const CandidateInfoModal = ({
   }, [dispatch]);
 
   useEffect(() => {
-    setCandidateRawData(cloneDeep(candidateInfo?.raw_data));
-    setSummaryStructuredData(
-      cloneDeep(candidateInfo?.structuredCandidate || {})
-    );
-    setSelectedLabelData(candidateInfo?.raw_data?.labels || []);
+    setSummaryStructuredData(cloneDeep(candidateSummaryInfo));
+  }, [candidateSummaryInfo]);
+  useEffect(() => {
+    setCandidateRawData(cloneDeep(candidateInfo));
+    setSelectedLabelData(candidateInfo?.labels || []);
     const updatedData = labelData?.map((item) => {
-      const updatedLabel = candidateInfo?.raw_data?.labels?.find(
+      const updatedLabel = candidateInfo?.labels?.find(
         (update) => update?._id === item?._id
       );
       return updatedLabel ? { ...item, selected: true } : item;
@@ -607,11 +608,11 @@ const CandidateInfoModal = ({
                   <div className="display-flex" style={{ gap: 10 }}>
                     <Avatar
                       src={
-                        candidateInfo?.raw_data?.profile_photo
-                          ? candidateInfo?.raw_data?.profile_photo
+                        candidateInfo?.photo_url
+                          ? candidateInfo?.photo_url
                           : userImage
                       }
-                      alt={"Priya Sharma"}
+                      alt={candidateInfo?.name}
                       style={{
                         width: 60,
                         height: 60,
@@ -620,8 +621,7 @@ const CandidateInfoModal = ({
                     />
                     <div className="display-column" style={{ gap: 8 }}>
                       <p className="font-16-medium color-dark-black">
-                        {candidateInfo?.raw_data?.first_name}{" "}
-                        {candidateInfo?.raw_data?.last_name}
+                        {candidateInfo?.name}
                       </p>
                       <div
                         className="display-flex align-center"
@@ -833,7 +833,7 @@ const CandidateInfoModal = ({
                           label={value?.label}
                           editable={true}
                           data={value?.fields[0]?.value || ""}
-                          isLoading={candidateDetailsLoading}
+                          isLoading={candidateSummaryLoading}
                         />
                       );
                     } else if (key === "employment_history") {
@@ -843,7 +843,7 @@ const CandidateInfoModal = ({
                           label={"Experience Details"}
                           data={value?.data || []}
                           editable={true}
-                          isLoading={candidateDetailsLoading}
+                          isLoading={candidateSummaryLoading}
                         />
                       );
                     } else if (key === "education") {
@@ -853,7 +853,7 @@ const CandidateInfoModal = ({
                           label={"Education Details"}
                           data={value?.data || []}
                           editable={true}
-                          isLoading={candidateDetailsLoading}
+                          isLoading={candidateSummaryLoading}
                         />
                       );
                     } else if (key === "jobs") {
@@ -863,7 +863,7 @@ const CandidateInfoModal = ({
                           label={value?.label}
                           data={jobData}
                           onAdd={() => setAddToJobsModalVisible(true)}
-                          isLoading={candidateDetailsLoading}
+                          isLoading={candidateSummaryLoading}
                         />
                       );
                     } else if (key === "folder") {
@@ -878,7 +878,7 @@ const CandidateInfoModal = ({
                             }, [300]);
                           }}
                           data={mappedCandidateDetailsFields}
-                          isLoading={candidateDetailsLoading}
+                          isLoading={candidateSummaryLoading}
                         />
                       );
                     } else if (key === "folders") {
@@ -894,7 +894,7 @@ const CandidateInfoModal = ({
                           }
                           label={value?.label}
                           editable={true}
-                          isLoading={candidateDetailsLoading}
+                          isLoading={candidateSummaryLoading}
                           rawData={candidateRawData}
                         />
                       );

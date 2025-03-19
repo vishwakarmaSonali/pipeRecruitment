@@ -43,6 +43,7 @@ import {
   fetchCandidateDetails,
   fetchCandidates,
   fetchCandidatesList,
+  fetchCandidateSummary,
   fetchColumnsList,
 } from "../../../actions/candidateActions";
 import CandidateInfoModal from "../../../components/modals/CandidateInfoModal";
@@ -553,6 +554,7 @@ const Candidates = ({ isDrawerOpen }) => {
   useEffect(() => {
     if (!updateCandidateLoading && !!selectedCandidateId) {
       dispatch(fetchCandidateDetails(selectedCandidateId));
+      dispatch(fetchCandidateSummary(selectedCandidateId));
     }
   }, [selectedCandidateId, updateCandidateLoading]);
 

@@ -7,6 +7,7 @@ import {
   fetchAutoSuggestFolderApiEndPoint,
   fetchCandidatesDetailsEndpoint,
   fetchCandidatesEndpoint,
+  fetchCandidateSummaryApiEndPoint,
   fetchColumnListApiEndPoint,
   updateCandidateLabelApiEndpoint,
 } from "../helpers/apiConfig";
@@ -38,6 +39,9 @@ import {
   UPDATE_COLUMNS_LIST_REQUEST,
   UPDATE_COLUMNS_LIST_SUCCESS,
   UPDATE_COLUMNS_LIST_FAILURE,
+  FETCH_CANDIDATE_SUMMARY_FAILURE,
+  FETCH_CANDIDATE_SUMMARY_SUCCESS,
+  FETCH_CANDIDATE_SUMMARY_REQUEST,
 } from "./actionsType";
 import { notifySuccess } from "../helpers/utils";
 
@@ -108,7 +112,7 @@ export const fetchCandidateDetails = (id) => async (dispatch) => {
 
     dispatch({
       type: CANDIDATE_DETAILS_SUCCESS,
-      candidateInfo: response.data?.candidate,
+      candidateInfo: response.data?.data,
       candidateId: id,
     });
 
@@ -258,6 +262,26 @@ export const updateSelectedColumns = (data) => async (dispatch) => {
     return response?.data;
   } catch (error) {
     dispatch({ type: UPDATE_COLUMNS_LIST_FAILURE });
+    return error?.response?.data?.message || error.message;
+  }
+};
+
+export const fetchCandidateSummary = (id) => async (dispatch) => {
+  dispatch({ type: FETCH_CANDIDATE_SUMMARY_REQUEST });
+
+  try {
+    const response = await axiosInstance.get(
+      `${fetchCandidateSummaryApiEndPoint}/${id}`
+    );
+
+    dispatch({
+      type: FETCH_CANDIDATE_SUMMARY_SUCCESS,
+      data: response.data?.data,
+    });
+
+    return response.data;
+  } catch (error) {
+    dispatch({ type: FETCH_CANDIDATE_SUMMARY_FAILURE });
     return error?.response?.data?.message || error.message;
   }
 };

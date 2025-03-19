@@ -130,15 +130,17 @@ const CandidateDescription = ({ label, data, editable, isLoading }) => {
               )}
             </div>
           ) : (
-            <button
-              className="add-details-btn"
-              onClick={(e) => {
-                e.stopPropagation();
-                setEdit(true);
-              }}
-            >
-              + Add
-            </button>
+            editable && (
+              <button
+                className="add-details-btn"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setEdit(true);
+                }}
+              >
+                + Add
+              </button>
+            )
           )}
         </>
       )}
