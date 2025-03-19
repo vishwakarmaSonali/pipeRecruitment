@@ -34,8 +34,6 @@ import ChangeOwnershipDrawer from "../../../components/candidate/ChangeOwnership
 import AddToJobsDrawer from "../../../components/candidate/AddToJobsDrawer";
 import MergeDuplicateModal from "../../../components/modals/MergeDuplicateModal";
 import { useNavigate } from "react-router-dom";
-import CandidateTable from "../../../components/candidate/CandidateTable";
-import { candidateTableHeader } from "../../../helpers/config";
 import PaginationComponent from "../../../components/common/PaginationComponent";
 import { truncate } from "lodash";
 import { useLocation } from "react-router-dom";
@@ -45,10 +43,12 @@ import {
   fetchCandidateDetails,
   fetchCandidates,
   fetchCandidatesList,
+  fetchColumnsList,
 } from "../../../actions/candidateActions";
 import CandidateInfoModal from "../../../components/modals/CandidateInfoModal";
 import { ReactComponent as Tick } from "../../../assets/icons/sourcingIcons/tick.svg";
 import { fetchAllLabels } from "../../../actions/customizationActions";
+import CustomizableCandidateTable from "../../../components/candidate/CustomizableCandidateTable";
 
 const Candidates = ({ isDrawerOpen }) => {
   const navigate = useNavigate();
@@ -67,11 +67,15 @@ const Candidates = ({ isDrawerOpen }) => {
     candidateDetailsLoading,
     candidateListID,
     updateCandidateLoading,
+    columnList,
+    fetchColumnLoading,
+    updateColumnLoading,
   } = useSelector((state) => state.candidates);
 
   const [candidateList, setCandidateList] = useState(
     candidatesListingData || []
   );
+
   const [selectedCandidates, setSelectedCandidates] = useState([]);
   const [selectedCandidate, setSelectedCandidate] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState("Candidates");
@@ -112,18 +116,18 @@ const Candidates = ({ isDrawerOpen }) => {
   //     alert("Please select candidates to archive.");
   //     return;
   //   }
-  
+
   //   console.log("Archiving Candidates: ", selectedCandidates);
   // handleCloseBulkAction()
   //   try {
   //     // Dispatch archive action
   //     await dispatch(addCandidateToArchiveAction(selectedCandidates, token, refreshToken));
-  
+
   //     // ✅ Fetch updated list after successful archiving
   //     setTimeout(() => {
   //       dispatch(fetchCandidatesList(candidateFilters, 1));
   //     }, 500);
-  
+
   //     // Reset selection
   //     setSelectedCandidates([]);
   //   } catch (error) {
@@ -131,30 +135,26 @@ const Candidates = ({ isDrawerOpen }) => {
   //     alert("Failed to archive candidates.");
   //   }
   // };
-  
+
   const handleArchiveCandidates = () => {
     if (selectedCandidates.length === 0) {
       alert("Please select candidates to archive.");
       return;
     }
-  handleCloseBulkAction()
+    handleCloseBulkAction();
     console.log("Archiving Candidates: ", selectedCandidates);
-  
+
     // ✅ Remove archived candidates from local state without calling API
     setCandidateList((prevList) =>
-      prevList.filter((candidate) => !selectedCandidates.includes(candidate._id))
+      prevList.filter(
+        (candidate) => !selectedCandidates.includes(candidate._id)
+      )
     );
-  
+
     // Reset selection after archiving
     setSelectedCandidates([]);
   };
 
-  
-  // useEffect(() => {
-  //   if (candidatesListingData) {
-  //     setCandidateList([...candidatesListingData]); // Force re-render
-  //   }
-  // }, [candidatesListingData]);
   const bulkMenuItems = [
     {
       label: "Add to jobs",
@@ -189,7 +189,6 @@ const Candidates = ({ isDrawerOpen }) => {
       label: "Archive",
       icon: <ArchiveIcon />,
       onClick: handleArchiveCandidates, // ✅ Call archive function
-     
     },
   ];
 
@@ -385,43 +384,36 @@ const Candidates = ({ isDrawerOpen }) => {
     if (!inputValue || inputValue.trim() === "") {
       console.log(
         "filterOption?.schoolfilterOption?.schoolfilterOption?.school",
-        filterOption?.selectedLabels .map((loc) => `'${loc?.id}'`)
-        .join(", "))
-      
-
+        filterOption?.selectedLabels.map((loc) => `'${loc?.id}'`).join(", ")
+      );
 
       setCurrentPage(1);
       let params = {};
       params.limit = resultsPerPage;
-      if(filterOption?.candidateName){
-        params.candidate_name = filterOption?.candidateName
+      if (filterOption?.candidateName) {
+        params.candidate_name = filterOption?.candidateName;
       }
-      if (
-        filterOption?.nationality
-      ) {
-      
-        params.nationality = filterOption?.nationality?.join(", ")
+      if (filterOption?.nationality) {
+        params.nationality = filterOption?.nationality?.join(", ");
       }
-      if (
-        filterOption?.workModel
-      ) {
-      
-        params.work_mode = filterOption?.workModel
+      if (filterOption?.workModel) {
+        params.work_mode = filterOption?.workModel;
       }
-      if (
-        filterOption?.selectedLabels
-      ) {
-        params.labels = filterOption?.selectedLabels.map((labelItem) => `${labelItem?.id}`)
-        .join(", ")
+      if (filterOption?.selectedLabels) {
+        params.labels = filterOption?.selectedLabels
+          .map((labelItem) => `${labelItem?.id}`)
+          .join(", ");
       }
-      if ( filterOption?.languages?.length > 0) {
-        console.log(" filterOption?.languages?.join(",")", filterOption?.languages
-          .map((loc) => `'${loc?.language}'`)
-          .join(", "));
-        
+      if (filterOption?.languages?.length > 0) {
+        console.log(
+          " filterOption?.languages?.join(",
+          ")",
+          filterOption?.languages.map((loc) => `'${loc?.language}'`).join(", ")
+        );
+
         params.languages = filterOption?.languages
-        .map((lang) => `'${lang?.language}'`)
-        .join(", ");
+          .map((lang) => `'${lang?.language}'`)
+          .join(", ");
       }
       if (filterOption?.location?.length > 0) {
         params.location = filterOption?.location
@@ -466,8 +458,8 @@ const Candidates = ({ isDrawerOpen }) => {
       if (filterOption?.company?.length > 0) {
         params.company = filterOption?.company?.join(",");
       }
-      
-console.log("params in candidate filters",params);
+
+      console.log("params in candidate filters", params);
 
       dispatch(fetchCandidatesList(params, 1));
       return;
@@ -496,38 +488,6 @@ console.log("params in candidate filters",params);
     setAnchorFilterMenuEl(null);
   };
 
-  // ❌ Remove a condition and restore it to the searchable menu
-  // const removeCondition = (index) => {
-  //   setConditions((prevConditions) => {
-  //     if (prevConditions.length === 0) return prevConditions;
-
-  //     // Extract label from the condition being removed
-  //     const removedConditionLabel = prevConditions[index].split(" ")[0];
-
-  //     // Remove the condition from the list
-  //     const updatedConditions = prevConditions.filter((_, i) => i !== index);
-
-  //     setSearchableMenuItems((prevItems) => {
-  //       // Ensure the removed condition is added back only if it’s not already present
-  //       const itemToRestore = initialSearchableItems.find(
-  //         (item) => item.label === removedConditionLabel
-  //       );
-
-  //       if (
-  //         itemToRestore &&
-  //         !prevItems.some((item) => item.label === removedConditionLabel)
-  //       ) {
-  //         return [...prevItems, itemToRestore];
-  //       }
-
-  //       return prevItems;
-  //     });
-
-  //     return updatedConditions;
-  //   });
-  // };
-
-  // Function to handle opening the dropdown menu
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -560,32 +520,7 @@ console.log("params in candidate filters",params);
   const headers = [...tableHeaders];
 
   useEffect(() => {
-    if (candidatesListingData?.length > 0) {
-      const formattedCandidates = candidatesListingData?.map((candidate) => ({
-        _id: candidate?._id,
-        candidate_name:
-          `${candidate.first_name || ""} ${candidate.last_name || ""}`.trim() ||
-          "-",
-        // candidate_first_name: candidate.first_name || "-",
-        // candidate_last_name: candidate.last_name || "-",
-        reference_id: candidate._id || "-",
-        location: candidate.location || "-",
-        gender: candidate.gender || "-",
-        diploma: candidate.education?.[0]?.degree || "-",
-        university: candidate.education?.[0]?.school || "-",
-        current_company: candidate.employment_history?.[0]?.company || "-",
-        current_position: candidate.employment_history?.[0]?.position || "-",
-        email: candidate.email || "-",
-        phone: candidate.phone || "-",
-
-        // start_date: candidate.employment_history?.[0]?.start_date || "-",
-        // skills: candidate.skills?.map((skill) => skill.name).join(", ") || "-",
-        // photo_url: candidate.photo_url || "",
-      }));
-
-      console.log("Transformed Candidate Data: ", formattedCandidates);
-      setCandidateList(formattedCandidates);
-    }
+    setCandidateList(candidatesListingData);
   }, [candidatesListingData]);
 
   const handlePageChange = (page) => {
@@ -600,16 +535,23 @@ console.log("params in candidate filters",params);
     params.limit = resultsPerPage;
 
     console.log("Fetching params>>>>", candidateFilters);
-
-    dispatch(fetchCandidatesList(params, 1));
-  }, [dispatch, resultsPerPage]);
+    if (!updateColumnLoading) {
+      dispatch(fetchCandidatesList(params, 1));
+    }
+  }, [dispatch, resultsPerPage, updateColumnLoading]);
 
   useEffect(() => {
     dispatch(fetchAllLabels());
   }, [dispatch]);
 
   useEffect(() => {
-    if (!updateCandidateLoading) {
+    if (!updateColumnLoading) {
+      dispatch(fetchColumnsList());
+    }
+  }, [dispatch, updateColumnLoading]);
+
+  useEffect(() => {
+    if (!updateCandidateLoading && !!selectedCandidateId) {
       dispatch(fetchCandidateDetails(selectedCandidateId));
     }
   }, [selectedCandidateId, updateCandidateLoading]);
@@ -661,8 +603,6 @@ console.log("params in candidate filters",params);
       setModalVisibility("candidateInfoModalVisible", false);
     }
   }, [location]);
-console.log("selected candidatesssss>>>>>>",selectedCandidateIds);
-
 
   return (
     <div className="sourcing-main-container">
@@ -707,10 +647,6 @@ console.log("selected candidatesssss>>>>>>",selectedCandidateIds);
                 <button
                   className="buttons  text-white  bg-buttonBLue"
                   onClick={handleOpenMenu}
-
-                  // onClick={() =>
-                  //   setModalVisibility("createCandidateModalVisible", true)
-                  // }
                 >
                   Create Candidate
                   <Plus stroke="#ffffff" />
@@ -727,68 +663,26 @@ console.log("selected candidatesssss>>>>>>",selectedCandidateIds);
                 <button
                   className="buttons border-1 border-blue-600 text-buttonBLue min-w-[40px]"
                   onClick={(event) => (
-                    // setModalVisibility("mergeDuplicateModalVisible", true),
                     setIsColumnSelectorOpen(true), handleClose()
                   )}
                 >
                   Columns <ColumnIcon />
                 </button>
-                <button
-                  className="buttons border-1 border-blue-600 text-buttonBLue min-w-[40px]"
-                  // onClick={() => setIsFilter(!isFilter)}
-                >
+                <button className="buttons border-1 border-blue-600 text-buttonBLue min-w-[40px]">
                   <ExportIcon stroke="#1761D8" />
                 </button>
 
                 <button className="buttons border-1 border-blue-600 text-buttonBLue  min-w-[40px] ">
                   <RefreshIcon stroke="#1761D8" />
                 </button>
-                {/* <button className="text-gray-700 pl-[8px]" onClick={handleClick}>
-              <ThreeDots />
-            </button> */}
               </div>
             </div>
             <div className="flex-1 bg-grey-90 flex flex-col">
               {isFilter && (
                 <div className="flex items-center justify-between p-[10px]">
                   {/* Display Applied Filters */}
-                  <div className="flex items-center gap-2 flex-wrap">
-                    {/* {conditions.length > 0 && (
-                <div className=" flex flex-wrap gap-2">
-                  {conditions.map((condition, index) => (
-                    <span
-                      key={index}
-                      className="border border-customGray text-customBlue px-3 py-1 rounded-lg text-sm flex items-center"
-                    >
-                      {condition}
-                      <button
-                        className="ml-2 text-red-500 hover:text-red-700"
-                        onClick={() => removeCondition(index)}
-                      >
-                        <img src={close} height={8} width={8} alt="close" />
-                      </button>
-                    </span>
-                  ))}
-                </div>
-              )} */}
-                    {/* <div onClick={handleSeacrchableMenuOpen}>
-                <span className="text-buttonBLue font-ubuntu text-sm cursor-pointer">
-                  + Add condition
-                </span>
-              </div> */}
-                  </div>
+                  <div className="flex items-center gap-2 flex-wrap"></div>
                   <div className="flex items-center justify-center gap-[8px]">
-                    {/* <button
-                className={`buttons border-1  text-buttonBLue cursor-pointer ${
-                  conditions.length > 0
-                    ? "text-buttonBLue border-buttonBLue"
-                    : "text-customGray border-customGray"
-                }`}
-                onClick={handleApplyFilter}
-                disabled={conditions.length > 0}
-              >
-                Apply filter
-              </button> */}
                     <button
                       className="buttons border-1 min-w-[40px] border-buttonBLue justify-center text-buttonBLue"
                       onClick={handleClickSetting}
@@ -807,8 +701,7 @@ console.log("selected candidatesssss>>>>>>",selectedCandidateIds);
                 }}
               >
                 {!!candidateList[0] && (
-                  <CandidateTable
-                    header={headers} // Dynamic headers
+                  <CustomizableCandidateTable
                     data={candidateList}
                     setSelectedCandidateUser={setSelectedCandidate}
                     AddJobClick={() => toggleAddToJobsDrawer(true)}
@@ -821,7 +714,6 @@ console.log("selected candidatesssss>>>>>>",selectedCandidateIds);
                     eyeClickOn={handleCandidateEyeClick}
                     onCandidateClick={handleCandidateClick} // Pass function to handle clicks
                     // onCandidateSelect={handleCandidateSelection} // Handle selection
-
                   />
                 )}
               </div>
@@ -905,6 +797,7 @@ console.log("selected candidatesssss>>>>>>",selectedCandidateIds);
             isOpen={isColumnSelectorOpen}
             onClose={() => setIsColumnSelectorOpen(false)}
             selectedColumns={selectedColumns}
+            columnData={columnList}
             // setSelectedColumns={setSelectedColumns}
           />
         )}

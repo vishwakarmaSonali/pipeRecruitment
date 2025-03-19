@@ -14,6 +14,12 @@ import {
   FETCH_SUGGESTED_FOLDER_REQUEST,
   FETCH_SUGGESTED_FOLDER_SUCCESS,
   FETCH_SUGGESTED_FOLDER_FAILURE,
+  FETCH_COLUMNS_LIST_REQUEST,
+  FETCH_COLUMNS_LIST_SUCCESS,
+  FETCH_COLUMNS_LIST_FAILURE,
+  UPDATE_COLUMNS_LIST_REQUEST,
+  UPDATE_COLUMNS_LIST_SUCCESS,
+  UPDATE_COLUMNS_LIST_FAILURE,
 } from "../actions/actionsType";
 
 const initialState = {
@@ -34,6 +40,9 @@ const initialState = {
   updateCandidateLoading: false,
   fetchFolderLoading: false,
   folderList: [],
+  fetchColumnLoading: false,
+  columnList: [],
+  updateColumnLoading: false,
 };
 const candidateReducer = (state = initialState, action) => {
   switch (action.type) {
@@ -133,6 +142,37 @@ const candidateReducer = (state = initialState, action) => {
       return {
         ...state,
         fetchFolderLoading: false,
+      };
+
+    case FETCH_COLUMNS_LIST_REQUEST:
+      return { ...state, fetchColumnLoading: true };
+
+    case FETCH_COLUMNS_LIST_SUCCESS:
+      return {
+        ...state,
+        fetchColumnLoading: false,
+        columnList: action.columnList,
+      };
+
+    case FETCH_COLUMNS_LIST_FAILURE:
+      return {
+        ...state,
+        fetchColumnLoading: false,
+      };
+
+    case UPDATE_COLUMNS_LIST_REQUEST:
+      return { ...state, updateColumnLoading: true };
+
+    case UPDATE_COLUMNS_LIST_SUCCESS:
+      return {
+        ...state,
+        updateColumnLoading: false,
+      };
+
+    case UPDATE_COLUMNS_LIST_FAILURE:
+      return {
+        ...state,
+        updateColumnLoading: false,
       };
     default:
       return state;

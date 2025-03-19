@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { ReactComponent as DropArrow } from "../assets/icons/arrowDown.svg";
 import { ReactComponent as CloseIcon } from "../assets/icons/closeModal.svg";
 import { ReactComponent as SearchIcon } from "../assets/icons/sourcingIcons/search-normal.svg"; // MUI Search Icon
 import { ReactComponent as ColumnArrangeIcon } from "../assets/icons/columnIcon.svg"; // MUI Search Icon
-import Tick from "../assets/icons/sourcingIcons/tick.svg";
+import { ReactComponent as Tick } from "../assets/icons/sourcingIcons/tick.svg";
 import { useDispatch, useSelector } from "react-redux";
 import { candidates } from "../helpers/dataCandidates";
 import MenuIcon from "../assets/icons/menu.svg";
@@ -18,96 +18,71 @@ import {
   useSortable,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import { notifyError, notifySuccess } from "../helpers/utils";
+import { updateSelectedColumns } from "../actions/candidateActions";
+import CancelButton from "./common/CancelButton";
+import CommonButton from "./common/CommonButton";
 
-const allColumns = [
-  "Current Position",
-  "Email Id",
-  "Contact Number",
-  "ATS Score",
-  "Created Date",
-  "Created By",
-  "Employment Status",
-  "Hired Date",
-  "Start Date",
-];
-
-const ColumnSelector = ({ isOpen, onClose, setSelectedColumns }) => {
+const ColumnSelector = ({ isOpen, onClose, columnData }) => {
   const dispatch = useDispatch();
-  const selectedColumns = useSelector((state) => state.columns.selected);
-  const [columns, setColumns] = useState(selectedColumns);
+  const { updateColumnLoading } = useSelector((state) => state.candidates);
   const [isExpanded, setIsExpanded] = useState({ select: true, arrange: true });
   const [searchQuery, setSearchQuery] = useState("");
-  const [checkedColumns, setCheckedColumns] = useState([...selectedColumns]);
+  const [allColumnData, setAllColumnData] = useState(columnData);
+  const [selectedColumnData, setSelectedColumnData] = useState([]);
 
-  // Generate column options dynamically from candidates object
-  const formatColumnName = (key) => {
-    return key
-      .replace(/_/g, " ") // Replace underscores with spaces
-      .replace(/\b\w/g, (char) => char.toUpperCase()); // Capitalize words
-  };
-  const columnOptions = Object.keys(candidates[0]).map(formatColumnName);
-
-  // 🔍 Filter Columns based on search
-  const filteredColumns = columnOptions.filter((column) =>
-    column.toLowerCase().includes(searchQuery.toLowerCase())
-  );
-
-  // ✅ Right Side - Only show checked columns (for dragging)
-  const reorderedColumns = checkedColumns;
-
-  // ✅ Handle Checkbox Change (Move Between Lists)
-  const handleCheckboxChange = (column) => {
-    setCheckedColumns((prev) => {
-      const newChecked = prev.includes(column)
-        ? prev.filter((c) => c !== column) // Remove if unchecked
-        : [...prev, column]; // Add if checked
-      return newChecked;
+  const handleColumnSelect = (item) => {
+    const updatedData = allColumnData?.map((column) => {
+      if (item?.key === column?.key) {
+        return { ...column, showHeader: !item?.showHeader };
+      } else {
+        return { ...column };
+      }
     });
+
+    const filterData = updatedData?.filter((i) => i?.showHeader);
+    setSelectedColumnData(filterData);
+    setAllColumnData(updatedData);
   };
 
-  // 🔃 Handle Drag & Drop for Rearranging Checked Columns
+  useEffect(() => {
+    const filterData = columnData?.filter((item) => item?.showHeader);
+    setSelectedColumnData(filterData);
+    setAllColumnData(columnData);
+  }, [columnData]);
+
   const handleDragEnd = (event) => {
     const { active, over } = event;
     if (!over || active.id === over.id) return;
 
-    setCheckedColumns((prev) => {
-      const oldIndex = prev.indexOf(active.id);
-      const newIndex = prev.indexOf(over.id);
+    setSelectedColumnData((prev) => {
+      const oldIndex = prev.findIndex((col) => col.key === active.id);
+      const newIndex = prev.findIndex((col) => col.key === over.id);
       return arrayMove(prev, oldIndex, newIndex);
     });
   };
 
-  // ❌ Handle Remove Column
-  const handleRemoveColumn = (column) => {
-    setCheckedColumns((prevChecked) => prevChecked.filter((c) => c !== column));
-  };
-
-  // 🚀 Handle "Unselect All"
-  const handleUnselectAll = () => {
-    setCheckedColumns([]);
-  };
-
-  // ✅ Save Selected & Ordered Columns to Redux
   const handleSave = () => {
-    console.log("checked columne>>>>", checkedColumns);
+    const selectedColumn = selectedColumnData?.map((item) => {
+      return { key: item?.key };
+    });
 
-    // dispatch(setColumns(checkedColumns));
-    // onClose();
+    const data = {
+      selectedColumns: selectedColumn,
+    };
+
+    dispatch(updateSelectedColumns(data)).then((response) => {
+      if (response?.success) {
+        notifySuccess(response?.message);
+      } else {
+        notifyError(response);
+      }
+    });
   };
 
-  // Toggle column selection
-  const handleToggle = (column) => {
-    setCheckedColumns((prev) =>
-      prev.includes(column)
-        ? prev.filter((c) => c !== column)
-        : [...prev, column]
-    );
-  };
-
-  // 🏗️ Draggable Item Component
-  const DraggableItem = ({ column, removeColumn }) => {
+  const DraggableItem = ({ column }) => {
     const { attributes, listeners, setNodeRef, transform, transition } =
-      useSortable({ id: column });
+      useSortable({ id: column?.key });
 
     const style = {
       transform: CSS.Transform.toString(transform),
@@ -132,18 +107,12 @@ const ColumnSelector = ({ isOpen, onClose, setSelectedColumns }) => {
         className="font-ubuntu text-m text-customBlue gap-[8px] px-[12px] py-[12px] max-h-[40px]"
       >
         <ColumnArrangeIcon />
-        <span style={{ cursor: "grab" }}>{column}</span> 
+        <span style={{ cursor: "grab" }}>{column?.label}</span>
         <button
           className="remove-btn text-customBlue"
           onClick={(e) => {
-            e.preventDefault(); // ✅ Prevents default behavior
-            e.stopPropagation(); // ✅ Prevents drag interference
-            removeColumn(column);
-          }}
-          onTouchStart={(e) => {
-            // e.preventDefault(); // ✅ Ensures touch events work properly
-            // e.stopPropagation(); // ✅ Prevents unintended drag movement
-            removeColumn(column);
+            e.preventDefault();
+            e.stopPropagation();
           }}
         >
           <CloseIcon height={"14px"} width={"14px"} />
@@ -208,7 +177,10 @@ const ColumnSelector = ({ isOpen, onClose, setSelectedColumns }) => {
                   />
                 </div>
                 <div className="flex justify-between my-[12px]">
-                  <button className="" onClick={() => setCheckedColumns([])}>
+                  <button
+                    className=""
+                    onClick={() => setSelectedColumnData([])}
+                  >
                     <span className="text-buttonBLue text-m font-ubuntu">
                       Unselect all
                     </span>
@@ -219,28 +191,46 @@ const ColumnSelector = ({ isOpen, onClose, setSelectedColumns }) => {
                     </span>
                   </button>
                 </div>
-                {/* ✅ Show all columns (Selected = Ticked, Unselected = Empty) */}
+
                 <div
                   className={`checkbox-list overflow-auto ${
                     isExpanded.select ? "max-h-[540px]" : "max-h-[250px] "
                   }`}
                 >
-                  {filteredColumns.map((column) => (
-                    <div
-                      key={column}
-                      className="column-option flex items-center  cursor-pointer text-m font-ubuntu"
-                      onClick={() => handleCheckboxChange(column)}
-                    >
-                      <div
-                        className={`w-[20px] h-[20px]  border-1 border-customBlue bg-white rounded-[6px] flex items-center justify-center`}
-                      >
-                        {checkedColumns.includes(column) && (
-                          <img src={Tick} alt="Selected" />
-                        )}
-                      </div>
-                      {column}
-                    </div>
-                  ))}
+                  {allColumnData?.map((column) => {
+                    if (column?.name === "candidate_name") {
+                      return (
+                        <div
+                          key={column?.key}
+                          className="column-option flex items-center "
+                        >
+                          <div
+                            className={`candidate-card-checkbox border-grey `}
+                          >
+                            {column?.showHeader && <Tick />}
+                          </div>
+                          <span className="font-14-regular color-grey">
+                            {column?.label}
+                          </span>
+                        </div>
+                      );
+                    } else {
+                      return (
+                        <div
+                          key={column?.key}
+                          className="column-option flex items-center  cursor-pointer text-m font-ubuntu"
+                          onClick={() => handleColumnSelect(column)}
+                        >
+                          <div className={`candidate-card-checkbox`}>
+                            {column?.showHeader && <Tick />}
+                          </div>
+                          <span className="font-14-regular color-dark-black">
+                            {column?.label}
+                          </span>
+                        </div>
+                      );
+                    }
+                  })}
                 </div>
               </div>
             )}
@@ -269,25 +259,44 @@ const ColumnSelector = ({ isOpen, onClose, setSelectedColumns }) => {
               className={`mx-[10px] my-[12px]  overflow-auto${
                 isExpanded.select ? "max-h-[540px]" : "max-h-[250px] "
               }`}
+              style={{ overflowX: "hidden" }}
             >
               {isExpanded.arrange && (
-                <div className="draggable-container p-0 scroll-width-none">
+                <div
+                  className="draggable-container p-0 scroll-width-none"
+                  style={{ overflowX: "hidden" }}
+                >
                   <DndContext
                     collisionDetection={closestCenter}
                     onDragEnd={handleDragEnd}
                   >
                     <SortableContext
-                      items={reorderedColumns}
+                      items={selectedColumnData.map((col) => col?.key)}
                       strategy={verticalListSortingStrategy}
                     >
-                      {reorderedColumns.map((column) => (
-                        <DraggableItem
-                          key={column}
-                          column={column}
-                          removeColumn={handleRemoveColumn}
-                          style={{ background: "red" }}
-                        />
-                      ))}
+                      {selectedColumnData?.map((column) => {
+                        if (column?.name === "candidate_name") {
+                          return (
+                            <div
+                              style={{
+                                display: "flex",
+                                alignItems: "center",
+                                marginBottom: "8px",
+                                background: "#98989812",
+                                borderRadius: "8px",
+                              }}
+                              className="font-ubuntu text-m text-customBlue gap-[8px] px-[12px] py-[12px] max-h-[40px]"
+                            >
+                              <ColumnArrangeIcon />
+                              <span>{column?.label}</span>
+                            </div>
+                          );
+                        } else {
+                          return (
+                            <DraggableItem key={column?.key} column={column} />
+                          );
+                        }
+                      })}
                     </SortableContext>
                   </DndContext>
                 </div>
@@ -296,20 +305,18 @@ const ColumnSelector = ({ isOpen, onClose, setSelectedColumns }) => {
           </div>
         </div>
 
-        {/* Fixed Footer with Buttons */}
-        <div className="  pt-3 pb-2 flex justify-end space-x-2 bg-white">
-          <button
-            className="px-[14px] py-[10px] max-h-[36px] text-m font-ubuntu rounded-[8px] flex items-center gap-1 w-full justify-center border-1 border-buttonBLue  cursor-pointer"
+        <div className="display-flex" style={{ gap: 8 }}>
+          <CancelButton
+            title={"Cancel"}
+            btnStyle={{ flex: 1 }}
             onClick={onClose}
-          >
-            <span className="font-ubuntu text-buttonBLue text-m">Cancel</span>
-          </button>
-          <button
-            className="px-[14px] py-[10px] max-h-[36px] text-m font-ubuntu rounded-[8px] flex items-center gap-1 w-full justify-center bg-buttonBLue text-buttonBLue cursor-pointer"
+          />
+          <CommonButton
+            isLoading={updateColumnLoading}
+            title={"Save"}
+            btnStyle={{ flex: 1 }}
             onClick={handleSave}
-          >
-            <span className="font-ubuntu text-white text-m">Save</span>
-          </button>
+          />
         </div>
       </div>
     </>

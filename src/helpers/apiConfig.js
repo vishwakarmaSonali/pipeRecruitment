@@ -2,7 +2,7 @@ export const BASE_URL = "http://3.111.186.55/";
 
 export const loginEndpoint = "api/auth/login";
 export const candidateSearchApiEndPoint = "api/source/search";
-export const candidateSerachByIdApiEndPOint = "api/source/candidates/";
+export const candidateSerachByIdApiEndPOint = "api/source/";
 export const createCandidateManuallyEndpoint = "api/candidates";
 export const getDomainEndpoint = "api/domains";
 export const getLabelEndpoint = "api/labels";
@@ -19,5 +19,6 @@ export const reorderCategoryApiEndPoint =
   "api/form-field-categories/reorder-categories";
 export const reorderCategoryFieldApiEndPoint =
   "api/form-field-categories/reorder";
-export const addSourceToCandidateEndpoint = "api/candidates/add-to-candidate"
-export const addCandidatesToArchive = "api/candidates/archive"
+export const addSourceToCandidateEndpoint = "api/candidates/add-to-candidate";
+export const addCandidatesToArchive = "api/candidates/archive";
+export const fetchColumnListApiEndPoint = "api/selected-columns/candidates";

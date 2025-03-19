@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./index.css";
 import {
   Table,
@@ -11,7 +11,11 @@ import {
   Menu,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import { getInitials, getRandomColor } from "../../helpers/utils";
+import {
+  formatDateMonthYear,
+  getInitials,
+  getRandomColor,
+} from "../../helpers/utils";
 import { commonStyle } from "../../helpers/config";
 import { ReactComponent as Tick } from "../../assets/icons/sourcingIcons/tick.svg";
 import { ReactComponent as EyeIcon } from "../../assets/icons/eye.svg";
@@ -22,15 +26,12 @@ import { ReactComponent as EditUser } from "../../assets/icons/user-edit.svg";
 import { ReactComponent as ArchiveIcon } from "../../pages/Recruitment/Candidates/assets/archive.svg";
 import CandidateInfoModal from "../modals/CandidateInfoModal";
 import { useModal } from "../common/ModalProvider";
+import { useSelector } from "react-redux";
 
-const CandidateTable = ({
-  header,
+const CustomizableCandidateTable = ({
   data,
   setSelectedCandidateUser,
   setSelectedCandidateUsers,
-  AddJobClick,
-  AddFolderClick,
-  ChangeOwnerShipClick,
   deleteIconClick,
   showDeleteIcon,
   eyeClickOn,
@@ -38,10 +39,13 @@ const CandidateTable = ({
   onCandidateSelect,
 }) => {
   const navigate = useNavigate();
+  const { columnList } = useSelector((state) => state?.candidates);
+  const matchedColumns = columnList?.filter((col) => col.key in data[0]);
   const { modals, setModalVisibility } = useModal();
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedCandidates, setSelectedCandidates] = useState([]);
   const [selectedCandidate, setSelectedCandidate] = useState(null);
+  const [headerData, setHeaderData] = useState(matchedColumns);
   const open = Boolean(anchorEl);
 
   const handleMenuClick = (event) => {
@@ -53,13 +57,6 @@ const CandidateTable = ({
   };
   const handleSelect = (id) => {
     onCandidateSelect(id); // Call the parent function
-  };
-
-  // ✅ Format column headers (removes underscores & capitalizes words)
-  const formatHeader = (header) => {
-    return header
-      ?.replace(/_/g, " ")
-      .replace(/\b\w/g, (char) => char.toUpperCase());
   };
 
   console.log("data in CandidateTable", selectedCandidates);
@@ -84,72 +81,65 @@ const CandidateTable = ({
                 zIndex: 10,
               }}
             >
-              {header?.map((item, index) => (
-                <TableCell
-                  key={index}
-                  className="font-14-regular"
-                  style={{ minWidth: 250 }}
-                >
-                  <div className="display-flex align-center" style={{ gap: 6 }}>
-                    {index === 0 && (
-                      <button
-                        className={`candidate-card-checkbox`}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          const allSelected =
-                            selectedCandidates.length === data.length;
-                          setSelectedCandidates(
-                            allSelected ? [] : data.map((c) => c._id)
-                          );
-                          setSelectedCandidateUsers(
-                            allSelected ? [] : data.map((c) => c._id)
-                          );
-                        }}
-                      >
-                        {selectedCandidates.length === data.length && <Tick />}
-                      </button>
-                    )}
-                    <span>{formatHeader(item)}</span>
-                  </div>
-                </TableCell>
-              ))}
+              {headerData
+                ?.sort((a, b) => a?.order - b?.order)
+                ?.map((item, index) => (
+                  <TableCell
+                    key={index}
+                    className="font-14-regular"
+                    style={{ minWidth: 250 }}
+                  >
+                    <div
+                      className="display-flex align-center"
+                      style={{ gap: 6 }}
+                    >
+                      {index === 0 && (
+                        <button
+                          className={`candidate-card-checkbox`}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            const allSelected =
+                              selectedCandidates.length === data.length;
+                            setSelectedCandidates(
+                              allSelected ? [] : data.map((c) => c._id)
+                            );
+                            setSelectedCandidateUsers(
+                              allSelected ? [] : data.map((c) => c._id)
+                            );
+                          }}
+                        >
+                          {selectedCandidates.length === data.length && (
+                            <Tick />
+                          )}
+                        </button>
+                      )}
+                      <span>{item?.label}</span>
+                    </div>
+                  </TableCell>
+                ))}
             </TableRow>
           </TableHead>
 
           <TableBody>
-            {data.map((candidate, index) => {
+            {data?.map((candidate, index) => {
               return (
                 <TableRow
                   key={index}
                   className="hover-row"
                   onClick={() => onCandidateClick(candidate?._id)}
                 >
-                  {header.map((columnName, index) => {
-                    let value = candidate[columnName] || "-";
+                  {headerData?.map((columnName, index) => {
+                    let value = candidate[columnName?.key] || "-";
 
-                    // ✅ Convert "skills" array to a readable string
-                    if (columnName === "skills" && Array.isArray(value)) {
-                      value =
-                        value.map((skill) => skill.name).join(", ") || "-";
-                    }
-
-                    // ✅ Convert "employment_history" to a readable string
                     if (
-                      columnName === "employment_history" &&
-                      Array.isArray(value)
+                      columnName?.name === "created_at" ||
+                      columnName?.name === "date_of_birth"
                     ) {
-                      value =
-                        value
-                          .map((job) => `${job.position} at ${job.company}`)
-                          .join(", ") || "-";
+                      value = candidate[columnName?.key]
+                        ? formatDateMonthYear(candidate[columnName?.key])
+                        : "NA";
                     }
 
-                    // ✅ Convert objects to JSON string (fallback)
-                    if (typeof value === "object" && value !== null) {
-                      value = JSON.stringify(value);
-                    }
-
-                    // ✅ Handle First Column (Candidate Name, Profile Photo, Checkbox)
                     if (index === 0) {
                       return (
                         <TableCell key={index}>
@@ -207,7 +197,7 @@ const CandidateTable = ({
                             </Avatar>
 
                             <span className="font-14-regular truncate-text">
-                              {candidate?.candidate_name}
+                              {value === "-" ? "NA" : value}
                             </span>
 
                             {!showDeleteIcon ? (
@@ -260,8 +250,8 @@ const CandidateTable = ({
 
                     return (
                       <TableCell key={index}>
-                        <span className="font-14-regular truncate-text">
-                          {value}
+                        <span className={`font-14-regular truncate-text `}>
+                          {value === "-" ? "NA" : value}
                         </span>
                       </TableCell>
                     );
@@ -276,4 +266,4 @@ const CandidateTable = ({
   );
 };
 
-export default CandidateTable;
+export default CustomizableCandidateTable;

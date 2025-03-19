@@ -7,6 +7,7 @@ import {
   fetchAutoSuggestFolderApiEndPoint,
   fetchCandidatesDetailsEndpoint,
   fetchCandidatesEndpoint,
+  fetchColumnListApiEndPoint,
   updateCandidateLabelApiEndpoint,
 } from "../helpers/apiConfig";
 import {
@@ -31,6 +32,12 @@ import {
   ARCHIVE_CANDIDATES_REQUEST,
   ARCHIVE_CANDIDATES_SUCCESS,
   ARCHIVE_CANDIDATES_FAILURE,
+  FETCH_COLUMNS_LIST_FAILURE,
+  FETCH_COLUMNS_LIST_REQUEST,
+  FETCH_COLUMNS_LIST_SUCCESS,
+  UPDATE_COLUMNS_LIST_REQUEST,
+  UPDATE_COLUMNS_LIST_SUCCESS,
+  UPDATE_COLUMNS_LIST_FAILURE,
 } from "./actionsType";
 import { notifySuccess } from "../helpers/utils";
 
@@ -68,7 +75,12 @@ export const fetchCandidatesList = (filters, page) => async (dispatch) => {
     const response = await axiosInstance.get(fetchCandidatesEndpoint, {
       params: { ...filters, page },
     });
-console.log("response of fetch candidate lisrt>>>",response,"filtersdsdsdd",filters);
+    console.log(
+      "response of fetch candidate lisrt>>>",
+      response,
+      "filtersdsdsdd",
+      filters
+    );
 
     dispatch({
       type: FETCH_CANDIDATES_SUCCESS,
@@ -215,3 +227,37 @@ export const addCandidateToArchiveAction =
       });
     }
   };
+
+export const fetchColumnsList = () => async (dispatch) => {
+  dispatch({ type: FETCH_COLUMNS_LIST_REQUEST });
+
+  try {
+    const response = await axiosInstance.get(`${fetchColumnListApiEndPoint}`);
+    dispatch({
+      type: FETCH_COLUMNS_LIST_SUCCESS,
+      columnList: response?.data,
+    });
+
+    return response?.data;
+  } catch (error) {
+    dispatch({ type: FETCH_COLUMNS_LIST_FAILURE });
+    return error?.response?.data?.message || error.message;
+  }
+};
+
+export const updateSelectedColumns = (data) => async (dispatch) => {
+  dispatch({ type: UPDATE_COLUMNS_LIST_REQUEST });
+
+  try {
+    const response = await axiosInstance.post(fetchColumnListApiEndPoint, data);
+    dispatch({
+      type: UPDATE_COLUMNS_LIST_SUCCESS,
+      data: response?.data,
+    });
+
+    return response?.data;
+  } catch (error) {
+    dispatch({ type: UPDATE_COLUMNS_LIST_FAILURE });
+    return error?.response?.data?.message || error.message;
+  }
+};
