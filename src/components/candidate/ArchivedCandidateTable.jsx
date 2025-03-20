@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./index.css";
 import {
   Table,
@@ -41,6 +41,9 @@ import { ReactComponent as EditUser } from "../../assets/icons/user-edit.svg";
 import DeleteCandidateDrawer from "./DeleteCandidateDrawer";
 import { archivedCandidates } from "../../helpers/dataCandidates";
 import { format } from "date-fns";
+import { deleteArchivedCandidates, fetchArchivedCandidates, restoreArchivedCandidates } from "../../actions/customizationActions";
+import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 
 const ArchiveCandidateTable = ({
   header,
@@ -54,6 +57,7 @@ const ArchiveCandidateTable = ({
   showDeleteIcon,
 }) => {
   const navigate = useNavigate();
+  const dispatch = useDispatch()
   const { modals, setModalVisibility } = useModal();
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedCandidates, setSelectedCandidates] = useState([]);
@@ -62,49 +66,97 @@ const ArchiveCandidateTable = ({
   const [deletingCandidates, setDeletingCandidates] = useState([]); // Track candidates to delete
   const [deleteCandidateDrawerOpen, setDeleteCandidateDrawerOpen] =
     useState(false);
+      // 🔄 Track Current Page and Total Pages
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+    // 🔄 Redux State: Fetch Candidates
+    const totalCandidates = useSelector((state) => state.customization.archivedCandidates?.total); // Get total candidates
+    const limit = 20; // Adjust limit per page
+  
   const open = Boolean(anchorEl);
+  // 🔄 Fetch Data When `currentPage` Changes
+  useEffect(() => {
+    dispatch(fetchArchivedCandidates(currentPage)).then((data) => {
+      if (data?.total) {
+        setTotalPages(Math.ceil(data.total / limit)); // Calculate pages dynamically
+      }
+    });
+  }, [dispatch, currentPage]);
+
+  // ✅ Handle Page Change
+  const handlePageChange = (newPage) => {
+    console.log("Changing to Page:", newPage);
+    setCurrentPage(newPage);
+  };
+  const archivedCandidates = useSelector((state) => state.customization.archivedCandidates?.results);
+
   const [candidateList, setCandidateList] = useState(archivedCandidates);
 
   const handleMenuClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
-
+  useEffect(() => {
+    setSelectedCandidates([]); // Clear selection when data updates
+  }, [data]);
   const handleMenuClose = () => {
     setAnchorEl(null);
   };
-  const handleArchive = (id) => {
-    console.log(`Archiving candidate with ID: ${id}`);
-    // TODO: Implement API call or state update to archive candidate
+  // ✅ Restore candidates & refresh table
+  const handleRestore = (id) => {
+    const candidateIds = id ? [id] : selectedCandidates;
+
+    if (candidateIds.length === 0) {
+      console.error("No candidate selected for restore");
+      return;
+    }
+
+    dispatch(restoreArchivedCandidates(candidateIds)).then(() => {
+      notifySuccess("Candidate successfully restored.");
+      dispatch(fetchArchivedCandidates(1)); // 🔄 Refresh Redux data
+    });
   };
+  
 
   // 🔥 Handle Delete Action (Determines message & opens drawer)
   const handleDelete = (id = null) => {
     if (id) {
+      console.log("idsdsdsds",id);
+      
       setDeleteMessage("This candidate profile");
       setDeletingCandidates([id]); // Only delete this one user
     } else if (selectedCandidates?.length === 1) {
       setDeleteMessage("Selected candidate profile");
-      setDeletingCandidates([...selectedCandidates]); // Single selected user
+      setDeletingCandidates([selectedCandidates]); // Single selected user
     } else {
       setDeleteMessage("Selected candidate profiles");
-      setDeletingCandidates([...selectedCandidates]); // Multiple selected users
+      setDeletingCandidates([selectedCandidates]); // Multiple selected users
     }
 
     setDeleteCandidateDrawerOpen(true);
   };
   // 🔥 Handle Confirm Delete (Filters Out Deleted Candidates)
-  const handleConfirmDelete = (id) => {
-    if (id) {
-      notifySuccess("Candidate has been permanently deleted.");
-    } else if (selectedCandidates?.length === 1) {
-      notifySuccess("Selected candidate has been permanently deleted.");
-    }
+  const handleConfirmDelete = () => {
+    console.log("id in confirm delete", deletingCandidates, "selected Candidates", selectedCandidates);
+  
+    // Notify the user
+    dispatch(deleteArchivedCandidates(deletingCandidates));
+    dispatch(deleteArchivedCandidates(selectedCandidates)).then(() => {
+      notifySuccess(`${deletingCandidates.length > 1 ? "Candidates" : "Candidate"} has been permanently deleted.`);
+      dispatch(fetchArchivedCandidates(1)); // 🔄 Refresh Redux data
+    });
+    // Filter out deleted candidates from the list
     setCandidateList((prev) =>
-      prev?.filter((candidate) => !deletingCandidates.includes(candidate.id))
+      prev?.filter((candidate) => !deletingCandidates.includes(candidate._id))
     );
-    setSelectedCandidates([]); // Clear selection after deletion
+  
+    // Clear selections and close the delete drawer
+    setSelectedCandidates([]);
+    setDeletingCandidates([]);
+    setDeleteMessage('')
     setDeleteCandidateDrawerOpen(false);
+
   };
+  
   return (
     <>
       <TableContainer style={{ height: "100%" }}>
@@ -151,6 +203,7 @@ const ArchiveCandidateTable = ({
                                 : data?.map((c) => c.id)
                             );
                           }}
+                          
                         >
                           {selectedCandidates?.length === data?.length && (
                             <Tick />
@@ -175,7 +228,7 @@ const ArchiveCandidateTable = ({
             </TableRow>
           </TableHead>
           <TableBody>
-            {data.map((candidate, index) => (
+            {archivedCandidates.map((candidate, index) => (
               <TableRow key={index} className="hover-row">
                 {/* Checkbox Column */}
                 <TableCell>
@@ -198,43 +251,60 @@ const ArchiveCandidateTable = ({
                     >
                       {selectedCandidates.includes(candidate._id) && <Tick />}
                     </button>
+                    <div
+                      className="display-flex align-center ml-2"
+                      style={{ gap: 6 }}
+                    >
+                      <Avatar
+                        src={candidate.profile_image || ""}
+                        style={{
+                          width: 32,
+                          height: 32,
+                          backgroundColor: candidate.profile_image
+                            ? "transparent"
+                            : getRandomColor(),
+                          fontSize: 14,
+                          lineHeight: "19.1px",
+                          textAlign: "center",
+                        }}
+                      >
+                        {!candidate.profile_image &&
+                          getInitials(
+                            candidate.first_name + " " + candidate.last_name
+                          )}
+                      </Avatar>
+                      <span className="truncate-text">
+                        {candidate.first_name} {candidate.last_name}
+                      </span>
+                    </div>
                   </div>
                 </TableCell>
 
-                {/* Dynamic Data Columns */}
-                {header.map((colName, colIndex) => {
-                  let value = "-";
+                {/* Owner Column (Without Avatar) */}
+                <TableCell className="font-14-regular">
+                  {candidate.archived_by?.email || "-"}
+                </TableCell>
 
-                  if (colName === "Candidate Name") {
-                    value = `${candidate.first_name || ""} ${candidate.last_name || ""}`.trim() || "-";
-                  } else if (colName === "Owner") {
-                    value = candidate.archived_by?.email || "-";
-                  } else if (colName === "Archived Date") {
-                    value = candidate.archived_at
-                      ? format(new Date(candidate.archived_at), "yyyy-MM-dd")
-                      : "-";
-                  }
-
-                  return (
-                    <TableCell key={colIndex} className="font-14-regular">
-                      {value}
-                    </TableCell>
-                  );
-                })}
+                {/* Archived Date Column */}
+                <TableCell className="font-14-regular">
+                  {candidate.archived_at
+                    ? format(new Date(candidate.archived_at), "yyyy-MM-dd")
+                    : "-"}
+                </TableCell>
 
                 {/* Action Buttons */}
                 <TableCell>
                   <div className="flex gap-2">
                     {/* Restore Button */}
                     <Tooltip title="Restore">
-                      <button className="px-2 py-1 text-white rounded-md">
+                      <button className="px-2 py-1 text-white rounded-md" onClick={()=>handleRestore(candidate?._id)}>
                         <ArchiveIcon />
                       </button>
                     </Tooltip>
 
                     {/* Delete Button */}
                     <Tooltip title="Delete Permanently">
-                      <button className="px-2 py-1 bg-red-500 text-white rounded-md">
+                      <button className="px-2 py-1 bg-red-500 text-white rounded-md" onClick={()=>handleDelete(candidate?._id)}>
                         <DeleteIcon />
                       </button>
                     </Tooltip>

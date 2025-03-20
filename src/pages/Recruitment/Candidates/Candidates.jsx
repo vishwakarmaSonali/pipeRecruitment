@@ -151,7 +151,7 @@ const Candidates = ({ isDrawerOpen }) => {
         (candidate) => !selectedCandidates.includes(candidate._id)
       )
     );
-
+    dispatch(addCandidateToArchiveAction(selectedCandidates));
     // Reset selection after archiving
     setSelectedCandidates([]);
   };
@@ -904,7 +904,7 @@ const Candidates = ({ isDrawerOpen }) => {
         onClose={() => {
           const searchParams = new URLSearchParams(location.search);
           searchParams.delete("id");
-          navigate(`/candidates?${searchParams.toString()}`);
+          navigate(`/candidates?${searchParams?.toString()}`);
           setModalVisibility("candidateInfoModalVisible", false);
           setSelectedCandidateId(null);
         }}

@@ -67,7 +67,7 @@ class ErrorBoundary extends React.Component {
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Navigate to="/signup" replace />,
+    element: <Navigate to="/login" replace />,
   },
   // {
   //   path: "/sourcing",

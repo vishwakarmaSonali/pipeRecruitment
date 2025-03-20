@@ -48,7 +48,7 @@ import {
 import ArchiveCandidateTable from "../../../components/candidate/ArchivedCandidateTable";
 import PaginationComponent from "../../../components/common/PaginationComponent";
 import { useNavigate } from "react-router-dom";
-import { fetchArchivedCandidates } from "../../../actions/customizationActions";
+import { deleteArchivedCandidates, fetchArchivedCandidates, restoreArchivedCandidates } from "../../../actions/customizationActions";
 const ArchiveCandidates = ({ isDrawerOpen }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -244,6 +244,7 @@ const ArchiveCandidates = ({ isDrawerOpen }) => {
   const [deletingCandidates, setDeletingCandidates] = useState([]); // Track candidates to delete
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(false);
+  const [forceUpdateKey, setForceUpdateKey] = useState(Date.now()); // 🔥 Force UI Re-render
 
   
   useEffect(() => {
@@ -258,15 +259,35 @@ const ArchiveCandidates = ({ isDrawerOpen }) => {
     }
   }, [modals?.savedFiltersModalVisible, savedFilters]);
   
+
   useEffect(() => {
-    dispatch(fetchArchivedCandidates(currentPage)).then((data) => {
-      if (data && data.totalPages) {
-        setTotalPages(data.totalPages);
-      }
-    });
+    if (currentPage) {
+      dispatch(fetchArchivedCandidates(currentPage)).then((data) => {
+        if (data && data.totalPages) {
+          setTotalPages(data.totalPages);
+        }
+      });
+    }
   }, [dispatch, currentPage]);
 
+  
 
+  // Update local state when Redux data changes
+  useEffect(() => {
+    dispatch(fetchArchivedCandidates(currentPage));
+  }, [dispatch, currentPage]); // Re-fetch when page changes
+
+  useEffect(() => {
+    setSelectedCandidates([]); // Clear selection after updates
+  }, [archivedCandidates]); // Ensure UI refreshes when Redux data changes
+ // ✅ Update local state when Redux data changes
+ useEffect(() => {
+  if (archivedCandidates.length > 0) {
+    setCandidateList([...archivedCandidates]); // Deep copy to trigger re-render
+  } else {
+    setCandidateList([]); // Ensure empty state updates
+  }
+}, [archivedCandidates]);
   // Function to clear all filters
   const clearAllFilters = () => {
     setConditions([]);
@@ -293,46 +314,7 @@ const ArchiveCandidates = ({ isDrawerOpen }) => {
   const discardChanges = () => {
     setConditions([...originalConditions]);
   };
-  // ✅ Handle Filter Menu Apply
-  const handleFilterApply = (filterOption, inputValue) => {
-    if (!inputValue || inputValue.trim() === "") {
-      console.error(
-        "Filter input value is missing. Please enter a valid value."
-      );
-      return;
-    }
 
-    const newCondition = `${selectedSearchableOption} ${filterOption} ${inputValue}`;
-
-    setConditions((prevConditions) => {
-      // Prevent duplicates
-      if (
-        prevConditions.some((condition) =>
-          condition.startsWith(selectedSearchableOption)
-        )
-      ) {
-        return prevConditions;
-      }
-      return [...prevConditions, newCondition];
-    });
-
-    // Remove the selected filter from the searchable menu
-    setSearchableMenuItems((prevItems) =>
-      prevItems?.filter((item) => item.label !== selectedSearchableOption)
-    );
-
-    setSelectedSearchableOption("");
-    setAnchorFilterMenuEl(null);
-  };
-
-  const handleClickBulkAction = (event) => {
-    setAnchorBulkActionEl(event.currentTarget);
-  };
-
-  // Function to handle closing the dropdown menu
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
   const handleSettingsClose = () => {
     setAnchorSettingEl(null);
   };
@@ -343,13 +325,26 @@ const ArchiveCandidates = ({ isDrawerOpen }) => {
     setCurrentPage(page);
   };
 
-  const handleArchive = (id) => {
-    console.log(`Archiving candidate with ID: ${id}`);
-    // TODO: Implement API call or state update to archive candidate
+const handleRestore = (id) => {
+    const candidateIds = id ? [id] : selectedCandidates;
+  
+    if (candidateIds.length === 0) {
+      console.error("No candidate selected for restore");
+      return;
+    }
+  
+    dispatch(restoreArchivedCandidates(candidateIds)).then(() => {
+      notifySuccess("Candidates successfully restored.");
+      dispatch(fetchArchivedCandidates(currentPage)); // 🔥 Re-fetch updated data
+      
+      setSelectedCandidates([]); // Clear selection
+      setForceUpdateKey(Date.now()); // 🔥 Force re-render
+    });
   };
-
   // 🔥 Handle Delete Action (Determines message & opens drawer)
   const handleDelete = (id = null) => {
+    console.log("Deleting archived candidates:", id || selectedCandidates);
+  
     if (id) {
       setDeleteMessage("This candidate profile");
       setDeletingCandidates([id]); // Only delete this one user
@@ -360,22 +355,36 @@ const ArchiveCandidates = ({ isDrawerOpen }) => {
       setDeleteMessage("Selected candidate profiles");
       setDeletingCandidates([...selectedCandidates]); // Multiple selected users
     }
-
+  
     setDeleteCandidateDrawerOpen(true);
   };
+  
   // 🔥 Handle Confirm Delete (Filters Out Deleted Candidates)
   const handleConfirmDelete = (id) => {
+    console.log(selectedCandidates,"id<<<<<<<<");
+    
     if (id) {
       notifySuccess("Candidate has been permanently deleted.");
     } else if (selectedCandidates?.length === 1) {
       notifySuccess("Selected candidate has been permanently deleted.");
     }
+    dispatch(deleteArchivedCandidates(selectedCandidates)).then(() => {
+      notifySuccess("Candidates successfully deleted.");
+      dispatch(fetchArchivedCandidates(currentPage)); // 🔥 Re-fetch updated data
+      setSelectedCandidates([]); // Clear selection
+    });
     setCandidateList((prev) =>
       prev?.filter((candidate) => !deletingCandidates.includes(candidate.id))
     );
     setSelectedCandidates([]); // Clear selection after deletion
+    setForceUpdateKey(Date.now()); // 🔥 Force re-render
+
     setDeleteCandidateDrawerOpen(false);
   };
+  // 🔥 Ensure `candidateList` updates with Redux changes
+useEffect(() => {
+  setCandidateList(archivedCandidates); // Update local state when Redux state changes
+}, [archivedCandidates]);
   return (
     <div
       className="sourcing-main-container"
@@ -389,7 +398,7 @@ const ArchiveCandidates = ({ isDrawerOpen }) => {
 
         <div className="flex items-center justify-between p-[17px]">
           <span className="font-ubuntu font-medium text-custom-large">
-            Archived Candidates here
+            Archived Candidates
           </span>
           {/* Action Buttons */}
           {selectedCandidates?.length >= 1 && (
@@ -399,15 +408,14 @@ const ArchiveCandidates = ({ isDrawerOpen }) => {
               <button
                 className="buttons border-1 border-blue-600 text-buttonBLue min-w-[40px]"
                 onClick={(event) => (
-                  // setModalVisibility("mergeDuplicateModalVisible", true),
-                  setIsColumnSelectorOpen(true), handleClose()
+                  handleRestore()
                 )}
               >
                 Restore Selected
               </button>
               <button
                 className="buttons text-white bg-buttonBLue"
-                onClick={() => handleDelete()}
+                onClick={() => handleDelete(selectedCandidates)}
               >
                 Delete Selected
               </button>
@@ -427,12 +435,10 @@ const ArchiveCandidates = ({ isDrawerOpen }) => {
             }}
           >
               <ArchiveCandidateTable
+              key={forceUpdateKey} 
             header={archivedCandidateHeader}
             data={archivedCandidates}
             setSelectedCandidateUser={setSelectedCandidate}
-            // AddJobClick={() => toggleAddToJobsDrawer(true)}
-            // AddFolderClick={() => toggleAddToFolderDrawer(true)}
-            // ChangeOwnerShipClick={() => toggleChangeOwnershipDrawer(true)}
             setSelectedCandidateUsers={setSelectedCandidates}
             showDeleteIcon={false}
           />
@@ -452,6 +458,12 @@ const ArchiveCandidates = ({ isDrawerOpen }) => {
             currentPage={currentPage}
             onPageChange={handlePageChange}
           />
+             <DeleteCandidateDrawer
+        isOpen={deleteCandidateDrawerOpen}
+        onClose={() => setDeleteCandidateDrawerOpen(false)}
+        deleteMessage={deleteMessage} // Pass message dynamically
+        onConfirmDelete={handleConfirmDelete} // Pass function to confirm delete
+      />
         </div>
       </div>
       {/* Menu for Bulk Actions */}
