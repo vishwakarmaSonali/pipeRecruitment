@@ -1,4 +1,6 @@
 import {
+  addNewCategoryApiEndPoint,
+  deleteCategoryApiEndPoint,
   fetchAllCategoriesApiEndPoint,
   getDomainEndpoint,
   getLabelEndpoint,
@@ -46,6 +48,17 @@ import {
   FETCH_ARCHIVE_CANDIDATES_REQUEST,
   FETCH_ARCHIVE_CANDIDATES_SUCCESS,
   FETCH_ARCHIVE_CANDIDATES_FAILURE,
+  ADD_CATEGORY_REQUEST,
+  ADD_CATEGORY_SUCCESS,
+  ADD_CATEGORY_FAILURE,
+  DELETE_CATEGORY_SUCCESS,
+  DELETE_CATEGORY_FAILURE,
+  HIDE_CATEGORY_REQUEST,
+  HIDE_CATEGORY_SUCCESS,
+  HIDE_CATEGORY_FAILURE,
+  UPDATE_CATEGORY_REQUEST,
+  UPDATE_CATEGORY_SUCCESS,
+  UPDATE_CATEGORY_FAILURE,
 } from "./actionsType";
 import axiosInstance from "./axiosInstance";
 
@@ -69,15 +82,6 @@ export const addNewCategoryFunction = (data) => {
   return (dispatch) => {
     dispatch({
       type: ADD_NEW_CATEGORY_REQUEST,
-      data: data,
-    });
-  };
-};
-
-export const deleteCategoryFunction = (data) => {
-  return (dispatch) => {
-    dispatch({
-      type: DELETE_CATEGORY_REQUEST,
       data: data,
     });
   };
@@ -289,7 +293,7 @@ export const fetchArchivedCandidates = (page) => {
       const response = await axiosInstance.get(
         `api/candidates/archive?limit=10&page=${page}`
       );
-console.log("api called in fetcharchived candidates",response?.data);
+      console.log("api called in fetcharchived candidates", response?.data);
 
       dispatch({
         type: FETCH_ARCHIVE_CANDIDATES_SUCCESS,
@@ -299,8 +303,81 @@ console.log("api called in fetcharchived candidates",response?.data);
       return response.data;
     } catch (error) {
       console.log(error, "error in fetch candidates archived");
-      
+
       dispatch({ type: FETCH_ARCHIVE_CANDIDATES_FAILURE });
+      return error.response?.data?.message || error.message;
+    }
+  };
+};
+
+export const addCategoryFunction = (data) => {
+  return async (dispatch) => {
+    dispatch({ type: ADD_CATEGORY_REQUEST });
+    try {
+      const response = await axiosInstance.post(
+        addNewCategoryApiEndPoint,
+        data
+      );
+      dispatch({ type: ADD_CATEGORY_SUCCESS, data: response.data?.result });
+      return response.data;
+    } catch (error) {
+      dispatch({ type: ADD_CATEGORY_FAILURE });
+      return error.response?.data?.message || error.message;
+    }
+  };
+};
+
+export const deleteCategory = (id) => {
+  return async (dispatch) => {
+    dispatch({ type: DELETE_CATEGORY_REQUEST });
+    try {
+      const response = await axiosInstance.delete(
+        `${deleteCategoryApiEndPoint}/${id}`
+      );
+      dispatch({ type: DELETE_CATEGORY_SUCCESS, id });
+      return response?.data;
+    } catch (error) {
+      dispatch({ type: DELETE_CATEGORY_FAILURE });
+      return error.response?.data?.message || error.message;
+    }
+  };
+};
+
+export const hideCategory = (id, data) => {
+  return async (dispatch) => {
+    dispatch({ type: HIDE_CATEGORY_REQUEST });
+    try {
+      const response = await axiosInstance.put(
+        `${deleteCategoryApiEndPoint}/${id}`,
+        data
+      );
+      dispatch({
+        type: HIDE_CATEGORY_SUCCESS,
+        data: response.data?.updatedFields,
+      });
+      return response?.data;
+    } catch (error) {
+      dispatch({ type: HIDE_CATEGORY_FAILURE });
+      return error.response?.data?.message || error.message;
+    }
+  };
+};
+
+export const updateCategory = (id, data) => {
+  return async (dispatch) => {
+    dispatch({ type: UPDATE_CATEGORY_REQUEST });
+    try {
+      const response = await axiosInstance.put(
+        `${deleteCategoryApiEndPoint}/${id}`,
+        data
+      );
+      dispatch({
+        type: UPDATE_CATEGORY_SUCCESS,
+        data: response.data?.updatedFields,
+      });
+      return response?.data;
+    } catch (error) {
+      dispatch({ type: UPDATE_CATEGORY_FAILURE });
       return error.response?.data?.message || error.message;
     }
   };

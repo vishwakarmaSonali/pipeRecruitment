@@ -2,7 +2,6 @@ import {
   CATEGORY_CUSTOMIZATION_REQUEST,
   CATEGORY_FIELD_CUSTOMIZATION_REQUEST,
   ADD_NEW_CATEGORY_REQUEST,
-  DELETE_CATEGORY_REQUEST,
   FETCH_LABEL_REQUEST,
   FETCH_LABEL_SUCCESS,
   FETCH_LABEL_FAILURE,
@@ -39,6 +38,18 @@ import {
   FETCH_ARCHIVE_CANDIDATES_SUCCESS,
   FETCH_ARCHIVE_CANDIDATES_FAILURE,
   FETCH_ARCHIVE_CANDIDATES_REQUEST,
+  ADD_CATEGORY_REQUEST,
+  ADD_CATEGORY_SUCCESS,
+  ADD_CATEGORY_FAILURE,
+  DELETE_CATEGORY_REQUEST,
+  DELETE_CATEGORY_SUCCESS,
+  DELETE_CATEGORY_FAILURE,
+  HIDE_CATEGORY_REQUEST,
+  HIDE_CATEGORY_FAILURE,
+  HIDE_CATEGORY_SUCCESS,
+  UPDATE_CATEGORY_REQUEST,
+  UPDATE_CATEGORY_SUCCESS,
+  UPDATE_CATEGORY_FAILURE,
 } from "../actions/actionsType";
 import { defaultCategoryData } from "../helpers/config";
 
@@ -58,6 +69,10 @@ const initialState = {
   categoriesData: [],
   reorderLoading: false,
   archivedCandidates: [],
+  addCategoryLoading: false,
+  deleteCategoryLoading: false,
+  hideCategoryLoading: false,
+  updateCategoryLoading: false,
 };
 
 const customizationReducer = (state = initialState, action) => {
@@ -84,11 +99,7 @@ const customizationReducer = (state = initialState, action) => {
         ...state,
         categoryData: [...action?.data],
       };
-    case DELETE_CATEGORY_REQUEST:
-      return {
-        ...state,
-        categoryData: [...action?.data],
-      };
+
     case ADD_NEW_CATEGORY_REQUEST:
       return {
         ...state,
@@ -300,9 +311,9 @@ const customizationReducer = (state = initialState, action) => {
     case REORDER_CATEGORIRY_FIELD_SUCCESS:
       const updatedCategoryFieldData = state.categoriesData?.map((category) => {
         if (category?._id === action?.updatedData?.result?._id) {
-          return action?.updatedData?.result;
+          return { ...action?.updatedData?.result, selected: true };
         } else {
-          return category;
+          return { ...category, selected: false };
         }
       });
 
@@ -316,7 +327,7 @@ const customizationReducer = (state = initialState, action) => {
         ...state,
         reorderLoading: false,
       };
-      case FETCH_ARCHIVE_CANDIDATES_REQUEST:
+    case FETCH_ARCHIVE_CANDIDATES_REQUEST:
       return {
         ...state,
         loading: true,
@@ -324,8 +335,8 @@ const customizationReducer = (state = initialState, action) => {
       };
 
     case FETCH_ARCHIVE_CANDIDATES_SUCCESS:
-      console.log("action.payload.dataaction.payload.data",action.payload);
-      
+      console.log("action.payload.dataaction.payload.data", action.payload);
+
       return {
         ...state,
         loading: false,
@@ -339,6 +350,96 @@ const customizationReducer = (state = initialState, action) => {
         error: action.payload,
       };
 
+    case ADD_CATEGORY_REQUEST:
+      return {
+        ...state,
+        addCategoryLoading: true,
+      };
+    case ADD_CATEGORY_SUCCESS:
+      return {
+        ...state,
+        addCategoryLoading: false,
+        categoriesData: [...state.categoriesData, action?.data],
+      };
+    case ADD_CATEGORY_FAILURE:
+      return {
+        ...state,
+        addCategoryLoading: false,
+      };
+
+    case DELETE_CATEGORY_REQUEST:
+      return {
+        ...state,
+        deleteCategoryLoading: true,
+      };
+    case DELETE_CATEGORY_SUCCESS:
+      return {
+        ...state,
+        deleteCategoryLoading: false,
+        categoriesData: state?.categoriesData?.filter(
+          (item) => item?._id !== action?.id
+        ),
+      };
+    case DELETE_CATEGORY_FAILURE:
+      return {
+        ...state,
+        deleteCategoryLoading: false,
+      };
+
+    case HIDE_CATEGORY_REQUEST:
+      return {
+        ...state,
+        hideCategoryLoading: true,
+      };
+    case HIDE_CATEGORY_SUCCESS:
+      const updatedData = state?.categoriesData?.map((item) => {
+        if (item?._id === action?.data?.categoryId) {
+          return {
+            ...item,
+            hide: action?.data?.hide,
+          };
+        } else {
+          return { ...item };
+        }
+      });
+      return {
+        ...state,
+        hideCategoryLoading: false,
+        categoriesData: updatedData,
+      };
+    case HIDE_CATEGORY_FAILURE:
+      return {
+        ...state,
+        hideCategoryLoading: false,
+      };
+
+    case UPDATE_CATEGORY_REQUEST:
+      return {
+        ...state,
+        updateCategoryLoading: true,
+      };
+    case UPDATE_CATEGORY_SUCCESS:
+      const updatedCategory = state?.categoriesData?.map((item) => {
+        if (item?._id === action?.data?.categoryId) {
+          return {
+            ...item,
+            label: action?.data?.label,
+            editable: false,
+          };
+        } else {
+          return { ...item };
+        }
+      });
+      return {
+        ...state,
+        updateCategoryLoading: false,
+        categoriesData: updatedCategory,
+      };
+    case UPDATE_CATEGORY_FAILURE:
+      return {
+        ...state,
+        updateCategoryLoading: false,
+      };
     default:
       return state;
   }

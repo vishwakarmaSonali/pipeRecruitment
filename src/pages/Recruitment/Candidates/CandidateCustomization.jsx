@@ -24,7 +24,6 @@ import {
   addNewCategoryFunction,
   categoryDraggableFuction,
   categoryFieldDraggableFuction,
-  deleteCategoryFunction,
   deleteLabel,
   fetchAllLabels,
   updateLabel,
@@ -36,6 +35,10 @@ import {
   fetchAllCategories,
   reorderCategory,
   reorderCategoryFields,
+  addCategoryFunction,
+  deleteCategory,
+  hideCategory,
+  updateCategory,
 } from "../../../actions/customizationActions";
 import CommonDeleteModal from "../../../components/modals/CommonDeleteModal";
 import AddFieldDrawer from "../../../components/candidate/AddFieldDrawer";
@@ -46,7 +49,11 @@ import { ReactComponent as AddCircleIcon } from "./assets/add-circle.svg";
 import { HexColorPicker } from "react-colorful";
 import { ReactComponent as AddIcon } from "../../../assets/icons/plusIcon.svg";
 import CommonLoader from "../../../components/common/CommonLoader";
-import { notifyError, notifySuccess } from "../../../helpers/utils";
+import {
+  notifyError,
+  notifySuccess,
+  toSnakeCase,
+} from "../../../helpers/utils";
 import Breadcrumb from "../../../components/administration/Breadcrumb";
 
 const candidateCustomizationsTabs = [
@@ -70,8 +77,6 @@ const candidateCustomizationsTabs = [
 const CandidateCustomization = () => {
   const dispatch = useDispatch();
   const {
-    categoryData,
-    fetchLabelLoading,
     labelData,
     updateLabelLoading,
     deleteLabelLoading,
@@ -83,6 +88,10 @@ const CandidateCustomization = () => {
     fetchDomainLoading,
     categoriesData,
     fetchLoading,
+    addCategoryLoading,
+    deleteCategoryLoading,
+    updateCategoryLoading,
+    hideCategoryLoading,
   } = useSelector((state) => state?.customization);
 
   const { modals, setModalVisibility } = useModal();
@@ -99,7 +108,6 @@ const CandidateCustomization = () => {
   const [selectedFieldItem, setSelectedFieldItem] = useState(null);
   const [anchorEl, setAnchorEl] = useState(null);
   const [anchorE2, setAnchorE2] = useState(null);
-  const [addCategoryBtnDisable, setAddCategoryBtnDisable] = useState(false);
   const openMenu1 = Boolean(anchorEl);
   const openMenu2 = Boolean(anchorE2);
   const [newCategoryId, setNewCategoryId] = useState(null);
@@ -116,11 +124,13 @@ const CandidateCustomization = () => {
   const [tempDomain, setTempDomain] = useState(null);
   const [addNewDomain, setAddNewDomain] = useState(false);
   const [selectedDomainId, setSelectedDomainId] = useState(null);
+  const [addNewCategoryVisible, setAddNewCategoryVisible] = useState(false);
+  const [addNewCategoryButtonDisable, setAddNewCategoryButtonDisable] =
+    useState(false);
+  const [tempCategory, setTempCategory] = useState(null);
 
   useEffect(() => {
-    if (!selectedCategory) {
-      setCategories(categoriesData);
-    }
+    setCategories(categoriesData);
   }, [categoriesData]);
 
   const reset = () => {
@@ -131,6 +141,7 @@ const CandidateCustomization = () => {
     setTempDomain(null);
     setTempLabel(null);
     setEditingIndex(null);
+    setAddNewCategoryButtonDisable(false);
   };
 
   const addNewLabelHandler = () => {
@@ -204,6 +215,70 @@ const CandidateCustomization = () => {
     dispatch(updateDomain(id, httpBody)).then((response) => {
       if (response?.success) {
         setEditingIndex(null);
+        notifySuccess(response?.message);
+      } else {
+        notifyError(response);
+      }
+    });
+  };
+
+  const addCategoryHandler = () => {
+    const isDuplicate = categories?.some(
+      (category) => category?.label === tempCategory?.name
+    );
+
+    console.log(">>>>>>>>>>>>>>isDuplicate", isDuplicate);
+
+    if (isDuplicate) {
+      notifyError("Category with this name already exists!");
+      return;
+    }
+
+    if (tempCategory?.name?.length < 2) {
+      notifyError("Name must be at least 2 characters.");
+      return;
+    }
+
+    const name = toSnakeCase(tempCategory?.name) || "";
+    const data = {
+      name: name,
+      label: tempCategory?.name,
+    };
+    dispatch(addCategoryFunction(data)).then((response) => {
+      if (response?.success) {
+        setAddNewCategoryVisible(false);
+        setTempCategory(null);
+        notifySuccess(response?.message);
+      } else {
+        notifyError(response);
+      }
+    });
+  };
+
+  const saveCategoryHandler = () => {
+    const isDuplicate = categories?.some(
+      (category) => category?.label === tempCategory?.name
+    );
+
+    console.log(">>>>>>>>>>>>>>isDuplicate", isDuplicate);
+
+    if (isDuplicate) {
+      notifyError("Category with this name already exists!");
+      return;
+    }
+
+    if (tempCategory?.name?.length < 2) {
+      notifyError("Name must be at least 2 characters.");
+      return;
+    }
+
+    const data = {
+      label: tempCategory?.name,
+    };
+    dispatch(updateCategory(selectedItem?._id, data)).then((response) => {
+      if (response?.success) {
+        setTempCategory(null);
+        setAddNewCategoryButtonDisable(false);
         notifySuccess(response?.message);
       } else {
         notifyError(response);
@@ -337,132 +412,71 @@ const CandidateCustomization = () => {
   };
 
   const handleAddCategory = () => {
-    setAddCategoryBtnDisable(true);
-    const newId = Date.now().toString();
-    const newCategory = {
-      id: newId,
-      name: "candidate_name",
-      label: "Candidate Name",
-      fields: [],
-      selected: true,
-      custom: true,
-      editable: true,
+    const newCategory = { name: "Candidate Name" };
+    setTempCategory(newCategory);
+    setAddNewCategoryVisible(true);
+  };
+
+  const deleteCategoryHandler = () => {
+    dispatch(deleteCategory(selectedItem?._id))?.then((response) => {
+      if (response?.success) {
+        notifySuccess(response?.message);
+        setModalVisibility("categoryDeleteModalVisible", false);
+        setSelectedItem(null);
+      } else {
+        notifyError(response);
+      }
+    });
+  };
+
+  const hideCategoryHandler = () => {
+    const data = {
+      hide: !selectedItem?.hide,
     };
-
-    setCategories((prev) =>
-      prev
-        .map((category) => ({ ...category, selected: false }))
-        .concat(newCategory)
-    );
-
-    setNewCategoryId(newId);
-    setSelectedCategory(null);
-    setTimeout(() => {
-      if (inputRefs.current[newCategory.id]) {
-        inputRefs.current[newCategory.id].focus();
-        inputRefs.current[newCategory.id].select();
-      }
-    }, 100);
-  };
-
-  const handleCategoryNameChange = (id, newName) => {
-    if (newName.length > 300) return;
-
-    const updateData = categories?.map((category) => {
-      if (category.id === id) {
-        return { ...category, name: newName };
+    dispatch(hideCategory(selectedItem?._id, data))?.then((response) => {
+      if (response?.success) {
+        notifySuccess(response?.message);
+        setSelectedItem(null);
       } else {
-        return category;
+        notifyError(response?.message || response);
       }
     });
-
-    setCategories(updateData);
-
-    dispatch(addNewCategoryFunction(updateData));
-
-    let error = "";
-
-    if (newName.trim().length < 2) {
-      error = "Name must be at least 2 characters.";
-    } else if (
-      categories.some(
-        (category) =>
-          category.id !== id &&
-          category.name.trim().toLowerCase() === newName.trim().toLowerCase()
-      )
-    ) {
-      error = "This name already exists.";
-    }
-
-    setErrorMessages((prev) => ({
-      ...prev,
-      [id]: error,
-    }));
-  };
-
-  const saveCategoryName = (id, name) => {
-    const isDuplicate = categories.some(
-      (category) => category.name === name && category.id !== id
-    );
-
-    if (isDuplicate || name.length < 2 || name.length > 300) {
-      inputRefs.current[id]?.focus();
-      return;
-    }
-
-    const updateData = categories?.map((category) => {
-      if (category.id === id) {
-        return { ...category, editable: false, selected: true };
-      } else {
-        return { ...category, selected: false };
-      }
-    });
-
-    const filterData = updateData?.filter((filter) => filter?.selected);
-    setCategories(updateData);
-    setSelectedCategory(filterData[0]);
-    setAddCategoryBtnDisable(false);
-  };
-
-  const deleteCategory = () => {
-    const updateData = categories?.filter(
-      (item) => item?.id !== selectedItem?.id
-    );
-
-    dispatch(deleteCategoryFunction(updateData));
-    setCategories(updateData);
-    setModalVisibility("categoryDeleteModalVisible", false);
-    setSelectedItem(null);
-    setAddCategoryBtnDisable(false);
   };
 
   const editCategoryHandler = () => {
+    const newCategory = { name: selectedItem?.label };
+    setTempCategory(newCategory);
+    setAddNewCategoryButtonDisable(true);
+
     const updatedData = categories?.map((item) => {
-      if (item?.id === selectedItem?.id) {
-        return { ...item, editable: true };
+      if (item?._id === selectedItem?._id) {
+        return { ...item, editable: true, selected: true };
       } else {
-        return { ...item };
+        return { ...item, editable: false, selected: false };
       }
     });
     setCategories(updatedData);
-    setNewCategoryId(selectedItem?.id);
   };
 
-  useEffect(() => {
-    if (newCategoryId && inputRefs.current[newCategoryId]) {
-      const inputElement = inputRefs.current[newCategoryId];
-      inputElement.focus();
-      inputElement.select();
-      setNewCategoryId(null);
-    }
-  }, [categories]);
+  const cancelEditCategoryHandler = () => {
+    setTempCategory(null);
+    setAddNewCategoryButtonDisable(false);
+    const updatedData = categories?.map((item) => {
+      if (item?._id === selectedItem?._id) {
+        return { ...item, editable: false };
+      } else {
+        return { ...item, editable: false, selected: false };
+      }
+    });
+    setCategories(updatedData);
+  };
 
   const selectedCustomizationCategoryHandler = (item) => {
     const updatedData = categories?.map((data) => {
       if (item?._id === data?._id) {
-        return { ...data, selected: true };
+        return { ...data, selected: true, editable: false };
       } else {
-        return { ...data, selected: false };
+        return { ...data, selected: false, editable: false };
       }
     });
     const filterData = updatedData?.filter((filter) => filter?.selected);
@@ -609,7 +623,7 @@ const CandidateCustomization = () => {
                 <CommonAddButton
                   title={"Add Category"}
                   onClick={handleAddCategory}
-                  disable={addCategoryBtnDisable}
+                  disable={addNewCategoryVisible || addNewCategoryButtonDisable}
                   icon={<AddIcon stroke="white" />}
                 />
               </div>
@@ -629,74 +643,84 @@ const CandidateCustomization = () => {
                             index={index}
                           >
                             {(provided) => (
-                              <>
+                              <div
+                                ref={provided.innerRef}
+                                {...provided.draggableProps}
+                                className={`customize-category-item ${
+                                  item?.selected && "selected-category-item"
+                                }`}
+                                onClick={() => {
+                                  if (!!item?.fields && !item?.editable) {
+                                    selectedCustomizationCategoryHandler(item);
+                                  }
+                                }}
+                              >
                                 <div
-                                  ref={provided.innerRef}
-                                  {...provided.draggableProps}
-                                  className={`customize-category-item ${
-                                    item?.selected && "selected-category-item"
-                                  }`}
-                                  onClick={() => {
-                                    if (!!item?.fields) {
-                                      selectedCustomizationCategoryHandler(
-                                        item
-                                      );
-                                    }
-                                  }}
+                                  className="display-flex align-center "
+                                  style={{ gap: 8, flex: 1 }}
                                 >
-                                  <div
-                                    className="display-flex align-center "
-                                    style={{ gap: 8, flex: 1 }}
-                                  >
-                                    <div {...provided.dragHandleProps}>
-                                      <DraggableIcon
+                                  <div {...provided.dragHandleProps}>
+                                    <DraggableIcon
+                                      fill={
+                                        item?.selected ? "#151B23" : "#797979"
+                                      }
+                                    />
+                                  </div>
+                                  {item?.showFields && (
+                                    <button className="display-flex align-center justify-center">
+                                      <ArrowRight
                                         fill={
                                           item?.selected ? "#151B23" : "#797979"
                                         }
                                       />
-                                    </div>
-                                    {!!item?.fields && (
-                                      <button className="display-flex align-center justify-center">
-                                        <ArrowRight
-                                          fill={
-                                            item?.selected
-                                              ? "#151B23"
-                                              : "#797979"
-                                          }
-                                        />
-                                      </button>
-                                    )}
+                                    </button>
+                                  )}
 
-                                    {item?.editable ? (
+                                  {item?.editable ? (
+                                    <>
                                       <input
-                                        ref={(el) =>
-                                          (inputRefs.current[item.id] = el)
-                                        }
                                         type="text"
-                                        value={item?.label}
+                                        value={tempCategory?.name}
+                                        autoFocus
+                                        onFocus={(e) =>
+                                          setTimeout(() => {
+                                            e.target.select();
+                                            e.target.focus();
+                                          }, 0)
+                                        }
                                         onChange={(e) =>
-                                          handleCategoryNameChange(
-                                            item?.id,
-                                            e.target.value
-                                          )
+                                          setTempCategory({
+                                            ...tempCategory,
+                                            name: e.target.value?.trimStart(),
+                                          })
                                         }
-                                        onBlur={() =>
-                                          saveCategoryName(item.id, item?.label)
-                                        }
-                                        onKeyDown={(e) => {
-                                          if (e.key === "Enter") {
-                                            saveCategoryName(
-                                              item.id,
-                                              item?.label
-                                            );
-                                          }
-                                        }}
                                         className={`customize-category-input ${
                                           item?.selected &&
                                           "selected-customize-category-input"
                                         }`}
                                       />
-                                    ) : (
+                                      <div
+                                        className="flex items-center"
+                                        style={{ gap: 8 }}
+                                      >
+                                        <CancelIcon
+                                          className="cursor-pointer"
+                                          onClick={cancelEditCategoryHandler}
+                                        />
+                                        {updateCategoryLoading ? (
+                                          <CommonLoader
+                                            className={"loader-black"}
+                                          />
+                                        ) : (
+                                          <RightIcon
+                                            className=" cursor-pointer"
+                                            onClick={saveCategoryHandler}
+                                          />
+                                        )}
+                                      </div>
+                                    </>
+                                  ) : (
+                                    <>
                                       <div
                                         className="flex-1"
                                         style={{
@@ -707,39 +731,38 @@ const CandidateCustomization = () => {
                                           {item?.label}
                                         </span>
                                       </div>
-                                    )}
-                                  </div>
-                                  <div
-                                    className="display-flex align-center"
-                                    style={{ gap: 8 }}
-                                  >
-                                    {!item?.custom && (
-                                      <LockIcon
-                                        stroke={
-                                          item?.selected ? "#151B23" : "#797979"
-                                        }
-                                      />
-                                    )}
-                                    <button
-                                      onClick={(e) => {
-                                        e.stopPropagation();
-                                        handleCategoryMenuClick(e, item);
-                                      }}
-                                    >
-                                      <MoreIcon
-                                        stroke={
-                                          item?.selected ? "#151B23" : "#797979"
-                                        }
-                                      />
-                                    </button>
-                                  </div>
+                                      <div
+                                        className="display-flex align-center"
+                                        style={{ gap: 8 }}
+                                      >
+                                        {item?.default && (
+                                          <LockIcon
+                                            stroke={
+                                              item?.selected
+                                                ? "#151B23"
+                                                : "#797979"
+                                            }
+                                          />
+                                        )}
+                                        <button
+                                          onClick={(e) => {
+                                            e.stopPropagation();
+                                            handleCategoryMenuClick(e, item);
+                                          }}
+                                        >
+                                          <MoreIcon
+                                            stroke={
+                                              item?.selected
+                                                ? "#151B23"
+                                                : "#797979"
+                                            }
+                                          />
+                                        </button>
+                                      </div>
+                                    </>
+                                  )}
                                 </div>
-                                {errorMessages[item.id] && (
-                                  <p className="font-12-regular color-error">
-                                    {errorMessages[item.id]}
-                                  </p>
-                                )}
-                              </>
+                              </div>
                             )}
                           </Draggable>
                         ))}
@@ -761,11 +784,18 @@ const CandidateCustomization = () => {
                           }}
                         >
                           <div className="display-column">
-                            <button className="common-menu-item-btn">
-                              <HideIcon /> Hide
+                            <button
+                              className="common-menu-item-btn"
+                              onClick={() => {
+                                hideCategoryHandler();
+                                handleCategoryMenuClose();
+                              }}
+                            >
+                              <HideIcon />{" "}
+                              {selectedItem?.hide ? "Un-Hide" : "Hide"}
                             </button>
 
-                            {selectedItem?.custom && (
+                            {!selectedItem?.default && (
                               <>
                                 <button
                                   className="common-menu-item-btn"
@@ -796,6 +826,63 @@ const CandidateCustomization = () => {
                       </div>
                     )}
                   </Droppable>
+                  {addNewCategoryVisible && (
+                    <div
+                      className={`customize-category-item ${
+                        true && "selected-category-item"
+                      }`}
+                      style={{ marginTop: 8 }}
+                    >
+                      <div
+                        className="display-flex align-center "
+                        style={{ gap: 8, flex: 1 }}
+                      >
+                        <div>
+                          <DraggableIcon fill={"#151B23"} />
+                        </div>
+                        <button className="display-flex align-center justify-center">
+                          <ArrowRight fill={"#151B23"} />
+                        </button>
+                        <input
+                          type="text"
+                          value={tempCategory?.name || ""}
+                          onChange={(e) =>
+                            setTempCategory({
+                              ...tempCategory,
+                              name: e.target.value?.trimStart(),
+                            })
+                          }
+                          className={`customize-category-input ${
+                            true && "selected-customize-category-input"
+                          }`}
+                          autoFocus
+                          onFocus={(e) =>
+                            setTimeout(() => {
+                              e.target.select();
+                              e.target.focus();
+                            }, 0)
+                          }
+                        />
+                        <div className="flex items-center" style={{ gap: 8 }}>
+                          <CancelIcon
+                            className="cursor-pointer"
+                            onClick={() => {
+                              setAddNewCategoryVisible(false);
+                              setTempCategory(null);
+                            }}
+                          />
+                          {addCategoryLoading ? (
+                            <CommonLoader className={"loader-black"} />
+                          ) : (
+                            <RightIcon
+                              className=" cursor-pointer"
+                              onClick={addCategoryHandler}
+                            />
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </DragDropContext>
               </div>
             </div>
@@ -1318,7 +1405,8 @@ const CandidateCustomization = () => {
           setModalVisibility("categoryDeleteModalVisible", false);
           setSelectedItem(null);
         }}
-        onClickDelete={deleteCategory}
+        onClickDelete={deleteCategoryHandler}
+        isLoading={deleteCategoryLoading}
       />
 
       <CommonDeleteModal
