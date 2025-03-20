@@ -520,6 +520,7 @@ const Candidates = ({ isDrawerOpen }) => {
   // Ensure First & Last Name are always present
   const headers = [...tableHeaders];
 
+  
   useEffect(() => {
     setCandidateList(candidatesListingData);
   }, [candidatesListingData]);

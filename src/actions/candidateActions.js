@@ -10,7 +10,10 @@ import {
   fetchCandidateSummaryApiEndPoint,
   fetchColumnListApiEndPoint,
   updateCandidateLabelApiEndpoint,
+  uploadResumeEndpoint,
 } from "../helpers/apiConfig";
+
+import axios from "axios";
 import {
   CREATE_CANDIDATE_REQUEST,
   CREATE_CANDIDATE_FAILURE,
@@ -42,6 +45,9 @@ import {
   FETCH_CANDIDATE_SUMMARY_FAILURE,
   FETCH_CANDIDATE_SUMMARY_SUCCESS,
   FETCH_CANDIDATE_SUMMARY_REQUEST,
+  EXTRACT_RESUME_FAILURE,
+  EXTRACT_RESUME_SUCCESS,
+  EXTRACT_RESUME_REQUEST,
 } from "./actionsType";
 import { notifySuccess } from "../helpers/utils";
 
@@ -285,3 +291,44 @@ export const fetchCandidateSummary = (id) => async (dispatch) => {
     return error?.response?.data?.message || error.message;
   }
 };
+
+
+export const extractResume = (file) => async (dispatch) => {
+  dispatch({ type: EXTRACT_RESUME_REQUEST });
+
+  if (!file || !(file instanceof File)) {
+    console.error("⚠️ No valid file provided for upload.");
+    return;
+  }
+
+  const formData = new FormData();
+  formData.append("files", file); // Ensure file is properly appended
+  formData.append("documentOrigin", "Delloite"); // Extra field like Node.js
+
+  try {
+    const response = await axiosInstance.post(
+      "api/extract-resume/extract", // ✅ Ensure correct URL
+      formData,
+     
+    );
+
+    dispatch({
+      type: EXTRACT_RESUME_SUCCESS,
+      payload: response.data,
+    });
+
+    console.log("✅ Resume Extracted:", response.data);
+    alert("✅ Resume uploaded successfully!");
+    return response.data;
+  } catch (error) {
+    dispatch({
+      type: EXTRACT_RESUME_FAILURE,
+      payload: error.response?.data?.message || "Error extracting resume.",
+    });
+
+    console.error("❌ Resume Extraction Error:", error);
+    alert("❌ Resume upload failed.");
+    return error.response?.data?.message || "Error extracting resume.";
+  }
+};
+

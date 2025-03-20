@@ -24,3 +24,4 @@ export const addCandidatesToArchive = "api/candidates/archive";
 export const fetchColumnListApiEndPoint = "api/selected-columns/candidates";
 export const fetchCandidateSummaryApiEndPoint = "api/candidates/summary";
 export const deleteCategoryApiEndPoint = "api/form-field-categories";
+export const uploadResumeEndpoint = "api/extract-resume/extract"

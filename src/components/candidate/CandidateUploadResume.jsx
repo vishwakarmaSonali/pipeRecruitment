@@ -14,8 +14,11 @@ import CommonButton from "../../components/common/CommonButton";
 import { useNavigate } from "react-router-dom";
 import ResumeHistoryTable from "../../components/candidate/ResumeHistoryTable";
 import TitleSearchDropdown from "../AutocompleteDropdowns/TitleSearchDropDown";
+import { useDispatch } from "react-redux";
+import { extractResume } from "../../actions/candidateActions";
 const CreateCandidateUploadResume = () => {
     const fileInputRef = useRef();
+    const dispatch = useDispatch()
     const navigate = useNavigate();
     const [activeTab, setActiveTab] = useState("Upload");
     const [jobValue, setJobValue] = useState("");
@@ -24,15 +27,13 @@ const CreateCandidateUploadResume = () => {
     const [isDragging, setIsDragging] = useState(false);
 
       const [selectedTitles, setSelectedTitles] = useState([]); // Ensure it's an array
-  const handleCreate = () => {
-    console.log("Create button clicked");
-    // Add your logic here
-  };
+
 
   const handleDiscard = () => {
     console.log("Discard button clicked");
     // Add your logic here
   };
+  
   const handleFileSelect = (file) => {
     console.log("Selected File:", file);
   };
@@ -74,7 +75,7 @@ const CreateCandidateUploadResume = () => {
     // Create unique file objects
     const uniqueFiles = filteredFiles.map((file) => ({
       id: `${Date.now()}-${file.name}`,
-      file,
+      file, // ✅ Ensure actual file object is stored
       progress: 0,
     }));
   
@@ -83,6 +84,30 @@ const CreateCandidateUploadResume = () => {
       setFiles((prevFiles) => [...prevFiles, ...uniqueFiles]);
     }
   };
+  
+  const handleCreate = async () => {
+    if (files.length === 0) {
+      alert("Please upload at least one resume.");
+      return;
+    }
+  
+    console.log("📂 Uploading Resumes...");
+  
+    for (const fileObj of files) {
+      if (fileObj?.file instanceof File) {
+        console.log("✅ File is valid:", fileObj.file);
+        console.log("🔍 File Name:", fileObj.file.name);
+        console.log("📏 File Size:", fileObj.file.size);
+        console.log("📝 File Type:", fileObj.file.type);
+        await dispatch(extractResume(fileObj.file));  // Call API
+      } else {
+        console.error("❌ Invalid file object:", fileObj);
+      }
+    }
+  
+    alert("✅ Resumes uploaded successfully!");
+  };
+  
   
   return (
     <div

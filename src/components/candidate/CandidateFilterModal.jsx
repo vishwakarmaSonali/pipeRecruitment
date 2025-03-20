@@ -39,12 +39,8 @@ const CandidateFilterDrawer = ({
   const [selectedDomains, setSelectedDomains] = useState([]);
   const [selectedLabels, setSelectedLabels] = useState([]);
   const [selectedSources, setSelectedSources] = useState([]);
-  const [lastContactedDate, setLastContactedDate] = useState(
-    
-  );
-  const [lastUpdatedDate, setLastUpdatedDate] = useState(
-   
-  );
+  const [lastContactedDate, setLastContactedDate] = useState(null);
+  const [lastUpdatedDate, setLastUpdatedDate] = useState(null);
   const [showContactedCalendar, setShowContactedCalendar] = useState(false);
   const [showUpdatedCalendar, setShowUpdatedCalendar] = useState(false);
   const [selectedDate, setSelectedDate] = useState();
@@ -125,6 +121,30 @@ const CandidateFilterDrawer = ({
     dispatch(fetchLabels());
     dispatch(fetchDomains())
   }, [dispatch]);
+  const handleResetFilters = () => {
+    setLastContactedDate(null);
+    setLastUpdatedDate(null);
+    setSelectedSkills([]);
+    setSelectedLocations([]);
+    setSelectedLanguages([]);
+    setNationality([]);
+    setPipelineStage([]);
+    setSearchText("");
+    setIndustry([]);
+    setRadius(null);
+    setExperience({ from: "", to: "" });
+    setCheckedColumns([]);
+    setSelectedDomains([]);
+    setSelectedLabels([]);
+    setSelectedSources([]);
+    setSelectedFrequencies(null);
+    setCurrentSalary("");
+    setExpectedSalary("");
+    setSelectedWorkModel(null);
+  
+    setLocalFilters({}); // Reset all local filters
+  };
+  
 
   const handleNationalityChange = (selectedItem) => {
     setNationality(selectedItem);
@@ -708,7 +728,7 @@ const CandidateFilterDrawer = ({
           <div className="flex justify-between space-x-4">
             <button
               className="w-1/2 border border-buttonBLue text-buttonBLue  flex justify-center items-center py-[12px] max-h-[40px] rounded-[8px] btn-text"
-              onClick={onReset}
+              onClick={handleResetFilters}
             >
               Reset
             </button>
