@@ -12,6 +12,7 @@ import {
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import {
+  formatDate,
   formatDateMonthYear,
   getInitials,
   getRandomColor,
@@ -27,6 +28,7 @@ import { ReactComponent as ArchiveIcon } from "../../pages/Recruitment/Candidate
 import CandidateInfoModal from "../modals/CandidateInfoModal";
 import { useModal } from "../common/ModalProvider";
 import { useSelector } from "react-redux";
+import { userImage } from "../../helpers/assets";
 
 const CustomizableCandidateTable = ({
   data,
@@ -136,8 +138,35 @@ const CustomizableCandidateTable = ({
                       columnName?.name === "date_of_birth"
                     ) {
                       value = candidate[columnName?.key]
-                        ? formatDateMonthYear(candidate[columnName?.key])
+                        ? formatDate(candidate[columnName?.key])
                         : "NA";
+                    }
+
+                    if (columnName?.name === "created_by") {
+                      return (
+                        <TableCell key={index}>
+                          <div
+                            className="display-flex align-center"
+                            style={{ gap: 6 }}
+                          >
+                            <Avatar
+                              src={userImage}
+                              alt={candidate?.candidate_name}
+                              style={{
+                                width: 32,
+                                height: 32,
+                                fontSize: 14,
+                                textAlign: "center",
+                              }}
+                            ></Avatar>
+                            <span className={`font-14-regular truncate-text `}>
+                              {candidate[columnName?.key]?.first_name +
+                                " " +
+                                candidate[columnName?.key]?.last_name}
+                            </span>
+                          </div>
+                        </TableCell>
+                      );
                     }
 
                     if (index === 0) {
