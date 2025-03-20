@@ -63,10 +63,21 @@ import {
   DELETE_CANDIDATE_FAILURE,
   DELETE_CANDIDATE_SUCCESS,
   DELETE_CANDIDATE_REQUEST,
-
   RESTORE_CANDIDATE_REQUEST,
   RESTORE_CANDIDATE_SUCCESS,
   RESTORE_CANDIDATE_FAILURE,
+  DELETE_CATEGORY_FIELD_REQUEST,
+  DELETE_CATEGORY_FIELD_SUCCESS,
+  DELETE_CATEGORY_FIELD_FAILURE,
+  HIDE_CATEGORY_FIELD_REQUEST,
+  HIDE_CATEGORY_FIELD_SUCCESS,
+  HIDE_CATEGORY_FIELD_FAILURE,
+  ADD_CATEGORY_FIELD_REQUEST,
+  ADD_CATEGORY_FIELD_SUCCESS,
+  ADD_CATEGORY_FIELD_FAILURE,
+  UPDATE_CATEGORY_FIELD_REQUEST,
+  UPDATE_CATEGORY_FIELD_SUCCESS,
+  UPDATE_CATEGORY_FIELD_FAILURE,
 } from "./actionsType";
 import axiosInstance from "./axiosInstance";
 
@@ -299,7 +310,9 @@ export const fetchArchivedCandidates = (page = 1) => {
 
     try {
       console.log(`Fetching Candidates for Page: ${page}`);
-      const response = await axiosInstance.get(`api/candidates/archive?limit=10&page=${page}`);
+      const response = await axiosInstance.get(
+        `api/candidates/archive?limit=10&page=${page}`
+      );
 
       dispatch({
         type: FETCH_ARCHIVE_CANDIDATES_SUCCESS,
@@ -395,8 +408,9 @@ export const restoreArchivedCandidates = (candidateIds) => {
     dispatch({ type: RESTORE_CANDIDATE_REQUEST });
 
     try {
-      const response = await axiosInstance.post(`api/candidates/restore`, 
-        { candidateIds }, 
+      const response = await axiosInstance.post(
+        `api/candidates/restore`,
+        { candidateIds },
         {
           headers: {
             "Content-Type": "application/json",
@@ -422,16 +436,16 @@ export const restoreArchivedCandidates = (candidateIds) => {
 };
 export const deleteArchivedCandidates = (candidateIds) => {
   return async (dispatch) => {
-    dispatch({ type:DELETE_CANDIDATE_REQUEST });
+    dispatch({ type: DELETE_CANDIDATE_REQUEST });
 
     try {
       const response = await axiosInstance.delete(`api/candidates`, {
         data: { candidateIds }, // Pass candidateIds in the request body
       });
-console.log("response indetele candidates",response,candidateIds);
+      console.log("response indetele candidates", response, candidateIds);
 
       dispatch({
-        type:DELETE_CANDIDATE_SUCCESS,
+        type: DELETE_CANDIDATE_SUCCESS,
         payload: candidateIds, // Send deleted candidate IDs to reducer
       });
 
@@ -439,8 +453,89 @@ console.log("response indetele candidates",response,candidateIds);
       return response.data;
     } catch (error) {
       console.log("Error deleting candidates:", error);
-      dispatch({ type:DELETE_CANDIDATE_FAILURE });
+      dispatch({ type: DELETE_CANDIDATE_FAILURE });
 
+      return error.response?.data?.message || error.message;
+    }
+  };
+};
+
+export const deleteCategoryField = (categoryID, fieldId) => {
+  return async (dispatch) => {
+    dispatch({ type: DELETE_CATEGORY_FIELD_REQUEST });
+    try {
+      const response = await axiosInstance.delete(
+        `${deleteCategoryApiEndPoint}/${categoryID}/fields/${fieldId}`
+      );
+      dispatch({ type: DELETE_CATEGORY_FIELD_SUCCESS, categoryID, fieldId });
+      return response?.data;
+    } catch (error) {
+      dispatch({ type: DELETE_CATEGORY_FIELD_FAILURE });
+      return error.response?.data?.message || error.message;
+    }
+  };
+};
+
+export const hideCategoryField = (categoryID, fieldId, data) => {
+  return async (dispatch) => {
+    dispatch({ type: HIDE_CATEGORY_FIELD_REQUEST });
+    try {
+      const response = await axiosInstance.put(
+        `${deleteCategoryApiEndPoint}/${categoryID}/fields/${fieldId}`,
+        data
+      );
+      dispatch({
+        type: HIDE_CATEGORY_FIELD_SUCCESS,
+        data: data,
+        categoryID,
+        fieldId,
+      });
+      return response?.data;
+    } catch (error) {
+      dispatch({ type: HIDE_CATEGORY_FIELD_FAILURE });
+      return error.response?.data?.message || error.message;
+    }
+  };
+};
+
+export const addCategoryFieldFunction = (categoryID, data) => {
+  return async (dispatch) => {
+    dispatch({ type: ADD_CATEGORY_FIELD_REQUEST });
+    try {
+      const response = await axiosInstance.post(
+        `${deleteCategoryApiEndPoint}/${categoryID}/fields`,
+        data
+      );
+      dispatch({
+        type: ADD_CATEGORY_FIELD_SUCCESS,
+        data: response.data,
+        categoryID,
+      });
+      return response.data;
+    } catch (error) {
+      dispatch({ type: ADD_CATEGORY_FIELD_FAILURE });
+      return error.response?.data?.message || error.message;
+    }
+  };
+};
+
+export const updateCategoryField = (categoryID, fieldId, data) => {
+  return async (dispatch) => {
+    dispatch({ type: UPDATE_CATEGORY_FIELD_REQUEST });
+    try {
+      const response = await axiosInstance.put(
+        `${deleteCategoryApiEndPoint}/${categoryID}/fields/${fieldId}`,
+        data
+      );
+      dispatch({
+        type: UPDATE_CATEGORY_FIELD_SUCCESS,
+        data: data,
+        categoryID,
+        fieldId,
+      });
+      return response?.data;
+    } catch (error) {
+      dispatch({ type: UPDATE_CATEGORY_FIELD_FAILURE });
       return error.response?.data?.message || error.message;
     }
   };

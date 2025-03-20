@@ -15,6 +15,7 @@ export const ModalProvider = ({ children }) => {
     createFolderModalVisible: false,
     candidateInfoModalVisible: false,
     categoryDeleteModalVisible: false,
+    categoryFieldDeleteModalVisible: false,
     labelDeleteModalVisible: false,
     AddEducationModalVisible: false,
     AddExperienceModalVisible: false,

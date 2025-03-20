@@ -39,6 +39,10 @@ import {
   deleteCategory,
   hideCategory,
   updateCategory,
+  deleteCategoryField,
+  hideCategoryField,
+  addCategoryFieldFunction,
+  updateCategoryField,
 } from "../../../actions/customizationActions";
 import CommonDeleteModal from "../../../components/modals/CommonDeleteModal";
 import AddFieldDrawer from "../../../components/candidate/AddFieldDrawer";
@@ -92,6 +96,10 @@ const CandidateCustomization = () => {
     deleteCategoryLoading,
     updateCategoryLoading,
     hideCategoryLoading,
+    deleteCategoryFieldLoading,
+    hideCategoryFieldLoading,
+    addCategoryFieldLoading,
+    updateCategoryFieldLoading,
   } = useSelector((state) => state?.customization);
 
   const { modals, setModalVisibility } = useModal();
@@ -227,8 +235,6 @@ const CandidateCustomization = () => {
       (category) => category?.label === tempCategory?.name
     );
 
-    console.log(">>>>>>>>>>>>>>isDuplicate", isDuplicate);
-
     if (isDuplicate) {
       notifyError("Category with this name already exists!");
       return;
@@ -259,8 +265,6 @@ const CandidateCustomization = () => {
     const isDuplicate = categories?.some(
       (category) => category?.label === tempCategory?.name
     );
-
-    console.log(">>>>>>>>>>>>>>isDuplicate", isDuplicate);
 
     if (isDuplicate) {
       notifyError("Category with this name already exists!");
@@ -393,7 +397,6 @@ const CandidateCustomization = () => {
 
   const handleFieldMenuClose = () => {
     setAnchorE2(null);
-    setSelectedFieldItem(null);
   };
 
   const selectedTabHandler = (id) => {
@@ -429,6 +432,51 @@ const CandidateCustomization = () => {
     });
   };
 
+  const deleteCategoryFieldHandler = () => {
+    dispatch(
+      deleteCategoryField(selectedCategory?._id, selectedFieldItem?._id)
+    )?.then((response) => {
+      if (response?.success) {
+        const updateData = selectedCategory?.fields?.filter(
+          (item) => item?._id !== selectedFieldItem?._id
+        );
+        setSelectedCategory({ ...selectedCategory, fields: updateData });
+        notifySuccess(response?.message);
+        setModalVisibility("categoryFieldDeleteModalVisible", false);
+        setSelectedFieldItem(null);
+      } else {
+        notifyError(response);
+      }
+    });
+  };
+
+  const addCategoryFieldHandler = (item) => {
+    const name = toSnakeCase(item?.name);
+
+    const httpBody = {
+      fields: [
+        {
+          name: name,
+          label: item?.name,
+          type: item?.type?.type,
+          fe_input_type: item?.type?.fe_input_type,
+          description: item?.description,
+        },
+      ],
+    };
+
+    dispatch(addCategoryFieldFunction(selectedCategory?._id, httpBody)).then(
+      (response) => {
+        if (response?.success) {
+          toggleAddFieldDrawer(false);
+          notifySuccess(response?.message);
+        } else {
+          notifyError(response);
+        }
+      }
+    );
+  };
+
   const hideCategoryHandler = () => {
     const data = {
       hide: !selectedItem?.hide,
@@ -437,6 +485,56 @@ const CandidateCustomization = () => {
       if (response?.success) {
         notifySuccess(response?.message);
         setSelectedItem(null);
+      } else {
+        notifyError(response?.message || response);
+      }
+    });
+  };
+
+  const hideCategoryFieldHandler = () => {
+    const data = {
+      hide: !selectedFieldItem?.hide,
+    };
+    dispatch(
+      hideCategoryField(selectedCategory?._id, selectedFieldItem?._id, data)
+    )?.then((response) => {
+      if (response?.success) {
+        const updateData = selectedCategory?.fields?.map((item) => {
+          if (item?._id === selectedFieldItem?._id) {
+            return { ...item, hide: !selectedFieldItem?.hide };
+          } else {
+            return item;
+          }
+        });
+        setSelectedCategory({ ...selectedCategory, fields: updateData });
+        notifySuccess(response?.message);
+        setSelectedFieldItem(null);
+      } else {
+        notifyError(response?.message || response);
+      }
+    });
+  };
+
+  const updateCategoryFieldHandler = (item) => {
+    const data = {
+      label: item?.name,
+      description: item?.description,
+    };
+    dispatch(
+      updateCategoryField(selectedCategory?._id, selectedFieldItem?._id, data)
+    )?.then((response) => {
+      if (response?.success) {
+        const updateData = selectedCategory?.fields?.map((item) => {
+          if (item?._id === selectedFieldItem?._id) {
+            return { ...item, ...data };
+          } else {
+            return item;
+          }
+        });
+        setSelectedCategory({ ...selectedCategory, fields: updateData });
+        notifySuccess(response?.message);
+        setSelectedFieldItem(null);
+        toggleAddFieldDrawer(false);
       } else {
         notifyError(response?.message || response);
       }
@@ -479,8 +577,6 @@ const CandidateCustomization = () => {
         return { ...data, selected: false, editable: false };
       }
     });
-    const filterData = updatedData?.filter((filter) => filter?.selected);
-    setSelectedCategory(filterData[0]);
     setCategories(updatedData);
   };
 
@@ -573,6 +669,11 @@ const CandidateCustomization = () => {
     dispatch(fetchAllDomains());
     dispatch(fetchAllCategories());
   }, [dispatch]);
+
+  useEffect(() => {
+    const filterData = categories?.filter((filter) => filter?.selected);
+    setSelectedCategory(filterData[0]);
+  }, [categories]);
 
   return (
     <div className="candidate-info-main-container">
@@ -895,7 +996,12 @@ const CandidateCustomization = () => {
                     </p>
                     <CommonAddButton
                       title={"Add Field"}
-                      onClick={() => toggleAddFieldDrawer(true)}
+                      onClick={() => {
+                        setSelectedFieldItem(null);
+                        setTimeout(() => {
+                          toggleAddFieldDrawer(true);
+                        }, 100);
+                      }}
                       icon={<AddIcon stroke="white" />}
                     />
                   </div>
@@ -936,7 +1042,7 @@ const CandidateCustomization = () => {
                                         className="display-flex align-center"
                                         style={{ gap: 8 }}
                                       >
-                                        {!item?.custom && (
+                                        {item?.default && (
                                           <LockIcon stroke={"#797979"} />
                                         )}
                                         <button
@@ -970,16 +1076,43 @@ const CandidateCustomization = () => {
                                 }}
                               >
                                 <div className="display-column">
-                                  <button className="common-menu-item-btn">
-                                    <HideIcon /> Hide
+                                  <button
+                                    className="common-menu-item-btn"
+                                    onClick={() => {
+                                      handleFieldMenuClose();
+                                      hideCategoryFieldHandler();
+                                    }}
+                                  >
+                                    <HideIcon />{" "}
+                                    {selectedFieldItem?.hide
+                                      ? "Un-Hide"
+                                      : "Hide"}
                                   </button>
-                                  <button className="common-menu-item-btn">
-                                    <EditIcon /> Edit
-                                  </button>
-                                  {selectedFieldItem?.custom && (
-                                    <button className="common-menu-item-btn">
-                                      <DeleteIcon /> Delete
-                                    </button>
+
+                                  {!selectedFieldItem?.default && (
+                                    <>
+                                      <button
+                                        className="common-menu-item-btn"
+                                        onClick={() => {
+                                          handleFieldMenuClose();
+                                          toggleAddFieldDrawer(true);
+                                        }}
+                                      >
+                                        <EditIcon /> Edit
+                                      </button>
+                                      <button
+                                        className="common-menu-item-btn"
+                                        onClick={() => {
+                                          setModalVisibility(
+                                            "categoryFieldDeleteModalVisible",
+                                            true
+                                          );
+                                          handleFieldMenuClose();
+                                        }}
+                                      >
+                                        <DeleteIcon /> Delete
+                                      </button>
+                                    </>
                                   )}
                                 </div>
                               </Menu>
@@ -1410,6 +1543,18 @@ const CandidateCustomization = () => {
       />
 
       <CommonDeleteModal
+        visible={modals?.categoryFieldDeleteModalVisible}
+        title={"Delete Field"}
+        description={"Are you sure you want to delete this field?"}
+        onClose={() => {
+          setModalVisibility("categoryFieldDeleteModalVisible", false);
+          setSelectedFieldItem(null);
+        }}
+        onClickDelete={deleteCategoryFieldHandler}
+        isLoading={deleteCategoryFieldLoading}
+      />
+
+      <CommonDeleteModal
         visible={modals?.labelDeleteModalVisible}
         title={"Delete Label"}
         description={
@@ -1439,6 +1584,15 @@ const CandidateCustomization = () => {
       <AddFieldDrawer
         visible={addFieldDrawerOpen}
         onClose={() => toggleAddFieldDrawer(false)}
+        onSave={(item) => {
+          if (!!selectedFieldItem) {
+            updateCategoryFieldHandler(item);
+          } else {
+            addCategoryFieldHandler(item);
+          }
+        }}
+        selectedData={selectedFieldItem}
+        isLoading={addCategoryFieldLoading || updateCategoryFieldLoading}
       />
     </div>
   );

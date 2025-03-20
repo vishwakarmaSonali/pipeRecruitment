@@ -21,38 +21,55 @@ import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 
 const fieldFormatList = [
-  { id: 1, type: "Short Text", fe_input_type: "text", icon: <ShortTextIcon /> },
+  {
+    id: 1,
+    format: "Short Text",
+    type: "text",
+    fe_input_type: "text",
+    icon: <ShortTextIcon />,
+  },
   {
     id: 2,
-    type: "Detailed Text",
+    format: "Detailed Text",
+    type: "text",
     fe_input_type: "quill",
     icon: <DetailedTextIcon />,
   },
   {
     id: 3,
-    type: "Numeric Input",
+    format: "Numeric Input",
+    type: "text",
     fe_input_type: "number_input",
     icon: <NumericIcon />,
   },
   {
     id: 4,
-    type: "Percentage Value",
+    format: "Percentage Value",
+    type: "text",
     fe_input_type: "percentage_input",
     icon: <PercentageIcon />,
   },
   {
     id: 5,
-    type: "Date Picker",
+    format: "Date Picker",
+    type: "date",
     fe_input_type: "date",
     icon: <CalendarIcon />,
   },
   {
     id: 6,
-    type: "Yes/No Toggle",
+    format: "Yes/No Toggle",
+    type: "bolean",
     fe_input_type: "toggle",
     icon: <ToggleIcon />,
   },
-  { id: 7, type: "Dropdown", fe_input_type: "select", icon: <DropdownIcon /> },
+  {
+    id: 7,
+    format: "Dropdown",
+    type: "select",
+    fe_input_type: "select",
+    icon: <DropdownIcon />,
+  },
 ];
 
 const singleDropdownOprions = [
@@ -65,11 +82,19 @@ const singleDropdownOprions = [
   { id: 7, type: "Users" },
 ];
 
-const AddFieldDrawer = ({ visible, onClose }) => {
+const AddFieldDrawer = ({
+  visible,
+  onClose,
+  isLoading,
+  onSave,
+  selectedData,
+}) => {
   const { modals, setModalVisibility } = useModal();
   const [fieldFormat, setFieldFormat] = useState("");
-  const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
+  const [name, setName] = useState(selectedData?.name || "");
+  const [description, setDescription] = useState(
+    selectedData?.description || ""
+  );
   const [nameError, setNameError] = useState("");
   const [saveBtnDisable, setSaveBtnDisable] = useState(true);
   const [dropdownType, setDropdownType] = useState("single-select");
@@ -109,6 +134,7 @@ const AddFieldDrawer = ({ visible, onClose }) => {
   const resetData = () => {
     setName("");
     setFieldFormat("");
+    setDescription("");
     setDropdownType("single-select");
     setOptions([{ id: Date.now(), value: "Option 1" }]);
     setSingleDropdownSelect("");
@@ -131,12 +157,19 @@ const AddFieldDrawer = ({ visible, onClose }) => {
   };
 
   useEffect(() => {
-    if (name?.length > 2 && !!fieldFormat?.type) {
+    if (name?.length > 2 && !!fieldFormat?.format) {
       setSaveBtnDisable(false);
     } else {
       setSaveBtnDisable(true);
     }
   }, [name, fieldFormat]);
+
+  useEffect(() => {
+    if (visible) {
+      setDescription(selectedData?.description || "");
+      setName(selectedData?.name || "");
+    }
+  }, [selectedData, visible]);
   return (
     <Drawer anchor="right" open={visible} onClose={onCloseDrawer}>
       <div
@@ -158,7 +191,17 @@ const AddFieldDrawer = ({ visible, onClose }) => {
             <CommonTextInput
               type={"text"}
               value={name}
-              onChange={(e) => setName(e.target.value)}
+              onChange={(e) => {
+                setName(e.target.value);
+                if (
+                  e.target?.value?.length > 2 &&
+                  e.target?.value?.length < 300
+                ) {
+                  setNameError("");
+                } else {
+                  setNameError("Name length must be 2-300 characters.");
+                }
+              }}
               placeholder={"Name"}
               error={nameError}
             />
@@ -167,7 +210,7 @@ const AddFieldDrawer = ({ visible, onClose }) => {
               placeholder="Field Format"
               selectedValue={fieldFormat}
               onChange={setFieldFormat}
-              optionKey="type"
+              optionKey="format"
               type={"fieldFormat"}
             />
             {fieldFormat?.fe_input_type === "select" && (
@@ -244,6 +287,7 @@ const AddFieldDrawer = ({ visible, onClose }) => {
                                 onChange={(e) =>
                                   handleChange(option.id, e.target.value)
                                 }
+                                maxLength={300}
                                 onBlur={() => handleBlur(option.id)}
                                 className="option-input font-12-regular color-dark-black"
                               />
@@ -279,13 +323,23 @@ const AddFieldDrawer = ({ visible, onClose }) => {
             <CancelButton
               title={"Cancel"}
               btnStyle={{ flex: 1 }}
-              onClick={onCloseDrawer}
+              onClick={() => {
+                onCloseDrawer();
+                resetData();
+              }}
             />
             <CommonButton
-              disabled={saveBtnDisable}
-              isLoading={false}
+              disabled={saveBtnDisable || isLoading}
+              isLoading={isLoading}
               title={"Save"}
               btnStyle={{ flex: 1 }}
+              onClick={() =>
+                onSave({
+                  name: name,
+                  description: description,
+                  type: fieldFormat,
+                })
+              }
             />
           </div>
         </div>

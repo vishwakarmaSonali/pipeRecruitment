@@ -50,6 +50,18 @@ import {
   UPDATE_CATEGORY_REQUEST,
   UPDATE_CATEGORY_SUCCESS,
   UPDATE_CATEGORY_FAILURE,
+  DELETE_CATEGORY_FIELD_REQUEST,
+  DELETE_CATEGORY_FIELD_SUCCESS,
+  DELETE_CATEGORY_FIELD_FAILURE,
+  HIDE_CATEGORY_FIELD_SUCCESS,
+  HIDE_CATEGORY_FIELD_FAILURE,
+  HIDE_CATEGORY_FIELD_REQUEST,
+  ADD_CATEGORY_FIELD_REQUEST,
+  ADD_CATEGORY_FIELD_SUCCESS,
+  ADD_CATEGORY_FIELD_FAILURE,
+  UPDATE_CATEGORY_FIELD_REQUEST,
+  UPDATE_CATEGORY_FIELD_SUCCESS,
+  UPDATE_CATEGORY_FIELD_FAILURE,
 } from "../actions/actionsType";
 import { defaultCategoryData } from "../helpers/config";
 
@@ -73,6 +85,10 @@ const initialState = {
   deleteCategoryLoading: false,
   hideCategoryLoading: false,
   updateCategoryLoading: false,
+  deleteCategoryFieldLoading: false,
+  hideCategoryFieldLoading: false,
+  addCategoryFieldLoading: false,
+  updateCategoryFieldLoading: false,
 };
 
 const customizationReducer = (state = initialState, action) => {
@@ -439,6 +455,118 @@ const customizationReducer = (state = initialState, action) => {
       return {
         ...state,
         updateCategoryLoading: false,
+      };
+
+    case DELETE_CATEGORY_FIELD_REQUEST:
+      return {
+        ...state,
+        deleteCategoryFieldLoading: true,
+      };
+    case DELETE_CATEGORY_FIELD_SUCCESS:
+      const updatedFiterFieldsData = state?.categoriesData?.map((item) => {
+        if (item?._id === action?.categoryID) {
+          const filterFields = item?.fields?.filter(
+            (filter) => filter?._id !== action?.fieldId
+          );
+          return { ...item, fields: filterFields, selected: true };
+        } else {
+          return { ...item, selected: false };
+        }
+      });
+      return {
+        ...state,
+        deleteCategoryFieldLoading: false,
+        categoriesData: updatedFiterFieldsData,
+      };
+    case DELETE_CATEGORY_FIELD_FAILURE:
+      return {
+        ...state,
+        deleteCategoryFieldLoading: false,
+      };
+
+    case HIDE_CATEGORY_FIELD_REQUEST:
+      return {
+        ...state,
+        hideCategoryFieldLoading: true,
+      };
+    case HIDE_CATEGORY_FIELD_SUCCESS:
+      const updatedFiterHideFieldsData = state?.categoriesData?.map((item) => {
+        if (item?._id === action?.categoryID) {
+          const filterFields = item?.fields?.map((filter) => {
+            if (filter?._id === action?.fieldId) {
+              return {
+                ...filter,
+                hide: action?.data?.hide,
+              };
+            } else {
+              return filter;
+            }
+          });
+          return { ...item, fields: filterFields, selected: true };
+        } else {
+          return { ...item, selected: false };
+        }
+      });
+      return {
+        ...state,
+        hideCategoryFieldLoading: false,
+        categoriesData: updatedFiterHideFieldsData,
+      };
+    case HIDE_CATEGORY_FIELD_FAILURE:
+      return {
+        ...state,
+        hideCategoryFieldLoading: false,
+      };
+
+    case ADD_CATEGORY_FIELD_REQUEST:
+      return {
+        ...state,
+        addCategoryFieldLoading: true,
+      };
+    case ADD_CATEGORY_FIELD_SUCCESS:
+      return {
+        ...state,
+        addCategoryFieldLoading: false,
+      };
+    case ADD_CATEGORY_FIELD_FAILURE:
+      return {
+        ...state,
+        addCategoryFieldLoading: false,
+      };
+
+    case UPDATE_CATEGORY_FIELD_REQUEST:
+      return {
+        ...state,
+        updateCategoryFieldLoading: true,
+      };
+    case UPDATE_CATEGORY_FIELD_SUCCESS:
+      const updatedFieldsData = state?.categoriesData?.map((item) => {
+        if (item?._id === action?.categoryID) {
+          const filterFields = item?.fields?.map((filter) => {
+            if (filter?._id === action?.fieldId) {
+              return {
+                ...filter,
+                label: action?.data?.label,
+                description: action?.data?.description || "",
+              };
+            } else {
+              return filter;
+            }
+          });
+          return { ...item, fields: filterFields, selected: true };
+        } else {
+          return { ...item, selected: false };
+        }
+      });
+      return {
+        ...state,
+        updateCategoryFieldLoading: false,
+        categoriesData: updatedFieldsData,
+      };
+    case UPDATE_CATEGORY_FIELD_FAILURE:
+      return {
+        ...state,
+        updateCategoryFieldLoading: false,
       };
     default:
       return state;

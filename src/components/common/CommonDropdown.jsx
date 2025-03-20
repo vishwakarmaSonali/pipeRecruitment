@@ -129,7 +129,7 @@ const CommonDropdown = ({
   };
 
   const fieldFormatListItem = (item, index) => {
-    const itemValue = item?.type;
+    const itemValue = item?.format;
     const selectedItem = itemValue === selectedOption;
     return (
       <div
