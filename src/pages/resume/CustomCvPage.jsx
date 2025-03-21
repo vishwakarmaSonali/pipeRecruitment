@@ -3,7 +3,7 @@ import "./index.css";
 import CancelButton from "../../components/common/CancelButton";
 import CommonButton from "../../components/common/CommonButton";
 import Navbar from "../../components/navbar/Navbar";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import html2canvas from "html2canvas";
 import { PDFDocument, rgb, degrees } from "pdf-lib";
 import CommonSwitch from "../../components/common/CommonSwitch";
@@ -39,6 +39,8 @@ import {
   PDFDownloadLink,
   Image,
 } from "@react-pdf/renderer";
+import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 
 // Create styles
 const styles = StyleSheet.create({
@@ -81,6 +83,12 @@ const styles = StyleSheet.create({
 
 const CustomCvPage = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const location = useLocation();
+
+  const {
+
+  } = useSelector((state) => state.candidates);
 
   const backHandler = () => {
     navigate(-1);
@@ -739,6 +747,12 @@ const CustomCvPage = () => {
       )}
     </PDFDownloadLink>
   );
+
+  useEffect(() => {
+    const searchParams = new URLSearchParams(location.search);
+    const userId = searchParams.get("id");
+    console.log(">>>>>>>>>>>>>>>>candidateId", userId);
+  }, [location]);
 
   return (
     <div className="sourcing-main-container">

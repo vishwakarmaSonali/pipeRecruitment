@@ -30,7 +30,10 @@ import SocialLinksManager from "./SocialLinksManager";
 import EducationDetailsManager from "./EducationDetailsManager";
 import ExperienceDetailsManager from "./ExperienceDetailsManager";
 import HeaderWithActions from "./CandidateHeader";
-import { createCandidates } from "../../actions/candidateActions";
+import {
+  createCandidates,
+  uploadProfileImage,
+} from "../../actions/candidateActions";
 import { useNavigate } from "react-router-dom";
 import TitleSearchDropdown from "../AutocompleteDropdowns/TitleSearchDropDown";
 import CommonTextInput from "../common/CommonTextInput";
@@ -39,6 +42,7 @@ import CommonDropdown from "../common/CommonDropdown";
 import { DateTimePickerTabs } from "@mui/x-date-pickers";
 import DateTimePicker from "../common/DateTimePicker";
 import { fetchDomains } from "../../actions/dropdownAction";
+import { notifyError, notifySuccess } from "../../helpers/utils";
 const genderOptions = [
   { id: 1, label: "Female" },
   { id: 2, label: "Male" },
@@ -75,8 +79,7 @@ const CreateCandidateForm = () => {
   const today = new Date();
   const { token, refreshToken } = useSelector((state) => state?.auth);
   const { data, loading, error } = useSelector((state) => state.domains);
-  // Ensure `data` is available and formatted properly
-  console.log("data>>>>>CreateCandidateForm>>>>token");
+  const { uploadProfileLoading } = useSelector((state) => state.candidates);
 
   const domainOptions =
     data?.map((item) => ({
@@ -136,6 +139,7 @@ const CreateCandidateForm = () => {
   const [highestQualification, setHighestQualification] = useState("");
   const [selectedTitles, setSelectedTitles] = useState([]); // Ensure it's an array
   const [currentEmployer, setCurrentEmployer] = useState("");
+  const [uploadProfileUrl, setUploadProfileUrl] = useState(null);
   const handleNationalityChange = (selectedItem) => {
     setNationality(selectedItem);
   };
@@ -151,16 +155,23 @@ const CreateCandidateForm = () => {
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      console.log(file, "<<<<<<<file");
-
-      setProfileImage(file); // Store file for API request
-
-      // Create a preview URL for the selected image
+      setProfileImage(file);
       const reader = new FileReader();
       reader.onloadend = () => {
         setImagePreview(reader.result);
       };
       reader.readAsDataURL(file);
+
+      const formData = new FormData();
+      formData.append("file", file);
+      dispatch(uploadProfileImage(formData)).then((response) => {
+        if (response?.success) {
+          setUploadProfileUrl(response?.preview_url);
+          notifySuccess(response?.message);
+        } else {
+          notifyError(response);
+        }
+      });
     }
   };
 
@@ -286,7 +297,7 @@ const CreateCandidateForm = () => {
 
     // Build candidate data with **conditional inclusion**
     const candidateData = {
-      ...(profileImage && { profile_photo: profileImage }), //return {}
+      ...(uploadProfileUrl && { profile_photo: uploadProfileUrl }), //return {}
       ...(selectedTitle !== "None" && { salutation: selectedTitle }),
       ...(firstName && { first_name: firstName }),
       ...(lastName && { last_name: lastName }),
@@ -333,7 +344,7 @@ const CreateCandidateForm = () => {
         employment_history: formattedEmploymentHistory,
       }),
       ...(formattedEducation && { education: formattedEducation }),
-      ...(selectedWorkModel && {work_mode: selectedWorkModel?.workModel})
+      ...(selectedWorkModel && { work_mode: selectedWorkModel?.workModel }),
     };
 
     console.log("Final Candidate Data >>>", candidateData);
@@ -649,7 +660,6 @@ const CreateCandidateForm = () => {
                     multiSelect={false}
                   />
                 </div>
-               
               </div>
               <div className="display-flex gap-[10px] mt-[10px]">
                 <div className="flex-1">

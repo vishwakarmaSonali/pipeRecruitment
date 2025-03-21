@@ -21,7 +21,7 @@ const OriginalResumePage = () => {
         <p className="font-22-medium color-dark-black">Original</p>
         <div className="display-flex" style={{ gap: 8 }}>
           <CancelButton title={"Back"} onClick={backHandler} />
-          <CommonButton title={"Branded Resume"} />
+          {false && <CommonButton title={"Branded Resume"} />}
         </div>
       </div>
     );

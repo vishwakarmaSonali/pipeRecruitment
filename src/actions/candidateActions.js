@@ -10,6 +10,7 @@ import {
   fetchCandidatesEndpoint,
   fetchCandidateSummaryApiEndPoint,
   fetchColumnListApiEndPoint,
+  profileUploadApiEndPoint,
   updateCandidateLabelApiEndpoint,
   uploadResumeEndpoint,
 } from "../helpers/apiConfig";
@@ -55,6 +56,9 @@ import {
   UPLOAD_ATTACHMENT_REQUEST,
   UPLOAD_ATTACHMENT_FAILURE,
   UPLOAD_ATTACHMENT_SUCCESS,
+  UPLOAD_PROFILE_REQUEST,
+  UPLOAD_PROFILE_SUCCESS,
+  UPLOAD_PROFILE_FAILURE,
 } from "./actionsType";
 import { notifySuccess } from "../helpers/utils";
 
@@ -299,7 +303,7 @@ export const fetchCandidateSummary = (id) => async (dispatch) => {
   }
 };
 
-export const extractResume = (file,title) => async (dispatch) => {
+export const extractResume = (file, title) => async (dispatch) => {
   dispatch({ type: EXTRACT_RESUME_REQUEST });
 
   console.log("file in extract resume >>>>", file);
@@ -371,6 +375,45 @@ export const uploadAttachment = (url) => {
     } catch (error) {
       dispatch({ type: UPLOAD_ATTACHMENT_FAILURE });
       return error.response?.data?.message || error.message;
+    }
+  };
+};
+
+export const uploadProfileImage = (formdata) => {
+  return async (dispatch) => {
+    dispatch({ type: UPLOAD_PROFILE_REQUEST });
+    try {
+      const token = localStorage.getItem("token");
+      const refreshToken = localStorage.getItem("refreshToken");
+      const config = {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          ...(token && { Authorization: `Bearer ${token}` }),
+          ...(refreshToken && { "x-refresh-token": refreshToken }),
+        },
+      };
+      const response = await axios.post(
+        `${BASE_URL}${profileUploadApiEndPoint}`,
+        formdata,
+        config
+      );
+      dispatch({
+        type: UPLOAD_PROFILE_SUCCESS,
+      });
+
+      return response?.data;
+    } catch (error) {
+      if (error?.response?.data) {
+        dispatch({
+          type: UPLOAD_PROFILE_FAILURE,
+        });
+        return error?.response?.data?.message;
+      } else {
+        dispatch({
+          type: UPLOAD_PROFILE_FAILURE,
+        });
+        return error.message;
+      }
     }
   };
 };

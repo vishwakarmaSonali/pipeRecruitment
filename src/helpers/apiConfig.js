@@ -26,3 +26,4 @@ export const fetchCandidateSummaryApiEndPoint = "api/candidates/summary";
 export const deleteCategoryApiEndPoint = "api/form-field-categories";
 export const uploadResumeEndpoint = "api/extract-resume/extract";
 export const addAttachmentApiEndPoint = "api/files/upload-urls";
+export const profileUploadApiEndPoint = "api/candidates/profile-picture";

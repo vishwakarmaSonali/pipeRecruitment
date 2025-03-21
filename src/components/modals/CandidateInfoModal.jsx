@@ -495,7 +495,7 @@ const CandidateInfoModal = ({
           <CancelButton title={"Back"} onClick={resumeBackHandler} />
           <CommonButton
             title={"Create Custom CV"}
-            onClick={() => navigate("/candidate/custom-cv")}
+            onClick={() => navigate(`/candidate/custom-cv?id=${candidateId}`)}
           />
         </div>
       </div>
@@ -510,7 +510,7 @@ const CandidateInfoModal = ({
           <CancelButton title={"Back"} onClick={resumeBackHandler} />
           <CommonButton
             title={"Create Report"}
-            onClick={() => navigate("/candidate/report")}
+            onClick={() => navigate(`/candidate/report?id=${candidateId}`)}
           />
         </div>
       </div>
@@ -1130,7 +1130,7 @@ const CandidateInfoModal = ({
                         className="resume-tab-item"
                         onClick={() => {
                           if (item?.id === 1) {
-                            navigate(item?.navigate);
+                            navigate(`${item?.navigate}?id=${candidateId}`);
                           } else {
                             setSelectedResumeTab(item?.id);
                           }

@@ -16,6 +16,7 @@ import { ReactComponent as ArrowRight } from "./assets/arrow-right.svg";
 import { ReactComponent as LockIcon } from "./assets/lock.svg";
 import { ReactComponent as MoreIcon } from "./assets/moreMenu.svg";
 import { ReactComponent as HideIcon } from "./assets/hide.svg";
+import { ReactComponent as EyeIcon } from "./assets/eye.svg";
 import { ReactComponent as EditIcon } from "./assets/edit.svg";
 import { ReactComponent as DeleteIcon } from "./assets/delete.svg";
 import { commonStyle } from "../../../helpers/config";
@@ -898,8 +899,15 @@ const CandidateCustomization = () => {
                                 handleCategoryMenuClose();
                               }}
                             >
-                              <HideIcon />{" "}
-                              {selectedItem?.hide ? "Un-Hide" : "Hide"}
+                              {!selectedItem?.hide ? (
+                                <>
+                                  <HideIcon /> <span>Hide</span>
+                                </>
+                              ) : (
+                                <>
+                                  <EyeIcon /> <span>Unhide</span>
+                                </>
+                              )}
                             </button>
 
                             {!selectedItem?.default && (
@@ -1089,10 +1097,15 @@ const CandidateCustomization = () => {
                                       hideCategoryFieldHandler();
                                     }}
                                   >
-                                    <HideIcon />{" "}
-                                    {selectedFieldItem?.hide
-                                      ? "Un-Hide"
-                                      : "Hide"}
+                                    {selectedFieldItem?.hide ? (
+                                      <>
+                                        <HideIcon /> <span>Hide</span>
+                                      </>
+                                    ) : (
+                                      <>
+                                        <EyeIcon /> <span>Unhide</span>
+                                      </>
+                                    )}
                                   </button>
 
                                   {!selectedFieldItem?.default && (

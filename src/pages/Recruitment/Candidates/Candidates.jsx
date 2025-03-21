@@ -54,7 +54,7 @@ import CustomizableCandidateTable from "../../../components/candidate/Customizab
 const Candidates = ({ isDrawerOpen }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const location = useLocation(); // Get current route location
+  const location = useLocation();
 
   const { token, refreshToken } = useSelector((state) => state.auth);
 
@@ -520,7 +520,6 @@ const Candidates = ({ isDrawerOpen }) => {
   // Ensure First & Last Name are always present
   const headers = [...tableHeaders];
 
-  
   useEffect(() => {
     setCandidateList(candidatesListingData);
   }, [candidatesListingData]);

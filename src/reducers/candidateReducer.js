@@ -29,6 +29,9 @@ import {
   UPLOAD_ATTACHMENT_REQUEST,
   UPLOAD_ATTACHMENT_SUCCESS,
   UPLOAD_ATTACHMENT_FAILURE,
+  UPLOAD_PROFILE_REQUEST,
+  UPLOAD_PROFILE_SUCCESS,
+  UPLOAD_PROFILE_FAILURE,
 } from "../actions/actionsType";
 
 const initialState = {
@@ -57,6 +60,7 @@ const initialState = {
   addAttachmentLoading: false,
   attachmentsData: [],
   uploadAttachmentLoading: false,
+  uploadProfileLoading: false,
 };
 const candidateReducer = (state = initialState, action) => {
   switch (action.type) {
@@ -245,6 +249,24 @@ const candidateReducer = (state = initialState, action) => {
       return {
         ...state,
         uploadAttachmentLoading: false,
+      };
+
+    case UPLOAD_PROFILE_REQUEST:
+      return {
+        ...state,
+        uploadProfileLoading: true,
+      };
+
+    case UPLOAD_PROFILE_SUCCESS:
+      return {
+        ...state,
+        uploadProfileLoading: false,
+      };
+
+    case UPLOAD_PROFILE_FAILURE:
+      return {
+        ...state,
+        uploadProfileLoading: false,
       };
     default:
       return state;
