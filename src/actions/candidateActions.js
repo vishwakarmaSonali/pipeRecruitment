@@ -299,8 +299,10 @@ export const fetchCandidateSummary = (id) => async (dispatch) => {
   }
 };
 
-export const extractResume = (file) => async (dispatch) => {
+export const extractResume = (file,title) => async (dispatch) => {
   dispatch({ type: EXTRACT_RESUME_REQUEST });
+
+  console.log("file in extract resume >>>>", file);
 
   if (!file || !(file instanceof File)) {
     console.error("⚠️ No valid file provided for upload.");
@@ -308,13 +310,14 @@ export const extractResume = (file) => async (dispatch) => {
   }
 
   const formData = new FormData();
-  formData.append("files", file); // Ensure file is properly appended
-  formData.append("documentOrigin", "Delloite"); // Extra field like Node.js
+  formData.append("files", file); // ✅ Correct key
+  formData.append("documentOrigin", title);
 
   try {
     const response = await axiosInstance.post(
-      "api/extract-resume/extract", // ✅ Ensure correct URL
+      "api/extract-resume/extract",
       formData
+      // ❌ DO NOT pass headers here — let browser handle it
     );
 
     dispatch({
@@ -323,7 +326,6 @@ export const extractResume = (file) => async (dispatch) => {
     });
 
     console.log("✅ Resume Extracted:", response.data);
-    alert("✅ Resume uploaded successfully!");
     return response.data;
   } catch (error) {
     dispatch({
@@ -332,7 +334,6 @@ export const extractResume = (file) => async (dispatch) => {
     });
 
     console.error("❌ Resume Extraction Error:", error);
-    alert("❌ Resume upload failed.");
     return error.response?.data?.message || "Error extracting resume.";
   }
 };

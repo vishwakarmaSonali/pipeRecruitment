@@ -34,7 +34,7 @@ const CandidateCard = ({
 }) => {
   const [skillsShowAll, setSkillsShowAll] = useState(false);
   const [validImageUrl, setValidImageUrl] = useState(true);
-  console.log("data>>>>>>", data);
+  console.log("data>>>>>> in candidate card", data);
 
   return (
     <div
@@ -94,14 +94,14 @@ const CandidateCard = ({
             </p>
           </div>
         )}
-        {skills && (
+        {data?.skills && (
           <div className="display-flex" style={{ gap: 6, flexWrap: "wrap" }}>
-            {[...skills]
-              .splice(0, skillsShowAll ? skills?.length : 8)
+            {[...data?.skills]
+              .splice(0, skillsShowAll ? data?.skills?.length : 8)
               .map((item) => {
-                return <div className="skill-more-btn">{item}</div>;
+                return <div className="skill-more-btn">{item?.name}</div>;
               })}
-            {skills?.length > 8 && (
+            {data?.skills?.length > 8 && (
               <button
                 className="skill-more-btn"
                 onClick={(e) => {

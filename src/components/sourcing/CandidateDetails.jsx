@@ -171,10 +171,12 @@ const dispatch = useDispatch()
           SKILLS
         </p>
         <div className="display-flex" style={{ gap: 6, flexWrap: "wrap" }}>
-          {skills?.map((item, index) => {
+          {data?.skills?.map((item, index) => {
+            console.log("data>>>>>>> in skills ",data);
+            
             return (
               <div key={index} className="skill-more-btn">
-                {item}
+                {item?.name}
               </div>
             );
           })}
@@ -289,19 +291,19 @@ const dispatch = useDispatch()
             Education
           </p>
           <div className="display-column" style={{ gap: 16 }}>
-            {educationData?.map((item, index) => {
+            {data?.education?.map((item, index) => {
               return (
                 <div key={index} className="display-column" style={{ gap: 8 }}>
                   <p className="font-14-medium color-dark-black">
-                    {item?.degree} in {item?.faculty}
+                    {item?.degree} in {item?.major}
                   </p>
-                  {item?.university && (
+                  {item?.school && (
                     <p className="font-14-regular color-dark-black">
-                      {item?.university}
+                      {item?.school}
                     </p>
                   )}
                   <p className="font-14-regular color-grey">
-                    {item?.startedYear} - {item?.endedYear}
+                    {item?.start_date} - {item?.end_date}
                   </p>
                 </div>
               );

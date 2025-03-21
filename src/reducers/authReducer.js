@@ -1,4 +1,4 @@
-import { LOGIN_FAILURE, LOGIN_REQUEST, LOGIN_SUCCESS, LOGOUT_USER } from "../actions/actionsType";
+import { LOGIN_FAILURE, LOGIN_REQUEST, LOGIN_SUCCESS, LOGOUT_USER, SIGNUP_FAILURE, SIGNUP_REQUEST, SIGNUP_SUCCESS } from "../actions/actionsType";
 
 
 const initialState = {
@@ -34,6 +34,14 @@ const authReducer = (state = initialState, action) => {
           refreshToken: null,
           user: null,
         };
+        case SIGNUP_REQUEST:
+          return { ...state, loading: true };
+    
+        case SIGNUP_SUCCESS:
+          return { ...state, loading: false, token: action.payload.token };
+    
+        case SIGNUP_FAILURE:
+          return { ...state, loading: false, error: action.payload };
       
     default:
       return state;

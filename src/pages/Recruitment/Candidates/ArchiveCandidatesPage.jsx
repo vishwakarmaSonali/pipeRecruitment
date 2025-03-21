@@ -1,44 +1,20 @@
 import React, { useState, useEffect, useRef } from "react";
 import "./Candidates.css";
 import { useSelector } from "react-redux"; // Import Redux selector
-import { ReactComponent as DeleteIcon } from "../../../assets/icons/delete.svg";
-import { ReactComponent as Plus } from "../../../assets/icons/plus.svg";
-import { ReactComponent as FilterIcon } from "../../../assets/icons/filter.svg";
-import { ReactComponent as RefreshIcon } from "../../../assets/icons/refresh.svg";
-import { ReactComponent as DropArrow } from "../../../assets/icons/droparrow.svg";
-import { ReactComponent as EditIcon } from "../../../assets/icons/candidates/edit-2.svg";
+
 import { ReactComponent as AddToJobsIcon } from "../../../assets/icons/sourcingIcons/briefcase.svg";
 import { ReactComponent as AddtoFolderIcon } from "../../../assets/icons/sourcingIcons/folder-add.svg";
 import { ReactComponent as EditUser } from "../../../assets/icons/user-edit.svg";
 import { ReactComponent as MergeDuplicateIcon } from "../../../assets/icons/merge.svg";
 import { ReactComponent as ArchiveIcon } from "../../../assets/icons/archive.svg";
-import Tooltip from "@mui/material/Tooltip";
-import SettingIcon from "../../../assets/icons/setting-2.svg";
-import LeftArrow from "../../../assets/icons/leftArrow.svg";
-import RightArrow from "../../../assets/icons/rightArrow.svg";
-import Tick from "../../../assets/icons/sourcingIcons/tick.svg";
-import CreateCandidateModal from "../../../components/modals/CreateCandidateModal";
+import { ReactComponent as NoArchivedIcon } from "../../../assets/icons/NoArchived.svg";
+
 import { useModal } from "../../../components/common/ModalProvider";
-import CreateCandidateFormModal from "../../../components/modals/CreateCandidateFormModal";
-import SmartGenerateModal from "../../../components/modals/SmartGenerateModal";
-import UploadResumeCandidateModal from "../../../components/modals/UploadResumeCandidateModal";
-import GlobalMenu from "../../../components/GlobalMenu/GlobalMenu";
-import SearchableMenu from "../../../components/SearchableMenu/SearchableMenu";
-import FilterMenu from "../../../components/FilterMenu/FilterMenu";
-import SaveFiltersModal from "../../../components/modals/SaveFiltersModal";
-import {
-  archivedCandidates,
-} from "../../../helpers/dataCandidates";
+
 import { updateFilterAsync } from "../../../store/filterSlice";
 import { useDispatch } from "react-redux";
 import Navbar from "../../../components/navbar/Navbar";
-import ColumnSelector from "../../../components/ColumnSelector";
-import CandidateFilterDrawer from "../../../components/candidate/CandidateFilterModal";
-import CreateCandidateMenu from "./CreateCandidatesMenu";
-import AddToFolderDrawer from "../../../components/candidate/AddToFolderDrawer";
-import ChangeOwnershipDrawer from "../../../components/candidate/ChangeOwnershipDrawer";
-import AddToJobsDrawer from "../../../components/candidate/AddToJobsDrawer";
-import MergeDuplicateModal from "../../../components/modals/MergeDuplicateModal";
+
 import DeleteCandidateDrawer from "../../../components/candidate/DeleteCandidateDrawer";
 import { notifySuccess } from "../../../helpers/utils";
 import CandidateTable from "../../../components/candidate/CandidateTable";
@@ -282,7 +258,7 @@ const ArchiveCandidates = ({ isDrawerOpen }) => {
   }, [archivedCandidates]); // Ensure UI refreshes when Redux data changes
  // ✅ Update local state when Redux data changes
  useEffect(() => {
-  if (archivedCandidates.length > 0) {
+  if (archivedCandidates?.length > 0) {
     setCandidateList([...archivedCandidates]); // Deep copy to trigger re-render
   } else {
     setCandidateList([]); // Ensure empty state updates
@@ -328,7 +304,7 @@ const ArchiveCandidates = ({ isDrawerOpen }) => {
 const handleRestore = (id) => {
     const candidateIds = id ? [id] : selectedCandidates;
   
-    if (candidateIds.length === 0) {
+    if (candidateIds?.length === 0) {
       console.error("No candidate selected for restore");
       return;
     }
@@ -426,6 +402,16 @@ useEffect(() => {
             </div>
           )}
         </div>
+            {/* ✅ Check if archivedCandidates is empty */}
+      {archivedCandidates?.length === 0 ? (
+        <div className="flex flex-col items-center justify-center h-full text-center">
+         <NoArchivedIcon />
+          <h2 className="text-lg font-ubuntu font-medium text-gray-800">No Archived Candidates Yet</h2>
+          <p className="text-sm font-ubuntu text-gray-600 mt-2">
+            Looks like all your candidates are still in play! Check back here once you've archived some candidates.
+          </p>
+        </div>
+      ) : (
         <div className="flex-1 bg-grey-90 flex flex-col">
         <div
             style={{
@@ -444,6 +430,7 @@ useEffect(() => {
           />
           </div>
           </div>
+      )}
       </div>
       <div className="sourcing-pagination-div">
         <div
@@ -453,11 +440,11 @@ useEffect(() => {
             justifyContent: "center",
           }}
         >
-          <PaginationComponent
+       {archivedCandidates?.length > 0 &&   <PaginationComponent
             totalPages={5}
             currentPage={currentPage}
             onPageChange={handlePageChange}
-          />
+          />}
              <DeleteCandidateDrawer
         isOpen={deleteCandidateDrawerOpen}
         onClose={() => setDeleteCandidateDrawerOpen(false)}

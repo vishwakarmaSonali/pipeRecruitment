@@ -18,7 +18,11 @@ axiosInstance.interceptors.request.use(
     if (refreshToken) {
       config.headers["x-refresh-token"] = refreshToken;
     }
-    config.headers["Content-Type"] = "application/json";
+
+    // ✅ Only set JSON if not sending FormData
+    if (!(config.data instanceof FormData)) {
+      config.headers["Content-Type"] = "application/json";
+    }
 
     return config;
   },
@@ -26,6 +30,7 @@ axiosInstance.interceptors.request.use(
     return Promise.reject(error);
   }
 );
+
 
 axiosInstance.interceptors.response.use(
   (response) => response,

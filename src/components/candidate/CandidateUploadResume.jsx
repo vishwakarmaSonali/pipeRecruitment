@@ -16,6 +16,7 @@ import ResumeHistoryTable from "../../components/candidate/ResumeHistoryTable";
 import TitleSearchDropdown from "../AutocompleteDropdowns/TitleSearchDropDown";
 import { useDispatch } from "react-redux";
 import { extractResume } from "../../actions/candidateActions";
+import { notifySuccess } from "../../helpers/utils";
 const CreateCandidateUploadResume = () => {
     const fileInputRef = useRef();
     const dispatch = useDispatch()
@@ -84,8 +85,9 @@ const CreateCandidateUploadResume = () => {
       setFiles((prevFiles) => [...prevFiles, ...uniqueFiles]);
     }
   };
-  
   const handleCreate = async () => {
+    console.log("job values", selectedTitles[0]);
+  
     if (files.length === 0) {
       alert("Please upload at least one resume.");
       return;
@@ -96,18 +98,21 @@ const CreateCandidateUploadResume = () => {
     for (const fileObj of files) {
       if (fileObj?.file instanceof File) {
         console.log("✅ File is valid:", fileObj.file);
-        console.log("🔍 File Name:", fileObj.file.name);
-        console.log("📏 File Size:", fileObj.file.size);
-        console.log("📝 File Type:", fileObj.file.type);
-        await dispatch(extractResume(fileObj.file));  // Call API
+        const response = await dispatch(extractResume(fileObj.file, selectedTitles[0]));
+  
+        // ✅ Navigate only if response has success
+        if (response?.success) {
+          notifySuccess(response.message);
+          navigate("/candidates"); // Replace with your route
+          return; // Exit after first successful upload
+        }
       } else {
         console.error("❌ Invalid file object:", fileObj);
       }
     }
   
-    alert("✅ Resumes uploaded successfully!");
+    alert("❌ Resume upload failed.");
   };
-  
   
   return (
     <div

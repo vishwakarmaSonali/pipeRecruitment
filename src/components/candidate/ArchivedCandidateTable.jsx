@@ -105,7 +105,7 @@ const ArchiveCandidateTable = ({
   const handleRestore = (id) => {
     const candidateIds = id ? [id] : selectedCandidates;
 
-    if (candidateIds.length === 0) {
+    if (candidateIds?.length === 0) {
       console.error("No candidate selected for restore");
       return;
     }
@@ -141,7 +141,7 @@ const ArchiveCandidateTable = ({
     // Notify the user
     dispatch(deleteArchivedCandidates(deletingCandidates));
     dispatch(deleteArchivedCandidates(selectedCandidates)).then(() => {
-      notifySuccess(`${deletingCandidates.length > 1 ? "Candidates" : "Candidate"} has been permanently deleted.`);
+      notifySuccess(`${deletingCandidates?.length > 1 ? "Candidates" : "Candidate"} has been permanently deleted.`);
       dispatch(fetchArchivedCandidates(1)); // 🔄 Refresh Redux data
     });
     // Filter out deleted candidates from the list
@@ -228,7 +228,7 @@ const ArchiveCandidateTable = ({
             </TableRow>
           </TableHead>
           <TableBody>
-            {archivedCandidates.map((candidate, index) => (
+            {archivedCandidates?.map((candidate, index) => (
               <TableRow key={index} className="hover-row">
                 {/* Checkbox Column */}
                 <TableCell>
