@@ -864,7 +864,6 @@ export const archivedCandidateHeader = [
   "Candidate Name",
   "Owner",
   "Archived Date",
-  
 ];
 
 export const archivedColumnMapping = {
@@ -991,7 +990,7 @@ export const customizeCandidateDetailsFields = [
     order: 1,
     default: true,
     hide: false,
-    value: "Priya",
+    value: "",
   },
   {
     name: "last_name",
@@ -1001,7 +1000,7 @@ export const customizeCandidateDetailsFields = [
     order: 2,
     default: true,
     hide: false,
-    value: "Sharma",
+    value: "",
   },
   {
     name: "gender",
@@ -1011,7 +1010,7 @@ export const customizeCandidateDetailsFields = [
     order: 3,
     default: true,
     hide: false,
-    value: "Female",
+    value: "",
   },
   {
     name: "current_job_title",
@@ -1021,7 +1020,7 @@ export const customizeCandidateDetailsFields = [
     order: 4,
     default: true,
     hide: false,
-    value: "UI UX Designer",
+    value: "",
   },
   {
     name: "current_employer",
@@ -1031,7 +1030,7 @@ export const customizeCandidateDetailsFields = [
     order: 5,
     default: true,
     hide: false,
-    value: "DesignScape Studios",
+    value: "",
   },
   {
     name: "location",
@@ -1041,7 +1040,7 @@ export const customizeCandidateDetailsFields = [
     order: 6,
     default: true,
     hide: false,
-    value: "Bristol, England, United Kingdom",
+    value: "",
   },
   {
     name: "email",

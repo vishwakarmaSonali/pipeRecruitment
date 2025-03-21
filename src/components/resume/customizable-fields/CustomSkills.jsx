@@ -20,7 +20,9 @@ const CustomSkills = ({ on, onToggle, data, addSkill, removeSkill }) => {
           return (
             <div key={index} className="candidate-info-skill-item">
               {item?.name}{" "}
-              <span style={{ color: "#1761D8" }}>{item?.rating}</span>
+              {item?.level && (
+                <span style={{ color: "#1761D8" }}>{item?.level}</span>
+              )}
               <button onClick={() => removeSkill(item?.id, index)}>
                 <CloseIcon width={8} height={8} />
               </button>

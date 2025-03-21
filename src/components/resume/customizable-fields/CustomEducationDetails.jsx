@@ -8,6 +8,11 @@ import { ReactComponent as DeleteIcon } from "../../../pages/Recruitment/Candida
 import CommonTextInput from "../../common/CommonTextInput";
 import MonthYearPicker from "../../MonthYearView";
 import HtmlViewComponent from "../../common/HtmlViewComponent";
+import {
+  convertToISODate,
+  convertToISOWithNano,
+  formatDateMonthYear,
+} from "../../../helpers/utils";
 
 const CustomEducationDetails = ({
   on,
@@ -44,24 +49,29 @@ const CustomEducationDetails = ({
   const handleAddEducation = () => {
     if (editIndex !== null) {
       // Update existing entry
+
+      const startdate = convertToISODate(startDate);
+      const enddate = convertToISODate(endDate);
       onUpdate(editIndex, {
         degree: degreeValue?.trim(),
         major: majorValue?.trim(),
-        university: universityValue?.trim(),
+        school: universityValue?.trim(),
         grade: gradeValue?.trim(),
         description: description,
-        startDate: startDate,
-        endDate: endDate,
+        start_date: convertToISOWithNano(startdate),
+        end_date: convertToISOWithNano(enddate),
       });
     } else {
+      const startdate = convertToISODate(startDate);
+      const enddate = convertToISODate(endDate);
       addEducation({
         degree: degreeValue?.trim(),
         major: majorValue?.trim(),
-        university: universityValue?.trim(),
+        school: universityValue?.trim(),
         grade: gradeValue?.trim(),
         description: description,
-        startDate: startDate,
-        endDate: endDate,
+        start_date: convertToISOWithNano(startdate),
+        end_date: convertToISOWithNano(enddate),
       });
     }
     resetData();
@@ -74,8 +84,20 @@ const CustomEducationDetails = ({
     setUniversityValue(data[index]?.university);
     setGradeValue(data[index]?.grade);
     setDescription(data[index]?.description);
-    setStartDate(data[index]?.startDate);
-    setEndDate(data[index]?.endDate);
+    const startDateFormat = formatDateMonthYear(data[index]?.start_date);
+    const splitStartDate = startDateFormat?.split(" ");
+    setStartDate({
+      month: splitStartDate[0] || "",
+      year: splitStartDate[1] || "",
+    });
+
+    const endDateFormat = formatDateMonthYear(data[index]?.end_date);
+    const splitEndDate = endDateFormat?.split(" ");
+
+    setEndDate({
+      month: splitEndDate[0],
+      year: splitEndDate[1],
+    });
     setAddEducationFieldVisible(true);
   };
 
@@ -206,11 +228,11 @@ const CustomEducationDetails = ({
                     {item?.degree} in {item?.major}
                   </p>
                   <p className="font-14-regular color-dark-black">
-                    {item?.university}
+                    {item?.school}
                   </p>
                   <p className="font-14-regular color-grey">
-                    {`${item?.startDate?.month} ${item?.startDate?.year} -
-                      ${item?.endDate?.month} ${item?.endDate?.year}`}
+                    {formatDateMonthYear(item?.start_date)} -{" "}
+                    {formatDateMonthYear(item?.end_date)}
                   </p>
                   {!!item?.grade && (
                     <p className="font-14-regular color-dark-black">

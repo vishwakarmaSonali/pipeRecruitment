@@ -1,5 +1,6 @@
 import React from "react";
 import "./index.css";
+import { formatDateMonthYear } from "../../helpers/utils";
 
 const CandidateEmpoymentComponent = ({ title, data }) => {
   return (
@@ -23,12 +24,10 @@ const CandidateEmpoymentComponent = ({ title, data }) => {
                   {item?.location}
                 </p>
                 <p className="font-12-regular color-blue">
-                  {`${item?.startDate?.month} ${item?.startDate?.year} -
-                      ${
-                        item?.endDate === "Present"
-                          ? item?.endDate
-                          : item?.endDate?.month + " " + item?.endDate?.year
-                      }`}
+                  {formatDateMonthYear(item?.start_date)} -{" "}
+                  {item?.current
+                    ? "Present"
+                    : formatDateMonthYear(item?.end_date)}
                 </p>
               </div>
               <div

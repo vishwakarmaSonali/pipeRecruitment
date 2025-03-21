@@ -41,6 +41,7 @@ import {
 } from "@react-pdf/renderer";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
+import { fetchCandidateDetails } from "../../actions/candidateActions";
 
 // Create styles
 const styles = StyleSheet.create({
@@ -86,38 +87,26 @@ const CustomCvPage = () => {
   const dispatch = useDispatch();
   const location = useLocation();
 
-  const {
-
-  } = useSelector((state) => state.candidates);
+  const { candidateInfo, candidateDetailsLoading, candidateId } = useSelector(
+    (state) => state.candidates
+  );
 
   const backHandler = () => {
     navigate(-1);
   };
   const [isMounted, setIsMounted] = useState(false);
-  const [description, setDescription] = useState(demoDescriptionText);
+  const [description, setDescription] = useState(
+    candidateInfo?.description || ""
+  );
   const [candidateDescriptionVisible, setCandidateDescriptionVisible] =
     useState(true);
   const [candidateDetailsVisible, setCandidateDetailsVisible] = useState(true);
   const [candidateSkillsVisible, setCandidateSkillsVisible] = useState(true);
-
-  const mappedCandidateDetailsFields = customizeCandidateDetailsFields.reduce(
-    (acc, field) => {
-      acc[field.label] = {
-        value: field.value,
-        type: field.type,
-        options: field.options,
-        order: field.order,
-        default: field.default,
-        hide: field.hide,
-      };
-      return acc;
-    },
-    {}
+  const [candidateFields, setCandidateFields] = useState(
+    customizeCandidateDetailsFields
   );
 
-  const [candidateDetailsFields, setCandidateDetailsFields] = useState(
-    mappedCandidateDetailsFields
-  );
+  const [candidateDetailsFields, setCandidateDetailsFields] = useState({});
 
   const handleChangeToggleCandidateDetails = (label, key, newValue) => {
     setCandidateDetailsFields((prevFields) => ({
@@ -126,16 +115,15 @@ const CustomCvPage = () => {
     }));
   };
 
-  const [candidateSkillData, setCandidateSkillData] = useState(skillData);
+  const [candidateSkillData, setCandidateSkillData] = useState([]);
   const [addSkillModalVisible, setAddSkillModalVisible] = useState(false);
 
   const addSkillHandler = (value) => {
     setCandidateSkillData([
       ...candidateSkillData,
       {
-        id: candidateSkillData?.length + 1,
         name: value?.name,
-        rating: value?.score,
+        level: value?.score,
       },
     ]);
   };
@@ -178,10 +166,8 @@ const CustomCvPage = () => {
   const [candidateEductionData, setCandidateEducationData] = useState([]);
 
   const addEducationHandler = (data) => {
-    setCandidateEducationData([
-      ...candidateEductionData,
-      { id: candidateEductionData?.length + 1, ...data },
-    ]);
+    console.log(">>>>>>>>>..dataAddEducationHandler", data);
+    setCandidateEducationData([...candidateEductionData, data]);
   };
 
   const educationDeleteHandler = (index) => {
@@ -206,10 +192,7 @@ const CustomCvPage = () => {
   const [candidatExperienceData, setCandidateExperienceData] = useState([]);
 
   const addExperienceHandler = (data) => {
-    setCandidateExperienceData([
-      ...candidatExperienceData,
-      { id: candidatExperienceData?.length + 1, ...data },
-    ]);
+    setCandidateExperienceData([...candidatExperienceData, data]);
   };
 
   const handleExperienceUpdate = (index, item) => {
@@ -751,8 +734,53 @@ const CustomCvPage = () => {
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
     const userId = searchParams.get("id");
-    console.log(">>>>>>>>>>>>>>>>candidateId", userId);
+    dispatch(fetchCandidateDetails(userId));
   }, [location]);
+
+  useEffect(() => {
+    setDescription(candidateInfo?.description || "");
+    const updatedData = candidateFields?.map((item) => {
+      if (item?.name === "first_name") {
+        return { ...item, value: candidateInfo?.first_name || "" };
+      } else if (item?.name === "last_name") {
+        return { ...item, value: candidateInfo?.last_name || "" };
+      } else if (item?.name === "gender") {
+        return { ...item, value: candidateInfo?.gender || "" };
+      } else if (item?.name === "current_job_title") {
+        return { ...item, value: candidateInfo?.current_job_title || "" };
+      } else if (item?.name === "current_employer") {
+        return { ...item, value: candidateInfo?.current_employer || "" };
+      } else if (item?.name === "email") {
+        return { ...item, value: candidateInfo?.email || "" };
+      } else if (item?.name === "location") {
+        return { ...item, value: candidateInfo?.location || "" };
+      } else if (item?.name === "phone_number") {
+        return { ...item, value: candidateInfo?.phone_number || "" };
+      } else {
+        return item;
+      }
+    });
+    setCandidateFields(updatedData);
+
+    const mappedCandidateDetailsFields = updatedData.reduce((acc, field) => {
+      acc[field.label] = {
+        value: field.value,
+        type: field.type,
+        options: field.options,
+        order: field.order,
+        default: field.default,
+        hide: field.hide,
+      };
+      return acc;
+    }, {});
+
+    setCandidateDetailsFields(mappedCandidateDetailsFields);
+
+    setCandidateSkillData(candidateInfo?.skills || []);
+    setCandidateLanguageData(candidateInfo?.languages || []);
+    setCandidateExperienceData(candidateInfo?.employment_history || []);
+    setCandidateEducationData(candidateInfo?.education || []);
+  }, [candidateInfo]);
 
   return (
     <div className="sourcing-main-container">

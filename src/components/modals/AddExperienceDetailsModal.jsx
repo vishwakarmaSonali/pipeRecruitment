@@ -46,6 +46,8 @@ const AddExperienceDetailsModal = ({
       current: checked,
     };
 
+    console.log("convertToISODate(startDate)", convertToISODate(startDate));
+
     onAddExperience(experienceData);
   };
 
@@ -210,7 +212,6 @@ const AddExperienceDetailsModal = ({
           <MonthYearPicker
             label="Start Date"
             onSelect={(date) => {
-              console.log("Start Date Selected:", date);
               setStartDate(date);
             }}
             month={startDate?.month}

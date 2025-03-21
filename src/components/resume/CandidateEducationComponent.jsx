@@ -1,11 +1,12 @@
 import React from "react";
 import "./index.css";
+import { formatDateMonthYear } from "../../helpers/utils";
 
 const CandidateEducationComponent = ({ title, data }) => {
   return (
     <div className="display-column" style={{ gap: 12 }}>
       <p className="font-14-medium" style={{ fontWeight: 700 }}>
-      Education
+        Education
       </p>
       <div className="divider-line" />
       <div className="display-column" style={{ gap: 20 }}>
@@ -23,8 +24,8 @@ const CandidateEducationComponent = ({ title, data }) => {
                   {item?.university}
                 </p>
                 <p className="font-12-regular color-blue">
-                  {`${item?.startDate?.month} ${item?.startDate?.year} -
-                      ${item?.endDate?.month} ${item?.endDate?.year}`}
+                  {formatDateMonthYear(item?.start_date) -
+                    formatDateMonthYear(item?.end_date)}
                 </p>
                 {!!item?.grade && (
                   <p className="font-12-regular color-dark-black">

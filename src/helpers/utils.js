@@ -150,3 +150,10 @@ export function toSnakeCase(str) {
     .replace(/\s+/g, "_")
     .toLowerCase();
 }
+
+export const convertToISOWithNano = (dateString) => {
+  const date = new Date(dateString);
+  const formattedDate = date.toISOString().split("T")[0];
+
+  return `${formattedDate}T00:00:00.000000000Z`;
+};

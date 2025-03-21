@@ -10,6 +10,11 @@ import MonthYearPicker from "../../MonthYearView";
 import HtmlViewComponent from "../../common/HtmlViewComponent";
 import LocationSearchDropdown from "../../AutocompleteDropdowns/LocationSearchDropDown";
 import { ReactComponent as TickIcon } from "../../../assets/icons/sourcingIcons/tick.svg";
+import {
+  convertToISODate,
+  convertToISOWithNano,
+  formatDateMonthYear,
+} from "../../../helpers/utils";
 
 const CustomExperienceDetails = ({
   on,
@@ -47,22 +52,26 @@ const CustomExperienceDetails = ({
   const handleAddExperience = () => {
     if (editIndex !== null) {
       // Update existing entry
+      const startdate = convertToISODate(startDate);
+      const enddate = convertToISODate(endDate);
       onUpdate(editIndex, {
         position: position?.trim(),
         company: company?.trim(),
         location: selectedLocations[0],
         description: description,
-        startDate: startDate,
-        endDate: checked ? "Present" : endDate,
+        start_date: convertToISOWithNano(startdate),
+        end_date: checked ? "Present" : convertToISOWithNano(enddate),
       });
     } else {
+      const startdate = convertToISODate(startDate);
+      const enddate = convertToISODate(endDate);
       addExperience({
         position: position?.trim(),
         company: company?.trim(),
         location: selectedLocations[0],
         description: description,
-        startDate: startDate,
-        endDate: checked ? "Present" : endDate,
+        start_date: convertToISOWithNano(startdate),
+        end_date: checked ? "Present" : convertToISODate(enddate),
       });
     }
     resetData();
@@ -74,11 +83,23 @@ const CustomExperienceDetails = ({
     setCompany(data[index]?.company);
     setSelectedLocations(data[index]?.location);
     setDescription(data[index]?.description);
-    setStartDate(data[index]?.startDate);
+    const startDateFormat = formatDateMonthYear(data[index]?.start_date);
+    const splitStartDate = startDateFormat?.split(" ");
+    setStartDate({
+      month: splitStartDate[0] || "",
+      year: splitStartDate[1] || "",
+    });
+
+    const endDateFormat = formatDateMonthYear(data[index]?.end_date);
+    const splitEndDate = endDateFormat?.split(" ");
+
     setEndDate(
-      data[index]?.endDate === "Present"
-        ? { month: "", year: "" }
-        : data[index]?.endDate
+      data[index]?.current
+        ? "Present"
+        : {
+            month: splitEndDate[0],
+            year: splitEndDate[1],
+          }
     );
     setAddExperienceFieldVisible(true);
     if (data[index]?.endDate === "Present") {
@@ -218,18 +239,16 @@ const CustomExperienceDetails = ({
               <>
                 <div className="display-column" style={{ gap: 8 }}>
                   <p className="font-14-medium color-dark-black">
-                    {item?.position} at {item?.compay}
+                    {item?.position} at {item?.company}
                   </p>
                   <p className="font-14-regular color-dark-black">
                     {item?.location}
                   </p>
                   <p className="font-14-regular color-grey">
-                    {`${item?.startDate?.month} ${item?.startDate?.year} -
-                      ${
-                        item?.endDate === "Present"
-                          ? item?.endDate
-                          : item?.endDate?.month + " " + item?.endDate?.year
-                      }`}
+                    {formatDateMonthYear(item?.start_date)} -{" "}
+                    {item?.current
+                      ? "Present"
+                      : formatDateMonthYear(item?.end_date)}
                   </p>
                 </div>
                 <div
