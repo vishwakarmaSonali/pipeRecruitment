@@ -499,18 +499,11 @@ const CandidateCustomization = () => {
       hideCategoryField(selectedCategory?._id, selectedFieldItem?._id, data)
     )?.then((response) => {
       if (response?.success) {
-        const updateData = selectedCategory?.fields?.map((item) => {
-          if (item?._id === selectedFieldItem?._id) {
-            return { ...item, hide: !selectedFieldItem?.hide };
-          } else {
-            return item;
-          }
-        });
-        setSelectedCategory({ ...selectedCategory, fields: updateData });
         notifySuccess(response?.message);
         setSelectedFieldItem(null);
       } else {
         notifyError(response?.message || response);
+        setSelectedFieldItem(null);
       }
     });
   };
@@ -751,7 +744,14 @@ const CandidateCustomization = () => {
                                   item?.selected && "selected-category-item"
                                 }`}
                                 onClick={() => {
-                                  if (!!item?.fields && !item?.editable) {
+                                  if (
+                                    item?.name !== "candidate_description" &&
+                                    item?.name !== "employment_history" &&
+                                    item?.name !== "education" &&
+                                    item?.name !== "jobs" &&
+                                    item?.name !== "folder" &&
+                                    !item?.editable
+                                  ) {
                                     selectedCustomizationCategoryHandler(item);
                                   }
                                 }}
@@ -767,15 +767,21 @@ const CandidateCustomization = () => {
                                       }
                                     />
                                   </div>
-                                  {item?.showFields && (
-                                    <button className="display-flex align-center justify-center">
-                                      <ArrowRight
-                                        fill={
-                                          item?.selected ? "#151B23" : "#797979"
-                                        }
-                                      />
-                                    </button>
-                                  )}
+                                  {item?.name !== "candidate_description" &&
+                                    item?.name !== "employment_history" &&
+                                    item?.name !== "education" &&
+                                    item?.name !== "jobs" &&
+                                    item?.name !== "folder" && (
+                                      <button className="display-flex align-center justify-center">
+                                        <ArrowRight
+                                          fill={
+                                            item?.selected
+                                              ? "#151B23"
+                                              : "#797979"
+                                          }
+                                        />
+                                      </button>
+                                    )}
 
                                   {item?.editable ? (
                                     <>

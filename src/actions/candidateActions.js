@@ -1,5 +1,6 @@
 import axiosInstance from "./axiosInstance";
 import {
+  addAttachmentApiEndPoint,
   addCandidatesToArchive,
   BASE_URL,
   candidateSerachByIdApiEndPOint,
@@ -48,6 +49,12 @@ import {
   EXTRACT_RESUME_FAILURE,
   EXTRACT_RESUME_SUCCESS,
   EXTRACT_RESUME_REQUEST,
+  ADD_ATTACHMENTS_REQUEST,
+  ADD_ATTACHMENTS_SUCCESS,
+  ADD_ATTACHMENTS_FAILURE,
+  UPLOAD_ATTACHMENT_REQUEST,
+  UPLOAD_ATTACHMENT_FAILURE,
+  UPLOAD_ATTACHMENT_SUCCESS,
 } from "./actionsType";
 import { notifySuccess } from "../helpers/utils";
 
@@ -292,7 +299,6 @@ export const fetchCandidateSummary = (id) => async (dispatch) => {
   }
 };
 
-
 export const extractResume = (file) => async (dispatch) => {
   dispatch({ type: EXTRACT_RESUME_REQUEST });
 
@@ -308,8 +314,7 @@ export const extractResume = (file) => async (dispatch) => {
   try {
     const response = await axiosInstance.post(
       "api/extract-resume/extract", // ✅ Ensure correct URL
-      formData,
-     
+      formData
     );
 
     dispatch({
@@ -332,3 +337,39 @@ export const extractResume = (file) => async (dispatch) => {
   }
 };
 
+export const addAttachmentFunction = (data) => {
+  return async (dispatch) => {
+    dispatch({ type: ADD_ATTACHMENTS_REQUEST });
+    try {
+      const response = await axiosInstance.post(
+        `${addAttachmentApiEndPoint}`,
+        data
+      );
+      dispatch({
+        type: ADD_ATTACHMENTS_SUCCESS,
+        data: response.data,
+      });
+      return response;
+    } catch (error) {
+      dispatch({ type: ADD_ATTACHMENTS_FAILURE });
+      return error.response?.data?.message || error.message;
+    }
+  };
+};
+
+export const uploadAttachment = (url) => {
+  return async (dispatch) => {
+    dispatch({ type: UPLOAD_ATTACHMENT_REQUEST });
+    try {
+      const response = await axiosInstance.put(url);
+      dispatch({
+        type: UPLOAD_ATTACHMENT_SUCCESS,
+        data: response?.data,
+      });
+      return response?.data;
+    } catch (error) {
+      dispatch({ type: UPLOAD_ATTACHMENT_FAILURE });
+      return error.response?.data?.message || error.message;
+    }
+  };
+};

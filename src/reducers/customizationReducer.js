@@ -409,13 +409,14 @@ const customizationReducer = (state = initialState, action) => {
       };
     case HIDE_CATEGORY_SUCCESS:
       const updatedData = state?.categoriesData?.map((item) => {
-        if (item?._id === action?.data?.categoryId) {
+        if (item?._id === action?.categoryId) {
           return {
             ...item,
             hide: action?.data?.hide,
+            selected: false,
           };
         } else {
-          return { ...item };
+          return { ...item, selected: false };
         }
       });
       return {
@@ -524,8 +525,20 @@ const customizationReducer = (state = initialState, action) => {
         addCategoryFieldLoading: true,
       };
     case ADD_CATEGORY_FIELD_SUCCESS:
+      const filterCategoryData = state?.categoriesData?.map((item) => {
+        if (item?._id === action?.categoryID) {
+          return {
+            ...item,
+            fields: [...item?.fields, ...action?.data],
+            selected: true,
+          };
+        } else {
+          return item;
+        }
+      });
       return {
         ...state,
+        categoriesData: filterCategoryData,
         addCategoryFieldLoading: false,
       };
     case ADD_CATEGORY_FIELD_FAILURE:

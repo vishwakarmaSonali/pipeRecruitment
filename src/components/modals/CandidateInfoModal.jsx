@@ -80,6 +80,7 @@ import { useSelector } from "react-redux";
 import {
   updateCandidateDetails,
   updateCandidateLabel,
+  addAttachmentFunction,
 } from "../../actions/candidateActions";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
@@ -290,6 +291,8 @@ const CandidateInfoModal = ({
   const [attachementUploadModalVisible, setAttachmentUploadModalVisible] =
     useState(false);
   const [attachmentData, setAttachmentData] = useState([]);
+
+  console.log(">>>>>>>>>>>>>>>>....attachmentData", attachmentData);
 
   const attachmentDeleteHandler = (id) => {
     const updatedData = attachmentData?.filter((item) => item?.id !== id);
@@ -612,7 +615,7 @@ const CandidateInfoModal = ({
                           ? candidateInfo?.photo_url
                           : userImage
                       }
-                      alt={candidateInfo?.name}
+                      alt={candidateInfo?.candidate_name}
                       style={{
                         width: 60,
                         height: 60,
@@ -621,7 +624,7 @@ const CandidateInfoModal = ({
                     />
                     <div className="display-column" style={{ gap: 8 }}>
                       <p className="font-16-medium color-dark-black">
-                        {candidateInfo?.name}
+                        {candidateInfo?.candidate_name}
                       </p>
                       <div
                         className="display-flex align-center"
@@ -826,78 +829,82 @@ const CandidateInfoModal = ({
                       },
                       {}
                     );
-                    if (key === "candidate_description") {
-                      return (
-                        <CandidateDescription
-                          key={key}
-                          label={value?.label}
-                          editable={true}
-                          data={value?.fields[0]?.value || ""}
-                          isLoading={candidateSummaryLoading}
-                        />
-                      );
-                    } else if (key === "employment_history") {
-                      return (
-                        <CandidateInfoExperience
-                          key={key}
-                          label={"Experience Details"}
-                          data={value?.data || []}
-                          editable={true}
-                          isLoading={candidateSummaryLoading}
-                        />
-                      );
-                    } else if (key === "education") {
-                      return (
-                        <CandidateInfoExperience
-                          key={key}
-                          label={"Education Details"}
-                          data={value?.data || []}
-                          editable={true}
-                          isLoading={candidateSummaryLoading}
-                        />
-                      );
-                    } else if (key === "jobs") {
-                      return (
-                        <CandidateInfoJobs
-                          key={key}
-                          label={value?.label}
-                          data={jobData}
-                          onAdd={() => setAddToJobsModalVisible(true)}
-                          isLoading={candidateSummaryLoading}
-                        />
-                      );
-                    } else if (key === "folder") {
-                      return (
-                        <AddCommonCandidateInfo
-                          key={key}
-                          label={value?.label}
-                          onAdd={(data) => {
-                            setFolderIds(data);
-                            setTimeout(() => {
-                              setAddToFolderModalVisible(true);
-                            }, [300]);
-                          }}
-                          data={mappedCandidateDetailsFields}
-                          isLoading={candidateSummaryLoading}
-                        />
-                      );
-                    } else if (key === "folders") {
+                    if (value?.hide) {
                       return;
                     } else {
-                      return (
-                        <ProfessionalDetails
-                          key={key}
-                          details={
-                            key === "skills"
-                              ? value
-                              : mappedCandidateDetailsFields
-                          }
-                          label={value?.label}
-                          editable={true}
-                          isLoading={candidateSummaryLoading}
-                          rawData={candidateRawData}
-                        />
-                      );
+                      if (key === "candidate_description") {
+                        return (
+                          <CandidateDescription
+                            key={key}
+                            label={value?.label}
+                            editable={true}
+                            data={value?.fields[0]?.value || ""}
+                            isLoading={candidateSummaryLoading}
+                          />
+                        );
+                      } else if (key === "employment_history") {
+                        return (
+                          <CandidateInfoExperience
+                            key={key}
+                            label={"Experience Details"}
+                            data={value?.data || []}
+                            editable={true}
+                            isLoading={candidateSummaryLoading}
+                          />
+                        );
+                      } else if (key === "education") {
+                        return (
+                          <CandidateInfoExperience
+                            key={key}
+                            label={"Education Details"}
+                            data={value?.data || []}
+                            editable={true}
+                            isLoading={candidateSummaryLoading}
+                          />
+                        );
+                      } else if (key === "jobs") {
+                        return (
+                          <CandidateInfoJobs
+                            key={key}
+                            label={value?.label}
+                            data={jobData}
+                            onAdd={() => setAddToJobsModalVisible(true)}
+                            isLoading={candidateSummaryLoading}
+                          />
+                        );
+                      } else if (key === "folder") {
+                        return (
+                          <AddCommonCandidateInfo
+                            key={key}
+                            label={value?.label}
+                            onAdd={(data) => {
+                              setFolderIds(data);
+                              setTimeout(() => {
+                                setAddToFolderModalVisible(true);
+                              }, [300]);
+                            }}
+                            data={mappedCandidateDetailsFields}
+                            isLoading={candidateSummaryLoading}
+                          />
+                        );
+                      } else if (key === "folders") {
+                        return;
+                      } else {
+                        return (
+                          <ProfessionalDetails
+                            key={key}
+                            details={
+                              key === "skills"
+                                ? value
+                                : mappedCandidateDetailsFields
+                            }
+                            label={value?.label}
+                            editable={true}
+                            isLoading={candidateSummaryLoading}
+                            rawData={candidateRawData}
+                          />
+                        );
+                      }
                     }
                   })}
 

@@ -23,6 +23,12 @@ import {
   FETCH_CANDIDATE_SUMMARY_REQUEST,
   FETCH_CANDIDATE_SUMMARY_SUCCESS,
   FETCH_CANDIDATE_SUMMARY_FAILURE,
+  ADD_ATTACHMENTS_REQUEST,
+  ADD_ATTACHMENTS_SUCCESS,
+  ADD_ATTACHMENTS_FAILURE,
+  UPLOAD_ATTACHMENT_REQUEST,
+  UPLOAD_ATTACHMENT_SUCCESS,
+  UPLOAD_ATTACHMENT_FAILURE,
 } from "../actions/actionsType";
 
 const initialState = {
@@ -48,6 +54,9 @@ const initialState = {
   updateColumnLoading: false,
   candidateSummaryInfo: {},
   candidateSummaryLoading: false,
+  addAttachmentLoading: false,
+  attachmentsData: [],
+  uploadAttachmentLoading: false,
 };
 const candidateReducer = (state = initialState, action) => {
   switch (action.type) {
@@ -197,6 +206,45 @@ const candidateReducer = (state = initialState, action) => {
         ...state,
         candidateSummaryLoading: false,
         candidateSummaryInfo: {},
+      };
+
+    case ADD_ATTACHMENTS_REQUEST:
+      return {
+        ...state,
+        addAttachmentLoading: true,
+        attachmentsData: [],
+      };
+
+    case ADD_ATTACHMENTS_SUCCESS:
+      return {
+        ...state,
+        addAttachmentLoading: false,
+        attachmentsData: action.data,
+      };
+
+    case ADD_ATTACHMENTS_FAILURE:
+      return {
+        ...state,
+        addAttachmentLoading: false,
+        attachmentsData: [],
+      };
+
+    case UPLOAD_ATTACHMENT_REQUEST:
+      return {
+        ...state,
+        uploadAttachmentLoading: true,
+      };
+
+    case UPLOAD_ATTACHMENT_SUCCESS:
+      return {
+        ...state,
+        uploadAttachmentLoading: false,
+      };
+
+    case UPLOAD_ATTACHMENT_FAILURE:
+      return {
+        ...state,
+        uploadAttachmentLoading: false,
       };
     default:
       return state;

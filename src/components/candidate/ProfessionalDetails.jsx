@@ -933,9 +933,13 @@ const ProfessionalDetails = ({ details, label, isLoading, rawData }) => {
           <>
             <div className="divider-line" />
             <div className="details-container">
-              {Object.entries(fields).map(([key, value]) =>
-                renderValues(key, value)
-              )}
+              {Object.entries(fields).map(([key, value]) => {
+                if (value?.hide) {
+                  return;
+                } else {
+                  return renderValues(key, value);
+                }
+              })}
             </div>
           </>
         )}

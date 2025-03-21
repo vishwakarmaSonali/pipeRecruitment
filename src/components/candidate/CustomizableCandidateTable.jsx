@@ -169,6 +169,13 @@ const CustomizableCandidateTable = ({
                       );
                     }
 
+                    if (columnName?.name === "social_links") {
+                      return;
+                    }
+
+                    if (columnName?.name === "skills") {
+                      return;
+                    }
                     if (index === 0) {
                       return (
                         <TableCell key={index}>

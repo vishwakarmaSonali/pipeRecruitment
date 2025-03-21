@@ -213,7 +213,14 @@ const Navbar = () => {
             >
               <AdminIcon /> Administration
             </button>
-            <button className="common-menu-item-btn">
+            <button
+              className="common-menu-item-btn"
+              onClick={(e) => {
+                e.stopPropagation();
+                navigate("/candidate-customization");
+                handleMenuClose();
+              }}
+            >
               <SettingIcon /> Customization
             </button>
             <button className="common-menu-item-btn">

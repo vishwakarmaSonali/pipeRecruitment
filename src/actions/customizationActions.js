@@ -375,6 +375,7 @@ export const hideCategory = (id, data) => {
       dispatch({
         type: HIDE_CATEGORY_SUCCESS,
         data: response.data?.updatedFields,
+        categoryId: id,
       });
       return response?.data;
     } catch (error) {
@@ -508,7 +509,7 @@ export const addCategoryFieldFunction = (categoryID, data) => {
       );
       dispatch({
         type: ADD_CATEGORY_FIELD_SUCCESS,
-        data: response.data,
+        data: response.data?.fields,
         categoryID,
       });
       return response.data;

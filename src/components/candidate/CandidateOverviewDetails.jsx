@@ -18,7 +18,9 @@ const CandidateOverviewDetails = ({ details, label, rawData }) => {
     } else if (value?.fe_input_type === "date") {
       return formatDate(value?.value);
     } else if (key === "Phone Number") {
-      return formatPhoneNumber(`+${value?.value}`);
+      return (
+        rawData?.country_code && `(${rawData?.country_code}) ${rawData?.phone}`
+      );
     } else if (value?.fe_input_type === "salary_input") {
       if (value?.name === "current_salary") {
         return `${

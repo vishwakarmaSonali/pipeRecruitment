@@ -111,7 +111,8 @@ const CandidateOverviewDrawer = ({ isOpen, onClose }) => {
                       return (
                         <CandidateOverviewDetails
                           details={mappedCandidateDetailsFields}
-                          label={"Candidate Details"}
+                          label={"Contact Details"}
+                          rawData={candidateRawData}
                         />
                       );
                     } else {

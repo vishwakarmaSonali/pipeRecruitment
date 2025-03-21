@@ -6,6 +6,12 @@ import { ReactComponent as UploadIcon } from "../../assets/icons/upload.svg";
 import { ReactComponent as DeleteIcon } from "../../assets/icons/delete.svg";
 import CommonButton from "../common/CommonButton";
 import CancelButton from "../common/CancelButton";
+import { useDispatch } from "react-redux";
+import {
+  addAttachmentFunction,
+  uploadAttachment,
+} from "../../actions/candidateActions";
+import { useSelector } from "react-redux";
 
 const UploadDocumentModal = ({
   visible,
@@ -14,7 +20,14 @@ const UploadDocumentModal = ({
   attachmentData,
 }) => {
   const [modalAnimation, setModalAnimation] = useState(false);
+  const dispatch = useDispatch();
   const fileInputRef = useRef();
+  const {
+    addAttachmentLoading,
+    attachmentsData,
+    candidateId,
+    uploadAttachmentLoading,
+  } = useSelector((state) => state.candidates);
 
   const [files, setFiles] = useState([]);
   const [isDragging, setIsDragging] = useState(false);
@@ -79,6 +92,26 @@ const UploadDocumentModal = ({
 
   const handleRemoveFile = (fileId) => {
     setFiles((prevFiles) => prevFiles.filter((file) => file.id !== fileId));
+  };
+
+  const addAttachmentHandler = () => {
+    const filesData = files?.map((item) => {
+      return { name: item?.file?.name, type: item?.file?.type };
+    });
+    const httpbody = {
+      files: filesData,
+      prefix: `candidate/${candidateId}/attechments`,
+    };
+
+    dispatch(addAttachmentFunction(httpbody)).then((response) => {
+      if (response?.status === 200) {
+        response?.data?.map((item) => {
+          dispatch(uploadAttachment(item?.uploadUrl)).then((response) => {
+            console.log(">>>>>>>>>>>>>>>>>>>>>uploadAttachment", response);
+          });
+        });
+      }
+    });
   };
 
   const handleBackdropClick = () => {
@@ -187,11 +220,13 @@ const UploadDocumentModal = ({
             <CancelButton title={"Cancel"} onClick={resetData} />
             <CommonButton
               title={"Add"}
-              disabled={files?.length < 1}
-              onClick={() => {
-                uploadedFiles([...attachmentData, ...files]);
-                resetData();
-              }}
+              disabled={
+                files?.length < 1 ||
+                addAttachmentLoading ||
+                uploadAttachmentLoading
+              }
+              isLoading={addAttachmentLoading}
+              onClick={addAttachmentHandler}
             />
           </div>
         </div>
