@@ -394,13 +394,13 @@ const Candidates = ({ isDrawerOpen }) => {
       if (filterOption?.candidateName) {
         params.candidate_name = filterOption?.candidateName;
       }
-      if (filterOption?.nationality) {
+      if (filterOption?.nationality.length>0) {
         params.nationality = filterOption?.nationality?.join(", ");
       }
       if (filterOption?.workModel) {
         params.work_mode = filterOption?.workModel;
       }
-      if (filterOption?.selectedLabels) {
+      if (filterOption?.selectedLabels?.length>0) {
         params.labels = filterOption?.selectedLabels
           .map((labelItem) => `${labelItem?.id}`)
           .join(", ");
