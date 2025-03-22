@@ -32,6 +32,9 @@ import {
   UPLOAD_PROFILE_REQUEST,
   UPLOAD_PROFILE_SUCCESS,
   UPLOAD_PROFILE_FAILURE,
+  ARCHIVED_CANDIDATE_REQUEST,
+  ARCHIVED_CANDIDATE_FAILURE,
+  ARCHIVED_CANDIDATE_SUCCESS,
 } from "../actions/actionsType";
 
 const initialState = {
@@ -61,6 +64,7 @@ const initialState = {
   attachmentsData: [],
   uploadAttachmentLoading: false,
   uploadProfileLoading: false,
+  archivedLoading: false,
 };
 const candidateReducer = (state = initialState, action) => {
   switch (action.type) {
@@ -267,6 +271,35 @@ const candidateReducer = (state = initialState, action) => {
       return {
         ...state,
         uploadProfileLoading: false,
+      };
+
+    case ARCHIVED_CANDIDATE_REQUEST:
+      return {
+        ...state,
+        archivedLoading: true,
+      };
+
+    case ARCHIVED_CANDIDATE_SUCCESS:
+      const updatedCandidateListData = state.candidatesListingData.filter(
+        (item) => !action?.data?.archived?.includes(item?._id)
+      );
+
+      const updatedCandidateListId = updatedCandidateListData?.map(
+        (item) => item?._id
+      );
+      return {
+        ...state,
+        candidatesListingData: updatedCandidateListData,
+        candidateListID: updatedCandidateListId,
+        archivedLoading: false,
+        totalCandidateData:
+          state?.totalCandidateData - action?.data?.archived?.length,
+      };
+
+    case ARCHIVED_CANDIDATE_FAILURE:
+      return {
+        ...state,
+        archivedLoading: false,
       };
     default:
       return state;

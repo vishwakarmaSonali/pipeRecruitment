@@ -17,6 +17,10 @@ import { ReactComponent as LinkedIn } from "../assets/icons/sociallinks/linkedin
 import { ReactComponent as Facebook } from "../assets/icons/sociallinks/facebook.svg";
 import { ReactComponent as Github } from "../assets/icons/sociallinks/github.svg";
 import { ReactComponent as Twitter } from "../assets/icons/sociallinks/twitter.svg";
+import { ReactComponent as LinkedInIcon } from "../assets/icons/linkedin.svg";
+import { ReactComponent as EmailIcon } from "../assets/icons/email.svg";
+import { ReactComponent as WhatappIcon } from "../assets/icons/whatsapp.svg";
+import { ReactComponent as CallIcon } from "../assets/icons/call.svg";
 
 export const usePersistentState = (key, defaultValue) => {
   const [state, setState] = useState(() => {
@@ -1065,3 +1069,10 @@ export const customizeCandidateDetailsFields = [
 ];
 
 export const proficiency = ["Beginner", "Intermediate", "Advanced", "Native"];
+
+export const sourcingIcons = {
+  LinkedIn: <LinkedInIcon />,
+  email: <EmailIcon />,
+  phone: <CallIcon />,
+  whatsapp: <WhatappIcon />,
+};

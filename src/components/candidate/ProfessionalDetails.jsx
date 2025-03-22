@@ -38,6 +38,7 @@ import { useDispatch } from "react-redux";
 import CurrencySelector from "../common/CurrencyInput";
 import getSymbolFromCurrency from "currency-symbol-map";
 
+
 const ProfessionalDetails = ({ details, label, isLoading, rawData }) => {
   const dispatch = useDispatch();
   const { candidateId } = useSelector((state) => state?.candidates);

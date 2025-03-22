@@ -10,25 +10,23 @@ import {
   Avatar,
   Menu,
 } from "@mui/material";
-import { useNavigate } from "react-router-dom";
 import {
   formatDate,
   formatDateMonthYear,
   getInitials,
   getRandomColor,
+  notifyError,
+  notifySuccess,
 } from "../../helpers/utils";
-import { commonStyle } from "../../helpers/config";
 import { ReactComponent as Tick } from "../../assets/icons/sourcingIcons/tick.svg";
-import { ReactComponent as EyeIcon } from "../../assets/icons/eye.svg";
+import { ReactComponent as EyeIcon } from "../../assets/icons/EyeIcon.svg";
 import { ReactComponent as MoreIcon } from "../../pages/Recruitment/Candidates/assets/moreMenu.svg";
-import { ReactComponent as AddJobIcon } from "../../pages/Recruitment/Candidates/assets/addJob.svg";
-import { ReactComponent as AddFolderIcon } from "../../pages/Recruitment/Candidates/assets/addFolder.svg";
-import { ReactComponent as EditUser } from "../../assets/icons/user-edit.svg";
 import { ReactComponent as ArchiveIcon } from "../../pages/Recruitment/Candidates/assets/archive.svg";
-import CandidateInfoModal from "../modals/CandidateInfoModal";
 import { useModal } from "../common/ModalProvider";
 import { useSelector } from "react-redux";
 import { userImage } from "../../helpers/assets";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 
 const CustomizableCandidateTable = ({
   data,
@@ -39,29 +37,43 @@ const CustomizableCandidateTable = ({
   eyeClickOn,
   onCandidateClick,
   onCandidateSelect,
+  isLoading,
+  handleMenuClick,
+  open,
+  selectedCandidatesID,
 }) => {
-  const navigate = useNavigate();
   const { columnList } = useSelector((state) => state?.candidates);
-  const matchedColumns = columnList?.filter((col) => col.key in data[0]);
-  const { modals, setModalVisibility } = useModal();
-  const [anchorEl, setAnchorEl] = useState(null);
-  const [selectedCandidates, setSelectedCandidates] = useState([]);
+  const matchedColumns = columnList?.filter((col) => col?.key in data[0]);
+  const [selectedCandidates, setSelectedCandidates] =
+    useState(selectedCandidatesID);
   const [selectedCandidate, setSelectedCandidate] = useState(null);
   const [headerData, setHeaderData] = useState(matchedColumns);
-  const open = Boolean(anchorEl);
 
-  const handleMenuClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
+  useEffect(() => {
+    setSelectedCandidates(selectedCandidatesID);
+  }, [selectedCandidatesID]);
 
-  const handleMenuClose = () => {
-    setAnchorEl(null);
-  };
-  const handleSelect = (id) => {
-    onCandidateSelect(id); // Call the parent function
-  };
-
-  console.log("data in CandidateTable", selectedCandidates);
+  if (isLoading) {
+    return (
+      <div className="display-column" style={{ gap: 10 }}>
+        {Array.from({ length: 15 }).map((_, index) => {
+          return (
+            <div className="display-column" style={{ gap: 4 }}>
+              <div className="display-flex" style={{ gap: 20 }}>
+                <Skeleton containerClassName="flex-1" height={40} />
+                <Skeleton containerClassName="flex-1" height={40} />
+                <Skeleton containerClassName="flex-1" height={40} />
+                <Skeleton containerClassName="flex-1" height={40} />
+                <Skeleton containerClassName="flex-1" height={40} />
+                <Skeleton containerClassName="flex-1" height={40} />
+              </div>
+              <div className="divider-line" />
+            </div>
+          );
+        })}
+      </div>
+    );
+  }
 
   return (
     <>
@@ -101,16 +113,16 @@ const CustomizableCandidateTable = ({
                           onClick={(e) => {
                             e.stopPropagation();
                             const allSelected =
-                              selectedCandidates.length === data.length;
+                              selectedCandidates?.length === data?.length;
                             setSelectedCandidates(
-                              allSelected ? [] : data.map((c) => c._id)
+                              allSelected ? [] : data?.map((c) => c._id)
                             );
                             setSelectedCandidateUsers(
-                              allSelected ? [] : data.map((c) => c._id)
+                              allSelected ? [] : data?.map((c) => c._id)
                             );
                           }}
                         >
-                          {selectedCandidates.length === data.length && (
+                          {selectedCandidates?.length === data?.length && (
                             <Tick />
                           )}
                         </button>
@@ -188,30 +200,25 @@ const CustomizableCandidateTable = ({
                               onClick={(e) => {
                                 e.stopPropagation();
                                 setSelectedCandidates((prev) =>
-                                  prev.includes(candidate._id)
-                                    ? prev.filter((id) => id !== candidate._id)
-                                    : [...prev, candidate._id]
+                                  prev.includes(candidate?._id)
+                                    ? prev.filter((id) => id !== candidate?._id)
+                                    : [...prev, candidate?._id]
                                 );
                                 setSelectedCandidateUsers((prev) =>
-                                  prev.includes(candidate._id)
-                                    ? prev.filter((id) => id !== candidate._id)
-                                    : [...prev, candidate._id]
+                                  prev.includes(candidate?._id)
+                                    ? prev.filter((id) => id !== candidate?._id)
+                                    : [...prev, candidate?._id]
                                 );
                               }}
                             >
-                              {selectedCandidates.includes(candidate?._id) && (
+                              {selectedCandidates?.includes(candidate?._id) && (
                                 <Tick />
                               )}
                             </div>
 
                             <Avatar
-                              src={
-                                candidate?.profile_photo &&
-                                Object.keys(candidate?.profile_photo).length > 0
-                                  ? candidate?.profile_photo
-                                  : ""
-                              }
-                              alt={candidate?.candidate_name}
+                              src={""}
+                              alt={value}
                               style={{
                                 width: 32,
                                 height: 32,
@@ -228,7 +235,7 @@ const CustomizableCandidateTable = ({
                               {!candidate?.profile_photo ||
                               Object.keys(candidate?.profile_photo)?.length ===
                                 0
-                                ? getInitials(candidate?.candidate_name)
+                                ? getInitials(value)
                                 : ""}
                             </Avatar>
 
@@ -254,8 +261,8 @@ const CustomizableCandidateTable = ({
                                   aria-haspopup="true"
                                   aria-expanded={open ? "true" : undefined}
                                   className={`eye-icon ${
-                                    open &&
                                     candidate?._id === selectedCandidate?._id &&
+                                    open &&
                                     "opacity-1"
                                   }`}
                                   onClick={(e) => {
@@ -265,7 +272,11 @@ const CustomizableCandidateTable = ({
                                     handleMenuClick(e);
                                   }}
                                 >
-                                  <MoreIcon stroke="#151B23" />
+                                  <MoreIcon
+                                    stroke="#151B23"
+                                    width={20}
+                                    height={20}
+                                  />
                                 </button>
                               </>
                             ) : (

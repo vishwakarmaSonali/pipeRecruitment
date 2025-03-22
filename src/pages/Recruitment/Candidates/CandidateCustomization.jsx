@@ -1097,7 +1097,7 @@ const CandidateCustomization = () => {
                                       hideCategoryFieldHandler();
                                     }}
                                   >
-                                    {selectedFieldItem?.hide ? (
+                                    {!selectedFieldItem?.hide ? (
                                       <>
                                         <HideIcon /> <span>Hide</span>
                                       </>

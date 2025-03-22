@@ -710,8 +710,8 @@ const CandidateInfoModal = ({
                     </div>
                   </div>
                   <div className="display-flex" style={{ gap: 10 }}>
-                    <div className="profile-progress-div-1">56%</div>
-                    <div className="profile-progress-div-2">62</div>
+                    <div className="profile-progress-div-1">NA</div>
+                    <div className="profile-progress-div-2">NA</div>
                   </div>
                 </div>
                 <div className="display-flex-justify align-center">

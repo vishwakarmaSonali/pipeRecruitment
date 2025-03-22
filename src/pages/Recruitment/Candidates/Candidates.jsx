@@ -39,7 +39,7 @@ import { truncate } from "lodash";
 import { useLocation } from "react-router-dom";
 import CandidateOverviewDrawer from "../../../components/candidate/CandidateOverviewDrawer";
 import {
-  addCandidateToArchiveAction,
+  archivedCandidateFunction,
   fetchCandidateDetails,
   fetchCandidates,
   fetchCandidatesList,
@@ -50,13 +50,17 @@ import CandidateInfoModal from "../../../components/modals/CandidateInfoModal";
 import { ReactComponent as Tick } from "../../../assets/icons/sourcingIcons/tick.svg";
 import { fetchAllLabels } from "../../../actions/customizationActions";
 import CustomizableCandidateTable from "../../../components/candidate/CustomizableCandidateTable";
+import {
+  formatDate,
+  notifyError,
+  notifyInfo,
+  notifySuccess,
+} from "../../../helpers/utils";
 
-const Candidates = ({ isDrawerOpen }) => {
+const Candidates = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const location = useLocation();
-
-  const { token, refreshToken } = useSelector((state) => state.auth);
 
   const {
     candidatesListingData,
@@ -90,7 +94,7 @@ const Candidates = ({ isDrawerOpen }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [resultsPerPage, setResultsPerPage] = useState(20);
   const [selectedCandidateIds, setSelectedCandidateIds] = useState([]);
-
+  const [refresh, setRefresh] = useState(false);
   const [changeOwnershipDrawerOpen, setChangeOwnershipDrawerOpen] =
     useState(false);
   const [filtersApplied, setFiltersApplied] = useState(false);
@@ -112,72 +116,60 @@ const Candidates = ({ isDrawerOpen }) => {
     skill: "",
     education: { major: "", school: "", degree: "" },
   });
-  // const handleArchiveCandidates = async () => {
-  //   if (selectedCandidates.length === 0) {
-  //     alert("Please select candidates to archive.");
-  //     return;
-  //   }
-
-  //   console.log("Archiving Candidates: ", selectedCandidates);
-  // handleCloseBulkAction()
-  //   try {
-  //     // Dispatch archive action
-  //     await dispatch(addCandidateToArchiveAction(selectedCandidates, token, refreshToken));
-
-  //     // ✅ Fetch updated list after successful archiving
-  //     setTimeout(() => {
-  //       dispatch(fetchCandidatesList(candidateFilters, 1));
-  //     }, 500);
-
-  //     // Reset selection
-  //     setSelectedCandidates([]);
-  //   } catch (error) {
-  //     console.error("Error archiving candidates:", error);
-  //     alert("Failed to archive candidates.");
-  //   }
-  // };
 
   const handleArchiveCandidates = () => {
     if (selectedCandidates.length === 0) {
-      alert("Please select candidates to archive.");
+      notifyInfo("Please select candidates to archive.");
       return;
     }
-    handleCloseBulkAction();
-    console.log("Archiving Candidates: ", selectedCandidates);
 
-    // ✅ Remove archived candidates from local state without calling API
-    setCandidateList((prevList) =>
-      prevList.filter(
-        (candidate) => !selectedCandidates.includes(candidate._id)
-      )
-    );
-    dispatch(addCandidateToArchiveAction(selectedCandidates));
-    // Reset selection after archiving
-    setSelectedCandidates([]);
+    const httpBody = {
+      candidateIds: selectedCandidates,
+    };
+
+    dispatch(archivedCandidateFunction(httpBody)).then((response) => {
+      if (response?.success) {
+        notifySuccess(response?.message);
+      } else {
+        notifyError(response);
+      }
+    });
   };
 
   const bulkMenuItems = [
     {
       label: "Add to jobs",
       icon: <AddToJobsIcon />,
-      onClick: () => setAddToJobsDrawerOpen(true),
+      onClick: () => {
+        handleCloseBulkAction();
+        setAddToJobsDrawerOpen(true);
+      },
     },
     {
       label: "Add to folder",
       icon: <AddtoFolderIcon stroke="#151B23" />,
-      onClick: () => setAddToFolderDrawerOpen(true),
+      onClick: () => {
+        handleCloseBulkAction();
+        setAddToFolderDrawerOpen(true);
+      },
     },
     {
       label: "Change Ownership",
       icon: <EditUser />,
-      onClick: () => setChangeOwnershipDrawerOpen(true),
+      onClick: () => {
+        handleCloseBulkAction();
+        setChangeOwnershipDrawerOpen(true);
+      },
     },
     ...(selectedCandidates.length > 1
       ? [
           {
             label: "Merge Duplicate",
             icon: <MergeDuplicateIcon />,
-            onClick: () => navigate("/merge-candidate"),
+            onClick: () => {
+              handleCloseBulkAction();
+              navigate("/merge-candidate");
+            },
           },
         ]
       : []),
@@ -189,7 +181,10 @@ const Candidates = ({ isDrawerOpen }) => {
     {
       label: "Archive",
       icon: <ArchiveIcon />,
-      onClick: handleArchiveCandidates, // ✅ Call archive function
+      onClick: () => {
+        handleCloseBulkAction();
+        handleArchiveCandidates();
+      },
     },
   ];
 
@@ -288,6 +283,50 @@ const Candidates = ({ isDrawerOpen }) => {
     },
   ];
 
+  const menuItems = [
+    {
+      label: "Add to jobs",
+      icon: <AddToJobsIcon />,
+      onClick: () => {
+        handleClose();
+        setAddToJobsDrawerOpen(true);
+      },
+    },
+    {
+      label: "Add to folder",
+      icon: <AddtoFolderIcon stroke="#151B23" />,
+      onClick: () => {
+        handleClose();
+        setAddToFolderDrawerOpen(true);
+      },
+    },
+    {
+      label: "Change Ownership",
+      icon: <EditUser />,
+      onClick: () => {
+        handleClose();
+        setChangeOwnershipDrawerOpen(true);
+      },
+    },
+
+    {
+      label: "Merge Duplicate",
+      icon: <MergeDuplicateIcon />,
+      onClick: () => {
+        handleClose();
+        navigate(`/merge-candidate?id=${selectedCandidate?._id}`);
+      },
+    },
+    {
+      label: "Archive",
+      icon: <ArchiveIcon />,
+      onClick: () => {
+        handleClose();
+        archiveCandidateHandler();
+      },
+    },
+  ];
+
   const [searchableMenuItems, setSearchableMenuItems] = useState(
     initialSearchableItems
   );
@@ -311,12 +350,18 @@ const Candidates = ({ isDrawerOpen }) => {
   const dropdownRef = useRef(null);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [selectedCandidateId, setSelectedCandidateId] = useState(null); // Store selected candidate ID
-
-  // useEffect(() => {
-  //   if (conditions.length === 0) {
-  //     setSearchableMenuItems([...initialSearchableItems]); // Restore all items when no filters remain
-  //   }
-  // }, [conditions]);
+  const archiveCandidateHandler = () => {
+    const httpBody = {
+      candidateIds: [selectedCandidate?._id],
+    };
+    dispatch(archivedCandidateFunction(httpBody)).then((response) => {
+      if (response?.success) {
+        notifySuccess(response?.message);
+      } else {
+        notifyError(response);
+      }
+    });
+  };
 
   const applySavedFilter = (filterName) => {
     const selectedFilter = savedFilters.find(
@@ -394,13 +439,13 @@ const Candidates = ({ isDrawerOpen }) => {
       if (filterOption?.candidateName) {
         params.candidate_name = filterOption?.candidateName;
       }
-      if (filterOption?.nationality.length>0) {
+      if (filterOption?.nationality.length > 0) {
         params.nationality = filterOption?.nationality?.join(", ");
       }
       if (filterOption?.workModel) {
         params.work_mode = filterOption?.workModel;
       }
-      if (filterOption?.selectedLabels?.length>0) {
+      if (filterOption?.selectedLabels?.length > 0) {
         params.labels = filterOption?.selectedLabels
           .map((labelItem) => `${labelItem?.id}`)
           .join(", ");
@@ -499,7 +544,6 @@ const Candidates = ({ isDrawerOpen }) => {
     setAnchorSettingEl(event.currentTarget);
   };
 
-  // Function to handle closing the dropdown menu
   const handleClose = () => {
     setAnchorEl(null);
   };
@@ -509,16 +553,56 @@ const Candidates = ({ isDrawerOpen }) => {
   const handleCloseBulkAction = () => {
     setAnchorBulkActionEl(null);
   };
-  // Extract headers dynamically but filter out unwanted fields
-  // Extract headers dynamically but filter out unwanted fields
-  const tableHeaders = candidateList.length
-    ? Object.keys(candidateList[0]).filter(
-        (key) => key !== "_id" && key !== "profile_photo" // ❌ Exclude these fields
-      )
-    : [];
 
-  // Ensure First & Last Name are always present
-  const headers = [...tableHeaders];
+  const downloadCSV = () => {
+    const matchedColumns = columnList?.filter(
+      (col) => col.key in candidateList[0]
+    );
+
+    const headers = matchedColumns?.map((col) => col?.label).join(",") + "\n";
+
+    const rows = candidateList
+      ?.map((candidate) => {
+        return matchedColumns
+          .map((col) => {
+            let value = candidate[col.key] || "NA";
+            if (col?.name === "created_at" || col?.name === "date_of_birth") {
+              value = candidate[col?.key]
+                ? formatDate(candidate[col?.key])
+                : "NA";
+            }
+
+            if (col?.name === "created_by") {
+              value =
+                candidate[col?.key]?.first_name +
+                " " +
+                candidate[col?.key]?.last_name;
+            }
+
+            if (col?.name === "social_links") {
+              return;
+            }
+
+            if (col?.name === "skills") {
+              return;
+            }
+            return `"${value}"`;
+          })
+          .join(",");
+      })
+      .join("\n");
+
+    const csvContent = headers + rows;
+
+    // Create a Blob and trigger download
+    const blob = new Blob([csvContent], { type: "text/csv" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "candidates.csv";
+    a.click();
+    URL.revokeObjectURL(url);
+  };
 
   useEffect(() => {
     setCandidateList(candidatesListingData);
@@ -539,7 +623,7 @@ const Candidates = ({ isDrawerOpen }) => {
     if (!updateColumnLoading) {
       dispatch(fetchCandidatesList(params, 1));
     }
-  }, [dispatch, resultsPerPage, updateColumnLoading]);
+  }, [dispatch, resultsPerPage, updateColumnLoading, refresh]);
 
   useEffect(() => {
     dispatch(fetchAllLabels());
@@ -594,7 +678,6 @@ const Candidates = ({ isDrawerOpen }) => {
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
     const userId = searchParams.get("id");
-    console.log(">>>>>>>>>>>>>>>>candidateId", userId);
 
     if (!!userId) {
       setSelectedCandidateId(userId);
@@ -670,11 +753,17 @@ const Candidates = ({ isDrawerOpen }) => {
                 >
                   Columns <ColumnIcon />
                 </button>
-                <button className="buttons border-1 border-blue-600 text-buttonBLue min-w-[40px]">
+                <button
+                  className="buttons border-1 border-blue-600 text-buttonBLue min-w-[40px]"
+                  onClick={downloadCSV}
+                >
                   <ExportIcon stroke="#1761D8" />
                 </button>
 
-                <button className="buttons border-1 border-blue-600 text-buttonBLue  min-w-[40px] ">
+                <button
+                  className="buttons border-1 border-blue-600 text-buttonBLue  min-w-[40px] "
+                  onClick={() => setRefresh(!refresh)}
+                >
                   <RefreshIcon stroke="#1761D8" />
                 </button>
               </div>
@@ -714,8 +803,11 @@ const Candidates = ({ isDrawerOpen }) => {
                     setSelectedCandidateUsers={setSelectedCandidates}
                     showDeleteIcon={false}
                     eyeClickOn={handleCandidateEyeClick}
-                    onCandidateClick={handleCandidateClick} // Pass function to handle clicks
-                    // onCandidateSelect={handleCandidateSelection} // Handle selection
+                    onCandidateClick={handleCandidateClick}
+                    isLoading={fetchMoreLoading}
+                    handleMenuClick={(e) => handleClick(e)}
+                    open={open}
+                    selectedCandidatesID={selectedCandidates}
                   />
                 )}
               </div>
@@ -730,7 +822,16 @@ const Candidates = ({ isDrawerOpen }) => {
               >
                 <div
                   className={`candidate-card-checkbox`}
-                  onClick={setSelectedCandidate}
+                  onClick={() => {
+                    if (selectedCandidates?.length === candidateList?.length) {
+                      setSelectedCandidates([]);
+                    } else {
+                      const candidateID = candidateList?.map(
+                        (item) => item?._id
+                      );
+                      setSelectedCandidates(candidateID);
+                    }
+                  }}
                 >
                   {selectedCandidates?.length === candidateList?.length && (
                     <Tick />
@@ -800,7 +901,6 @@ const Candidates = ({ isDrawerOpen }) => {
             onClose={() => setIsColumnSelectorOpen(false)}
             selectedColumns={selectedColumns}
             columnData={columnList}
-            // setSelectedColumns={setSelectedColumns}
           />
         )}
       </div>
@@ -841,13 +941,14 @@ const Candidates = ({ isDrawerOpen }) => {
         onClose={handleCloseBulkAction}
         menuItems={bulkMenuItems}
       />
-      {/* menu for three dots menu */}
-      {/* <GlobalMenu
+
+      <GlobalMenu
         anchorEl={anchorEl}
         open={open}
         onClose={handleClose}
-        menuItems={threeDotsMenuItems}
-      /> */}
+        menuItems={menuItems}
+      />
+
       <GlobalMenu
         anchorEl={anchorSettingEl}
         open={openSetting}

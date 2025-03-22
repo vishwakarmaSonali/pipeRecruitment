@@ -3,11 +3,8 @@ import "./index.css";
 import { profileImage, dummyUserImage } from "../../helpers/assets";
 import { ReactComponent as UniversityIcon } from "../../assets/icons/university.svg";
 import { ReactComponent as LocationIcon } from "../../assets/icons/location.svg";
-import { ReactComponent as LinkedIn } from "../../assets/icons/linkedin.svg";
-import { ReactComponent as EmailIcon } from "../../assets/icons/email.svg";
-import { ReactComponent as WhatappIcon } from "../../assets/icons/whatsapp.svg";
-import { ReactComponent as CallIcon } from "../../assets/icons/call.svg";
 import { ReactComponent as Tick } from "../../assets/icons/sourcingIcons/tick.svg";
+import { icons, sourcingIcons } from "../../helpers/config";
 
 export const skills = [
   "Access",
@@ -34,7 +31,6 @@ const CandidateCard = ({
 }) => {
   const [skillsShowAll, setSkillsShowAll] = useState(false);
   const [validImageUrl, setValidImageUrl] = useState(true);
-  console.log("data>>>>>> in candidate card", data);
 
   return (
     <div
@@ -119,34 +115,19 @@ const CandidateCard = ({
       <div className="flex items-center justify-between">
         <text className="font-12-regular color-grey">Contact information:</text>
         <div className="display-flex align-center" style={{ gap: 12 }}>
-          {!!data?.linkedin_url && (
-            <a
-              href={data?.linkedin_url}
-              className="social-link"
-              target="_blank"
-            >
-              <LinkedIn />
-            </a>
-          )}
-          {!!data?.email && (
-            <a
-              href={`mailto:${data?.email}`}
-              className="social-link"
-              target="_blank"
-            >
-              <EmailIcon />
-            </a>
-          )}
-          {false && (
-            <a href="#" className="social-link" target="_blank">
-              <WhatappIcon />
-            </a>
-          )}
-          {false && (
-            <a href="#" className="social-link" target="_blank">
-              <CallIcon />
-            </a>
-          )}
+          {data?.social_links?.map((item, index) => {
+            return (
+              <a
+                key={index}
+                href={item?.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="social-link"
+              >
+                {sourcingIcons[item?.name]}
+              </a>
+            );
+          })}
         </div>
       </div>
     </div>

@@ -20,6 +20,7 @@ const Administration = () => {
               onClick={() => navigate(item?.navigate)}
             >
               <p className="font-22-medium color-dark-black">{item?.name}</p>
+              <div className="administration-divider-line" />
               <p className="font-14-regular color-grey">{item?.desc}</p>
             </div>
           );

@@ -45,6 +45,33 @@ const ColumnSelector = ({ isOpen, onClose, columnData }) => {
     setAllColumnData(updatedData);
   };
 
+  const unselectAllHandler = () => {
+    const updateData = allColumnData?.map((item) => {
+      if (item?.name !== "candidate_name") {
+        return { ...item, showHeader: false };
+      } else {
+        return item;
+      }
+    });
+
+    setAllColumnData(updateData);
+    const filterData = updateData?.filter((item) => item?.showHeader);
+    setSelectedColumnData(filterData);
+  };
+
+  const removeSelectedColumnHandler = (column) => {
+    const updatedData = allColumnData?.map((item) => {
+      if (item?.name === column?.name) {
+        return { ...item, showHeader: false };
+      } else {
+        return item;
+      }
+    });
+    const filterData = updatedData?.filter((item) => item?.showHeader);
+    setSelectedColumnData(filterData);
+    setAllColumnData(updatedData);
+  };
+
   useEffect(() => {
     const filterData = columnData?.filter((item) => item?.showHeader);
     setSelectedColumnData(filterData);
@@ -52,6 +79,10 @@ const ColumnSelector = ({ isOpen, onClose, columnData }) => {
   }, [columnData]);
 
   const handleDragEnd = (event) => {
+    if (event.active?.data?.current?.el?.dataset?.noDnd) {
+      return; // Ignore click events on the remove button
+    }
+
     const { active, over } = event;
     if (!over || active.id === over.id) return;
 
@@ -90,8 +121,6 @@ const ColumnSelector = ({ isOpen, onClose, columnData }) => {
       display: "flex",
       alignItems: "center",
       justifyContent: "space-between",
-
-      //   padding: "10px",
       marginBottom: "8px",
       background: "#1761D80F",
       borderRadius: "8px",
@@ -109,10 +138,15 @@ const ColumnSelector = ({ isOpen, onClose, columnData }) => {
         <ColumnArrangeIcon />
         <span style={{ cursor: "grab" }}>{column?.label}</span>
         <button
-          className="remove-btn text-customBlue"
-          onClick={(e) => {
-            e.preventDefault();
+          data-no-dnd="true"
+          onPointerDown={(e) => {
             e.stopPropagation();
+            removeSelectedColumnHandler(column);
+          }}
+          style={{
+            cursor: "pointer",
+            background: "transparent",
+            border: "none",
           }}
         >
           <CloseIcon height={"14px"} width={"14px"} />
@@ -144,7 +178,6 @@ const ColumnSelector = ({ isOpen, onClose, columnData }) => {
           </button>
         </div>
 
-        {/* Scrollable Content */}
         <div className="flex-1 overflow-y-auto my-3 gap-[12px] space-y-[12px]">
           {/* Accordion: Select Columns */}
           <div className="">
@@ -171,23 +204,20 @@ const ColumnSelector = ({ isOpen, onClose, columnData }) => {
                   <input
                     type="text"
                     placeholder="Search"
-                    //  value={searchQuery}
-                    //  onChange={(e) => setSearchQuery(e.target.value)}
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
                     className="bg-transparent outline-none border-none w-full text-sm text-gray-700"
                   />
                 </div>
                 <div className="flex justify-between my-[12px]">
-                  <button
-                    className=""
-                    onClick={() => setSelectedColumnData([])}
-                  >
+                  <button className="" onClick={unselectAllHandler}>
                     <span className="text-buttonBLue text-m font-ubuntu">
                       Unselect all
                     </span>
                   </button>
                   <button>
                     <span className="text-m font-ubuntu text-customBlue">
-                      10 of 20
+                      {selectedColumnData?.length} of {allColumnData?.length}
                     </span>
                   </button>
                 </div>
@@ -197,40 +227,46 @@ const ColumnSelector = ({ isOpen, onClose, columnData }) => {
                     isExpanded.select ? "max-h-[540px]" : "max-h-[250px] "
                   }`}
                 >
-                  {allColumnData?.map((column) => {
-                    if (column?.name === "candidate_name") {
-                      return (
-                        <div
-                          key={column?.key}
-                          className="column-option flex items-center "
-                        >
+                  {allColumnData
+                    ?.filter((column) =>
+                      column?.label
+                        ?.toLowerCase()
+                        .includes(searchQuery.toLowerCase())
+                    )
+                    .map((column) => {
+                      if (column?.name === "candidate_name") {
+                        return (
                           <div
-                            className={`candidate-card-checkbox border-grey `}
+                            key={column?.key}
+                            className="column-option flex items-center "
                           >
-                            {column?.showHeader && <Tick />}
+                            <div
+                              className={`candidate-card-checkbox border-grey`}
+                            >
+                              {column?.showHeader && <Tick />}
+                            </div>
+                            <span className="font-14-regular color-grey">
+                              {column?.label}
+                            </span>
                           </div>
-                          <span className="font-14-regular color-grey">
-                            {column?.label}
-                          </span>
-                        </div>
-                      );
-                    } else {
-                      return (
-                        <div
-                          key={column?.key}
-                          className="column-option flex items-center  cursor-pointer text-m font-ubuntu"
-                          onClick={() => handleColumnSelect(column)}
-                        >
-                          <div className={`candidate-card-checkbox`}>
-                            {column?.showHeader && <Tick />}
+                        );
+                      } else {
+                        return (
+                          <div
+                            key={column?.key}
+                            className="column-option flex items-center cursor-pointer text-m font-ubuntu"
+                            onClick={() => handleColumnSelect(column)}
+                          >
+                            <div className={`candidate-card-checkbox`}>
+                              {column?.showHeader && <Tick />}
+                            </div>
+                            <span className="font-14-regular color-dark-black">
+                              {column?.label}
+                            </span>
                           </div>
-                          <span className="font-14-regular color-dark-black">
-                            {column?.label}
-                          </span>
-                        </div>
-                      );
-                    }
-                  })}
+                        );
+                      }
+                    })}
                 </div>
               </div>
             )}
@@ -271,7 +307,7 @@ const ColumnSelector = ({ isOpen, onClose, columnData }) => {
                     onDragEnd={handleDragEnd}
                   >
                     <SortableContext
-                      items={selectedColumnData.map((col) => col?.key)}
+                      items={selectedColumnData?.map((col) => col?.key)}
                       strategy={verticalListSortingStrategy}
                     >
                       {selectedColumnData?.map((column) => {

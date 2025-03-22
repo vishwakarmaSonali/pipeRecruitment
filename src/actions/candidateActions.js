@@ -59,6 +59,9 @@ import {
   UPLOAD_PROFILE_REQUEST,
   UPLOAD_PROFILE_SUCCESS,
   UPLOAD_PROFILE_FAILURE,
+  ARCHIVED_CANDIDATE_REQUEST,
+  ARCHIVED_CANDIDATE_SUCCESS,
+  ARCHIVED_CANDIDATE_FAILURE,
 } from "./actionsType";
 import { notifySuccess } from "../helpers/utils";
 
@@ -414,6 +417,26 @@ export const uploadProfileImage = (formdata) => {
         });
         return error.message;
       }
+    }
+  };
+};
+
+export const archivedCandidateFunction = (data) => {
+  return async (dispatch) => {
+    dispatch({ type: ARCHIVED_CANDIDATE_REQUEST });
+    try {
+      const response = await axiosInstance.post(
+        `${addCandidatesToArchive}`,
+        data
+      );
+      dispatch({
+        type: ARCHIVED_CANDIDATE_SUCCESS,
+        data: response.data,
+      });
+      return response?.data;
+    } catch (error) {
+      dispatch({ type: ARCHIVED_CANDIDATE_FAILURE });
+      return error.response?.data?.message || error.message;
     }
   };
 };

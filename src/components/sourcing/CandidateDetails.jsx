@@ -69,8 +69,8 @@ const CandidateDetails = ({
   onClickAddFolder,
 }) => {
   const [validImageUrl, setValidImageUrl] = useState(true);
-const {token,refreshToken} = useSelector((state)=> state?.auth)
-const dispatch = useDispatch()
+  const { token, refreshToken } = useSelector((state) => state?.auth);
+  const dispatch = useDispatch();
   if (loading) {
     return (
       <div className="candidate-details-card">
@@ -144,8 +144,13 @@ const dispatch = useDispatch()
         </div>
         <div className="display-flex" style={{ gap: 12 }}>
           <Tooltip title="Add to candidate">
-            <button onClick = {()=> dispatch(addSourceToCandidates([data?._id],token,refreshToken))
-            }>
+            <button
+              onClick={() =>
+                dispatch(
+                  addSourceToCandidates([data?._id], token, refreshToken)
+                )
+              }
+            >
               <ProfileAdd />
             </button>
           </Tooltip>
@@ -156,7 +161,7 @@ const dispatch = useDispatch()
           </Tooltip>
           <Tooltip title="Add to Folder" onClick={onClickAddFolder}>
             <button>
-              <FolderAdd stroke="#151B23"/>
+              <FolderAdd stroke="#151B23" />
             </button>
           </Tooltip>
           <Tooltip title="Download resume">
@@ -172,8 +177,8 @@ const dispatch = useDispatch()
         </p>
         <div className="display-flex" style={{ gap: 6, flexWrap: "wrap" }}>
           {data?.skills?.map((item, index) => {
-            console.log("data>>>>>>> in skills ",data);
-            
+            console.log("data>>>>>>> in skills ", data);
+
             return (
               <div key={index} className="skill-more-btn">
                 {item?.name}
@@ -198,57 +203,48 @@ const dispatch = useDispatch()
               </p>
             </div>
           )}
-          {data?.email && (
-            <div className="display-flex">
-              <p className="font-14-medium color-dark-black flex-1">Email:</p>
-              <a
-                href={`mailto:${data?.email}`}
-                className="font-14-regular color-dark-black flex-1"
-                target="_blank"
-              >
-                {data?.email}
-              </a>
-            </div>
-          )}
-          {data?.phone && (
+          {data?.social_links?.map((item, index) => {
+            return (
+              <div key={index} className="display-flex">
+                <p className="font-14-medium color-dark-black flex-1">
+                  {item?.name}
+                </p>
+                {item?.name === "LinkedIn" ? (
+                  <a
+                    className="font-14-regular color-dark-black flex-1 cursor-pointer"
+                    href={item?.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {item?.url}
+                  </a>
+                ) : (
+                  <p className="font-14-regular color-dark-black flex-1">
+                    {item?.url}
+                  </p>
+                )}
+              </div>
+            );
+          })}
+          {data?.languages?.length > 0 && (
             <div className="display-flex">
               <p className="font-14-medium color-dark-black flex-1">
-                Phone Number:
+                Languages:
               </p>
-              <p className="font-14-regular color-dark-black flex-1">
-                {data?.phone}
-              </p>
-            </div>
-          )}
-          {data?.linkedin_url && (
-            <div className="display-flex">
-              <p className="font-14-medium color-dark-black flex-1">
-                Linked In:
-              </p>
-              <a
-                href={data?.linkedin_url}
-                className="font-14-regular color-dark-black flex-1"
-                target="_blank"
+              <div
+                className="flex-1 display-flex"
+                style={{ flexWrap: "wrap", gap: 6 }}
               >
-                {data?.linkedin_url}
-              </a>
+                {data?.languages?.map((item, index) => {
+                  return (
+                    <div key={index} className="skill-more-btn">
+                      {item?.name}
+                    </div>
+                  );
+                })}
+              </div>
             </div>
           )}
-          <div className="display-flex">
-            <p className="font-14-medium color-dark-black flex-1">Languages:</p>
-            <div
-              className="flex-1 display-flex"
-              style={{ flexWrap: "wrap", gap: 6 }}
-            >
-              {languages?.map((item, index) => {
-                return (
-                  <div key={index} className="skill-more-btn">
-                    {item}
-                  </div>
-                );
-              })}
-            </div>
-          </div>
         </div>
       </div>
       <div className="divider-line" />
